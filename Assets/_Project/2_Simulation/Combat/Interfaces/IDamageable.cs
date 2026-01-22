@@ -1,7 +1,7 @@
 using UnityEngine;
 using FishNet.Object;
 
-namespace Genesis.Simulation {
+namespace Genesis.Simulation.Combat {
 
     /// <summary>
     /// Interface para cualquier entidad que puede recibir daño.

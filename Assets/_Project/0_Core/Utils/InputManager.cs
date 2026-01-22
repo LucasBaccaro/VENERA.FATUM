@@ -58,15 +58,22 @@ namespace Genesis.Core {
             _moveAction.performed += OnMovePerformed;
             _moveAction.canceled += OnMoveCanceled;
 
+            // Habilitar el mapa por defecto al iniciar
+            _playerActionMap.Enable();
+
             Debug.Log("[InputManager] Initialized successfully");
         }
 
         void OnEnable() {
-            _playerActionMap?.Enable();
+            if (_playerActionMap != null) {
+                _playerActionMap.Enable();
+            }
         }
 
         void OnDisable() {
-            _playerActionMap?.Disable();
+            if (_playerActionMap != null) {
+                _playerActionMap.Disable();
+            }
         }
 
         protected override void OnDestroy() {

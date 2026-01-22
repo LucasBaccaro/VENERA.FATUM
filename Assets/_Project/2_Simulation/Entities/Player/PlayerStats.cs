@@ -2,6 +2,7 @@ using UnityEngine;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using Genesis.Core;
+using Genesis.Simulation.Combat; // Necesario para IDamageable
 
 namespace Genesis.Simulation {
 
@@ -35,7 +36,7 @@ namespace Genesis.Simulation {
         public float CurrentMana => _currentMana.Value;
         public float MaxMana => maxMana;
         public float CurrentShield => _currentShield.Value;
-        public bool IsDead => _isDead;
+        // public bool IsDead => _isDead; // REMOVIDO: Ya implementado abajo en la región de IDamageable
 
         // ═══════════════════════════════════════════════════════
         // INITIALIZATION
@@ -99,7 +100,12 @@ namespace Genesis.Simulation {
             }
         }
 
+        public NetworkObject GetNetworkObject() => base.NetworkObject;
+        public bool IsDead => _isDead;
+        
+        // IDamageable Legacy Support
         public bool IsAlive() => !_isDead;
+
         public float GetCurrentHealth() => _currentHealth.Value;
         public float GetMaxHealth() => maxHealth;
 

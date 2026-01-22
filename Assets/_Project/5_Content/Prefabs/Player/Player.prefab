@@ -17,6 +17,8 @@ GameObject:
   - component: {fileID: 2434602104015450095}
   - component: {fileID: 4211813207622510440}
   - component: {fileID: -500167922849418954}
+  - component: {fileID: -186485539870015897}
+  - component: {fileID: -2699330521129833483}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -144,6 +146,8 @@ MonoBehaviour:
   - {fileID: 902623049883095979}
   - {fileID: 2434602104015450095}
   - {fileID: 4211813207622510440}
+  - {fileID: -500167922849418954}
+  - {fileID: -186485539870015897}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -154,7 +158,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584325533184229278
+  _initializedTimestamp: -8584324989722321638
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -255,9 +259,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8cac635f24954048aad3a6ff9110beb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: FishNet.Runtime::FishNet.Component.Animating.NetworkAnimator
-  _componentIndexCache: 255
+  _componentIndexCache: 3
   _addedNetworkObject: {fileID: 5015743577735707121}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 5015743577735707121}
   IgnoredParameters: []
   _animator: {fileID: 2633805355379026433}
   _synchronizeWhenDisabled: 0
@@ -265,6 +269,52 @@ MonoBehaviour:
   _interpolation: 2
   _clientAuthoritative: 1
   _sendToOwner: 0
+--- !u!114 &-186485539870015897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3168934939399175360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9b4fdedf70fc4923b1b6a4368fc3ef2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.TargetingSystem
+  _componentIndexCache: 4
+  _addedNetworkObject: {fileID: 5015743577735707121}
+  _networkObjectCache: {fileID: 5015743577735707121}
+  maxTargetDistance: 40
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  targetRingPrefab: {fileID: 3198373926313879920, guid: 87bfaaa5f71404effb9e462d89230eaa, type: 3}
+  ringScaleMultiplier: 1.2
+  ringHeight: 0.05
+  cursorCrossPrefab: {fileID: 0}
+--- !u!114 &-2699330521129833483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3168934939399175360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b5331ce524c447b494956bcc8070346, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.PlayerCombat
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 5015743577735707121}
+  _networkObjectCache: {fileID: 0}
+  stats: {fileID: 4211813207622510440}
+  targeting: {fileID: -186485539870015897}
+  animator: {fileID: 2633805355379026433}
+  abilitySlots:
+  - {fileID: 11400000, guid: d7325bb86a33241e0aeebd8b08ddd372, type: 2}
 --- !u!1 &6379225025039195788
 GameObject:
   m_ObjectHideFlags: 0

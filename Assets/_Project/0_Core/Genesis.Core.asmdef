@@ -1,0 +1,17 @@
+{
+    "name": "Genesis.Core",
+    "rootNamespace": "Genesis.Core",
+    "references": [
+        "FishNet.Runtime",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,20 @@
+{
+    "name": "Genesis.Bootstrap",
+    "rootNamespace": "Genesis.Bootstrap",
+    "references": [
+        "Genesis.Core",
+        "Genesis.Data",
+        "Genesis.Simulation",
+        "Genesis.Presentation",
+        "FishNet.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

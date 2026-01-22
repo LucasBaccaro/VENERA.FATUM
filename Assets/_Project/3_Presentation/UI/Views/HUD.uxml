@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/MainStyle.uss?fileID=7433441132597879392&amp;guid=cf8f1d6e307ab41bb9434dc2ec321cee&amp;type=3#MainStyle"/>
+    <ui:VisualElement name="HUD" style="flex-grow: 1; width: 100%; height: 100%; position: absolute;">
+        <ui:VisualElement name="StatsContainer" style="position: absolute; left: 20px; top: 20px; width: 300px;">
+            <ui:VisualElement name="HealthContainer" style="margin-bottom: 10px;">
+                <ui:Label text="Health" name="HealthLabel" style="font-size: 14px; color: white; -unity-font-style: bold; margin-bottom: 5px;"/>
+                <ui:ProgressBar value="100" name="HealthBar" high-value="100" style="height: 25px;"/>
+                <ui:Label text="HP: 100 / 100" name="HealthText" style="font-size: 12px; color: white; margin-top: 3px;"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="ManaContainer">
+                <ui:Label text="Mana" name="ManaLabel" style="font-size: 14px; color: white; -unity-font-style: bold; margin-bottom: 5px;"/>
+                <ui:ProgressBar value="100" name="ManaBar" high-value="100" style="height: 25px;"/>
+                <ui:Label text="MP: 100 / 100" name="ManaText" style="font-size: 12px; color: white; margin-top: 3px;"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,58 @@
+/* ═══════════════════════════════════════════════════════
+   GENESIS - Main UI Styles
+   ═══════════════════════════════════════════════════════ */
+
+/* Progress Bars - Health */
+#HealthBar .unity-progress-bar__background {
+    background-color: rgba(40, 40, 40, 0.9);
+    border-width: 2px;
+    border-color: rgba(200, 200, 200, 0.5);
+    border-radius: 5px;
+}
+
+#HealthBar .unity-progress-bar__progress {
+    background-color: rgb(220, 50, 50);
+    border-radius: 3px;
+    margin: 2px;
+}
+
+#HealthBar .unity-progress-bar__title {
+    color: white;
+    font-size: 12px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+/* Progress Bars - Mana */
+#ManaBar .unity-progress-bar__background {
+    background-color: rgba(40, 40, 40, 0.9);
+    border-width: 2px;
+    border-color: rgba(200, 200, 200, 0.5);
+    border-radius: 5px;
+}
+
+#ManaBar .unity-progress-bar__progress {
+    background-color: rgb(80, 150, 255);
+    border-radius: 3px;
+    margin: 2px;
+}
+
+#ManaBar .unity-progress-bar__title {
+    color: white;
+    font-size: 12px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+/* Container de Stats */
+#StatsContainer {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    padding: 15px;
+}
+
+/* Labels generales */
+Label {
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}

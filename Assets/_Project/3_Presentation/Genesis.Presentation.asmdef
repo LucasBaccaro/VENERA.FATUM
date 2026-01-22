@@ -1,0 +1,19 @@
+{
+    "name": "Genesis.Presentation",
+    "rootNamespace": "Genesis.Presentation",
+    "references": [
+        "Genesis.Core",
+        "Genesis.Data",
+        "Genesis.Simulation",
+        "FishNet.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

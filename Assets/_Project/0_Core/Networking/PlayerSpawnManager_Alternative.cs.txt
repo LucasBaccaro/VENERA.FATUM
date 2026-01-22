@@ -1,0 +1,57 @@
+// VERSIÓN ALTERNATIVA - USA ESTO SI PlayerSpawnManager.cs DA PROBLEMAS
+// Para usarla:
+// 1. Renombra este archivo a PlayerSpawnManager_Alternative.cs (quita el .txt)
+// 2. Desactiva o elimina el PlayerSpawnManager.cs original
+// 3. Usa este script en el GameObject PlayerSpawnManager
+
+using UnityEngine;
+using FishNet.Managing;
+
+namespace Genesis.Core.Networking {
+
+    /// <summary>
+    /// Versión simplificada que usa el Default Player Prefab de FishNet.
+    /// Más compatible con diferentes versiones de FishNet.
+    /// </summary>
+    public class PlayerSpawnManager_Alternative : MonoBehaviour {
+
+        [Header("Spawn Points")]
+        [SerializeField] private Transform[] spawnPoints;
+
+        void Start() {
+            Debug.Log("[PlayerSpawnManager_Alternative] IMPORTANTE: Configura el Player Prefab en NetworkManager > ServerManager > Player Spawner > Default Prefab");
+
+            // Posicionar spawn points
+            if (spawnPoints != null && spawnPoints.Length > 0) {
+                Debug.Log($"[PlayerSpawnManager_Alternative] {spawnPoints.Length} spawn points configurados");
+            }
+        }
+
+#if UNITY_EDITOR
+        void OnDrawGizmos() {
+            if (spawnPoints == null) return;
+
+            Gizmos.color = Color.green;
+            foreach (Transform spawn in spawnPoints) {
+                if (spawn != null) {
+                    Gizmos.DrawWireSphere(spawn.position, 0.5f);
+                    Gizmos.DrawLine(spawn.position, spawn.position + Vector3.up * 2f);
+                }
+            }
+        }
+#endif
+    }
+}
+
+/*
+INSTRUCCIONES PARA USAR ESTA VERSIÓN:
+
+1. En Unity, selecciona NetworkManager
+2. Ve a: Server Manager > Player Spawner
+3. Configura:
+   - Override: RESPAWN (o Default)
+   - Default Prefab: Arrastra tu prefab Player aquí
+   - Spawn Transform: Arrastra uno de tus SpawnPoint GameObjects aquí
+
+FishNet automáticamente spawneará jugadores cuando se conecten.
+*/

@@ -1,0 +1,19 @@
+{
+    "name": "Genesis.Simulation",
+    "rootNamespace": "Genesis.Simulation",
+    "references": [
+        "Genesis.Core",
+        "Genesis.Data",
+        "FishNet.Runtime",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

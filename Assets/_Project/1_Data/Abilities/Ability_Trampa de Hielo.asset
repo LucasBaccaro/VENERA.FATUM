@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Genesis.Data::Genesis.Data.AbilityData
   ID: 404
   Name: Trampa de Hielo
-  Icon: {fileID: 0}
+  Icon: {fileID: 21300000, guid: b75d5c3eb9fc84a03bf1a9862fc199c8, type: 3}
   Description: Coloca una trampa que congela enemigos.
   Logic: {fileID: 11400000, guid: be2329dc18e0749269f1cde76b0b3526, type: 2}
   ManaCost: 20
@@ -35,6 +35,7 @@ MonoBehaviour:
   ApplyToSelf: []
   ProjectilePrefab: {fileID: 0}
   ProjectileSpeed: 0
+  IndicatorMaterial: {fileID: 0}
   CastVFX: {fileID: 0}
   ImpactVFX: {fileID: 0}
   CastSound: {fileID: 0}

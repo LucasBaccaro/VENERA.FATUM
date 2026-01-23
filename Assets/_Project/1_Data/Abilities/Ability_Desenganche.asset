@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Genesis.Data::Genesis.Data.AbilityData
   ID: 403
   Name: Desenganche
-  Icon: {fileID: 0}
+  Icon: {fileID: 21300000, guid: 9d4ded5d33e204c60a2668a63ef8c57d, type: 3}
   Description: "Salta hacia atr\xE1s evadiendo ataques."
   Logic: {fileID: 11400000, guid: fb6c05805ef0f46b79054d7d5bd2a02d, type: 2}
   ManaCost: 15
@@ -35,6 +35,7 @@ MonoBehaviour:
   ApplyToSelf: []
   ProjectilePrefab: {fileID: 0}
   ProjectileSpeed: 0
+  IndicatorMaterial: {fileID: 0}
   CastVFX: {fileID: 0}
   ImpactVFX: {fileID: 0}
   CastSound: {fileID: 0}

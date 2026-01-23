@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Genesis.Data::Genesis.Data.AbilityData
   ID: 402
   Name: Multidisparo
-  Icon: {fileID: 0}
+  Icon: {fileID: 21300000, guid: b65ef393d7ca04f7c9c480c70946ca90, type: 3}
   Description: "Dispara en cono da\xF1ando m\xFAltiples enemigos."
   Logic: {fileID: 11400000, guid: 330c3bc30e5444f0f91171848ba36ba5, type: 2}
   ManaCost: 20

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Genesis.Data::Genesis.Data.AbilityData
   ID: 304
   Name: Rezo de Fe
-  Icon: {fileID: 0}
+  Icon: {fileID: 21300000, guid: 728810147584740da825ebeec9e8d6ff, type: 3}
   Description: "Buff de \xE1rea que aumenta las estad\xEDsticas de aliados."
   Logic: {fileID: 11400000, guid: 114e55307f37a4c1eb81103d8984eb8d, type: 2}
   ManaCost: 50
@@ -35,6 +35,7 @@ MonoBehaviour:
   ApplyToSelf: []
   ProjectilePrefab: {fileID: 0}
   ProjectileSpeed: 0
+  IndicatorMaterial: {fileID: 0}
   CastVFX: {fileID: 0}
   ImpactVFX: {fileID: 0}
   CastSound: {fileID: 0}

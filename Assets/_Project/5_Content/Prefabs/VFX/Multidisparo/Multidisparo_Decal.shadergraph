@@ -50,11 +50,28 @@
         },
         {
             "m_Id": "7b3e9d46230d4de5ae4e8a81c0d930aa"
+        },
+        {
+            "m_Id": "668b56c4f3fa440480388d6e2c2c603e"
         }
     ],
     "m_GroupDatas": [],
     "m_StickyNoteDatas": [],
     "m_Edges": [
+        {
+            "m_OutputSlot": {
+                "m_Node": {
+                    "m_Id": "7388a7ddbf6648ec92c3bb54ed055048"
+                },
+                "m_SlotId": 4
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "668b56c4f3fa440480388d6e2c2c603e"
+                },
+                "m_SlotId": 0
+            }
+        },
         {
             "m_OutputSlot": {
                 "m_Node": {
@@ -117,8 +134,8 @@
     },
     "m_FragmentContext": {
         "m_Position": {
-            "x": 0.0,
-            "y": 200.0
+            "x": 3.9999630451202394,
+            "y": 247.99998474121095
         },
         "m_Blocks": [
             {
@@ -129,6 +146,9 @@
             },
             {
                 "m_Id": "49f027d9acaa4336977a66966ae3db22"
+            },
+            {
+                "m_Id": "668b56c4f3fa440480388d6e2c2c603e"
             }
         ]
     },
@@ -672,6 +692,40 @@
 
 {
     "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.BlockNode",
+    "m_ObjectId": "668b56c4f3fa440480388d6e2c2c603e",
+    "m_Group": {
+        "m_Id": ""
+    },
+    "m_Name": "SurfaceDescription.NormalAlpha",
+    "m_DrawState": {
+        "m_Expanded": true,
+        "m_Position": {
+            "serializedVersion": "2",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 0.0,
+            "height": 0.0
+        }
+    },
+    "m_Slots": [
+        {
+            "m_Id": "841e1bdc63dc4cd5a847049804668c46"
+        }
+    ],
+    "synonyms": [],
+    "m_Precision": 0,
+    "m_PreviewExpanded": true,
+    "m_DismissedVersion": 0,
+    "m_PreviewMode": 0,
+    "m_CustomColors": {
+        "m_SerializableColors": []
+    },
+    "m_SerializedDescriptor": "SurfaceDescription.NormalAlpha"
+}
+
+{
+    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.SampleTexture2DNode",
     "m_ObjectId": "7388a7ddbf6648ec92c3bb54ed055048",
     "m_Group": {
@@ -682,10 +736,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -450.0,
-            "y": 510.0,
+            "x": -338.0,
+            "y": 265.9999694824219,
             "width": 183.0,
-            "height": 249.0
+            "height": 249.00003051757813
         }
     },
     "m_Slots": [
@@ -740,10 +794,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -286.0,
-            "y": 221.0,
-            "width": 0.0,
-            "height": 0.0
+            "x": -272.0,
+            "y": 181.00001525878907,
+            "width": 130.99996948242188,
+            "height": 34.0
         }
     },
     "m_Slots": [
@@ -762,6 +816,22 @@
     "m_Property": {
         "m_Id": "fdc57af3afbb45d2b2b4ed4ee4e77b66"
     }
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
+    "m_ObjectId": "841e1bdc63dc4cd5a847049804668c46",
+    "m_Id": 0,
+    "m_DisplayName": "Normal Alpha",
+    "m_SlotType": 0,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "NormalAlpha",
+    "m_StageCapability": 2,
+    "m_Value": 1.0,
+    "m_DefaultValue": 1.0,
+    "m_Labels": [],
+    "m_LiteralMode": false
 }
 
 {
@@ -816,9 +886,9 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -627.0,
-            "y": 526.0,
-            "width": 135.0,
+            "x": -500.0000305175781,
+            "y": 271.0,
+            "width": 135.00003051757813,
             "height": 34.0
         }
     },
@@ -944,7 +1014,7 @@
     "m_ObjectId": "dc3a9723186f49ad9e0ac555df05955b",
     "m_DecalData": {
         "affectsAlbedo": true,
-        "affectsNormalBlend": false,
+        "affectsNormalBlend": true,
         "affectsNormal": true,
         "affectsMAOS": false,
         "affectsEmission": false,
@@ -1014,7 +1084,7 @@
     "m_PerRendererData": false,
     "m_customAttributes": [],
     "m_Value": {
-        "r": 0.0,
+        "r": 1.0,
         "g": 0.0,
         "b": 0.0,
         "a": 1.0

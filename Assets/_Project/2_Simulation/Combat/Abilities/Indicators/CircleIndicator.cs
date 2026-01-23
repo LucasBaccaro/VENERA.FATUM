@@ -1,103 +1,123 @@
 using UnityEngine;
 using Genesis.Data;
 
-namespace Genesis.Simulation.Combat {
-
+namespace Genesis.Simulation.Combat
+{
     /// <summary>
     /// Indicador circular para habilidades AOE (ej: Meteorito, Sagrario, Torbellino)
     /// Puede ser ground-targeted (movible con mouse) o self-centered (fijo en el caster)
     /// </summary>
-    public class CircleIndicator : AbilityIndicator {
-
+    public class CircleIndicator : AbilityIndicator
+    {
         [Header("Circle Components")]
         [SerializeField] private GameObject circlePrefab; // Cylinder o Decal
         [SerializeField] private Renderer circleRenderer;
-        [SerializeField] private float heightOffset = 0.1f; // Altura sobre el suelo
 
         [Header("Settings")]
         [SerializeField] private bool isSelfCentered = false; // True para Torbellino/Nova
-        [SerializeField] private float maxDistance = 30f; // Máxima distancia de placement
+        [SerializeField] private float maxDistance = 30f;     // Máxima distancia de placement
 
         private float _radius;
         private Vector3 _targetPoint;
-        private LayerMask _groundLayer;
 
-        public override void Initialize(AbilityData abilityData) {
+        private static readonly Collider[] _enemyBuffer = new Collider[32];
+        private int _enemyLayerMask;
+
+        public override void Initialize(AbilityData abilityData)
+        {
             _abilityData = abilityData;
             _radius = abilityData.Radius;
             maxDistance = abilityData.Range;
 
+            _enemyLayerMask = LayerMask.GetMask("Enemy");
+
             // Detectar si es self-centered basado en TargetingMode
             isSelfCentered = (abilityData.TargetingMode == TargetType.Self);
 
-            // Configurar escala del círculo
-            if (circlePrefab != null) {
+            // Configurar escala del círculo (diametro en X/Z)
+            if (circlePrefab != null)
+            {
                 float diameter = _radius * 2f;
-                circlePrefab.transform.localScale = new Vector3(diameter, heightOffset, diameter);
+                // Y no importa mucho (es un “disco”), pero no la pongas 0
+                circlePrefab.transform.localScale = new Vector3(diameter, 1f, diameter);
             }
 
-            _groundLayer = LayerMask.GetMask("Environment");
             _isValid = true;
         }
 
-        public override void UpdatePosition(Vector3 worldPoint, Vector3 direction) {
-
-            if (isSelfCentered) {
-                // Modo self-centered: Siempre en la posición del caster
-                _targetPoint = transform.position;
-                _isValid = true;
-            } else {
-                // Modo ground-targeted: Raycast al suelo
-                Ray ray = new Ray(worldPoint + Vector3.up * 100f, Vector3.down);
-
-                if (Physics.Raycast(ray, out RaycastHit hit, 200f, _groundLayer)) {
-                    _targetPoint = hit.point;
-
-                    // Validar distancia desde el caster
-                    float distanceToCaster = Vector3.Distance(transform.position, _targetPoint);
-                    _isValid = (distanceToCaster <= maxDistance);
-                } else {
-                    // No hay suelo debajo
-                    _isValid = false;
-                }
+        public override void UpdatePosition(Vector3 worldPoint, Vector3 direction)
+        {
+            // === PROYECCIÓN A SUELO CENTRALIZADA ===
+            if (isSelfCentered)
+            {
+                // Self-centered pero apoyado en el suelo bajo el jugador
+                TryProjectToGround(transform.position, out _targetPoint);
+            }
+            else
+            {
+                // Apuntado con mouse, apoyado en el suelo bajo el mouse
+                TryProjectToGround(worldPoint, out _targetPoint);
             }
 
-            // Actualizar visual
-            if (circlePrefab != null) {
-                circlePrefab.transform.position = _targetPoint + Vector3.up * heightOffset;
+            // === VISUAL SIEMPRE ===
+            if (circlePrefab != null)
+                circlePrefab.transform.position = _targetPoint + Vector3.up * groundProjectionOffset;
 
-                // Cambiar color según validez
-                if (circleRenderer != null) {
-                    UpdateRendererColor(circleRenderer);
-                }
+            // === VALIDACIÓN (throttleada) ===
+            if (ShouldValidate())
+            {
+                float distance = Vector3.Distance(transform.position, _targetPoint);
+                _isValid = distance <= maxDistance;
             }
+
+            // === COLOR (sin instanciar materiales) ===
+            if (circleRenderer != null)
+                UpdateRendererColor(circleRenderer);
         }
 
         public override Vector3 GetTargetPoint() => _targetPoint;
 
-        public override Vector3 GetDirection() {
+        public override Vector3 GetDirection()
+        {
             // Para círculos, la dirección es desde el caster hacia el target point
-            return (_targetPoint - transform.position).normalized;
+            Vector3 dir = _targetPoint - transform.position;
+            dir.y = 0f;
+            return dir.sqrMagnitude > 0.0001f ? dir.normalized : transform.forward;
         }
 
         public override bool IsValid() => _isValid;
 
-        public override void Show() {
+        public override void Show()
+        {
             base.Show();
-            if (circlePrefab != null) circlePrefab.SetActive(true);
+            if (circlePrefab != null)
+                circlePrefab.SetActive(true);
         }
 
-        public override void Hide() {
+        public override void Hide()
+        {
             base.Hide();
-            if (circlePrefab != null) circlePrefab.SetActive(false);
+            if (circlePrefab != null)
+                circlePrefab.SetActive(false);
         }
 
         /// <summary>
         /// Helper: Detecta cuántos enemigos están en el área (opcional, para UI feedback)
         /// </summary>
-        public int GetEnemyCountInArea() {
-            Collider[] hits = Physics.OverlapSphere(_targetPoint, _radius, LayerMask.GetMask("Enemy"));
-            return hits.Length;
+        private int GetEnemyCountInArea()
+        {
+            if (_radius <= 0f)
+                return 0;
+
+            int count = Physics.OverlapSphereNonAlloc(
+                _targetPoint,
+                _radius,
+                _enemyBuffer,
+                _enemyLayerMask,
+                QueryTriggerInteraction.Ignore
+            );
+
+            return count;
         }
     }
 }

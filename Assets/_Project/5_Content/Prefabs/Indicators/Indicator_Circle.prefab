@@ -140,8 +140,14 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 0
+  validationInterval: 0.05
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  groundRayHeight: 100
+  groundRayDistance: 250
+  groundProjectionOffset: 0.02
   circlePrefab: {fileID: 763950059926221861}
   circleRenderer: {fileID: 7119141636565254539}
-  heightOffset: 0.1
   isSelfCentered: 0
   maxDistance: 30

@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 7518797971776014425}
   - component: {fileID: 8732411725988626340}
   - component: {fileID: 8784218524871294608}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: pCube32
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1029,7 +1029,7 @@ GameObject:
   - component: {fileID: 7466073181614941125}
   - component: {fileID: 4979183281148141100}
   - component: {fileID: 4173649322378493825}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: rpgpp_lt_rock_07
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1142,7 +1142,7 @@ GameObject:
   - component: {fileID: 6190556128274444232}
   - component: {fileID: 3083384562862630573}
   - component: {fileID: 8683169899912914419}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: pCube4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2385,7 +2385,7 @@ GameObject:
   - component: {fileID: 5765578615957903792}
   - component: {fileID: 398141855972728891}
   - component: {fileID: 6677003385797129935}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: rpgpp_lt_rock_02__2_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2437,7 +2437,7 @@ MeshRenderer:
   m_SmallMeshCulling: 1
   m_ForceMeshLod: -1
   m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 3
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: fab834bcd22c4034886f04a2511f5650, type: 2}
@@ -2498,7 +2498,7 @@ GameObject:
   - component: {fileID: 4021707128877213022}
   - component: {fileID: 7509523332720059310}
   - component: {fileID: 6882632133679464654}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: pCube7
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2837,7 +2837,7 @@ GameObject:
   - component: {fileID: 403093381344021794}
   - component: {fileID: 9158801348787096536}
   - component: {fileID: 7464019852946238479}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: rpgpp_lt_rock_02__2_
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3635,7 +3635,7 @@ GameObject:
   - component: {fileID: 4459714038942916574}
   - component: {fileID: 2821741113977571104}
   - component: {fileID: 6337847238745933428}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: rpgpp_lt_rock_02__2_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4483,7 +4483,7 @@ MeshRenderer:
   m_SmallMeshCulling: 1
   m_ForceMeshLod: -1
   m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 2
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
@@ -4657,7 +4657,7 @@ GameObject:
   - component: {fileID: 8242893835621061151}
   - component: {fileID: 4253536787087901000}
   - component: {fileID: 2810129262459738310}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: pCube5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5395,7 +5395,7 @@ GameObject:
   - component: {fileID: 6156323682760976856}
   - component: {fileID: 3436774548107827101}
   - component: {fileID: 678862624349348137}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: pCube30
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5847,7 +5847,7 @@ GameObject:
   - component: {fileID: 4929658190419307997}
   - component: {fileID: 8045006484227848792}
   - component: {fileID: 7290760967607009861}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: rpgpp_lt_rock_02__2_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5960,7 +5960,7 @@ GameObject:
   - component: {fileID: 340991593445092483}
   - component: {fileID: 6838615700862070252}
   - component: {fileID: 738271874165211115}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: pCube29
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6186,7 +6186,7 @@ GameObject:
   - component: {fileID: 1090640655557752115}
   - component: {fileID: 4025988857854762893}
   - component: {fileID: 358724705767270521}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: rpgpp_lt_rock_02__2_9
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6702,7 +6702,7 @@ GameObject:
   - component: {fileID: 7243004366291549759}
   - component: {fileID: 8562683780291174953}
   - component: {fileID: 4509153998813913728}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: pCube1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7267,7 +7267,7 @@ GameObject:
   - component: {fileID: 1493116464389830665}
   - component: {fileID: 7342523236331717460}
   - component: {fileID: 8691480271815824939}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: pCube26
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8736,7 +8736,7 @@ GameObject:
   - component: {fileID: 7500776079900734410}
   - component: {fileID: 6732176958450792797}
   - component: {fileID: 5032561732974960616}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: rpgpp_lt_rock_02__2_6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8849,7 +8849,7 @@ GameObject:
   - component: {fileID: 2598252199601864006}
   - component: {fileID: 7515124935145059421}
   - component: {fileID: 1736313274107829937}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: pCube31
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8962,7 +8962,7 @@ GameObject:
   - component: {fileID: 8963811771482438418}
   - component: {fileID: 7143146842754132940}
   - component: {fileID: 5673915809420200691}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: pCube6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9979,7 +9979,7 @@ GameObject:
   - component: {fileID: 7681924736610249422}
   - component: {fileID: 6796871688572013134}
   - component: {fileID: 2484879085142243335}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: rpgpp_lt_rock_06
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10205,7 +10205,7 @@ GameObject:
   - component: {fileID: 645203431415927466}
   - component: {fileID: 5275416266636305400}
   - component: {fileID: 5672682776910568465}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: pCube28
   m_TagString: Untagged
   m_Icon: {fileID: 0}

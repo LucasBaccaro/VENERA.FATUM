@@ -18,7 +18,7 @@ MonoBehaviour:
   Description: Coloca una trampa que congela enemigos.
   Logic: {fileID: 11400000, guid: be2329dc18e0749269f1cde76b0b3526, type: 2}
   ManaCost: 20
-  Cooldown: 15
+  Cooldown: 3
   GCD: 1
   CastType: 0
   CastTime: 0

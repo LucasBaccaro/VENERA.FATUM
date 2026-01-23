@@ -67,6 +67,49 @@ namespace Genesis.Simulation {
         }
 
         // ═══════════════════════════════════════════════════════
+        // DASH / FORCED MOVEMENT
+        // ═══════════════════════════════════════════════════════
+
+        public void PerformDash(Vector3 targetPosition, float duration) {
+            StartCoroutine(DashCoroutine(targetPosition, duration));
+        }
+
+        private System.Collections.IEnumerator DashCoroutine(Vector3 target, float duration) {
+            Vector3 startPos = transform.position;
+            float elapsed = 0f;
+
+            // Desactivar temporalmente el control manual si es necesario
+            // _isDashing = true; 
+
+            while (elapsed < duration) {
+                // Mover CC hacia el target
+                // Nota: Usamos Move para respetar colisiones con paredes durante el dash
+                Vector3 currentPos = Vector3.Lerp(startPos, target, elapsed / duration);
+                Vector3 direction = (target - startPos).normalized;
+                float distanceFrame = Vector3.Distance(transform.position, target) * (Time.deltaTime / (duration - elapsed));
+                
+                // Opción A: Teleport suave (ignora paredes)
+                // transform.position = currentPos;
+                
+                // Opción B: Move físico (choca con paredes)
+                // _cc.Move(direction * (Vector3.Distance(startPos, target) / duration) * Time.deltaTime);
+                
+                // Opción C: Lerp directo con desactivación de CC (Smooth Teleport)
+                _cc.enabled = false;
+                transform.position = currentPos;
+                _cc.enabled = true;
+
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            // Asegurar posición final
+            _cc.enabled = false;
+            transform.position = target;
+            _cc.enabled = true;
+        }
+
+        // ═══════════════════════════════════════════════════════
         // MOVEMENT LOGIC (Owner)
         // ═══════════════════════════════════════════════════════
 

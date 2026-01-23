@@ -179,16 +179,24 @@ namespace Genesis.Simulation {
         /// </summary>
         private void ExecuteTargetedAbility(AbilityData ability) {
             int targetId = -1;
+            bool isSelfCast = Keyboard.current.leftAltKey.isPressed;
 
-            // Validar target según modo
-            if (ability.TargetingMode == TargetType.Enemy || ability.TargetingMode == TargetType.Ally) {
-                if (targeting.CurrentTarget == null) {
-                    Debug.LogWarning("[PlayerCombat] Need a target");
-                    return;
-                }
-                targetId = targeting.CurrentTarget.ObjectId;
-            } else if (ability.TargetingMode == TargetType.Self) {
+            // Self-Cast Override (ALT key)
+            if (isSelfCast && (ability.Category == AbilityCategory.Utility || ability.Category == AbilityCategory.Magical)) {
+                // Asumimos que si presiona ALT quiere tirárselo a sí mismo (Heal/Buff)
                 targetId = base.ObjectId;
+            }
+            else {
+                // Validar target según modo normal
+                if (ability.TargetingMode == TargetType.Enemy || ability.TargetingMode == TargetType.Ally) {
+                    if (targeting.CurrentTarget == null) {
+                        Debug.LogWarning("[PlayerCombat] Need a target");
+                        return;
+                    }
+                    targetId = targeting.CurrentTarget.ObjectId;
+                } else if (ability.TargetingMode == TargetType.Self) {
+                    targetId = base.ObjectId;
+                }
             }
 
             // Cambiar estado
@@ -291,6 +299,14 @@ namespace Genesis.Simulation {
 
             // Cambiar estado
             _combatState = CombatState.Casting;
+
+            // CLIENT PREDICTION PARA DASH
+            // Si es un movimiento, debemos ejecutarlo localmente para que el Client Authoritative funcione
+            if (_pendingAbility.IndicatorType == IndicatorType.Arrow) { // Arrow = Dash
+                if (_pendingAbility.Logic != null) {
+                    _pendingAbility.Logic.ExecuteDirectional(base.NetworkObject, targetPoint, direction, _pendingAbility);
+                }
+            }
 
             // Enviar al servidor (método nuevo direccional)
             CmdCastAbilityDirectional(_pendingAbility.ID, targetPoint, direction);

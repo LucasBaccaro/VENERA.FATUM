@@ -14,8 +14,13 @@ namespace Genesis.Simulation.Combat {
 
         public override void ExecuteDirectional(NetworkObject caster, Vector3 targetPoint, Vector3 direction, AbilityData data) {
 
-            // Punto de spawn (idealmente desde bone "Hand_R" o "CastPoint")
-            Vector3 spawnPos = caster.transform.position + Vector3.up * 1.5f + caster.transform.forward * 0.5f;
+            // Forzar dirección horizontal pura (paralela al suelo)
+            direction.y = 0;
+            if (direction.sqrMagnitude < 0.001f) direction = caster.transform.forward; // Safety
+            direction.Normalize();
+
+            // Punto de spawn: Altura del pecho (~1.5m) + un poco adelante para no chocar con el propio collider
+            Vector3 spawnPos = caster.transform.position + Vector3.up * 1.5f + direction * 0.5f;
 
             // Validar que haya prefab asignado
             if (data.ProjectilePrefab == null) {
@@ -24,14 +29,14 @@ namespace Genesis.Simulation.Combat {
             }
 
             // Instanciar proyectil
-            GameObject instance = Object.Instantiate(data.ProjectilePrefab, spawnPos, Quaternion.LookRotation(direction));
+            GameObject instance = Instantiate(data.ProjectilePrefab, spawnPos, Quaternion.LookRotation(direction));
 
             // Configurar ProjectileController
             if (instance.TryGetComponent(out ProjectileController controller)) {
                 controller.Initialize(caster, data.BaseDamage, direction * data.ProjectileSpeed, data.Radius);
             } else {
                 Debug.LogError($"[SkillshotLogic] ProjectilePrefab missing ProjectileController component!");
-                Object.Destroy(instance);
+                Destroy(instance);
                 return;
             }
 
@@ -40,9 +45,9 @@ namespace Genesis.Simulation.Combat {
 
             // Cast VFX (en el caster)
             if (data.CastVFX != null) {
-                GameObject castVfx = Object.Instantiate(data.CastVFX, spawnPos, Quaternion.LookRotation(direction));
+                GameObject castVfx = Instantiate(data.CastVFX, spawnPos, Quaternion.LookRotation(direction));
                 FishNet.InstanceFinder.ServerManager.Spawn(castVfx);
-                Object.Destroy(castVfx, 1f);
+                Destroy(castVfx, 1f);
             }
 
             Debug.Log($"[SkillshotLogic] {caster.name} cast {data.Name} in direction {direction}");

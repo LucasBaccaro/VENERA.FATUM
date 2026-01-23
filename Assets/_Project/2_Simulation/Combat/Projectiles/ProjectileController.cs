@@ -25,6 +25,15 @@ namespace Genesis.Simulation.Combat {
             _radius = radius;
             _spawnTime = Time.time;
             _initialized = true;
+
+            // Ignorar colisiones físicas con el dueño (si usamos Rigidbody/Colliders)
+            if (_owner != null) {
+                Collider[] ownerColliders = _owner.GetComponentsInChildren<Collider>();
+                Collider myCollider = GetComponent<Collider>();
+                if (myCollider != null) {
+                    foreach (var col in ownerColliders) Physics.IgnoreCollision(col, myCollider);
+                }
+            }
         }
 
         public override void OnStartServer() {
@@ -49,7 +58,10 @@ namespace Genesis.Simulation.Combat {
             // LayerMask: Enemy (6) + Environment (8) + Player (3)
             int mask = LayerMask.GetMask("Enemy", "Environment", "Player");
 
-            if (Physics.SphereCast(transform.position, _radius, direction, out RaycastHit hit, distance, mask)) {
+            // Origen ajustado para evitar colisionar con uno mismo si nace muy cerca
+            Vector3 origin = transform.position + direction * 0.1f;
+
+            if (Physics.SphereCast(origin, _radius, direction, out RaycastHit hit, distance, mask)) {
                 HandleImpact(hit);
                 return;
             }

@@ -41,13 +41,15 @@ namespace Genesis.Simulation.Combat {
                 return;
             }
 
-            // Instanciar indicador
-            GameObject instance = Instantiate(prefab, playerTransform.position, Quaternion.identity);
+            // Instanciar indicador con un pequeño offset vertical para que no se entierre
+            Vector3 spawnPos = playerTransform.position + Vector3.up * 1f;
+            GameObject instance = Instantiate(prefab, spawnPos, Quaternion.identity);
             _currentIndicator = instance.GetComponent<AbilityIndicator>();
 
             if (_currentIndicator != null) {
                 _currentIndicator.Initialize(ability);
                 _currentIndicator.transform.SetParent(playerTransform);
+                _currentIndicator.transform.localPosition = Vector3.zero; // Reset local position
                 _currentIndicator.Show();
 
                 Debug.Log($"[AbilityIndicatorSystem] Showing {ability.IndicatorType} indicator for {ability.Name}");
@@ -79,18 +81,27 @@ namespace Genesis.Simulation.Combat {
             Ray ray = _mainCamera.ScreenPointToRay(mouseScreenPosition);
 
             // Raycast al suelo para obtener punto en el mundo
+            Vector3 targetPoint;
+            
             if (Physics.Raycast(ray, out RaycastHit hit, 1000f, LayerMask.GetMask("Environment"))) {
-                Vector3 direction = (hit.point - _playerTransform.position).normalized;
-                _currentIndicator.UpdatePosition(hit.point, direction);
+                targetPoint = hit.point;
             } else {
                 // Si no hay suelo, usar un plano virtual a altura del jugador
                 Plane groundPlane = new Plane(Vector3.up, _playerTransform.position);
                 if (groundPlane.Raycast(ray, out float enter)) {
-                    Vector3 hitPoint = ray.GetPoint(enter);
-                    Vector3 direction = (hitPoint - _playerTransform.position).normalized;
-                    _currentIndicator.UpdatePosition(hitPoint, direction);
+                    targetPoint = ray.GetPoint(enter);
+                } else {
+                    return;
                 }
             }
+
+            // Calcular dirección forzando plano horizontal (Y=0)
+            Vector3 diff = targetPoint - _playerTransform.position;
+            diff.y = 0; // Skillshots planos
+            Vector3 direction = diff.normalized;
+
+            // Actualizar indicador
+            _currentIndicator.UpdatePosition(targetPoint, direction);
         }
 
         /// <summary>

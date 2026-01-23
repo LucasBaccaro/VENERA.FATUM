@@ -117,7 +117,7 @@ Transform:
   m_GameObject: {fileID: 5420263409629314899}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -178,7 +178,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 1
+    widthMultiplier: 0.02
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -250,7 +250,9 @@ MonoBehaviour:
   invalidColor: {r: 1, g: 0, b: 0, a: 0.3}
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 6472
   lineRenderer: {fileID: 1200995839752082491}
   endMarker: {fileID: 3947130079436233675}
-  defaultWidth: 1
+  defaultWidth: 4
+  projectileRadius: 0.15
+  impactSkin: 0.2

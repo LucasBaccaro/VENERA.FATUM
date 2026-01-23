@@ -18,12 +18,12 @@ MonoBehaviour:
   Description: "Crea un escudo m\xE1gico que absorbe da\xF1o."
   Logic: {fileID: 11400000, guid: 5ac003cf0993e49989c66756c68f1855, type: 2}
   ManaCost: 40
-  Cooldown: 30
+  Cooldown: 1
   GCD: 1
   CastType: 0
   CastTime: 0
   CanMoveWhileCasting: 1
-  TargetingMode: 5
+  TargetingMode: 1
   IndicatorType: 0
   Range: 0
   Radius: 0
@@ -35,7 +35,7 @@ MonoBehaviour:
   ApplyToSelf: []
   ProjectilePrefab: {fileID: 0}
   ProjectileSpeed: 0
-  CastVFX: {fileID: 0}
+  CastVFX: {fileID: 121080853958471564, guid: 6d0f85c7b800e9340bbd7529c1610cc9, type: 3}
   ImpactVFX: {fileID: 0}
   CastSound: {fileID: 0}
   ImpactSound: {fileID: 0}

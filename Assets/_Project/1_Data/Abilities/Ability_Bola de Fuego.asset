@@ -36,7 +36,7 @@ MonoBehaviour:
   ProjectilePrefab: {fileID: 29690531400654767, guid: 8f7b9620c51ac0b40aa7a1f6cdb26f0a, type: 3}
   ProjectileSpeed: 20
   CastVFX: {fileID: 0}
-  ImpactVFX: {fileID: 0}
+  ImpactVFX: {fileID: 5368608346029468957, guid: f41f9c17024d3aa448d7db223490c53f, type: 3}
   CastSound: {fileID: 0}
   ImpactSound: {fileID: 0}
   AnimationTrigger: Cast

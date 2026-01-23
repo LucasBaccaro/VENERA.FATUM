@@ -47,6 +47,11 @@ namespace Genesis.Data {
         [Header("Projectiles (Si aplica)")]
         public GameObject ProjectilePrefab;
         public float ProjectileSpeed = 20f;
+
+[Header("Indicator Visuals")]
+[Tooltip("Material del indicador visual (Decal / Mesh). Permite un look distinto por habilidad.")]
+public Material IndicatorMaterial;
+
         
         [Header("Visuals & Audio")]
         public GameObject CastVFX;

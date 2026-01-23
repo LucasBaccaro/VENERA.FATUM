@@ -13,6 +13,9 @@ namespace Genesis.Simulation.Combat {
         [SerializeField] private LineRenderer lineRenderer;
         [SerializeField] private GameObject endMarker; // Esfera/objeto al final de la línea
         [SerializeField] private float defaultWidth = 1f;
+	[SerializeField] private float projectileRadius = 0.2f;
+	[SerializeField] private float impactSkin = 0.15f;
+
 
         private float _range;
         private float _width;
@@ -35,19 +38,34 @@ namespace Genesis.Simulation.Combat {
         }
 
         public override void UpdatePosition(Vector3 worldPoint, Vector3 direction) {
-            _startPoint = transform.position;
-            _direction = direction.normalized;
+            // Punto de inicio del proyectil
+_startPoint = transform.position;
+_direction = direction.normalized;
 
-            // Calcular punto final (con detección de obstáculos)
-            _endPoint = _startPoint + _direction * _range;
+// Evita que el cast "raspe" el suelo en rampas
+Vector3 origin = _startPoint + Vector3.up * 0.5f;
 
-            // Raycast para detectar obstáculos (paredes, terreno)
-            if (Physics.Raycast(_startPoint, _direction, out RaycastHit hit, _range, obstacleMask)) {
-                _endPoint = hit.point;
-                _isValid = false; // Obstruido por pared
-            } else {
-                _isValid = true;
-            }
+// SphereCast = proyectil con volumen (no rayo infinitamente fino)
+if (Physics.SphereCast(
+        origin,
+        projectileRadius,
+        _direction,
+        out RaycastHit hit,
+        _range,
+        obstacleMask,
+        QueryTriggerInteraction.Ignore))
+{
+    // Impacto válido: empujamos hacia afuera para evitar clipping
+    _endPoint = hit.point + hit.normal * impactSkin;
+    _isValid = true;
+}
+else
+{
+    // No impacta nada: llega a rango máximo
+    _endPoint = _startPoint + _direction * _range;
+    _isValid = true;
+}
+
 
             // Actualizar LineRenderer
             if (lineRenderer != null) {

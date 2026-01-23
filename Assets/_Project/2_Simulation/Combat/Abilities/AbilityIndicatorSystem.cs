@@ -49,7 +49,7 @@ namespace Genesis.Simulation.Combat {
             if (_currentIndicator != null) {
                 _currentIndicator.Initialize(ability);
                 _currentIndicator.transform.SetParent(playerTransform);
-                _currentIndicator.transform.localPosition = Vector3.zero; // Reset local position
+                _currentIndicator.transform.localPosition = new Vector3(0f, 1f, 0f);
                 _currentIndicator.Show();
 
                 Debug.Log($"[AbilityIndicatorSystem] Showing {ability.IndicatorType} indicator for {ability.Name}");
@@ -76,33 +76,49 @@ namespace Genesis.Simulation.Combat {
         /// </summary>
         /// <param name="mouseScreenPosition">Posición del mouse en pantalla</param>
         public void UpdateIndicator(Vector2 mouseScreenPosition) {
-            if (_currentIndicator == null || _mainCamera == null || _playerTransform == null) return;
+    if (_currentIndicator == null || _mainCamera == null || _playerTransform == null) return;
 
-            Ray ray = _mainCamera.ScreenPointToRay(mouseScreenPosition);
+    Ray ray = _mainCamera.ScreenPointToRay(mouseScreenPosition);
 
-            // Raycast al suelo para obtener punto en el mundo
-            Vector3 targetPoint;
-            
-            if (Physics.Raycast(ray, out RaycastHit hit, 1000f, LayerMask.GetMask("Environment"))) {
-                targetPoint = hit.point;
-            } else {
-                // Si no hay suelo, usar un plano virtual a altura del jugador
-                Plane groundPlane = new Plane(Vector3.up, _playerTransform.position);
-                if (groundPlane.Raycast(ray, out float enter)) {
-                    targetPoint = ray.GetPoint(enter);
-                } else {
-                    return;
-                }
-            }
 
-            // Calcular dirección forzando plano horizontal (Y=0)
-            Vector3 diff = targetPoint - _playerTransform.position;
-            diff.y = 0; // Skillshots planos
-            Vector3 direction = diff.normalized;
 
-            // Actualizar indicador
-            _currentIndicator.UpdatePosition(targetPoint, direction);
-        }
+    LayerMask groundMask = LayerMask.GetMask("Ground");
+
+    // Raycast al mundo para obtener punto en el suelo (Ground) incluso si el mouse está sobre Environment (pared/casa)
+
+
+// --- AIM POINT: para indicadores de línea tipo proyectil ---
+// Queremos un punto de aim aunque el mouse esté sobre una pared/casa.
+// Así la dirección sale bien siempre.
+
+Vector3 targetPoint;
+
+LayerMask aimMask = LayerMask.GetMask("Ground", "Environment"); // <- ambos
+const float maxAimDistance = 1000f;
+
+if (Physics.Raycast(ray, out RaycastHit hit, maxAimDistance, aimMask, QueryTriggerInteraction.Ignore)) {
+    targetPoint = hit.point;
+}
+else {
+    // Fallback: plano virtual a la altura del jugador
+    Plane groundPlane = new Plane(Vector3.up, _playerTransform.position);
+    if (groundPlane.Raycast(ray, out float enter)) {
+        targetPoint = ray.GetPoint(enter);
+    } else {
+        return;
+    }
+}
+
+// (Opcional pero recomendado) levantar apenas el targetPoint para evitar z-fighting / micro intersecciones visuales
+targetPoint.y += 0.05f;
+
+
+    Vector3 diff = targetPoint - _playerTransform.position;
+    diff.y = 0;
+    Vector3 direction = diff.normalized;
+
+    _currentIndicator.UpdatePosition(targetPoint, direction);
+}
 
         /// <summary>
         /// Obtiene el indicador actualmente activo (null si no hay)

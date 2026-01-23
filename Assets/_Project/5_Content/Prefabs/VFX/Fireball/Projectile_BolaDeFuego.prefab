@@ -108,7 +108,7 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: -4263599919979004440}
   _networkObjectCache: {fileID: -4263599919979004440}
-  impactVfxPrefab: {fileID: 0}
+  impactVfxPrefab: {fileID: 5368608346029468957, guid: f41f9c17024d3aa448d7db223490c53f, type: 3}
 --- !u!114 &-1570741216318276971
 MonoBehaviour:
   m_ObjectHideFlags: 0

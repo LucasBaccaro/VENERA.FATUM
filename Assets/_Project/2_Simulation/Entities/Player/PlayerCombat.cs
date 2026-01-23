@@ -4,6 +4,7 @@ using FishNet.Object;
 using FishNet.Connection;
 using Genesis.Data;
 using Genesis.Simulation.Combat;
+using Genesis.Core;
 using System.Collections.Generic;
 
 namespace Genesis.Simulation {
@@ -29,6 +30,18 @@ namespace Genesis.Simulation {
         private CombatState _combatState = CombatState.Idle;
         private AbilityData _pendingAbility;
         private int _pendingSlotIndex;
+
+        // Cast tracking
+        private float _castStartTime;
+        private float _castDuration;
+        private string _castingAbilityName = "";
+        private Coroutine _currentCastCoroutine;
+
+        // Data para ejecutar después del cast
+        private int _pendingTargetId = -1;
+        private Vector3 _pendingTargetPoint = Vector3.zero;
+        private Vector3 _pendingDirection = Vector3.zero;
+        private bool _isDirectionalCast = false;
 
         // ═══════════════════════════════════════════════════════
         // ENUMS
@@ -58,7 +71,7 @@ namespace Genesis.Simulation {
                     break;
 
                 case CombatState.Casting:
-                    // Existing casting logic (si implementamos cast bars)
+                    HandleCastingUpdate();
                     break;
 
                 case CombatState.Channeling:
@@ -107,6 +120,72 @@ namespace Genesis.Simulation {
             // TODO: Implementar en Fase 7 (Rayo de Hielo)
             // Si Left Click se mantiene presionado → continuar channel
             // Si se suelta → terminar channel
+        }
+
+        /// <summary>
+        /// Update casting progress and trigger events for cast bar
+        /// </summary>
+        private void HandleCastingUpdate() {
+            if (_castDuration <= 0) return; // Instant cast
+
+            float elapsed = Time.time - _castStartTime;
+            float progress = Mathf.Clamp01(elapsed / _castDuration);
+            float progressPercent = progress * 100f;
+
+            // Trigger event for UI
+            EventBus.Trigger<float, string>("OnCastProgress", progressPercent, _castingAbilityName);
+
+            // Check for movement interruption (if can't move while casting)
+            if (_pendingAbility != null && !_pendingAbility.CanMoveWhileCasting) {
+                // Si el jugador se mueve, interrumpir el cast
+                // TODO: Implementar detección de movimiento si es necesario
+            }
+
+            // Check for ESC key to cancel
+            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) {
+                InterruptCast();
+            }
+        }
+
+        /// <summary>
+        /// Coroutine que espera el cast time antes de ejecutar la habilidad
+        /// </summary>
+        private System.Collections.IEnumerator CastTimeCoroutine(AbilityData ability) {
+            float elapsed = 0f;
+
+            while (elapsed < ability.CastTime) {
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            // Cast completado - ejecutar habilidad
+            if (_isDirectionalCast) {
+                CmdCastAbilityDirectional(_pendingAbility.ID, _pendingTargetPoint, _pendingDirection);
+            } else {
+                CmdCastAbility(_pendingAbility.ID, _pendingTargetId, _pendingTargetPoint);
+            }
+        }
+
+        /// <summary>
+        /// Interrumpe el cast actual
+        /// </summary>
+        private void InterruptCast() {
+            if (_currentCastCoroutine != null) {
+                StopCoroutine(_currentCastCoroutine);
+                _currentCastCoroutine = null;
+            }
+
+            _combatState = CombatState.Idle;
+            EventBus.Trigger<string>("OnCombatStateChanged", _combatState.ToString());
+
+            // Clear cast tracking
+            _castDuration = 0f;
+            _castingAbilityName = "";
+            EventBus.Trigger<float, string>("OnCastProgress", 0f, ""); // Clear cast bar
+
+            _pendingAbility = null;
+
+            Debug.Log("[PlayerCombat] Cast interrupted");
         }
 
         // ═══════════════════════════════════════════════════════
@@ -201,9 +280,26 @@ namespace Genesis.Simulation {
 
             // Cambiar estado
             _combatState = CombatState.Casting;
+            EventBus.Trigger<string>("OnCombatStateChanged", _combatState.ToString());
 
-            // Enviar al servidor (método legacy)
-            CmdCastAbility(ability.ID, targetId, Vector3.zero);
+            // Inicializar tracking de cast
+            _castStartTime = Time.time;
+            _castDuration = ability.CastTime;
+            _castingAbilityName = ability.Name;
+
+            // Guardar datos para ejecutar después del cast
+            _pendingAbility = ability;
+            _pendingTargetId = targetId;
+            _pendingTargetPoint = Vector3.zero;
+            _isDirectionalCast = false;
+
+            // Si tiene cast time, esperar; si no, ejecutar inmediatamente
+            if (ability.CastTime > 0) {
+                _currentCastCoroutine = StartCoroutine(CastTimeCoroutine(ability));
+            } else {
+                // Instant cast
+                CmdCastAbility(ability.ID, targetId, Vector3.zero);
+            }
         }
 
         /// <summary>
@@ -262,6 +358,7 @@ namespace Genesis.Simulation {
         private void EnterAimingMode(AbilityData ability) {
             _combatState = CombatState.Aiming;
             _pendingAbility = ability;
+            EventBus.Trigger<string>("OnCombatStateChanged", _combatState.ToString());
 
             // Mostrar indicador visual
             if (indicatorSystem != null) {
@@ -269,6 +366,7 @@ namespace Genesis.Simulation {
             } else {
                 Debug.LogError("[PlayerCombat] AbilityIndicatorSystem is NULL! Assign in Inspector.");
                 _combatState = CombatState.Idle;
+                EventBus.Trigger<string>("OnCombatStateChanged", _combatState.ToString());
                 return;
             }
 
@@ -299,6 +397,17 @@ namespace Genesis.Simulation {
 
             // Cambiar estado
             _combatState = CombatState.Casting;
+            EventBus.Trigger<string>("OnCombatStateChanged", _combatState.ToString());
+
+            // Inicializar tracking de cast
+            _castStartTime = Time.time;
+            _castDuration = _pendingAbility.CastTime;
+            _castingAbilityName = _pendingAbility.Name;
+
+            // Guardar datos para ejecutar después del cast
+            _pendingTargetPoint = targetPoint;
+            _pendingDirection = direction;
+            _isDirectionalCast = true;
 
             // CLIENT PREDICTION PARA DASH
             // Si es un movimiento, debemos ejecutarlo localmente para que el Client Authoritative funcione
@@ -308,10 +417,14 @@ namespace Genesis.Simulation {
                 }
             }
 
-            // Enviar al servidor (método nuevo direccional)
-            CmdCastAbilityDirectional(_pendingAbility.ID, targetPoint, direction);
-
-            _pendingAbility = null;
+            // Si tiene cast time, esperar; si no, ejecutar inmediatamente
+            if (_pendingAbility.CastTime > 0) {
+                _currentCastCoroutine = StartCoroutine(CastTimeCoroutine(_pendingAbility));
+            } else {
+                // Instant cast
+                CmdCastAbilityDirectional(_pendingAbility.ID, targetPoint, direction);
+                _pendingAbility = null;
+            }
         }
 
         /// <summary>
@@ -319,6 +432,13 @@ namespace Genesis.Simulation {
         /// </summary>
         private void CancelAiming() {
             _combatState = CombatState.Idle;
+            EventBus.Trigger<string>("OnCombatStateChanged", _combatState.ToString());
+
+            // Clear cast tracking
+            _castDuration = 0f;
+            _castingAbilityName = "";
+            EventBus.Trigger<float, string>("OnCastProgress", 0f, ""); // Clear cast bar
+
             _pendingAbility = null;
 
             if (indicatorSystem != null) {
@@ -375,7 +495,20 @@ namespace Genesis.Simulation {
         private void RpcCastSuccess(int abilityId) {
             // Reset state
             if (base.IsOwner) {
+                // Stop cast coroutine if still running
+                if (_currentCastCoroutine != null) {
+                    StopCoroutine(_currentCastCoroutine);
+                    _currentCastCoroutine = null;
+                }
+
                 _combatState = CombatState.Idle;
+                EventBus.Trigger<string>("OnCombatStateChanged", _combatState.ToString());
+
+                // Clear cast tracking
+                _castDuration = 0f;
+                _castingAbilityName = "";
+                _pendingAbility = null;
+                EventBus.Trigger<float, string>("OnCastProgress", 0f, ""); // Clear cast bar
 
                 // Aplicar Cooldowns
                 AbilityData ability = AbilityDatabase.Instance.GetAbility(abilityId);
@@ -384,6 +517,10 @@ namespace Genesis.Simulation {
                     _cooldowns[ability.ID] = Time.time + ability.Cooldown;
 
                     Debug.Log($"[PlayerCombat] {ability.Name} cast successful. CD: {ability.Cooldown}s");
+
+                    // Trigger EventBus events for UI
+                    EventBus.Trigger<int, string>("OnAbilityCast", abilityId, ability.Name);
+                    EventBus.Trigger<int, float>("OnAbilityCooldownStart", abilityId, ability.Cooldown);
                 }
             }
 
@@ -393,8 +530,25 @@ namespace Genesis.Simulation {
 
         [TargetRpc]
         private void RpcCastFailed(NetworkConnection conn, string reason) {
+            // Stop cast coroutine if still running
+            if (_currentCastCoroutine != null) {
+                StopCoroutine(_currentCastCoroutine);
+                _currentCastCoroutine = null;
+            }
+
             _combatState = CombatState.Idle;
+            EventBus.Trigger<string>("OnCombatStateChanged", _combatState.ToString());
             Debug.LogWarning($"[PlayerCombat] Cast failed: {reason}");
+
+            // Clear cast tracking
+            _castDuration = 0f;
+            _castingAbilityName = "";
+            EventBus.Trigger<float, string>("OnCastProgress", 0f, ""); // Clear cast bar
+
+            // Trigger EventBus event for UI (if we have a pending ability)
+            if (_pendingAbility != null) {
+                EventBus.Trigger<int, string>("OnAbilityFailed", _pendingAbility.ID, reason);
+            }
 
             // Limpiar pending ability
             _pendingAbility = null;

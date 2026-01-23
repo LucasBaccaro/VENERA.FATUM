@@ -1,0 +1,232 @@
+/* ═══════════════════════════════════════════════════════
+   GENESIS - Ability Bar Debug UI Styles (Reorganized Layout)
+   ═══════════════════════════════════════════════════════ */
+
+/* Root Overlay - Hidden by default */
+.debug-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: none; /* Hidden by default, toggled with F3 */
+}
+
+/* ═══════════════════════════════════════════════════════
+   1. ABILITY BAR - Centro inferior (posición típica de habilidades)
+   ═══════════════════════════════════════════════════════ */
+
+.ability-bar-wrapper {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    translate: -50% 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    padding: 10px;
+    border-width: 2px;
+    border-color: rgba(150, 150, 150, 0.5);
+}
+
+.ability-bar-container {
+    flex-direction: row;
+    justify-content: center;
+}
+
+.ability-slot {
+    width: 60px;
+    height: 60px;
+    margin: 0 5px;
+    border-radius: 8px;
+    border-width: 2px;
+    border-color: rgba(200, 200, 200, 0.4);
+    background-color: rgba(40, 40, 40, 0.9);
+    position: relative;
+}
+
+.ability-icon {
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    background-color: rgba(100, 100, 150, 0.3); /* Default tint when no icon */
+}
+
+.cooldown-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 6px;
+    display: none; /* Only shown when on cooldown */
+}
+
+.cooldown-text {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    color: white;
+    font-size: 16px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    display: none; /* Only shown when on cooldown */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 1);
+}
+
+.keybind-label {
+    position: absolute;
+    bottom: 2px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 11px;
+    -unity-font-style: bold;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
+.state-indicator {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: rgb(100, 255, 100); /* Default: Green (Idle) */
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* ═══════════════════════════════════════════════════════
+   2. BOTTOM LEFT - Detail Panel + Event Log
+   ═══════════════════════════════════════════════════════ */
+
+.bottom-left-wrapper {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 350px;
+    max-height: 400px;
+}
+
+/* Detail Panel */
+.detail-panel {
+    background-color: rgba(0, 0, 0, 0.85);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-width: 2px;
+    border-color: rgba(150, 150, 150, 0.5);
+}
+
+.detail-header {
+    color: rgb(255, 200, 100);
+    font-size: 13px;
+    -unity-font-style: bold;
+    margin-bottom: 6px;
+    text-align: center;
+}
+
+.detail-text {
+    color: rgb(220, 220, 220);
+    font-size: 10px;
+    margin: 1px 0;
+}
+
+.state-label {
+    font-size: 11px;
+    -unity-font-style: bold;
+    margin-top: 4px;
+    padding: 3px;
+    border-radius: 3px;
+    background-color: rgba(50, 50, 50, 0.8);
+}
+
+/* Event Log */
+.event-log-container {
+    background-color: rgba(0, 0, 0, 0.85);
+    border-radius: 8px;
+    padding: 10px;
+    border-width: 2px;
+    border-color: rgba(150, 150, 150, 0.5);
+    max-height: 180px;
+}
+
+.log-header {
+    color: rgb(150, 200, 255);
+    font-size: 13px;
+    -unity-font-style: bold;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.event-log {
+    max-height: 150px;
+    background-color: rgba(10, 10, 10, 0.5);
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.log-entry {
+    color: rgb(200, 200, 200);
+    font-size: 9px;
+    margin: 2px 0;
+    padding: 2px 5px;
+    border-radius: 3px;
+    background-color: rgba(40, 40, 40, 0.6);
+}
+
+.log-entry-success {
+    color: rgb(100, 255, 100);
+}
+
+.log-entry-failed {
+    color: rgb(255, 100, 100);
+}
+
+.log-entry-cooldown {
+    color: rgb(255, 200, 100);
+}
+
+.log-entry-state {
+    color: rgb(150, 200, 255);
+}
+
+/* ═══════════════════════════════════════════════════════
+   TOGGLE HINT - Esquina inferior derecha
+   ═══════════════════════════════════════════════════════ */
+
+.toggle-hint {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
+    -unity-font-style: italic;
+}
+
+/* ═══════════════════════════════════════════════════════
+   STATE-SPECIFIC COLORS (Applied via code)
+   ═══════════════════════════════════════════════════════ */
+
+/* Idle - Green */
+.state-idle {
+    background-color: rgb(100, 255, 100);
+}
+
+/* Aiming - Yellow */
+.state-aiming {
+    background-color: rgb(255, 255, 100);
+}
+
+/* Casting - Red */
+.state-casting {
+    background-color: rgb(255, 100, 100);
+}
+
+/* Channeling - Purple */
+.state-channeling {
+    background-color: rgb(200, 100, 255);
+}
+
+/* Cooldown - Gray */
+.state-cooldown {
+    background-color: rgb(150, 150, 150);
+}

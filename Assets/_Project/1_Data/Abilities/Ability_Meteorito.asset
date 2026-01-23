@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Genesis.Data::Genesis.Data.AbilityData
   ID: 205
   Name: Meteorito
-  Icon: {fileID: 0}
+  Icon: {fileID: 21300000, guid: 69874e58012c849cc92accb5ee8d1928, type: 3}
   Description: "Invoca un meteorito gigante que impacta en el \xE1rea."
   Logic: {fileID: 11400000, guid: c85fcf836c0ea4e1ab13b56be225f5d1, type: 2}
   ManaCost: 50
@@ -35,6 +35,7 @@ MonoBehaviour:
   ApplyToSelf: []
   ProjectilePrefab: {fileID: 0}
   ProjectileSpeed: 0
+  IndicatorMaterial: {fileID: 0}
   CastVFX: {fileID: 0}
   ImpactVFX: {fileID: 0}
   CastSound: {fileID: 0}

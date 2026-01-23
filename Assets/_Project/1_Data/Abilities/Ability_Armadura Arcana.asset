@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Genesis.Data::Genesis.Data.AbilityData
   ID: 204
   Name: Armadura Arcana
-  Icon: {fileID: 0}
+  Icon: {fileID: 21300000, guid: 73fb00bf1e2f44a33b6553c269cea015, type: 3}
   Description: "Crea un escudo m\xE1gico que absorbe da\xF1o."
   Logic: {fileID: 11400000, guid: 5ac003cf0993e49989c66756c68f1855, type: 2}
   ManaCost: 40
@@ -35,6 +35,7 @@ MonoBehaviour:
   ApplyToSelf: []
   ProjectilePrefab: {fileID: 0}
   ProjectileSpeed: 0
+  IndicatorMaterial: {fileID: 0}
   CastVFX: {fileID: 121080853958471564, guid: 6d0f85c7b800e9340bbd7529c1610cc9, type: 3}
   ImpactVFX: {fileID: 0}
   CastSound: {fileID: 0}

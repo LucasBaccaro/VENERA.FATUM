@@ -23,6 +23,12 @@ namespace Genesis.Presentation.UI {
         private Label _healthText;
         private Label _manaText;
 
+        // Cast & GCD bars
+        private ProgressBar _castBar;
+        private ProgressBar _gcdBar;
+        private Label _castText;
+        private Label _gcdText;
+
         // Targeting UI (Fase 3)
         private VisualElement _targetFrame;
         private Label _targetNameLabel;
@@ -81,6 +87,12 @@ namespace Genesis.Presentation.UI {
             _healthText = _root.Q<Label>("HealthText");
             _manaText = _root.Q<Label>("ManaText");
 
+            // Cast & GCD
+            _castBar = _root.Q<ProgressBar>("CastBar");
+            _gcdBar = _root.Q<ProgressBar>("GCDBar");
+            _castText = _root.Q<Label>("CastText");
+            _gcdText = _root.Q<Label>("GCDText");
+
             // Targeting
             _targetFrame = _root.Q<VisualElement>("TargetFrame"); // Asumimos que existe o lo crearemos en UXML
             if (_targetFrame != null) {
@@ -92,6 +104,8 @@ namespace Genesis.Presentation.UI {
             // Valores iniciales
             SetHealth(100f, 100f);
             SetMana(100f, 100f);
+            SetCastProgress(0f, "");
+            SetGCDProgress(0f);
         }
 
         // ═══════════════════════════════════════════════════════
@@ -154,6 +168,38 @@ namespace Genesis.Presentation.UI {
             if (stats != null) {
                 SetHealth(stats.CurrentHealth, stats.MaxHealth);
                 SetMana(stats.CurrentMana, stats.MaxMana);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // CAST & GCD BARS (Called by AbilityBarDebugController)
+        // ═══════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Actualiza la barra de casteo (0-100%)
+        /// </summary>
+        public void SetCastProgress(float percent, string abilityName) {
+            if (_castBar != null) {
+                _castBar.value = percent;
+                _castBar.title = percent > 0 ? $"{percent:F0}%" : "";
+            }
+
+            if (_castText != null) {
+                _castText.text = !string.IsNullOrEmpty(abilityName) ? $"Casting: {abilityName}" : "";
+            }
+        }
+
+        /// <summary>
+        /// Actualiza la barra de GCD (0-100%)
+        /// </summary>
+        public void SetGCDProgress(float percent) {
+            if (_gcdBar != null) {
+                _gcdBar.value = percent;
+                _gcdBar.title = percent > 0 ? $"{percent:F0}%" : "";
+            }
+
+            if (_gcdText != null) {
+                _gcdText.text = percent > 0 ? "Active" : "";
             }
         }
     }

@@ -51,6 +51,48 @@
     padding: 15px;
 }
 
+/* Progress Bars - Cast Bar */
+#CastBar .unity-progress-bar__background {
+    background-color: rgba(40, 40, 40, 0.9);
+    border-width: 2px;
+    border-color: rgba(200, 200, 200, 0.5);
+    border-radius: 5px;
+}
+
+#CastBar .unity-progress-bar__progress {
+    background-color: rgb(255, 200, 50);
+    border-radius: 3px;
+    margin: 2px;
+}
+
+#CastBar .unity-progress-bar__title {
+    color: white;
+    font-size: 11px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+/* Progress Bars - GCD Bar */
+#GCDBar .unity-progress-bar__background {
+    background-color: rgba(40, 40, 40, 0.9);
+    border-width: 2px;
+    border-color: rgba(200, 200, 200, 0.5);
+    border-radius: 5px;
+}
+
+#GCDBar .unity-progress-bar__progress {
+    background-color: rgb(100, 200, 100);
+    border-radius: 3px;
+    margin: 2px;
+}
+
+#GCDBar .unity-progress-bar__title {
+    color: white;
+    font-size: 11px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
 /* Labels generales */
 Label {
     color: white;

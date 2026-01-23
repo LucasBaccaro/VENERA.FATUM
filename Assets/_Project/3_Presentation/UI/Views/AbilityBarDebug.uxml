@@ -1,0 +1,99 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/AbilityBarDebugStyle.uss"/>
+
+    <!-- Root Container - Hidden by default, toggle with F3 -->
+    <ui:VisualElement name="AbilityDebugOverlay" class="debug-overlay">
+
+        <!-- ═══════════════════════════════════════════════════════
+             1. ABILITY BAR - Centro inferior (posición típica de habilidades)
+             ═══════════════════════════════════════════════════════ -->
+        <ui:VisualElement name="AbilityBarWrapper" class="ability-bar-wrapper">
+            <ui:VisualElement name="AbilityBarContainer" class="ability-bar-container">
+
+                <!-- Ability Slot 1 -->
+                <ui:VisualElement name="AbilitySlot1" class="ability-slot">
+                    <ui:VisualElement name="AbilityIcon1" class="ability-icon"/>
+                    <ui:VisualElement name="CooldownOverlay1" class="cooldown-overlay"/>
+                    <ui:Label text="0.0" name="CooldownText1" class="cooldown-text"/>
+                    <ui:Label text="1" name="KeybindLabel1" class="keybind-label"/>
+                    <ui:VisualElement name="StateIndicator1" class="state-indicator"/>
+                </ui:VisualElement>
+
+                <!-- Ability Slot 2 -->
+                <ui:VisualElement name="AbilitySlot2" class="ability-slot">
+                    <ui:VisualElement name="AbilityIcon2" class="ability-icon"/>
+                    <ui:VisualElement name="CooldownOverlay2" class="cooldown-overlay"/>
+                    <ui:Label text="0.0" name="CooldownText2" class="cooldown-text"/>
+                    <ui:Label text="2" name="KeybindLabel2" class="keybind-label"/>
+                    <ui:VisualElement name="StateIndicator2" class="state-indicator"/>
+                </ui:VisualElement>
+
+                <!-- Ability Slot 3 -->
+                <ui:VisualElement name="AbilitySlot3" class="ability-slot">
+                    <ui:VisualElement name="AbilityIcon3" class="ability-icon"/>
+                    <ui:VisualElement name="CooldownOverlay3" class="cooldown-overlay"/>
+                    <ui:Label text="0.0" name="CooldownText3" class="cooldown-text"/>
+                    <ui:Label text="3" name="KeybindLabel3" class="keybind-label"/>
+                    <ui:VisualElement name="StateIndicator3" class="state-indicator"/>
+                </ui:VisualElement>
+
+                <!-- Ability Slot 4 -->
+                <ui:VisualElement name="AbilitySlot4" class="ability-slot">
+                    <ui:VisualElement name="AbilityIcon4" class="ability-icon"/>
+                    <ui:VisualElement name="CooldownOverlay4" class="cooldown-overlay"/>
+                    <ui:Label text="0.0" name="CooldownText4" class="cooldown-text"/>
+                    <ui:Label text="4" name="KeybindLabel4" class="keybind-label"/>
+                    <ui:VisualElement name="StateIndicator4" class="state-indicator"/>
+                </ui:VisualElement>
+
+                <!-- Ability Slot 5 -->
+                <ui:VisualElement name="AbilitySlot5" class="ability-slot">
+                    <ui:VisualElement name="AbilityIcon5" class="ability-icon"/>
+                    <ui:VisualElement name="CooldownOverlay5" class="cooldown-overlay"/>
+                    <ui:Label text="0.0" name="CooldownText5" class="cooldown-text"/>
+                    <ui:Label text="5" name="KeybindLabel5" class="keybind-label"/>
+                    <ui:VisualElement name="StateIndicator5" class="state-indicator"/>
+                </ui:VisualElement>
+
+                <!-- Ability Slot 6 -->
+                <ui:VisualElement name="AbilitySlot6" class="ability-slot">
+                    <ui:VisualElement name="AbilityIcon6" class="ability-icon"/>
+                    <ui:VisualElement name="CooldownOverlay6" class="cooldown-overlay"/>
+                    <ui:Label text="0.0" name="CooldownText6" class="cooldown-text"/>
+                    <ui:Label text="6" name="KeybindLabel6" class="keybind-label"/>
+                    <ui:VisualElement name="StateIndicator6" class="state-indicator"/>
+                </ui:VisualElement>
+
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- ═══════════════════════════════════════════════════════
+             3. BOTTOM LEFT - Detail Panel + Event Log
+             ═══════════════════════════════════════════════════════ -->
+        <ui:VisualElement name="BottomLeftWrapper" class="bottom-left-wrapper">
+
+            <!-- Detail Panel - Last ability cast -->
+            <ui:VisualElement name="DetailPanel" class="detail-panel">
+                <ui:Label text="Last Ability Cast" class="detail-header"/>
+                <ui:Label text="Name: None" name="DetailName" class="detail-text"/>
+                <ui:Label text="Mana: 0" name="DetailMana" class="detail-text"/>
+                <ui:Label text="Cooldown: 0s" name="DetailCooldown" class="detail-text"/>
+                <ui:Label text="Cast Time: 0s" name="DetailCastTime" class="detail-text"/>
+                <ui:Label text="Range: 0m" name="DetailRange" class="detail-text"/>
+                <ui:Label text="Indicator: None" name="DetailIndicator" class="detail-text"/>
+                <ui:Label text="State: Idle" name="CombatState" class="detail-text state-label"/>
+            </ui:VisualElement>
+
+            <!-- Event Log -->
+            <ui:VisualElement name="EventLogContainer" class="event-log-container">
+                <ui:Label text="Event Log" class="log-header"/>
+                <ui:ScrollView name="EventLog" class="event-log"/>
+            </ui:VisualElement>
+
+        </ui:VisualElement>
+
+        <!-- Toggle hint - Esquina inferior derecha -->
+        <ui:Label text="[F3] Toggle Debug UI" class="toggle-hint"/>
+
+    </ui:VisualElement>
+</ui:UXML>

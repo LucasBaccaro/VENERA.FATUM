@@ -7,10 +7,20 @@
                 <ui:ProgressBar value="100" name="HealthBar" high-value="100" style="height: 25px;"/>
                 <ui:Label text="HP: 100 / 100" name="HealthText" style="font-size: 12px; color: white; margin-top: 3px;"/>
             </ui:VisualElement>
-            <ui:VisualElement name="ManaContainer">
+            <ui:VisualElement name="ManaContainer" style="margin-bottom: 10px;">
                 <ui:Label text="Mana" name="ManaLabel" style="font-size: 14px; color: white; -unity-font-style: bold; margin-bottom: 5px;"/>
                 <ui:ProgressBar value="100" name="ManaBar" high-value="100" style="height: 25px;"/>
                 <ui:Label text="MP: 100 / 100" name="ManaText" style="font-size: 12px; color: white; margin-top: 3px;"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="CastContainer" style="margin-bottom: 10px;">
+                <ui:Label text="Casting" name="CastLabel" style="font-size: 14px; color: white; -unity-font-style: bold; margin-bottom: 5px;"/>
+                <ui:ProgressBar value="0" name="CastBar" high-value="100" style="height: 20px;"/>
+                <ui:Label text="" name="CastText" style="font-size: 11px; color: white; margin-top: 3px;"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="GCDContainer">
+                <ui:Label text="Global Cooldown" name="GCDLabel" style="font-size: 14px; color: white; -unity-font-style: bold; margin-bottom: 5px;"/>
+                <ui:ProgressBar value="0" name="GCDBar" high-value="100" style="height: 20px;"/>
+                <ui:Label text="" name="GCDText" style="font-size: 11px; color: white; margin-top: 3px;"/>
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

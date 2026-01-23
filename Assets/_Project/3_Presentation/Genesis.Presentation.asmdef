@@ -5,7 +5,8 @@
         "Genesis.Core",
         "Genesis.Data",
         "Genesis.Simulation",
-        "FishNet.Runtime"
+        "FishNet.Runtime",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

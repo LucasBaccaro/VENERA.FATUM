@@ -25,7 +25,7 @@ MonoBehaviour:
   CanMoveWhileCasting: 0
   TargetingMode: 3
   IndicatorType: 3
-  Range: 15
+  Range: 8
   Radius: 0
   Angle: 60
   Category: 0

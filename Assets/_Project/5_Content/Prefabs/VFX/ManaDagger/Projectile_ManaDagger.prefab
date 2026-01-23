@@ -223,7 +223,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7c37d617844fa344bbb27ce578d2624e, type: 3}
       propertyPath: m_Name
-      value: ManaDagger
+      value: Projectile_ManaDagger
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -231,8 +231,140 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7c37d617844fa344bbb27ce578d2624e, type: 3}
       insertIndex: 1
       addedObject: {fileID: 7093857304865865731}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c37d617844fa344bbb27ce578d2624e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8599075547332012228}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c37d617844fa344bbb27ce578d2624e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7421703666423885053}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c37d617844fa344bbb27ce578d2624e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8353972221628275085}
   m_SourcePrefab: {fileID: 100100000, guid: 7c37d617844fa344bbb27ce578d2624e, type: 3}
+--- !u!1 &5805970533694594322 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 7c37d617844fa344bbb27ce578d2624e, type: 3}
+  m_PrefabInstance: {fileID: 6652831093006098499}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8599075547332012228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5805970533694594322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2836e36774ca1c4bbbee976e17b649c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FishNet.Runtime::FishNet.Component.Transforming.NetworkTransform
+  _componentIndexCache: 0
+  _addedNetworkObject: {fileID: 7421703666423885053}
+  _networkObjectCache: {fileID: 7421703666423885053}
+  _componentConfiguration: 0
+  _synchronizeParent: 0
+  _packing:
+    Position: 1
+    Rotation: 1
+    Scale: 0
+  _useScaledTime: 1
+  _interpolation: 2
+  _extrapolation: 2
+  _enableTeleport: 0
+  _teleportThreshold: 1
+  _clientAuthoritative: 1
+  _sendToOwner: 1
+  _interval: 1
+  _synchronizePosition: 1
+  _positionSensitivity: 0.001
+  _positionSnapping:
+    X: 0
+    Y: 0
+    Z: 0
+  _synchronizeRotation: 1
+  _rotationSnapping:
+    X: 0
+    Y: 0
+    Z: 0
+  _synchronizeScale: 1
+  _scaleSensitivity: 0.001
+  _scaleSnapping:
+    X: 0
+    Y: 0
+    Z: 0
+--- !u!114 &7421703666423885053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5805970533694594322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FishNet.Runtime::FishNet.Object.NetworkObject
+  <IsNested>k__BackingField: 0
+  WasActiveDuringEdit: 0
+  WasActiveDuringEdit_Set1: 1
+  <ComponentIndex>k__BackingField: 0
+  <PredictedSpawn>k__BackingField: {fileID: 0}
+  <PredictedOwner>k__BackingField: {fileID: 0}
+  NetworkBehaviours:
+  - {fileID: 8599075547332012228}
+  InitializedParentNetworkBehaviour: {fileID: 0}
+  InitializedNestedNetworkObjects: []
+  RuntimeParentNetworkBehaviour: {fileID: 0}
+  RuntimeChildNetworkBehaviours: []
+  _isNetworked: 1
+  _isSpawnable: 1
+  _isGlobal: 0
+  _initializeOrder: 0
+  _preventDespawnOnDisconnect: 0
+  _defaultDespawnType: 0
+  _initializedTimestamp: -8584323984992777628
+  NetworkObserver: {fileID: 0}
+  _enablePrediction: 0
+  _predictionType: 0
+  _localReconcileCorrectionType: 2
+  _graphicalObject: {fileID: 0}
+  _detachGraphicalObject: 0
+  _enableStateForwarding: 1
+  _networkTransform: {fileID: 0}
+  _ownerInterpolation: 1
+  _ownerSmoothedProperties: 255
+  _adaptiveInterpolation: 3
+  _spectatorSmoothedProperties: 255
+  _spectatorInterpolation: 2
+  _enableTeleport: 0
+  _teleportThreshold: 1
+  <PrefabId>k__BackingField: 14
+  <SpawnableCollectionId>k__BackingField: 0
+  <AssetPathHash>k__BackingField: 14895306324554982627
+  SceneId: 0
+  SerializedTransformProperties:
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+    Scale: {x: 1, y: 1, z: 1}
+    IsValid: 1
+--- !u!114 &8353972221628275085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5805970533694594322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 693d0fa7b7e4545c6b42ca8e5c2f4db4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.Combat.TargetedProjectile
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 7421703666423885053}
+  _networkObjectCache: {fileID: 0}
+  maxLifetime: 3
+  arrivalThreshold: 0.2
 --- !u!4 &6618360559491352488 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7c37d617844fa344bbb27ce578d2624e, type: 3}

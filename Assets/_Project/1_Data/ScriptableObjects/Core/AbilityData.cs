@@ -28,9 +28,12 @@ namespace Genesis.Data {
         
         [Header("Targeting")]
         public TargetType TargetingMode;
+        public IndicatorType IndicatorType; // NEW: Tipo de indicador visual
         public float Range;
         [Tooltip("Radio de efecto (para AoE) o ancho (para lineas)")]
         public float Radius;
+        [Tooltip("Ángulo del cono (solo para IndicatorType.Cone)")]
+        public float Angle = 60f;
         
         [Header("Combat Values")]
         public AbilityCategory Category;
@@ -51,5 +54,17 @@ namespace Genesis.Data {
         public AudioClip CastSound;
         public AudioClip ImpactSound;
         public string AnimationTrigger = "Cast"; // Trigger en el Animator
+    }
+
+    /// <summary>
+    /// Tipo de indicador visual para la habilidad
+    /// </summary>
+    public enum IndicatorType {
+        None,      // Targeted abilities (sistema legacy - no requiere indicador)
+        Line,      // Skillshot direccional + Channel (LineIndicator)
+        Circle,    // AOE circular - ground o self (CircleIndicator)
+        Cone,      // Área cónica frontal (ConeIndicator)
+        Arrow,     // Dash/Charge - movimiento (ArrowIndicator)
+        Trap       // Trampa persistente (TrapIndicator)
     }
 }

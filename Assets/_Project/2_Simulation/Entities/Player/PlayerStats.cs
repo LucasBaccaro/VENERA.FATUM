@@ -125,6 +125,12 @@ namespace Genesis.Simulation {
             EventBus.Trigger("OnPlayerHealed", healAmount);
         }
 
+        /// <summary>
+        /// Alias para Heal (usado por algunas habilidades)
+        /// </summary>
+        [Server]
+        public void RestoreHealth(float amount) => Heal(amount);
+
         // ═══════════════════════════════════════════════════════
         // MANA MANAGEMENT
         // ═══════════════════════════════════════════════════════

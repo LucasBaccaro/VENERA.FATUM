@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c405f54e5c775429bb881c0dd8f87a7c, type: 3}
+  m_Name: Ability_Trampa de Hielo
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.AbilityData
+  ID: 404
+  Name: Trampa de Hielo
+  Icon: {fileID: 0}
+  Description: Coloca una trampa que congela enemigos.
+  Logic: {fileID: 11400000, guid: be2329dc18e0749269f1cde76b0b3526, type: 2}
+  ManaCost: 20
+  Cooldown: 15
+  GCD: 1
+  CastType: 0
+  CastTime: 0
+  CanMoveWhileCasting: 1
+  TargetingMode: 3
+  IndicatorType: 5
+  Range: 5
+  Radius: 2
+  Angle: 60
+  Category: 2
+  BaseDamage: 40
+  BaseHeal: 0
+  ApplyToTarget: []
+  ApplyToSelf: []
+  ProjectilePrefab: {fileID: 0}
+  ProjectileSpeed: 0
+  CastVFX: {fileID: 0}
+  ImpactVFX: {fileID: 0}
+  CastSound: {fileID: 0}
+  ImpactSound: {fileID: 0}
+  AnimationTrigger: Cast

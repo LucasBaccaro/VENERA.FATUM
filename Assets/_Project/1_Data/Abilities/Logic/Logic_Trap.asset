@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6e03d86026cd42628eb881ca48a070c, type: 3}
+  m_Name: Logic_Trap
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.Combat.TrapLogic
+  trapPrefab: {fileID: 4331737388054472271, guid: b4be4160cb8b34611b10942b9698d720, type: 3}
+  trapLifetime: 30
+  visibleToEnemies: 1

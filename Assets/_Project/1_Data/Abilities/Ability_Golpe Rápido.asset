@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c405f54e5c775429bb881c0dd8f87a7c, type: 3}
+  m_Name: "Ability_Golpe R\xE1pido"
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.AbilityData
+  ID: 100
+  Name: "Golpe R\xE1pido"
+  Icon: {fileID: 0}
+  Description: "Un golpe r\xE1pido cuerpo a cuerpo."
+  Logic: {fileID: 11400000, guid: 5ac003cf0993e49989c66756c68f1855, type: 2}
+  ManaCost: 0
+  Cooldown: 0.8
+  GCD: 1
+  CastType: 0
+  CastTime: 0
+  CanMoveWhileCasting: 0
+  TargetingMode: 1
+  IndicatorType: 0
+  Range: 2
+  Radius: 0
+  Angle: 60
+  Category: 0
+  BaseDamage: 25
+  BaseHeal: 0
+  ApplyToTarget: []
+  ApplyToSelf: []
+  ProjectilePrefab: {fileID: 0}
+  ProjectileSpeed: 0
+  CastVFX: {fileID: 0}
+  ImpactVFX: {fileID: 0}
+  CastSound: {fileID: 0}
+  ImpactSound: {fileID: 0}
+  AnimationTrigger: Cast

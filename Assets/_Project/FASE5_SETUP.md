@@ -37,8 +37,7 @@ Necesitamos el "cerebro" de la habilidad.
 2.  Arrastra `Logic_Fireball` al campo **Logic**.
 3.  Arrastra el prefab `Fireball` al campo **Projectile Prefab**.
 
-## 🎮 3. CONFIGURAR PLAYER
-
+## 🎮 3. CONFIGURAR PLAYER 
 1.  Abre prefab **Player**.
 2.  Añade componente: **PlayerCombat**.
 3.  Arrastra referencias:

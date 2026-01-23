@@ -3,6 +3,7 @@ using UnityEditor;
 using System.IO;
 using System.Collections.Generic;
 using Genesis.Data;
+using Genesis.Simulation.Combat;
 
 namespace Genesis.EditorTools {
 
@@ -10,6 +11,7 @@ namespace Genesis.EditorTools {
 
         private const string JSON_PATH = "Assets/_Project/1_Data/Json/Abilities.json";
         private const string ASSET_PATH = "Assets/_Project/1_Data/Abilities/";
+        private const string LOGIC_PATH = "Assets/_Project/1_Data/Abilities/Logic/";
 
         [MenuItem("Genesis/Data/Import Abilities from JSON")]
         public static void ImportAbilities() {
@@ -33,11 +35,16 @@ namespace Genesis.EditorTools {
                 Directory.CreateDirectory(ASSET_PATH);
             }
 
+            if (!Directory.Exists(LOGIC_PATH)) {
+                Directory.CreateDirectory(LOGIC_PATH);
+            }
+
             int created = 0;
             int updated = 0;
+            int logicsCreated = 0;
 
             foreach (var dto in wrapper.items) {
-                ImportAbility(dto, ref created, ref updated);
+                ImportAbility(dto, ref created, ref updated, ref logicsCreated);
             }
 
             AssetDatabase.SaveAssets();
@@ -46,10 +53,10 @@ namespace Genesis.EditorTools {
             // Actualizar Database automáticamente
             UpdateDatabase();
 
-            Debug.Log($"[AbilityImporter] Importación completa. Creados: {created}, Actualizados: {updated}");
+            Debug.Log($"[AbilityImporter] Importación completa.\nAbilities - Creados: {created}, Actualizados: {updated}\nLogic Assets Creados: {logicsCreated}");
         }
 
-        private static void ImportAbility(AbilityDTO dto, ref int created, ref int updated) {
+        private static void ImportAbility(AbilityDTO dto, ref int created, ref int updated, ref int logicsCreated) {
             string fileName = $"Ability_{dto.Name}.asset";
             string fullPath = ASSET_PATH + fileName;
 
@@ -83,12 +90,135 @@ namespace Genesis.EditorTools {
             if (System.Enum.TryParse(dto.TargetingMode, out TargetType tt)) asset.TargetingMode = tt;
             if (System.Enum.TryParse(dto.Category, out AbilityCategory ac)) asset.Category = ac;
 
+            // NEW: Asignar IndicatorType automáticamente
+            asset.IndicatorType = DetermineIndicatorType(dto);
+
+            // NEW: Asignar o crear AbilityLogic
+            asset.Logic = GetOrCreateLogic(dto.LogicType, ref logicsCreated);
+
             // Guardar Asset
             if (isNew) {
                 AssetDatabase.CreateAsset(asset, fullPath);
             } else {
                 EditorUtility.SetDirty(asset);
             }
+
+            Debug.Log($"[AbilityImporter] {(isNew ? "Created" : "Updated")}: {dto.Name} (IndicatorType: {asset.IndicatorType}, Logic: {dto.LogicType})");
+        }
+
+        /// <summary>
+        /// Determina el IndicatorType apropiado según el LogicType y TargetingMode
+        /// </summary>
+        private static IndicatorType DetermineIndicatorType(AbilityDTO dto) {
+            // Si el LogicType es explícito, usarlo
+            switch (dto.LogicType) {
+                case "Skillshot":
+                    return IndicatorType.Line;
+
+                case "AoE":
+                case "AOE":
+                    // Distinguir entre Ground y Self
+                    if (dto.TargetingMode == "Ground") {
+                        return IndicatorType.Circle;
+                    } else if (dto.TargetingMode == "Self") {
+                        return IndicatorType.Circle;
+                    }
+                    return IndicatorType.Circle;
+
+                case "SelfAOE":
+                    return IndicatorType.Circle;
+
+                case "Dash":
+                    return IndicatorType.Arrow;
+
+                case "Cone":
+                    return IndicatorType.Cone;
+
+                case "Trap":
+                    return IndicatorType.Trap;
+
+                case "Projectile":
+                    // Projectile legacy: si es Enemy target, no necesita indicador (tab-target)
+                    if (dto.TargetingMode == "Enemy") {
+                        return IndicatorType.None;
+                    }
+                    // Si es ground-targeted, usar Line
+                    return IndicatorType.Line;
+
+                case "Direct":
+                case "Melee":
+                case "Targeted":
+                default:
+                    // Habilidades targeted (legacy) no necesitan indicador
+                    return IndicatorType.None;
+            }
+        }
+
+        /// <summary>
+        /// Obtiene o crea un AbilityLogic asset del tipo especificado
+        /// </summary>
+        private static AbilityLogic GetOrCreateLogic(string logicType, ref int logicsCreated) {
+            if (string.IsNullOrEmpty(logicType)) {
+                logicType = "Targeted"; // Default
+            }
+
+            string logicAssetName = $"Logic_{logicType}";
+            string logicPath = LOGIC_PATH + logicAssetName + ".asset";
+
+            // Buscar asset existente
+            AbilityLogic logic = AssetDatabase.LoadAssetAtPath<AbilityLogic>(logicPath);
+            if (logic != null) {
+                return logic;
+            }
+
+            // Crear nuevo Logic asset según tipo
+            switch (logicType) {
+                case "Projectile":
+                    logic = ScriptableObject.CreateInstance<ProjectileLogic>();
+                    break;
+
+                case "Skillshot":
+                    logic = ScriptableObject.CreateInstance<SkillshotLogic>();
+                    break;
+
+                case "AoE":
+                case "AOE":
+                    logic = ScriptableObject.CreateInstance<AOELogic>();
+                    break;
+
+                case "SelfAOE":
+                    logic = ScriptableObject.CreateInstance<SelfAOELogic>();
+                    break;
+
+                case "Dash":
+                    logic = ScriptableObject.CreateInstance<DashLogic>();
+                    break;
+
+                case "Cone":
+                    logic = ScriptableObject.CreateInstance<ConeLogic>();
+                    break;
+
+                case "Trap":
+                    logic = ScriptableObject.CreateInstance<TrapLogic>();
+                    break;
+
+                case "Direct":
+                case "Melee":
+                case "Targeted":
+                default:
+                    logic = ScriptableObject.CreateInstance<TargetedLogic>();
+                    logicAssetName = "Logic_Targeted"; // Normalizar nombre
+                    logicPath = LOGIC_PATH + logicAssetName + ".asset";
+                    break;
+            }
+
+            if (logic != null) {
+                AssetDatabase.CreateAsset(logic, logicPath);
+                logicsCreated++;
+                Debug.Log($"[AbilityImporter] Created Logic Asset: {logicAssetName}");
+            }
+
+            return logic;
         }
 
         private static void UpdateDatabase() {

@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c405f54e5c775429bb881c0dd8f87a7c, type: 3}
+  m_Name: Ability_Rezo de Fe
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.AbilityData
+  ID: 304
+  Name: Rezo de Fe
+  Icon: {fileID: 0}
+  Description: "Buff de \xE1rea que aumenta las estad\xEDsticas de aliados."
+  Logic: {fileID: 11400000, guid: 114e55307f37a4c1eb81103d8984eb8d, type: 2}
+  ManaCost: 50
+  Cooldown: 60
+  GCD: 1
+  CastType: 0
+  CastTime: 0
+  CanMoveWhileCasting: 1
+  TargetingMode: 5
+  IndicatorType: 2
+  Range: 15
+  Radius: 15
+  Angle: 60
+  Category: 2
+  BaseDamage: 0
+  BaseHeal: 0
+  ApplyToTarget: []
+  ApplyToSelf: []
+  ProjectilePrefab: {fileID: 0}
+  ProjectileSpeed: 0
+  CastVFX: {fileID: 0}
+  ImpactVFX: {fileID: 0}
+  CastSound: {fileID: 0}
+  ImpactSound: {fileID: 0}
+  AnimationTrigger: Cast

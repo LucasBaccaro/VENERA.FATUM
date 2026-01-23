@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: -500167922849418954}
   - component: {fileID: -186485539870015897}
   - component: {fileID: -2699330521129833483}
+  - component: {fileID: -1511099638696177002}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -148,6 +149,7 @@ MonoBehaviour:
   - {fileID: 4211813207622510440}
   - {fileID: -500167922849418954}
   - {fileID: -186485539870015897}
+  - {fileID: -2699330521129833483}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -158,7 +160,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584324989722321638
+  _initializedTimestamp: -8584324726457051818
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -174,7 +176,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 7
+  <PrefabId>k__BackingField: 8
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 10407916748453484099
   SceneId: 0
@@ -307,14 +309,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b5331ce524c447b494956bcc8070346, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.PlayerCombat
-  _componentIndexCache: 255
+  _componentIndexCache: 5
   _addedNetworkObject: {fileID: 5015743577735707121}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 5015743577735707121}
   stats: {fileID: 4211813207622510440}
   targeting: {fileID: -186485539870015897}
   animator: {fileID: 2633805355379026433}
+  indicatorSystem: {fileID: -1511099638696177002}
   abilitySlots:
+  - {fileID: 11400000, guid: 67583c2d9b11d4093b6ee596bfad9007, type: 2}
+  - {fileID: 11400000, guid: 487fb8009ccd84796b26ce54716e2c2b, type: 2}
+  - {fileID: 11400000, guid: 1d355f79f1f604e259ecbe54e913be7a, type: 2}
+  - {fileID: 11400000, guid: 03f21edff8e0b4ef6bd56d786104a64b, type: 2}
   - {fileID: 11400000, guid: d7325bb86a33241e0aeebd8b08ddd372, type: 2}
+  - {fileID: 11400000, guid: d7325bb86a33241e0aeebd8b08ddd372, type: 2}
+--- !u!114 &-1511099638696177002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3168934939399175360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 488cf8352f75b4f2a998f22de5bc4a14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.Combat.AbilityIndicatorSystem
+  lineIndicatorPrefab: {fileID: 5420263409629314899, guid: 626d50868cc254da68a38d64e56e6f32, type: 3}
+  circleIndicatorPrefab: {fileID: 2030536277361024989, guid: a19e861a4bd22420fb720c9c34a72799, type: 3}
+  coneIndicatorPrefab: {fileID: 7504602952957035645, guid: 0abdec060da334d0090ee02fb65394a7, type: 3}
+  arrowIndicatorPrefab: {fileID: 6430388930109530140, guid: 0032c85607292424d95b9019c73f6fe7, type: 3}
+  trapIndicatorPrefab: {fileID: 1288783983153193414, guid: b3bd609738aff417d9004d67efacf4c7, type: 3}
 --- !u!1 &6379225025039195788
 GameObject:
   m_ObjectHideFlags: 0

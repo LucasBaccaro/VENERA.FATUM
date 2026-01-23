@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c405f54e5c775429bb881c0dd8f87a7c, type: 3}
+  m_Name: Ability_Salva
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.AbilityData
+  ID: 401
+  Name: Salva
+  Icon: {fileID: 0}
+  Description: "Dispara m\xFAltiples flechas en un \xE1rea."
+  Logic: {fileID: 11400000, guid: c85fcf836c0ea4e1ab13b56be225f5d1, type: 2}
+  ManaCost: 25
+  Cooldown: 8
+  GCD: 1
+  CastType: 1
+  CastTime: 0.8
+  CanMoveWhileCasting: 0
+  TargetingMode: 3
+  IndicatorType: 2
+  Range: 20
+  Radius: 3
+  Angle: 60
+  Category: 0
+  BaseDamage: 80
+  BaseHeal: 0
+  ApplyToTarget: []
+  ApplyToSelf: []
+  ProjectilePrefab: {fileID: 0}
+  ProjectileSpeed: 0
+  CastVFX: {fileID: 0}
+  ImpactVFX: {fileID: 0}
+  CastSound: {fileID: 0}
+  ImpactSound: {fileID: 0}
+  AnimationTrigger: Cast

@@ -43,13 +43,22 @@ if (decal != null) {
 if (decal != null && abilityData.IndicatorMaterial != null)
     decal.material = abilityData.IndicatorMaterial;
 
-             float halfRad = (_angle * 0.5f) * Mathf.Deg2Rad;
-    float width = 2f * Mathf.Tan(halfRad) * _range;
+float halfAngleRad = _angle * 0.5f * Mathf.Deg2Rad;
+float width = 2f * Mathf.Tan(halfAngleRad) * _range;
 
-    decal.size = new Vector3(width, decalHeight, _range);
+decal.size = new Vector3(
+    width,   // X → ancho del cono
+    1f,      // Y → altura del projector (fino, es piso)
+    _range    // Z → alcance
+);
 
-    // Hace que el cono nazca desde el caster (no centrado)
-    decal.pivot = new Vector3(0f, 0f, _range * 0.5f);
+// Compensar estiramiento: ajusta tiling según aspect ratio
+float aspect = width / _range; // X/Z
+if (decal.material.HasProperty("_BaseMap_ST"))
+{
+    Vector2 tiling = decal.material.mainTextureScale;
+    decal.material.mainTextureScale = new Vector2(tiling.x, tiling.y * aspect);
+}
 
 
             _isValid = true;

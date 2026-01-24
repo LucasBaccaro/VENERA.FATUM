@@ -86,6 +86,38 @@ namespace Genesis.Simulation {
         public void TakeDamage(float damage, NetworkObject attacker) {
             if (_isDead) return;
 
+            // ═══ STATUS EFFECTS CHECK ═══
+            if (_statusSystem != null) {
+                // 1. Invulnerable: Ignorar todo el daño
+                if (_statusSystem.HasEffect(EffectType.Invulnerable)) {
+                    // Debug.Log($"[PlayerStats] Daño ignorado por Invulnerable");
+                    return;
+                }
+
+                // 2. Reflect: Bloquear daño y devolverlo al atacante
+                if (_statusSystem.HasEffect(EffectType.Reflect)) {
+                    // Debug.Log($"[PlayerStats] Daño bloqueado por Reflect");
+                    
+                    if (attacker != null) {
+                        PlayerStats attackerStats = attacker.GetComponent<PlayerStats>();
+                        if (attackerStats != null) {
+                            // PREVENCIÓN DE BUCLE INFINITO:
+                            // Si el atacante TAMBIÉN tiene Reflect, no devolvemos el daño (empate técnico).
+                            // Evita crash por StackOverflow si dos jugadores con Reflect se atacan.
+                            StatusEffectSystem attackerSem = attacker.GetComponent<StatusEffectSystem>();
+                            if (attackerSem != null && attackerSem.HasEffect(EffectType.Reflect)) {
+                                Debug.Log("[PlayerStats] Reflect vs Reflect: Daño anulado.");
+                            } else {
+                                // Reflejar daño
+                                attackerStats.TakeDamage(damage, base.NetworkObject);
+                                Debug.Log($"[PlayerStats] Daño reflejado a {attacker.name}");
+                            }
+                        }
+                    }
+                    return; // No recibir daño
+                }
+            }
+
             // ═══ PASO 1: Absorber con Shield ═══
             if (_currentShield.Value > 0) {
                 float shieldAbsorbed = Mathf.Min(damage, _currentShield.Value);

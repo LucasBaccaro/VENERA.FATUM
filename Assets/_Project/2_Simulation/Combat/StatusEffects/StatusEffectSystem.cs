@@ -719,6 +719,66 @@ namespace Genesis.Simulation.Combat {
             if (data != null) ApplyEffect(data);
         }
 
+        [ContextMenu("Test: Apply Silence (4s)")]
+        private void TestApplySilence() {
+            if (!base.IsServer) {
+                Debug.LogWarning("Can only apply effects on server!");
+                return;
+            }
+            StatusEffectData data = StatusEffectDatabase.Instance?.GetEffect(4);
+            if (data != null) ApplyEffect(data);
+        }
+
+        [ContextMenu("Test: Apply Reflect (5s)")]
+        private void TestApplyReflect() {
+            if (!base.IsServer) {
+                Debug.LogWarning("Can only apply effects on server!");
+                return;
+            }
+            StatusEffectData data = StatusEffectDatabase.Instance?.GetEffect(11);
+            if (data != null) ApplyEffect(data);
+        }
+
+        [ContextMenu("Test: Apply Invulnerable (3s)")]
+        private void TestApplyInvulnerable() {
+            if (!base.IsServer) {
+                Debug.LogWarning("Can only apply effects on server!");
+                return;
+            }
+            StatusEffectData data = StatusEffectDatabase.Instance?.GetEffect(12);
+            if (data != null) ApplyEffect(data);
+        }
+
+        [ContextMenu("Test: Apply Regen (10s)")]
+        private void TestApplyRegen() {
+            if (!base.IsServer) {
+                Debug.LogWarning("Can only apply effects on server!");
+                return;
+            }
+            StatusEffectData data = StatusEffectDatabase.Instance?.GetEffect(21);
+            if (data != null) ApplyEffect(data);
+        }
+
+        [ContextMenu("Test: Apply Speed (8s)")]
+        private void TestApplySpeed() {
+            if (!base.IsServer) {
+                Debug.LogWarning("Can only apply effects on server!");
+                return;
+            }
+            StatusEffectData data = StatusEffectDatabase.Instance?.GetEffect(30);
+            if (data != null) ApplyEffect(data);
+        }
+
+        [ContextMenu("Test: Apply Haste (12s)")]
+        private void TestApplyHaste() {
+            if (!base.IsServer) {
+                Debug.LogWarning("Can only apply effects on server!");
+                return;
+            }
+            StatusEffectData data = StatusEffectDatabase.Instance?.GetEffect(31);
+            if (data != null) ApplyEffect(data);
+        }
+
         [ContextMenu("Test: Remove All Effects")]
         private void TestRemoveAll() {
             if (!base.IsServer) {

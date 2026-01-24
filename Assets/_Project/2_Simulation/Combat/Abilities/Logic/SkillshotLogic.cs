@@ -12,6 +12,13 @@ namespace Genesis.Simulation.Combat {
     [CreateAssetMenu(fileName = "Logic_Skillshot", menuName = "Genesis/Combat/Logic/Skillshot")]
     public class SkillshotLogic : AbilityLogic {
 
+        // Valores default para Skillshots (se pueden sobrescribir en el inspector)
+        private void OnEnable() {
+            if (MovementGracePeriod == 0.3f) MovementGracePeriod = 0.2f; // Skillshots tienen menos grace period
+            if (MovementThreshold == 0.1f) MovementThreshold = 0.15f;
+            // CancelOnMovement = true por defecto
+        }
+
         public override void ExecuteDirectional(NetworkObject caster, Vector3 targetPoint, Vector3 direction, AbilityData data) {
 
             // Forzar dirección horizontal pura (paralela al suelo)

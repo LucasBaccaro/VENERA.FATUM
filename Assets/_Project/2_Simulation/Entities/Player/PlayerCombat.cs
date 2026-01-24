@@ -50,9 +50,10 @@ namespace Genesis.Simulation {
         private float _nextChannelTick;
         private float _channelTickRate;
         private float _channelMaxDuration;
-        private float _movementGracePeriod = 0.3f; // Coyote time para evitar cancelación por movimiento accidental
         private bool _isInMovementGracePeriod = false;
-        private Vector3 _channelStartPosition; // Posición cuando inició el channeling (para detectar movimiento)
+        private Vector3 _castStartPosition; // Posición cuando inició el cast/channel (para detectar movimiento)
+        private float _currentMovementGracePeriod = 0.3f; // Valor configurable desde el Logic
+        private float _currentMovementThreshold = 0.1f; // Valor configurable desde el Logic
 
         // ═══════════════════════════════════════════════════════
         // ENUMS
@@ -154,6 +155,18 @@ namespace Genesis.Simulation {
                 }
             }
 
+            // ═══════════════════════════════════════════════════════
+            // FIX: ROTAR PLAYER DURANTE CHANNELING (no solo VFX)
+            // ═══════════════════════════════════════════════════════
+            if (channelDirection != Vector3.zero) {
+                Vector3 horizontalDirection = channelDirection;
+                horizontalDirection.y = 0;
+                if (horizontalDirection.sqrMagnitude > 0.001f) {
+                    // Rotar el player hacia la dirección del mouse
+                    transform.rotation = Quaternion.LookRotation(horizontalDirection);
+                }
+            }
+
             // ACTUALIZAR POSICIÓN Y ROTACIÓN DEL CAST VFX
             if (_currentCastVFX != null) {
                 // Actualizar posición del VFX al spawn point (sigue al jugador aunque no esté attachado)
@@ -161,7 +174,7 @@ namespace Genesis.Simulation {
                     _currentCastVFX.transform.position = castVFXSpawnPoint.position;
                 }
 
-                // Rotar hacia la dirección del mouse
+                // Rotar VFX hacia la dirección del mouse
                 if (channelDirection != Vector3.zero) {
                     Vector3 horizontalDirection = channelDirection;
                     horizontalDirection.y = 0;
@@ -174,8 +187,8 @@ namespace Genesis.Simulation {
 
             // DETECTAR MOVIMIENTO y cancelar si no puede moverse mientras canalea
             if (!_pendingAbility.CanMoveWhileCasting && !_isInMovementGracePeriod) {
-                float distanceMoved = Vector3.Distance(transform.position, _channelStartPosition);
-                if (distanceMoved > 0.1f) { // Threshold de 0.1 unidades para evitar micro-movimientos
+                float distanceMoved = Vector3.Distance(transform.position, _castStartPosition);
+                if (distanceMoved > _currentMovementThreshold) {
                     Debug.Log($"[PlayerCombat] Channeling interrupted by movement (moved {distanceMoved:F2}m)");
                     StopChanneling();
                     return;
@@ -228,9 +241,13 @@ namespace Genesis.Simulation {
             EventBus.Trigger<float, string>("OnCastProgress", progressPercent, _castingAbilityName);
 
             // Check for movement interruption (if can't move while casting)
-            if (_pendingAbility != null && !_pendingAbility.CanMoveWhileCasting) {
-                // Si el jugador se mueve, interrumpir el cast                                                                
-                // TODO: Implementar detección de movimiento si es necesario
+            if (_pendingAbility != null && !_pendingAbility.CanMoveWhileCasting && !_isInMovementGracePeriod) {
+                float distanceMoved = Vector3.Distance(transform.position, _castStartPosition);
+                if (distanceMoved > _currentMovementThreshold) {
+                    Debug.Log($"[PlayerCombat] Cast interrupted by movement (moved {distanceMoved:F2}m)");
+                    InterruptCast();
+                    return;
+                }
             }
 
             // Check for ESC key to cancel
@@ -356,11 +373,13 @@ namespace Genesis.Simulation {
         private void ExecuteTargetedAbility(AbilityData ability) {
             int targetId = -1;
             bool isSelfCast = Keyboard.current.leftAltKey.isPressed;
+            NetworkObject targetObject = null;
 
             // Self-Cast Override (ALT key)
             if (isSelfCast && (ability.Category == AbilityCategory.Utility || ability.Category == AbilityCategory.Magical)) {
                 // Asumimos que si presiona ALT quiere tirárselo a sí mismo (Heal/Buff)
                 targetId = base.ObjectId;
+                targetObject = base.NetworkObject;
             }
             else {
                 // Validar target según modo normal
@@ -370,8 +389,22 @@ namespace Genesis.Simulation {
                         return;
                     }
                     targetId = targeting.CurrentTarget.ObjectId;
+                    targetObject = targeting.CurrentTarget;
                 } else if (ability.TargetingMode == TargetType.Self) {
                     targetId = base.ObjectId;
+                    targetObject = base.NetworkObject;
+                }
+            }
+
+            // ═══════════════════════════════════════════════════════
+            // FIX: ROTAR PLAYER HACIA EL TARGET (TARGETED ABILITIES)
+            // ═══════════════════════════════════════════════════════
+            if (targetObject != null && targetObject != base.NetworkObject) {
+                Vector3 directionToTarget = (targetObject.transform.position - transform.position);
+                directionToTarget.y = 0; // Solo rotación horizontal
+                if (directionToTarget.sqrMagnitude > 0.001f) {
+                    transform.rotation = Quaternion.LookRotation(directionToTarget);
+                    Debug.Log($"[PlayerCombat] Rotated player towards target {targetObject.name}");
                 }
             }
 
@@ -383,6 +416,21 @@ namespace Genesis.Simulation {
             _castStartTime = Time.time;
             _castDuration = ability.CastTime;
             _castingAbilityName = ability.Name;
+
+            // Configurar valores de movimiento desde el Logic
+            if (ability.Logic != null) {
+                _currentMovementGracePeriod = ability.Logic.MovementGracePeriod;
+                _currentMovementThreshold = ability.Logic.MovementThreshold;
+            }
+
+            // Guardar posición inicial para detección de movimiento
+            _castStartPosition = transform.position;
+
+            // Activar grace period si el ability no permite moverse
+            if (!ability.CanMoveWhileCasting && ability.Logic != null && ability.Logic.CancelOnMovement) {
+                _isInMovementGracePeriod = true;
+                StartCoroutine(MovementGracePeriodCoroutine());
+            }
 
             // Guardar datos para ejecutar después del cast
             _pendingAbility = ability;
@@ -458,7 +506,7 @@ namespace Genesis.Simulation {
         /// Coroutine para el grace period de movimiento
         /// </summary>
         private System.Collections.IEnumerator MovementGracePeriodCoroutine() {
-            yield return new UnityEngine.WaitForSeconds(_movementGracePeriod);
+            yield return new UnityEngine.WaitForSeconds(_currentMovementGracePeriod);
             _isInMovementGracePeriod = false;
         }
 
@@ -563,6 +611,18 @@ namespace Genesis.Simulation {
                 initialDirection = indicator.GetDirection();
             }
 
+            // ═══════════════════════════════════════════════════════
+            // FIX: ROTAR PLAYER AL INICIO DEL CHANNELING
+            // ═══════════════════════════════════════════════════════
+            if (initialDirection != Vector3.zero) {
+                Vector3 horizontalDirection = initialDirection;
+                horizontalDirection.y = 0;
+                if (horizontalDirection.sqrMagnitude > 0.001f) {
+                    transform.rotation = Quaternion.LookRotation(horizontalDirection);
+                    Debug.Log($"[PlayerCombat] Rotated player at channeling start towards {initialDirection}");
+                }
+            }
+
             // Ocultar el indicador
             if (indicator is LineIndicator lineIndicator) {
                 lineIndicator.SetChannelMode(false);
@@ -579,15 +639,23 @@ namespace Genesis.Simulation {
             _channelTickRate = _pendingAbility.ChannelTickRate;
             _channelMaxDuration = _pendingAbility.ChannelMaxDuration;
 
+            // Configurar valores de movimiento desde el Logic
+            if (_pendingAbility.Logic != null) {
+                _currentMovementGracePeriod = _pendingAbility.Logic.MovementGracePeriod;
+                _currentMovementThreshold = _pendingAbility.Logic.MovementThreshold;
+            }
+
             // Guardar posición inicial para detectar movimiento
-            _channelStartPosition = transform.position;
+            _castStartPosition = transform.position;
 
             // Guardar dirección inicial del channeling
             _pendingDirection = initialDirection;
 
-            // Activar grace period
-            _isInMovementGracePeriod = true;
-            StartCoroutine(MovementGracePeriodCoroutine());
+            // Activar grace period si el ability no permite moverse
+            if (!_pendingAbility.CanMoveWhileCasting && _pendingAbility.Logic != null && _pendingAbility.Logic.CancelOnMovement) {
+                _isInMovementGracePeriod = true;
+                StartCoroutine(MovementGracePeriodCoroutine());
+            }
 
             // SPAWNER CHANNEL VFX
             SpawnCastVFX(_pendingAbility);
@@ -611,6 +679,18 @@ namespace Genesis.Simulation {
             Vector3 targetPoint = indicator.GetTargetPoint();
             Vector3 direction = indicator.GetDirection();
 
+            // ═══════════════════════════════════════════════════════
+            // FIX 1: ROTAR PLAYER HACIA LA DIRECCIÓN DEL SKILLSHOT
+            // ═══════════════════════════════════════════════════════
+            if (direction != Vector3.zero) {
+                Vector3 horizontalDirection = direction;
+                horizontalDirection.y = 0; // Solo rotación horizontal
+                if (horizontalDirection.sqrMagnitude > 0.001f) {
+                    transform.rotation = Quaternion.LookRotation(horizontalDirection);
+                    Debug.Log($"[PlayerCombat] Rotated player towards {direction}");
+                }
+            }
+
             // Ocultar indicador
             indicatorSystem.HideIndicator();
 
@@ -622,6 +702,24 @@ namespace Genesis.Simulation {
             _castStartTime = Time.time;
             _castDuration = _pendingAbility.CastTime;
             _castingAbilityName = _pendingAbility.Name;
+
+            // ═══════════════════════════════════════════════════════
+            // FIX 2: CONFIGURAR VALORES DE MOVIMIENTO DESDE EL LOGIC
+            // ═══════════════════════════════════════════════════════
+            if (_pendingAbility.Logic != null) {
+                _currentMovementGracePeriod = _pendingAbility.Logic.MovementGracePeriod;
+                _currentMovementThreshold = _pendingAbility.Logic.MovementThreshold;
+            }
+
+            // ═══════════════════════════════════════════════════════
+            // FIX 3: GUARDAR POSICIÓN INICIAL Y ACTIVAR GRACE PERIOD
+            // ═══════════════════════════════════════════════════════
+            _castStartPosition = transform.position;
+
+            if (!_pendingAbility.CanMoveWhileCasting && _pendingAbility.Logic != null && _pendingAbility.Logic.CancelOnMovement) {
+                _isInMovementGracePeriod = true;
+                StartCoroutine(MovementGracePeriodCoroutine());
+            }
 
             // Guardar datos para ejecutar después del cast
             _pendingTargetPoint = targetPoint;

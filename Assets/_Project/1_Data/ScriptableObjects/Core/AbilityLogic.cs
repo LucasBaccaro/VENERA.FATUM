@@ -8,7 +8,17 @@ namespace Genesis.Data {
     /// Las implementaciones concretas (Proyectil, Melee, AoE) vivirán en Simulation.
     /// </summary>
     public abstract class AbilityLogic : ScriptableObject {
-        
+
+        [Header("Movement Interruption")]
+        [Tooltip("Tiempo de gracia antes de cancelar por movimiento (segundos). 0 = cancelación inmediata")]
+        public float MovementGracePeriod = 0.3f;
+
+        [Tooltip("Si es true, el jugador debe permanecer quieto durante el cast/channel")]
+        public bool CancelOnMovement = true;
+
+        [Tooltip("Distancia mínima para considerar que el jugador se movió (metros)")]
+        public float MovementThreshold = 0.1f;
+
         /// <summary>
         /// LEGACY: Execute con target seleccionado (mantener compatibilidad con sistema anterior)
         /// Por defecto, redirige a ExecuteDirectional calculando la dirección

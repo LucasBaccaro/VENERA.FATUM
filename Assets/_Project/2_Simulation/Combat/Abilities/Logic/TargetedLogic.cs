@@ -18,6 +18,13 @@ namespace Genesis.Simulation.Combat {
         public bool useVisualProjectile = true;
         public float projectileSpeed = 20f;
 
+        // Valores default para Targeted abilities (se pueden sobrescribir en el inspector)
+        private void OnEnable() {
+            if (MovementGracePeriod == 0.3f) MovementGracePeriod = 0.15f; // Targeted abilities tienen menos grace period
+            if (MovementThreshold == 0.1f) MovementThreshold = 0.2f;
+            // CancelOnMovement = true por defecto
+        }
+
         /// <summary>
         /// Override Execute para tener acceso directo al target NetworkObject
         /// que viene desde el servidor (enviado por PlayerCombat)

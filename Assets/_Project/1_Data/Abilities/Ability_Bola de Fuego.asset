@@ -22,7 +22,7 @@ MonoBehaviour:
   GCD: 1.2
   CastType: 1
   CastTime: 5
-  CanMoveWhileCasting: 1
+  CanMoveWhileCasting: 0
   ChannelTickRate: 0.1
   ChannelHitAllTargets: 1
   ChannelMaxDuration: 0

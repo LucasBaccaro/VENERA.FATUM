@@ -17,6 +17,13 @@ namespace Genesis.Simulation.Combat {
         [Tooltip("Si es true, spawna VFX de impacto en cada enemigo golpeado")]
         [SerializeField] private bool spawnImpactVFX = true;
 
+        // Valores default para Channeling (se pueden sobrescribir en el inspector)
+        private void OnEnable() {
+            if (MovementGracePeriod == 0.3f) MovementGracePeriod = 0.5f; // Channeling tiene más grace period
+            if (MovementThreshold == 0.1f) MovementThreshold = 0.1f;
+            // CancelOnMovement = true por defecto
+        }
+
         public override void ExecuteDirectional(NetworkObject caster, Vector3 targetPoint, Vector3 direction, AbilityData data) {
 
             // Forzar dirección horizontal

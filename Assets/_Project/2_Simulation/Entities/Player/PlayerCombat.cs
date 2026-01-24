@@ -21,6 +21,7 @@ namespace Genesis.Simulation {
         [SerializeField] private Animator animator;
         [SerializeField] private AbilityIndicatorSystem indicatorSystem;
         [SerializeField] private Transform castVFXSpawnPoint;
+        private StatusEffectSystem _statusEffects;
 
         [Header("Loadout")]
         public List<AbilityData> abilitySlots = new List<AbilityData>();
@@ -64,6 +65,14 @@ namespace Genesis.Simulation {
             Aiming,       // Esperando confirmación del jugador (skillshot)
             Casting,      // Executing ability con cast time
             Channeling    // Manteniendo habilidad (ej: Rayo de Hielo)
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // INITIALIZATION
+        // ═══════════════════════════════════════════════════════
+
+        void Awake() {
+            _statusEffects = GetComponent<StatusEffectSystem>();
         }
 
         // ═══════════════════════════════════════════════════════
@@ -332,6 +341,25 @@ namespace Genesis.Simulation {
         /// Validaciones básicas antes de ejecutar cualquier habilidad
         /// </summary>
         private bool ValidateBasicRequirements(AbilityData ability) {
+            // ═══ STATUS EFFECTS CHECKS ═══
+            if (_statusEffects != null) {
+                // Stun = no se puede hacer nada
+                if (_statusEffects.HasEffect(EffectType.Stun)) {
+                    Debug.LogWarning("[PlayerCombat] Cannot cast while stunned");
+                    EventBus.Trigger("OnCombatError", "You are stunned!");
+                    return false;
+                }
+
+                // Silence = no se pueden usar habilidades mágicas
+                if (_statusEffects.HasEffect(EffectType.Silence)) {
+                    if (ability.Category == AbilityCategory.Magical) {
+                        Debug.LogWarning("[PlayerCombat] Cannot cast magical abilities while silenced");
+                        EventBus.Trigger("OnCombatError", "You are silenced!");
+                        return false;
+                    }
+                }
+            }
+
             // Ya está casteando?
             if (_combatState == CombatState.Casting || _combatState == CombatState.Channeling) {
                 Debug.LogWarning("[PlayerCombat] Already casting/channeling");

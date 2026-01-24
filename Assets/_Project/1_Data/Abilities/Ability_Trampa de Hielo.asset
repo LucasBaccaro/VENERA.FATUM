@@ -23,16 +23,21 @@ MonoBehaviour:
   CastType: 0
   CastTime: 0
   CanMoveWhileCasting: 1
+  ChannelTickRate: 0.1
+  ChannelHitAllTargets: 1
+  ChannelMaxDuration: 0
   TargetingMode: 3
   IndicatorType: 5
   Range: 15
-  Radius: 1.5
+  Radius: 0.5
   Angle: 60
   Category: 2
-  BaseDamage: 40
+  BaseDamage: 60
   BaseHeal: 0
-  ApplyToTarget: []
-  ApplyToSelf: []
+  ApplyToTarget:
+  - {fileID: 11400000, guid: d8e2b8e81bed64484a75ceaa78924ceb, type: 2}
+  ApplyToSelf:
+  - {fileID: 11400000, guid: d8e2b8e81bed64484a75ceaa78924ceb, type: 2}
   ProjectilePrefab: {fileID: 0}
   ProjectileSpeed: 0
   IndicatorMaterial: {fileID: 2100000, guid: 0a8290ab5d4d243afba8931780f93529, type: 2}

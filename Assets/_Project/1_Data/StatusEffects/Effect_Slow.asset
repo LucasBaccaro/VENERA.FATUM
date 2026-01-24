@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9270c20d0f4e645048c342fab652c587, type: 3}
+  m_Name: Effect_Slow
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.StatusEffectData
+  ID: 3
+  Name: Slow
+  Icon: {fileID: 0}
+  Description: Movement speed reduced by 50%.
+  Type: 8
+  IsBuff: 0
+  Duration: 5
+  IsStackable: 0
+  MaxStacks: 1
+  PercentageValue: 0.5
+  FlatValue: 0
+  TickInterval: 1
+  VFXPrefab: {fileID: 121080853958471564, guid: 6d0f85c7b800e9340bbd7529c1610cc9, type: 3}
+  ApplySound: {fileID: 0}

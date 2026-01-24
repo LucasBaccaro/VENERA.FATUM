@@ -82,8 +82,13 @@ namespace Genesis.Simulation.Combat {
 
             // Aplicar STATUS EFFECTS a sí mismo (ej: invulnerabilidad durante dash)
             if (data.ApplyToSelf != null && data.ApplyToSelf.Length > 0) {
-                // TODO: StatusEffectSystem.ApplyEffects(caster, data.ApplyToSelf);
-                Debug.Log($"[DashLogic] Applied {data.ApplyToSelf.Length} effects to self");
+                StatusEffectSystem casterStatus = caster.GetComponent<StatusEffectSystem>();
+                if (casterStatus != null) {
+                    foreach (var effectData in data.ApplyToSelf) {
+                        casterStatus.ApplyEffect(effectData);
+                        Debug.Log($"[DashLogic] Applied {effectData.Name} to self");
+                    }
+                }
             }
 
             Debug.Log($"[DashLogic] {caster.name} dashed {(isBackwards ? "backwards" : "forward")} to {finalPosition}");

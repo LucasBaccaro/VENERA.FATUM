@@ -60,8 +60,10 @@ namespace Genesis.Simulation.Combat {
             // Server gestiona la lógica de la trampa
         }
 
-        [Server]
         void FixedUpdate() {
+            // Solo ejecutar en servidor
+            if (!base.IsServer) return;
+
             // Timeout (expiración)
             if (Time.time - _spawnTime > _lifetime) {
                 Expire();
@@ -76,7 +78,7 @@ namespace Genesis.Simulation.Combat {
         void OnTriggerEnter(Collider other) {
             if (_hasTriggered) return;
 
-            // Verificar que sea un enemigo
+            // Verificar que sea un NetworkObject
             if (other.TryGetComponent(out NetworkObject netObj)) {
 
                 // Ignorar al owner
@@ -85,12 +87,16 @@ namespace Genesis.Simulation.Combat {
                 // Ignorar si ya lo activamos (por si hay overlap)
                 if (_triggeredEntities.Contains(netObj.ObjectId)) return;
 
-                // Verificar que sea un enemigo (Layer Enemy o validar team)
-                if (other.gameObject.layer != LayerMask.NameToLayer("Enemy")) {
-                    // Si no es enemigo, skip
-                    // TODO: Implementar sistema de teams para PvP
+                // Verificar que sea un enemigo o player (para testing)
+                int enemyLayer = LayerMask.NameToLayer("Enemy");
+                int playerLayer = LayerMask.NameToLayer("Player");
+                
+                if (other.gameObject.layer != enemyLayer && other.gameObject.layer != playerLayer) {
+                    // Si no es enemigo ni player, skip
                     return;
                 }
+
+                Debug.Log($"[TrapController] Trap triggered by {netObj.name} (Layer: {LayerMask.LayerToName(other.gameObject.layer)})");
 
                 // ACTIVAR TRAMPA
                 Trigger(netObj);
@@ -115,8 +121,15 @@ namespace Genesis.Simulation.Combat {
 
             // Aplicar STATUS EFFECTS
             if (_abilityData != null && _abilityData.ApplyToTarget != null && _abilityData.ApplyToTarget.Length > 0) {
-                // TODO: StatusEffectSystem.ApplyEffects(victim, _abilityData.ApplyToTarget);
-                Debug.Log($"[TrapController] Applied {_abilityData.ApplyToTarget.Length} effects to {victim.name}");
+                StatusEffectSystem statusSystem = victim.GetComponent<StatusEffectSystem>();
+                if (statusSystem != null) {
+                    foreach (var effectData in _abilityData.ApplyToTarget) {
+                        statusSystem.ApplyEffect(effectData);
+                        Debug.Log($"[TrapController] Applied {effectData.Name} to {victim.name}");
+                    }
+                } else {
+                    Debug.LogWarning($"[TrapController] {victim.name} has no StatusEffectSystem component!");
+                }
             }
 
             // VFX de activación

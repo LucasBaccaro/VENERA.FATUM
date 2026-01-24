@@ -192,7 +192,14 @@ MonoBehaviour:
   invalidColor: {r: 1, g: 0, b: 0, a: 0.3}
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 320
+  validationInterval: 0.05
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  groundRayHeight: 100
+  groundRayDistance: 250
+  groundProjectionOffset: 0.02
   arrowModel: {fileID: 4129098001988724986}
   pathLine: {fileID: 8314313920523394328}
   arrowRenderer: {fileID: 2471768873200748847}

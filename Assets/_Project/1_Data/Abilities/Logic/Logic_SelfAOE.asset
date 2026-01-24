@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2984738617e7e4041ba676ef2c93049a, type: 3}
   m_Name: Logic_SelfAOE
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.Combat.SelfAOELogic
-  includeSelf: 1
+  MovementGracePeriod: 0.3
+  CancelOnMovement: 1
+  MovementThreshold: 0.1
+  includeSelf: 0

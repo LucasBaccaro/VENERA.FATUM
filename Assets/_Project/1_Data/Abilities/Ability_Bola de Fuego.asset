@@ -32,7 +32,7 @@ MonoBehaviour:
   Radius: 0.5
   Angle: 60
   Category: 1
-  BaseDamage: 50
+  BaseDamage: 90
   BaseHeal: 0
   ApplyToTarget: []
   ApplyToSelf: []

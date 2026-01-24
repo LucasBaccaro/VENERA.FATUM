@@ -3,6 +3,7 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using Genesis.Core;
 using Genesis.Simulation.Combat; // Necesario para IDamageable
+using Genesis.Data;
 
 namespace Genesis.Simulation {
 
@@ -26,6 +27,13 @@ namespace Genesis.Simulation {
 
         // Estado
         private bool _isDead;
+
+        // Referencias
+        private StatusEffectSystem _statusSystem;
+
+        void Awake() {
+             _statusSystem = GetComponent<StatusEffectSystem>();
+        }
 
         // ═══════════════════════════════════════════════════════
         // PROPERTIES (Public Read-Only)
@@ -85,9 +93,19 @@ namespace Genesis.Simulation {
                 damage -= shieldAbsorbed;
 
                 RpcShowDamageText($"{shieldAbsorbed:F0} (SHIELD)", new Color(0.5f, 0.8f, 1f));
-
-                if (damage <= 0) return; // Shield absorbió todo
             }
+
+            // LIMPIEZA DE ESCUDO (Chequeo robusto fuera del if anterior)
+            // Si el valor del escudo es 0 y tenemos un StatusEffectSystem
+            if (_currentShield.Value <= 0.01f && _statusSystem != null) {
+                // Verificar si tiene el efecto antes de intentar removerlo (para no spammear logs/RPCs)
+                if (_statusSystem.HasEffect(EffectType.Shield)) {
+                    Debug.Log($"[PlayerStats] Shield depleted! Cleaning up visual effects.");
+                    _statusSystem.RemoveEffectsOfType(EffectType.Shield);
+                }
+            }
+
+            if (damage <= 0) return; // Shield absorbió todo y no sobra daño
 
             // ═══ PASO 2: Daño a HP ═══
             _currentHealth.Value = Mathf.Max(0, _currentHealth.Value - damage);

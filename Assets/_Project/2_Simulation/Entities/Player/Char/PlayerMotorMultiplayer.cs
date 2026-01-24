@@ -1,12 +1,13 @@
 using UnityEngine;
 using FishNet.Object;
-using UnityEngine.InputSystem; 
+using UnityEngine.InputSystem;
 using Genesis.Core;
+using Genesis.Simulation.Combat;
 
 namespace Genesis.Simulation {
 
     [RequireComponent(typeof(CharacterController))]
-    public class PlayerMotorMultiplayer : NetworkBehaviour 
+    public class PlayerMotorMultiplayer : NetworkBehaviour
     {
         [Header("References")]
         public Transform cameraTransform;
@@ -17,12 +18,13 @@ namespace Genesis.Simulation {
         public float runSpeed = 10f;
         public float rotationSpeed = 15f;
         public float gravity = -20f;
-        
+
         // Variables internas
         private CharacterController _cc;
         private Vector3 _velocity; // Velocidad vertical (gravedad)
         private Vector3 _lastPosition;
         private float _lastAnimSpeed;
+        private StatusEffectSystem _statusEffects;
 
         // ═══════════════════════════════════════════════════════
         // INITIALIZATION
@@ -31,6 +33,7 @@ namespace Genesis.Simulation {
         private void Awake() {
             _cc = GetComponent<CharacterController>();
             if (animator == null) animator = GetComponentInChildren<Animator>();
+            _statusEffects = GetComponent<StatusEffectSystem>();
         }
 
         public override void OnStartClient() {
@@ -114,9 +117,26 @@ namespace Genesis.Simulation {
         // ═══════════════════════════════════════════════════════
 
         private void HandleMovement() {
+            // ═══ STATUS EFFECTS CHECKS ═══
+            if (_statusEffects != null) {
+                // Stun = no movimiento ni acciones
+                if (_statusEffects.HasEffect(Data.EffectType.Stun)) {
+                    // Animación idle forzada
+                    if (animator != null) animator.SetFloat("Speed", 0f);
+                    return;
+                }
+
+                // Root = no movimiento pero sí acciones
+                if (_statusEffects.HasEffect(Data.EffectType.Root)) {
+                    // Animación idle forzada
+                    if (animator != null) animator.SetFloat("Speed", 0f);
+                    return;
+                }
+            }
+
             // Input
             Vector2 input = GetInput();
-            
+
             // Dirección basada en cámara
             Vector3 moveDir = Vector3.zero;
             if (cameraTransform != null) {
@@ -126,7 +146,7 @@ namespace Genesis.Simulation {
                 camRight.y = 0;
                 camFwd.Normalize();
                 camRight.Normalize();
-                
+
                 moveDir = camFwd * input.y + camRight * input.x;
             } else {
                 moveDir = new Vector3(input.x, 0, input.y);
@@ -135,8 +155,14 @@ namespace Genesis.Simulation {
             // Velocidad
             bool isRunning = (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed);
             float targetSpeed = isRunning ? runSpeed : walkSpeed;
-            
+
             if (moveDir.sqrMagnitude < 0.01f) targetSpeed = 0f;
+
+            // ═══ APLICAR STATUS EFFECT MULTIPLIERS ═══
+            if (_statusEffects != null && targetSpeed > 0f) {
+                float speedMultiplier = _statusEffects.GetMovementSpeedMultiplier();
+                targetSpeed *= speedMultiplier;
+            }
 
             // Movimiento Horizontal
             Vector3 velocityXZ = moveDir * targetSpeed;

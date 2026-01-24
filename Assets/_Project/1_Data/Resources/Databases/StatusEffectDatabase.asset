@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 191799ef54cb84a6493bb9b8f2f54e57, type: 3}
+  m_Name: StatusEffectDatabase
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.StatusEffectDatabase
+  effects:
+  - {fileID: 11400000, guid: d8e2b8e81bed64484a75ceaa78924ceb, type: 2}
+  - {fileID: 11400000, guid: 79124c4e5365e4c91a694706a8ccd5d0, type: 2}
+  - {fileID: 11400000, guid: 4c9b9197e03d14aa3a61ac4c94080f41, type: 2}
+  - {fileID: 11400000, guid: a8bc621e3d8f34cf58cea1c7e7248355, type: 2}
+  - {fileID: 11400000, guid: bc26efc5e226e4fd9929b1e0051f6499, type: 2}
+  - {fileID: 11400000, guid: 3ffb66a20dacc47a49ec593c4fd8c676, type: 2}
+  - {fileID: 11400000, guid: e1b9606fc62d54f55aa0235f491ebdea, type: 2}
+  - {fileID: 11400000, guid: fa47f34cc7d1f4895ac1c575bd2d54b1, type: 2}
+  - {fileID: 11400000, guid: 4ef22e90090aa4c85a07210b9e8c2d66, type: 2}
+  - {fileID: 11400000, guid: 8e10ab272176048a4ab1b679d5e63ee1, type: 2}
+  - {fileID: 11400000, guid: 16f16eb8b97dc4cd195cc2943b6aa5c6, type: 2}

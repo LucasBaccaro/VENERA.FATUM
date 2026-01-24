@@ -46,8 +46,13 @@ namespace Genesis.Simulation.Combat {
 
             // STATUS EFFECTS (to self) - Estos se aplican siempre al castear
             if (data.ApplyToSelf != null && data.ApplyToSelf.Length > 0) {
-                // TODO: StatusEffectSystem.ApplyEffects(caster, data.ApplyToSelf);
-                Debug.Log($"[TargetedLogic] Applied {data.ApplyToSelf.Length} effects to self");
+                StatusEffectSystem casterStatus = caster.GetComponent<StatusEffectSystem>();
+                if (casterStatus != null) {
+                    foreach (var effectData in data.ApplyToSelf) {
+                        casterStatus.ApplyEffect(effectData);
+                        Debug.Log($"[TargetedLogic] Applied {effectData.Name} to self");
+                    }
+                }
             }
         }
 
@@ -96,8 +101,13 @@ namespace Genesis.Simulation.Combat {
 
             // STATUS EFFECTS (to target)
             if (data.ApplyToTarget != null && data.ApplyToTarget.Length > 0) {
-                // TODO: StatusEffectSystem.ApplyEffects(target, data.ApplyToTarget);
-                Debug.Log($"[TargetedLogic] Applied {data.ApplyToTarget.Length} effects to target");
+                StatusEffectSystem targetStatus = target.GetComponent<StatusEffectSystem>();
+                if (targetStatus != null) {
+                    foreach (var effectData in data.ApplyToTarget) {
+                        targetStatus.ApplyEffect(effectData);
+                        Debug.Log($"[TargetedLogic] Applied {effectData.Name} to {target.name}");
+                    }
+                }
             }
 
             // IMPACT VFX

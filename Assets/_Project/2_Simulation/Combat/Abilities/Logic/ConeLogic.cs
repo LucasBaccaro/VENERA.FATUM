@@ -58,7 +58,12 @@ namespace Genesis.Simulation.Combat {
 
                         // Aplicar STATUS EFFECTS
                         if (data.ApplyToTarget != null && data.ApplyToTarget.Length > 0) {
-                            // TODO: StatusEffectSystem.ApplyEffects(netObj, data.ApplyToTarget);
+                            StatusEffectSystem statusSystem = netObj.GetComponent<StatusEffectSystem>();
+                            if (statusSystem != null) {
+                                foreach (var effectData in data.ApplyToTarget) {
+                                    statusSystem.ApplyEffect(effectData);
+                                }
+                            }
                         }
 
                         // Impact VFX en cada target

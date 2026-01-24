@@ -73,8 +73,15 @@ namespace Genesis.Simulation.Combat {
 
                 // Aplicar STATUS EFFECTS
                 if (data.ApplyToTarget != null && data.ApplyToTarget.Length > 0) {
-                    // TODO: StatusEffectSystem.ApplyEffects(enemy, data.ApplyToTarget);
-                    Debug.Log($"[ChannelLogic] Applied {data.ApplyToTarget.Length} effects to {enemy.name}");
+                    StatusEffectSystem statusSystem = enemy.GetComponent<StatusEffectSystem>();
+                    if (statusSystem != null) {
+                        foreach (var effectData in data.ApplyToTarget) {
+                            statusSystem.ApplyEffect(effectData);
+                            Debug.Log($"[ChannelLogic] Applied {effectData.Name} to {enemy.name}");
+                        }
+                    } else {
+                        Debug.LogWarning($"[ChannelLogic] {enemy.name} has no StatusEffectSystem component!");
+                    }
                 }
 
                 // Spawnar Impact VFX

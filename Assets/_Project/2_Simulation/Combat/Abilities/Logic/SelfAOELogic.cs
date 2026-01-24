@@ -43,8 +43,12 @@ namespace Genesis.Simulation.Combat {
 
                     // Aplicar STATUS EFFECTS
                     if (data.ApplyToTarget != null && data.ApplyToTarget.Length > 0) {
-                        // TODO: StatusEffectSystem.ApplyEffects(netObj, data.ApplyToTarget);
-                        Debug.Log($"[SelfAOELogic] Applied {data.ApplyToTarget.Length} effects to {netObj.name}");
+                        StatusEffectSystem statusSystem = netObj.GetComponent<StatusEffectSystem>();
+                        if (statusSystem != null) {
+                            foreach (var effectData in data.ApplyToTarget) {
+                                statusSystem.ApplyEffect(effectData);
+                            }
+                        }
                     }
 
                     // Impact VFX individual en cada enemigo

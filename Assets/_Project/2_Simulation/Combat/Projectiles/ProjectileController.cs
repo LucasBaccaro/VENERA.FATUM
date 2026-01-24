@@ -14,15 +14,17 @@ namespace Genesis.Simulation.Combat {
         private float _radius = 0.2f;
         private float _spawnTime;
         private bool _initialized;
+        private StatusEffectData[] _effectsToApply;
 
         [Header("Visuals")]
         [SerializeField] private GameObject impactVfxPrefab;
 
-        public void Initialize(NetworkObject owner, float damage, Vector3 velocity, float radius) {
+        public void Initialize(NetworkObject owner, float damage, Vector3 velocity, float radius, StatusEffectData[] effects = null) {
             _owner = owner;
             _damage = damage;
             _velocity = velocity;
             _radius = radius;
+            _effectsToApply = effects;
             _spawnTime = Time.time;
             _initialized = true;
 
@@ -73,21 +75,69 @@ namespace Genesis.Simulation.Combat {
 
         [Server]
         private void HandleImpact(RaycastHit hit) {
-            // Ignorar al dueño (no auto-daño)
-            if (hit.collider.TryGetComponent(out NetworkObject netObj)) {
-                if (netObj == _owner) return;
+            // ═══ CASO 1: Impacto con Environment (pared/suelo) ═══
+            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Environment")) {
+                SpawnImpactVFX(hit.point, hit.normal);
+                Despawn();
+                return;
             }
 
-            // Aplicar daño
-            if (hit.collider.TryGetComponent(out IDamageable damageable)) {
+            // ═══ CASO 2: Impacto con Entidad ═══
+            NetworkObject targetNetObj = hit.collider.GetComponent<NetworkObject>();
+            if (targetNetObj == null) {
+                Despawn();
+                return;
+            }
+
+            // No auto-daño (el proyectil no daña a quien lo disparó)
+            if (targetNetObj == _owner) return;
+
+            // ═══ CASO 3: REFLECT (target tiene buff de reflejo activo) ═══
+            if (targetNetObj.TryGetComponent(out StatusEffectSystem statusSystem)) {
+                if (statusSystem.HasEffect(EffectType.Reflect)) {
+                    // Reflejar el proyectil en dirección opuesta
+                    _velocity = Vector3.Reflect(_velocity, hit.normal);
+                    _owner = targetNetObj; // El target ahora es el nuevo dueño del proyectil
+
+                    // VFX de reflejo (escudo brillante)
+                    RpcPlayReflectVFX(hit.point);
+
+                    Debug.Log($"[ProjectileController] Projectile reflected by {targetNetObj.name}!");
+
+                    return; // NO despawnear, el proyectil sigue volando
+                }
+            }
+
+            // ═══ CASO 4: Daño Normal ═══
+            if (targetNetObj.TryGetComponent(out IDamageable damageable)) {
                 damageable.TakeDamage(_damage, _owner);
             }
 
-            // VFX
+            // ═══ CASO 5: Aplicar Status Effects ═══
+            if (_effectsToApply != null && _effectsToApply.Length > 0) {
+                StatusEffectSystem targetStatus = targetNetObj.GetComponent<StatusEffectSystem>();
+                if (targetStatus != null) {
+                    foreach (var effectData in _effectsToApply) {
+                        targetStatus.ApplyEffect(effectData);
+                        Debug.Log($"[ProjectileController] Applied {effectData.Name} to {targetNetObj.name}");
+                    }
+                } else {
+                    Debug.LogWarning($"[ProjectileController] {targetNetObj.name} has no StatusEffectSystem!");
+                }
+            }
+
+            // VFX de impacto (explosión, sangre, chispas)
             SpawnImpactVFX(hit.point, hit.normal);
 
-            // Destruir
+            // Despawn del proyectil
             Despawn();
+        }
+
+        [ObserversRpc]
+        private void RpcPlayReflectVFX(Vector3 position) {
+            // Efecto visual de reflejo (solo clientes)
+            // TODO: Instanciar partículas de escudo brillante cuando estén disponibles
+            Debug.Log($"[ProjectileController] Playing reflect VFX at {position}");
         }
 
         private void SpawnImpactVFX(Vector3 pos, Vector3 normal) {

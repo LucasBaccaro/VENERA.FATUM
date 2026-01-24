@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: -2699330521129833483}
   - component: {fileID: -1511099638696177002}
   - component: {fileID: -6674976540633462443}
+  - component: {fileID: 46509935400827827}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -152,6 +153,7 @@ MonoBehaviour:
   - {fileID: -186485539870015897}
   - {fileID: -2699330521129833483}
   - {fileID: -6674976540633462443}
+  - {fileID: 46509935400827827}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -162,7 +164,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584323486084438468
+  _initializedTimestamp: -8584323332785079728
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -178,7 +180,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 11
+  <PrefabId>k__BackingField: 12
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 10407916748453484099
   SceneId: 0
@@ -248,8 +250,8 @@ MonoBehaviour:
   _componentIndexCache: 2
   _addedNetworkObject: {fileID: 5015743577735707121}
   _networkObjectCache: {fileID: 5015743577735707121}
-  maxHealth: 111111
-  maxMana: 111111
+  maxHealth: 10000
+  maxMana: 10000
   manaRegenPerSecond: 5
 --- !u!114 &-500167922849418954
 MonoBehaviour:
@@ -320,12 +322,12 @@ MonoBehaviour:
   indicatorSystem: {fileID: -1511099638696177002}
   castVFXSpawnPoint: {fileID: 7752732318354539809}
   abilitySlots:
-  - {fileID: 11400000, guid: a038d18b4badf468ab8f330e270f5d96, type: 2}
+  - {fileID: 11400000, guid: 5d72dd516b9cd4a7592b8f5ea0facdfe, type: 2}
   - {fileID: 11400000, guid: 67583c2d9b11d4093b6ee596bfad9007, type: 2}
   - {fileID: 11400000, guid: 5717b8f0092894f76a510a610b4ad8f0, type: 2}
   - {fileID: 11400000, guid: 4533b217260b145fe8f808b28f729c9e, type: 2}
   - {fileID: 11400000, guid: 4fbaf26ff9c0444c185cae0ac397ecd4, type: 2}
-  - {fileID: 11400000, guid: 5d72dd516b9cd4a7592b8f5ea0facdfe, type: 2}
+  - {fileID: 11400000, guid: 728567e18a9ee470196a9fbcae362580, type: 2}
 --- !u!114 &-1511099638696177002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -356,6 +358,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.UI.PlayerUIConnector
   _componentIndexCache: 6
+  _addedNetworkObject: {fileID: 5015743577735707121}
+  _networkObjectCache: {fileID: 5015743577735707121}
+--- !u!114 &46509935400827827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3168934939399175360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f904ecc7f7074b8f92201891ca36e09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.Combat.StatusEffectSystem
+  _componentIndexCache: 7
   _addedNetworkObject: {fileID: 5015743577735707121}
   _networkObjectCache: {fileID: 5015743577735707121}
 --- !u!1 &6379225025039195788

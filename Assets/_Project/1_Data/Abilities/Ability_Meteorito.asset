@@ -18,11 +18,14 @@ MonoBehaviour:
   Description: "Invoca un meteorito gigante que impacta en el \xE1rea."
   Logic: {fileID: 11400000, guid: c85fcf836c0ea4e1ab13b56be225f5d1, type: 2}
   ManaCost: 50
-  Cooldown: 20
+  Cooldown: 2
   GCD: 1.5
   CastType: 1
   CastTime: 1.8
   CanMoveWhileCasting: 0
+  ChannelTickRate: 0.1
+  ChannelHitAllTargets: 1
+  ChannelMaxDuration: 0
   TargetingMode: 3
   IndicatorType: 2
   Range: 20
@@ -37,7 +40,7 @@ MonoBehaviour:
   ProjectileSpeed: 0
   IndicatorMaterial: {fileID: 2100000, guid: ca318529c74824d558cd2c5c6f6bda79, type: 2}
   CastVFX: {fileID: 0}
-  ImpactVFX: {fileID: 0}
+  ImpactVFX: {fileID: 5368608346029468957, guid: f41f9c17024d3aa448d7db223490c53f, type: 3}
   CastSound: {fileID: 0}
   ImpactSound: {fileID: 0}
   AnimationTrigger: Cast

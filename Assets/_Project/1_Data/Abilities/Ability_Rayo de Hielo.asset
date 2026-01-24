@@ -21,7 +21,7 @@ MonoBehaviour:
   Cooldown: 8
   GCD: 1
   CastType: 2
-  CastTime: 0
+  CastTime: 5
   CanMoveWhileCasting: 0
   ChannelTickRate: 0.1
   ChannelHitAllTargets: 1

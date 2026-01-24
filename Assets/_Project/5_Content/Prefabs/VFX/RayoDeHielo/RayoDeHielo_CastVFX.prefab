@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2009436335926725086}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -0, y: -0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -35,7 +35,7 @@ Transform:
   - {fileID: 8893881128858916900}
   - {fileID: 4114788570153765338}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!114 &862757895837838185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,7 +112,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584323833641261628
+  _initializedTimestamp: -8584323472472804838
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -134,7 +134,7 @@ MonoBehaviour:
   SceneId: 0
   SerializedTransformProperties:
     Position: {x: -0, y: -0, z: 0}
-    Rotation: {x: -0.5, y: 0.5, z: 0.5, w: 0.5}
+    Rotation: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
     Scale: {x: 1, y: 1, z: 1}
     IsValid: 1
 --- !u!1 &2952159513576596375

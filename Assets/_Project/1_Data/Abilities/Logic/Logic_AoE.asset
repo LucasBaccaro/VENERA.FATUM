@@ -15,3 +15,4 @@ MonoBehaviour:
   impactDelay: 1
   affectsAllies: 0
   affectsEnemies: 1
+  warningIndicatorPrefab: {fileID: 1234567890123456792, guid: b9f0e2345678901bcdef2345678901ab, type: 3}

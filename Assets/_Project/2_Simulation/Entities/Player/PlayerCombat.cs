@@ -52,6 +52,7 @@ namespace Genesis.Simulation {
         private float _channelMaxDuration;
         private float _movementGracePeriod = 0.3f; // Coyote time para evitar cancelación por movimiento accidental
         private bool _isInMovementGracePeriod = false;
+        private Vector3 _channelStartPosition; // Posición cuando inició el channeling (para detectar movimiento)
 
         // ═══════════════════════════════════════════════════════
         // ENUMS
@@ -139,9 +140,46 @@ namespace Genesis.Simulation {
                 return;
             }
 
-            // Actualizar dirección del LineIndicator con la posición del mouse
-            if (indicatorSystem != null && Mouse.current != null) {
-                indicatorSystem.UpdateIndicator(Mouse.current.position.ReadValue());
+            // Calcular dirección desde el jugador hacia el mouse
+            Vector3 channelDirection = _pendingDirection; // Fallback a dirección inicial
+            if (Mouse.current != null && Camera.main != null) {
+                Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+                if (Physics.Raycast(ray, out RaycastHit hit, 1000f, LayerMask.GetMask("Ground", "Environment"))) {
+                    Vector3 directionToMouse = (hit.point - transform.position);
+                    directionToMouse.y = 0; // Mantener horizontal
+                    if (directionToMouse.sqrMagnitude > 0.001f) {
+                        channelDirection = directionToMouse.normalized;
+                        _pendingDirection = channelDirection; // Actualizar dirección guardada
+                    }
+                }
+            }
+
+            // ACTUALIZAR POSICIÓN Y ROTACIÓN DEL CAST VFX
+            if (_currentCastVFX != null) {
+                // Actualizar posición del VFX al spawn point (sigue al jugador aunque no esté attachado)
+                if (castVFXSpawnPoint != null) {
+                    _currentCastVFX.transform.position = castVFXSpawnPoint.position;
+                }
+
+                // Rotar hacia la dirección del mouse
+                if (channelDirection != Vector3.zero) {
+                    Vector3 horizontalDirection = channelDirection;
+                    horizontalDirection.y = 0;
+                    if (horizontalDirection.sqrMagnitude > 0.001f) {
+                        Quaternion targetRotation = Quaternion.LookRotation(horizontalDirection) * Quaternion.Euler(-90f, 0f, 0f);
+                        _currentCastVFX.transform.rotation = targetRotation;
+                    }
+                }
+            }
+
+            // DETECTAR MOVIMIENTO y cancelar si no puede moverse mientras canalea
+            if (!_pendingAbility.CanMoveWhileCasting && !_isInMovementGracePeriod) {
+                float distanceMoved = Vector3.Distance(transform.position, _channelStartPosition);
+                if (distanceMoved > 0.1f) { // Threshold de 0.1 unidades para evitar micro-movimientos
+                    Debug.Log($"[PlayerCombat] Channeling interrupted by movement (moved {distanceMoved:F2}m)");
+                    StopChanneling();
+                    return;
+                }
             }
 
             // Ejecutar tick de daño si es momento
@@ -150,27 +188,27 @@ namespace Genesis.Simulation {
                 _nextChannelTick = Time.time + _channelTickRate;
             }
 
-            // Cancelar con Escape
-            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) {
+            // Cancelar con Right Click o Escape
+            if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame) {
                 StopChanneling();
+                return;
             }
 
-            // TODO: Detectar movimiento y cancelar si !CanMoveWhileCasting y no está en grace period
-            // (Implementar después con el sistema de movimiento)
+            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) {
+                StopChanneling();
+                return;
+            }
         }
 
         /// <summary>
         /// Ejecuta un tick de daño/efecto del channeling
         /// </summary>
         private void ExecuteChannelTick() {
-            if (_pendingAbility == null || indicatorSystem == null) return;
+            if (_pendingAbility == null) return;
 
-            // Obtener dirección actual del LineIndicator
-            AbilityIndicator indicator = indicatorSystem.GetCurrentIndicator();
-            if (indicator == null) return;
-
-            Vector3 direction = indicator.GetDirection();
-            Vector3 targetPoint = indicator.GetTargetPoint();
+            // Calcular target point basado en la dirección actual
+            Vector3 direction = _pendingDirection;
+            Vector3 targetPoint = transform.position + direction * _pendingAbility.Range;
 
             // Enviar tick al servidor
             CmdChannelTick(_pendingAbility.ID, targetPoint, direction);
@@ -191,7 +229,7 @@ namespace Genesis.Simulation {
 
             // Check for movement interruption (if can't move while casting)
             if (_pendingAbility != null && !_pendingAbility.CanMoveWhileCasting) {
-                // Si el jugador se mueve, interrumpir el cast
+                // Si el jugador se mueve, interrumpir el cast                                                                
                 // TODO: Implementar detección de movimiento si es necesario
             }
 
@@ -261,23 +299,14 @@ namespace Genesis.Simulation {
             // Validaciones básicas (comunes a ambos sistemas)
             if (!ValidateBasicRequirements(ability)) return;
 
-            // DECISIÓN ARQUITECTÓNICA CLAVE: Channeling vs Targeted vs Skillshot
-            if (ability.CastType == CastingType.Channeling) {
-                // FLUJO CHANNELING: Habilidad de canal continuo (Rayo de Hielo, etc)
-                // Press-once para iniciar, press-again para cancelar
-                if (_combatState == CombatState.Channeling && _pendingAbility == ability) {
-                    // Ya está channeling esta habilidad → cancelar
-                    StopChanneling();
-                } else {
-                    // Iniciar channeling
-                    EnterChannelingMode(ability, slotIndex);
-                }
-            }
-            else if (ability.IndicatorType == IndicatorType.None) {
+            // DECISIÓN ARQUITECTÓNICA CLAVE: Targeted vs Skillshot/Channeling
+            if (ability.IndicatorType == IndicatorType.None) {
                 // FLUJO LEGACY: Targeted ability (sistema actual - Fase 5)
                 ExecuteTargetedAbility(ability);
             } else {
-                // FLUJO NUEVO: Skillshot (requiere aiming)
+                // FLUJO NUEVO: Skillshot y Channeling (ambos requieren aiming)
+                // Channeling: presionar tecla → aiming → left click → channeling
+                // Skillshot: presionar tecla → aiming → left click → cast
                 EnterAimingMode(ability);
             }
         }
@@ -426,45 +455,6 @@ namespace Genesis.Simulation {
         // ═══════════════════════════════════════════════════════
 
         /// <summary>
-        /// Entra en modo Channeling (press-once para iniciar)
-        /// </summary>
-        private void EnterChannelingMode(AbilityData ability, int slotIndex) {
-            _combatState = CombatState.Channeling;
-            _pendingAbility = ability;
-            _pendingSlotIndex = slotIndex;
-            EventBus.Trigger<string>("OnCombatStateChanged", _combatState.ToString());
-
-            // Setup channeling timing
-            _channelStartTime = Time.time;
-            _nextChannelTick = Time.time + ability.ChannelTickRate;
-            _channelTickRate = ability.ChannelTickRate;
-            _channelMaxDuration = ability.ChannelMaxDuration;
-
-            // Activar grace period para evitar cancelación por movimiento accidental
-            _isInMovementGracePeriod = true;
-            StartCoroutine(MovementGracePeriodCoroutine());
-
-            // Mostrar LineIndicator en modo channeling
-            if (indicatorSystem != null) {
-                indicatorSystem.ShowIndicator(ability, transform);
-
-                // Activar modo channeling en el LineIndicator
-                AbilityIndicator indicator = indicatorSystem.GetCurrentIndicator();
-                if (indicator is LineIndicator lineIndicator) {
-                    lineIndicator.SetChannelMode(true);
-                }
-            }
-
-            // SPAWNER CHANNEL VFX (durante el channeling)
-            SpawnCastVFX(ability);
-
-            // Notificar servidor que inició channeling
-            CmdStartChanneling(ability.ID);
-
-            Debug.Log($"[PlayerCombat] Started Channeling: {ability.Name}");
-        }
-
-        /// <summary>
         /// Coroutine para el grace period de movimiento
         /// </summary>
         private System.Collections.IEnumerator MovementGracePeriodCoroutine() {
@@ -549,6 +539,73 @@ namespace Genesis.Simulation {
                 Debug.LogWarning("[PlayerCombat] Invalid position!");
                 return;
             }
+
+            // DECISIÓN: Channeling vs Skillshot Normal
+            if (_pendingAbility.CastType == CastingType.Channeling) {
+                // CHANNELING: No ocultar indicador, activar modo channel
+                StartChannelingFromAiming();
+            } else {
+                // SKILLSHOT NORMAL: Ejecutar cast normal
+                ExecuteSkillshotCast();
+            }
+        }
+
+        /// <summary>
+        /// Inicia channeling desde el modo aiming (después de confirmar con Left Click)
+        /// </summary>
+        private void StartChannelingFromAiming() {
+            if (_pendingAbility == null || indicatorSystem == null) return;
+
+            // Obtener dirección inicial antes de ocultar el indicador
+            AbilityIndicator indicator = indicatorSystem.GetCurrentIndicator();
+            Vector3 initialDirection = Vector3.forward;
+            if (indicator != null) {
+                initialDirection = indicator.GetDirection();
+            }
+
+            // Ocultar el indicador
+            if (indicator is LineIndicator lineIndicator) {
+                lineIndicator.SetChannelMode(false);
+            }
+            indicatorSystem.HideIndicator();
+
+            // Cambiar a modo Channeling
+            _combatState = CombatState.Channeling;
+            EventBus.Trigger<string>("OnCombatStateChanged", _combatState.ToString());
+
+            // Setup channeling timing
+            _channelStartTime = Time.time;
+            _nextChannelTick = Time.time + _pendingAbility.ChannelTickRate;
+            _channelTickRate = _pendingAbility.ChannelTickRate;
+            _channelMaxDuration = _pendingAbility.ChannelMaxDuration;
+
+            // Guardar posición inicial para detectar movimiento
+            _channelStartPosition = transform.position;
+
+            // Guardar dirección inicial del channeling
+            _pendingDirection = initialDirection;
+
+            // Activar grace period
+            _isInMovementGracePeriod = true;
+            StartCoroutine(MovementGracePeriodCoroutine());
+
+            // SPAWNER CHANNEL VFX
+            SpawnCastVFX(_pendingAbility);
+
+            // Notificar servidor
+            CmdStartChanneling(_pendingAbility.ID);
+
+            Debug.Log($"[PlayerCombat] Started Channeling from Aiming: {_pendingAbility.Name}");
+        }
+
+        /// <summary>
+        /// Ejecuta un skillshot normal (no channeling)
+        /// </summary>
+        private void ExecuteSkillshotCast() {
+            if (_pendingAbility == null || indicatorSystem == null) return;
+
+            AbilityIndicator indicator = indicatorSystem.GetCurrentIndicator();
+            if (indicator == null) return;
 
             // Obtener datos del indicador
             Vector3 targetPoint = indicator.GetTargetPoint();
@@ -850,21 +907,23 @@ namespace Genesis.Simulation {
             if (castVFXSpawnPoint != null) {
                 // Usar el spawn point asignado
                 spawnPos = castVFXSpawnPoint.position;
-                spawnRot = castVFXSpawnPoint.rotation;
+                spawnRot = castVFXSpawnPoint.rotation * Quaternion.Euler(-90f, 0f, 0f); // X=-90 offset
             } else {
                 // Fallback: 1 metro arriba del jugador
                 spawnPos = transform.position + Vector3.up * 1f;
-                spawnRot = Quaternion.identity;
+                spawnRot = Quaternion.identity * Quaternion.Euler(-90f, 0f, 0f); // X=-90 offset
                 Debug.LogWarning("[PlayerCombat] castVFXSpawnPoint no asignado, usando posición default");
             }
 
             // Determinar si debe ser hijo del spawn point (para seguir al jugador)
-            bool attachToPlayer = castVFXSpawnPoint != null;
+            // IMPORTANTE: Para channeling, NO attachear porque rotaremos el VFX manualmente cada frame
+            bool isChanneling = (ability.CastType == CastingType.Channeling);
+            bool attachToPlayer = castVFXSpawnPoint != null && !isChanneling;
 
             // Solicitar spawn en red via ServerRpc
             CmdSpawnCastVFX(ability.CastVFX, spawnPos, spawnRot, ability.CastTime, attachToPlayer);
 
-            Debug.Log($"[PlayerCombat] Requesting CastVFX spawn for {ability.Name} at {spawnPos} (CastTime: {ability.CastTime}s, Attached: {attachToPlayer})");
+            Debug.Log($"[PlayerCombat] Requesting CastVFX spawn for {ability.Name} at {spawnPos} (CastTime: {ability.CastTime}s, Attached: {attachToPlayer}, Channeling: {isChanneling})");
         }
 
         /// <summary>
@@ -946,9 +1005,23 @@ namespace Genesis.Simulation {
                 // Solo el servidor puede despawnear NetworkObjects
                 if (base.IsServer) {
                     FishNet.InstanceFinder.ServerManager.Despawn(_currentCastVFX.gameObject);
+                } else {
+                    // Si somos cliente, pedir al servidor que lo despawnee
+                    CmdDestroyCastVFX();
                 }
 
                 // Limpiar referencia en todos los clientes
+                _currentCastVFX = null;
+            }
+        }
+
+        /// <summary>
+        /// ServerRpc: Despawnea el VFX desde el servidor
+        /// </summary>
+        [ServerRpc]
+        private void CmdDestroyCastVFX() {
+            if (_currentCastVFX != null) {
+                FishNet.InstanceFinder.ServerManager.Despawn(_currentCastVFX.gameObject);
                 _currentCastVFX = null;
             }
         }

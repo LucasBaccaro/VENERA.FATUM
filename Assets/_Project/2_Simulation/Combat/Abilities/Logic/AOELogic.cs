@@ -18,15 +18,42 @@ namespace Genesis.Simulation.Combat {
         [SerializeField] private bool affectsAllies = false;
         [SerializeField] private bool affectsEnemies = true;
 
+        [Header("Warning Indicator")]
+        [Tooltip("Prefab de AOEWarningIndicator para mostrar durante el delay. Opcional.")]
+        [SerializeField] private GameObject warningIndicatorPrefab;
+
         public override void ExecuteDirectional(NetworkObject caster, Vector3 targetPoint, Vector3 direction, AbilityData data) {
 
             if (impactDelay > 0) {
-                // NOTE: Para AOE con delay (Meteorito), CastVFX se usa como WARNING en el suelo
-                // Esto es diferente del CastVFX que se spawna en PlayerCombat durante el casting
-                if (data.CastVFX != null) {
-                    GameObject warningVfx = Object.Instantiate(data.CastVFX, targetPoint, Quaternion.identity);
-                    FishNet.InstanceFinder.ServerManager.Spawn(warningVfx);
-                    Object.Destroy(warningVfx, impactDelay + 1f);
+                // Spawnar warning indicator en el suelo
+                if (warningIndicatorPrefab != null) {
+                    // Ajustar posición al suelo (sin offset, el indicador maneja su propia altura)
+                    Vector3 spawnPos = targetPoint;
+                    spawnPos.y = targetPoint.y; // Mantener altura del ground
+
+                    // IMPORTANTE: Spawnearlo con rotación correcta desde el principio para evitar glitch visual en clientes
+                    Quaternion spawnRot = Quaternion.Euler(90f, 0f, 0f);
+                    GameObject warningObj = Object.Instantiate(warningIndicatorPrefab, spawnPos, spawnRot);
+
+                    // Verificar que tiene NetworkObject
+                    NetworkObject nob = warningObj.GetComponent<NetworkObject>();
+                    if (nob != null) {
+                        // Spawnearlo en red para que todos los clientes lo vean
+                        FishNet.InstanceFinder.ServerManager.Spawn(warningObj);
+
+                        // Inicializar el warning indicator DESPUÉS del spawn
+                        if (warningObj.TryGetComponent<AOEWarningIndicator>(out var indicator)) {
+                            indicator.Initialize(spawnPos, data.Radius, impactDelay);
+                            Debug.Log($"[AOELogic] Warning indicator spawned at {spawnPos} for {data.Name} (radius: {data.Radius}, delay: {impactDelay}s)");
+                        } else {
+                            Debug.LogError($"[AOELogic] Warning prefab missing AOEWarningIndicator component!");
+                        }
+                    } else {
+                        Debug.LogError($"[AOELogic] Warning prefab missing NetworkObject! Cannot spawn in network.");
+                        Object.Destroy(warningObj);
+                    }
+                } else {
+                    Debug.LogWarning($"[AOELogic] {data.Name} has impactDelay but no warningIndicatorPrefab assigned!");
                 }
 
                 // Ejecutar impacto después del delay
@@ -92,10 +119,12 @@ namespace Genesis.Simulation.Combat {
 
         private LayerMask GetLayerMask() {
             // Detectar según configuración
+            // IMPORTANTE: Siempre incluimos ambos layers (Enemy y Player) y filtramos por team en vez de por layer
+            // Esto permite que habilidades dañen a players en PvP
             if (affectsEnemies && affectsAllies) {
                 return LayerMask.GetMask("Enemy", "Player");
             } else if (affectsEnemies) {
-                return LayerMask.GetMask("Enemy");
+                return LayerMask.GetMask("Enemy", "Player"); // Incluir Player para PvP
             } else if (affectsAllies) {
                 return LayerMask.GetMask("Player");
             }

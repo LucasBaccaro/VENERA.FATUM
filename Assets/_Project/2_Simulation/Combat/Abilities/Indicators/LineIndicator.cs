@@ -16,6 +16,10 @@ namespace Genesis.Simulation.Combat {
 	[SerializeField] private float projectileRadius = 0.2f;
 	[SerializeField] private float impactSkin = 0.15f;
 
+        [Header("Channeling")]
+        [Tooltip("LayerMask para channeling (atraviesa enemigos, choca con paredes). Si está vacío, usa solo Environment/Wall/Obstacle.")]
+        [SerializeField] private LayerMask channelObstacleMask;
+
 
         private float _range;
         private float _width;
@@ -46,6 +50,18 @@ _direction = direction.normalized;
 // Evita que el cast "raspe" el suelo en rampas
 Vector3 origin = _startPoint + Vector3.up * 0.5f;
 
+// En modo channeling, solo chocar con paredes/obstáculos, NO con enemigos
+// En modo normal, chocar con todo (obstacleMask)
+LayerMask maskToUse;
+if (_isChannelMode) {
+    // Usar channelObstacleMask si está configurado, sino fallback a layers estándar
+    maskToUse = (channelObstacleMask.value != 0)
+        ? channelObstacleMask
+        : LayerMask.GetMask("Environment", "Wall", "Obstacle");
+} else {
+    maskToUse = obstacleMask;
+}
+
 // SphereCast = proyectil con volumen (no rayo infinitamente fino)
 if (Physics.SphereCast(
         origin,
@@ -53,7 +69,7 @@ if (Physics.SphereCast(
         _direction,
         out RaycastHit hit,
         _range,
-        obstacleMask,
+        maskToUse,
         QueryTriggerInteraction.Ignore))
 {
     // Impacto válido: empujamos hacia afuera para evitar clipping

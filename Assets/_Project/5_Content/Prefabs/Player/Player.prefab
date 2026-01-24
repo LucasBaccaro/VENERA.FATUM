@@ -164,7 +164,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584323141181998428
+  _initializedTimestamp: -8584323135996432748
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -322,7 +322,7 @@ MonoBehaviour:
   indicatorSystem: {fileID: -1511099638696177002}
   castVFXSpawnPoint: {fileID: 7752732318354539809}
   abilitySlots:
-  - {fileID: 11400000, guid: ef9fa2f7642e5472ba8f75a3585ec345, type: 2}
+  - {fileID: 11400000, guid: 4533b217260b145fe8f808b28f729c9e, type: 2}
   - {fileID: 11400000, guid: 03f21edff8e0b4ef6bd56d786104a64b, type: 2}
   - {fileID: 11400000, guid: d4f040a1150c04811a97e752198deb02, type: 2}
   - {fileID: 11400000, guid: 5e435d0e1ee4c44e0ae5c808132d13dc, type: 2}

@@ -50,22 +50,40 @@ namespace Genesis.Simulation.Combat {
             // Calcular punto deseado
             Vector3 desiredPoint = _startPoint + _direction * maxDashDistance;
 
+            // 1. Levantar el origen del Raycast para evitar chocar con el suelo (pequeños desniveles)
+            Vector3 checkOrigin = _startPoint + Vector3.up * 0.5f;
+
             // Raycast para detectar obstáculos en el camino
-            if (Physics.Raycast(_startPoint, _direction, out RaycastHit hit, maxDashDistance, obstacleMask)) {
-                // Hay un obstáculo - ajustar punto antes del obstáculo
-                _targetPoint = hit.point - _direction * 0.5f; // Offset para no quedar pegado a la pared
-                _isValid = false; // Obstruido
+            if (Physics.Raycast(checkOrigin, _direction, out RaycastHit hit, maxDashDistance, obstacleMask)) {
+                
+                // Hay un obstáculo - ajustar punto antes del obstáculo (Partial Dash)
+                // En lugar de invalidar, permitimos cargar HASTA el obstáculo.
+                _targetPoint = hit.point - _direction * 0.9f; 
+                
+                // Bajamos el punto al suelo visualmente si es posible, para que la flecha no quede flotando
+                if (Physics.Raycast(_targetPoint + Vector3.up, Vector3.down, out RaycastHit floorHit, 2f, _groundLayer)) {
+                    _targetPoint.y = floorHit.point.y;
+                } else {
+                    _targetPoint.y = _startPoint.y; // Fallback a altura original
+                }
+
+                _isValid = true; // AHORA ES VÁLIDO (Carga parcial)
+
             } else {
-                // Validar que haya suelo en el destino
+                // Camino libre
+                
+                // Validar que haya suelo en el destino (para no caer al vacío)
                 Ray groundRay = new Ray(desiredPoint + Vector3.up * 2f, Vector3.down);
 
                 if (Physics.Raycast(groundRay, out RaycastHit groundHit, 5f, _groundLayer)) {
-                    _targetPoint = groundHit.point + Vector3.up * 0.5f; // Offset para no quedar enterrado
+                    _targetPoint = groundHit.point + Vector3.up * 0.1f; // Ajuste fino
                     _isValid = true;
                 } else {
-                    // No hay suelo en el destino (caería al vacío)
+                    // No hay suelo (ej: precipicio).
+                    // Opción A: Invalidar. Opción B: Clamp al borde.
+                    // Mantenemos invalidar para seguridad, pero rara vez pasa en terreno plano.
                     _targetPoint = desiredPoint;
-                    _isValid = false;
+                    _isValid = false; 
                 }
             }
 

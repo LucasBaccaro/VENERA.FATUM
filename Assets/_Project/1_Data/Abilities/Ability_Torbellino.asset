@@ -20,9 +20,12 @@ MonoBehaviour:
   ManaCost: 25
   Cooldown: 5
   GCD: 1
-  CastType: 0
+  CastType: 2
   CastTime: 0
-  CanMoveWhileCasting: 0
+  CanMoveWhileCasting: 1
+  ChannelTickRate: 0.5
+  ChannelHitAllTargets: 1
+  ChannelMaxDuration: 3
   TargetingMode: 5
   IndicatorType: 2
   Range: 0

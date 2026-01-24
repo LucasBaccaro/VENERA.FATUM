@@ -18,6 +18,7 @@ namespace Genesis.Simulation.Combat {
         public override void ExecuteDirectional(NetworkObject caster, Vector3 targetPoint, Vector3 direction, AbilityData data) {
 
             Vector3 casterPos = caster.transform.position;
+            Debug.Log($"[SelfAOELogic] Executing {data.Name} (Radius: {data.Radius}) for {caster.name} at {casterPos}");
 
             // NOTE: CastVFX se spawna en PlayerCombat durante el casting
             // Aquí solo spawneamos el ImpactVFX
@@ -32,6 +33,8 @@ namespace Genesis.Simulation.Combat {
 
                     // Ignorar al caster (a menos que includeSelf = true)
                     if (netObj == caster && !includeSelf) continue;
+
+                    Debug.Log($"[SelfAOELogic] Hit {hit.name} (Layer: {LayerMask.LayerToName(hit.gameObject.layer)})");
 
                     // Aplicar DAMAGE
                     if (data.BaseDamage > 0) {
@@ -60,7 +63,7 @@ namespace Genesis.Simulation.Combat {
                 }
             }
 
-            Debug.Log($"[SelfAOELogic] {caster.name} cast {data.Name}. Hit {hitCount} targets in {data.Radius}m radius");
+            Debug.Log($"[SelfAOELogic] Finished {data.Name}. Total valid hits: {hitCount}");
         }
     }
 }

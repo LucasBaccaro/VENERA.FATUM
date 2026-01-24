@@ -22,6 +22,7 @@ namespace Genesis.Simulation.Combat {
         private Vector3 _startPoint;
         private Vector3 _endPoint;
         private Vector3 _direction;
+        private bool _isChannelMode = false; // True cuando está siendo usado para channeling
 
         public override void Initialize(AbilityData abilityData) {
             _abilityData = abilityData;
@@ -102,5 +103,25 @@ else
             if (lineRenderer != null) lineRenderer.enabled = false;
             if (endMarker != null) endMarker.SetActive(false);
         }
+
+        /// <summary>
+        /// Activa/desactiva el modo channeling.
+        /// En modo channeling, el indicador permanece visible y se actualiza continuamente.
+        /// </summary>
+        public void SetChannelMode(bool enabled) {
+            _isChannelMode = enabled;
+
+            if (enabled) {
+                // Al entrar en channeling, asegurar que esté visible
+                if (!_isActive) {
+                    Show();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Verifica si está en modo channeling
+        /// </summary>
+        public bool IsChanneling() => _isChannelMode;
     }
 }

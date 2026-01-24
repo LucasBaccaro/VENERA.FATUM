@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2984738617e7e4041ba676ef2c93049a, type: 3}
-  m_Name: Logic_SelfAOE
-  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.Combat.SelfAOELogic
-  includeSelf: 1
+  m_Script: {fileID: 11500000, guid: 6414d843f5c7144318a3876651f5f392, type: 3}
+  m_Name: Logic_Channel
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.Combat.ChannelLogic
+  spawnImpactVFX: 1

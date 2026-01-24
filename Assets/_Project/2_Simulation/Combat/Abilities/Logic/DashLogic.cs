@@ -72,19 +72,8 @@ namespace Genesis.Simulation.Combat {
                 Debug.Log($"[DashLogic] Moved transform (no agent/cc) to {finalPosition}");
             }
 
-            // VFX trail (desde posición inicial hasta final)
-            if (data.CastVFX != null) {
-                // Spawn en mitad del camino
-                Vector3 midPoint = (startPos + finalPosition) / 2f;
-                GameObject vfx = Instantiate(data.CastVFX, midPoint, Quaternion.LookRotation(direction));
-                
-                // Solo el servidor puede spawnear NetworkObjects
-                if (caster.IsServer) {
-                    FishNet.InstanceFinder.ServerManager.Spawn(vfx);
-                }
-                
-                Destroy(vfx, 1f);
-            }
+            // NOTE: CastVFX se spawna en PlayerCombat durante el casting
+            // Si necesitas un trail VFX durante el dash, usa ImpactVFX o crea un campo separado
 
             // Opcional: Damage a enemigos en el trayecto (SOLO SERVIDOR)
             if (caster.IsServer && applyDamageInPath && data.BaseDamage > 0) {

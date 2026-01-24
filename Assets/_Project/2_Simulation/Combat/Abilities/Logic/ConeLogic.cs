@@ -20,12 +20,8 @@ namespace Genesis.Simulation.Combat {
             Vector3 casterPos = caster.transform.position;
             float halfAngle = data.Angle / 2f;
 
-            // VFX del cono
-            if (data.CastVFX != null) {
-                GameObject vfx = Object.Instantiate(data.CastVFX, casterPos, Quaternion.LookRotation(direction));
-                FishNet.InstanceFinder.ServerManager.Spawn(vfx);
-                Object.Destroy(vfx, 2f);
-            }
+            // NOTE: CastVFX se spawna en PlayerCombat durante el casting
+            // Aquí solo spawneamos el ImpactVFX por target
 
             // Detectar todos los enemigos en esfera (luego filtrar por ángulo)
             Collider[] hits = Physics.OverlapSphere(casterPos, data.Range, LayerMask.GetMask("Enemy", "Player"));

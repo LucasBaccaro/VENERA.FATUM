@@ -19,13 +19,8 @@ namespace Genesis.Simulation.Combat {
 
             Vector3 casterPos = caster.transform.position;
 
-            // Spawn VFX centrado en el caster
-            if (data.CastVFX != null) {
-                GameObject vfx = Object.Instantiate(data.CastVFX, casterPos, Quaternion.identity);
-                vfx.transform.SetParent(caster.transform);
-                FishNet.InstanceFinder.ServerManager.Spawn(vfx);
-                Object.Destroy(vfx, 2f);
-            }
+            // NOTE: CastVFX se spawna en PlayerCombat durante el casting
+            // Aquí solo spawneamos el ImpactVFX
 
             // Detectar enemigos en radio
             Collider[] hits = Physics.OverlapSphere(casterPos, data.Radius, LayerMask.GetMask("Enemy", "Player"));

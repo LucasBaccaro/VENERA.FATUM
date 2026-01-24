@@ -23,14 +23,17 @@ public class LostArkCamera : MonoBehaviour
     public float nearPitch = 15f;     
 
     [Header("Zoom (Mouse Wheel)")]
-    public float distance = 11f;
     public float minDistance = 6f;
     public float maxDistance = 18f;
-    public float zoomSpeed = 0.5f; // Ajustado para scroll delta
+    [Tooltip("Cuántos segundos tarda en ir de mínima a máxima distancia con la rueda")]
+    public float zoomTransitionDuration = 2f;
+    [Tooltip("Suavizado de la transición del zoom (más alto = más suave)")]
     public float zoomSmooth = 12f;
 
     float yaw;
-    float desiredDistance;
+    float zoomNormalized = 0.5f; // 0 = minDistance, 1 = maxDistance
+    float targetZoomNormalized = 0.5f;
+    float distance;
 
     void Awake()
     {
@@ -40,7 +43,11 @@ public class LostArkCamera : MonoBehaviour
 
     void Start()
     {
-        desiredDistance = distance;
+        // Inicializar zoom en el punto medio
+        zoomNormalized = 0.5f;
+        targetZoomNormalized = 0.5f;
+        distance = Mathf.Lerp(minDistance, maxDistance, zoomNormalized);
+
         if (pivot != null)
         {
             var e = pivot.localRotation.eulerAngles;
@@ -77,22 +84,30 @@ public class LostArkCamera : MonoBehaviour
                 yaw += mx * yawSpeed * Time.deltaTime;
             }
 
-            // 3) Zoom
+            // 3) Zoom continuo
             // Scroll.y.ReadValue() suele devolver +-120 o valores normalizados dependiendo de configuración
             float wheel = Mouse.current.scroll.y.ReadValue();
-            
-            // Normalizar un poco el valor del scroll (division por 120 es standard windows, pero para seguridad...)
+
             if (Mathf.Abs(wheel) > 0.1f)
             {
-                // Invertimos signo si es necesario, generalmente scroll up es positivo (acercar o alejar según gusto)
-                // Aquí: Scroll Up (+) -> Disminuye distancia (Acerca)
-                float scrollDirection = wheel > 0 ? 1 : -1;
-                desiredDistance -= scrollDirection * zoomSpeed;
-                desiredDistance = Mathf.Clamp(desiredDistance, minDistance, maxDistance);
+                // Scroll Up (+) -> Disminuye distancia (Acerca) -> Disminuye targetZoomNormalized
+                // Scroll Down (-) -> Aumenta distancia (Aleja) -> Aumenta targetZoomNormalized
+
+                // Velocidad de cambio: el rango completo (0 a 1) se recorre en zoomTransitionDuration segundos
+                // Por lo tanto, la velocidad por segundo es 1.0 / zoomTransitionDuration
+                float zoomSpeed = 1f / Mathf.Max(0.1f, zoomTransitionDuration); // Evitar división por 0
+
+                float scrollDirection = wheel > 0 ? -1 : 1; // Scroll up acerca (disminuye)
+                targetZoomNormalized += scrollDirection * zoomSpeed * Time.deltaTime * 60f; // *60 para compensar frame rate
+                targetZoomNormalized = Mathf.Clamp01(targetZoomNormalized);
             }
         }
 
-        distance = Mathf.Lerp(distance, desiredDistance, 1f - Mathf.Exp(-zoomSmooth * Time.deltaTime));
+        // Interpolar suavemente el zoom normalizado
+        zoomNormalized = Mathf.Lerp(zoomNormalized, targetZoomNormalized, 1f - Mathf.Exp(-zoomSmooth * Time.deltaTime));
+
+        // Calcular distancia desde el valor normalizado
+        distance = Mathf.Lerp(minDistance, maxDistance, zoomNormalized);
 
         // 4) Pitch dinámico
         float pitchToUse = farPitch;

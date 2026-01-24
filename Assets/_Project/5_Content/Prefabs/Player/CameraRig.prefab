@@ -75,11 +75,10 @@ MonoBehaviour:
   dynamicPitch: 1
   farPitch: 40
   nearPitch: 15
-  distance: 11
   minDistance: 6
   maxDistance: 18
-  zoomSpeed: 0.5
-  zoomSmooth: 12
+  zoomTransitionDuration: 0.1
+  zoomSmooth: 8
 --- !u!1 &3302142697858957488
 GameObject:
   m_ObjectHideFlags: 0

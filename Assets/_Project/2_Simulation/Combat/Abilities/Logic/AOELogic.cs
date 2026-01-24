@@ -21,7 +21,8 @@ namespace Genesis.Simulation.Combat {
         public override void ExecuteDirectional(NetworkObject caster, Vector3 targetPoint, Vector3 direction, AbilityData data) {
 
             if (impactDelay > 0) {
-                // Spawn warning VFX y esperar delay
+                // NOTE: Para AOE con delay (Meteorito), CastVFX se usa como WARNING en el suelo
+                // Esto es diferente del CastVFX que se spawna en PlayerCombat durante el casting
                 if (data.CastVFX != null) {
                     GameObject warningVfx = Object.Instantiate(data.CastVFX, targetPoint, Quaternion.identity);
                     FishNet.InstanceFinder.ServerManager.Spawn(warningVfx);

@@ -162,7 +162,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584324016921167298
+  _initializedTimestamp: -8584323486084438468
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -178,7 +178,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 9
+  <PrefabId>k__BackingField: 11
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 10407916748453484099
   SceneId: 0
@@ -318,13 +318,14 @@ MonoBehaviour:
   targeting: {fileID: -186485539870015897}
   animator: {fileID: 2633805355379026433}
   indicatorSystem: {fileID: -1511099638696177002}
+  castVFXSpawnPoint: {fileID: 7752732318354539809}
   abilitySlots:
   - {fileID: 11400000, guid: a038d18b4badf468ab8f330e270f5d96, type: 2}
   - {fileID: 11400000, guid: 67583c2d9b11d4093b6ee596bfad9007, type: 2}
   - {fileID: 11400000, guid: 5717b8f0092894f76a510a610b4ad8f0, type: 2}
   - {fileID: 11400000, guid: 4533b217260b145fe8f808b28f729c9e, type: 2}
-  - {fileID: 11400000, guid: 728567e18a9ee470196a9fbcae362580, type: 2}
   - {fileID: 11400000, guid: 4fbaf26ff9c0444c185cae0ac397ecd4, type: 2}
+  - {fileID: 11400000, guid: 5d72dd516b9cd4a7592b8f5ea0facdfe, type: 2}
 --- !u!114 &-1511099638696177002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -387,7 +388,8 @@ Transform:
   m_LocalPosition: {x: -0, y: -0.0017, z: 0}
   m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 7752732318354539809}
   m_Father: {fileID: 3499215932811262288}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &7471787554289645429
@@ -478,6 +480,37 @@ Transform:
   m_Children:
   - {fileID: 8245251786930040955}
   m_Father: {fileID: 7076565319570934298}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8645221862152903075
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7752732318354539809}
+  m_Layer: 3
+  m_Name: HandCastPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7752732318354539809
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8645221862152903075}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: 0.764, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4295913172414008695}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &8495967776494835600
 PrefabInstance:

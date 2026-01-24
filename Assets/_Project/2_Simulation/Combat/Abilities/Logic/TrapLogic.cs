@@ -42,12 +42,8 @@ namespace Genesis.Simulation.Combat {
             // Spawn en red
             FishNet.InstanceFinder.ServerManager.Spawn(trap);
 
-            // Cast VFX (placement)
-            if (data.CastVFX != null) {
-                GameObject vfx = Object.Instantiate(data.CastVFX, targetPoint, Quaternion.identity);
-                FishNet.InstanceFinder.ServerManager.Spawn(vfx);
-                Object.Destroy(vfx, 1f);
-            }
+            // NOTE: CastVFX se spawna en PlayerCombat durante el casting
+            // Si necesitas un VFX de placement, usa ImpactVFX
 
             Debug.Log($"[TrapLogic] {caster.name} placed {data.Name} at {targetPoint}. Lifetime: {trapLifetime}s");
         }

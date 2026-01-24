@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7283734146439292782}
-  - component: {fileID: -1900640994414646688}
-  - component: {fileID: 718848899604877610}
+  - component: {fileID: -5211430906403878533}
+  - component: {fileID: -3222582980805688135}
   m_Layer: 0
   m_Name: Armadura_Arcana
   m_TagString: Untagged
@@ -34,7 +34,7 @@ Transform:
   - {fileID: 5140432047286546400}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-1900640994414646688
+--- !u!114 &-5211430906403878533
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -47,8 +47,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: FishNet.Runtime::FishNet.Component.Transforming.NetworkTransform
   _componentIndexCache: 0
-  _addedNetworkObject: {fileID: 718848899604877610}
-  _networkObjectCache: {fileID: 718848899604877610}
+  _addedNetworkObject: {fileID: -3222582980805688135}
+  _networkObjectCache: {fileID: -3222582980805688135}
   _componentConfiguration: 0
   _synchronizeParent: 0
   _packing:
@@ -58,7 +58,7 @@ MonoBehaviour:
   _useScaledTime: 1
   _interpolation: 2
   _extrapolation: 2
-  _enableTeleport: 1
+  _enableTeleport: 0
   _teleportThreshold: 1
   _clientAuthoritative: 1
   _sendToOwner: 1
@@ -80,7 +80,7 @@ MonoBehaviour:
     X: 0
     Y: 0
     Z: 0
---- !u!114 &718848899604877610
+--- !u!114 &-3222582980805688135
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -99,8 +99,7 @@ MonoBehaviour:
   <PredictedSpawn>k__BackingField: {fileID: 0}
   <PredictedOwner>k__BackingField: {fileID: 0}
   NetworkBehaviours:
-  - {fileID: -1900640994414646688}
-  - {fileID: 0}
+  - {fileID: -5211430906403878533}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -111,7 +110,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584324639474291199
+  _initializedTimestamp: -8584323941567424428
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0

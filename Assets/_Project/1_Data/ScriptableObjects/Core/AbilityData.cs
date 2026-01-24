@@ -25,6 +25,14 @@ namespace Genesis.Data {
         public CastingType CastType;
         public float CastTime;
         public bool CanMoveWhileCasting;
+
+        [Header("Channeling (Solo si CastType = Channeling)")]
+        [Tooltip("Tiempo entre ticks de daño/efecto durante channeling (segundos). Default: 0.1s")]
+        public float ChannelTickRate = 0.1f;
+        [Tooltip("Si es true, el channel daña a TODOS los enemigos en la línea. Si es false, solo al primero.")]
+        public bool ChannelHitAllTargets = true;
+        [Tooltip("Duración máxima del channel (segundos). 0 = sin límite.")]
+        public float ChannelMaxDuration = 0f;
         
         [Header("Targeting")]
         public TargetType TargetingMode;

@@ -16,16 +16,19 @@ MonoBehaviour:
   Name: Rayo de Hielo
   Icon: {fileID: 21300000, guid: 6fa2b881ce1d3420493f4c11c5dc0ea0, type: 3}
   Description: Canal de hielo continuo que ralentiza al enemigo.
-  Logic: {fileID: 11400000, guid: a29dff406801042009339a055cbbefb7, type: 2}
+  Logic: {fileID: 11400000, guid: 4514c258956b54718a269b61678386af, type: 2}
   ManaCost: 30
   Cooldown: 8
   GCD: 1
   CastType: 2
   CastTime: 0
   CanMoveWhileCasting: 0
+  ChannelTickRate: 0.1
+  ChannelHitAllTargets: 1
+  ChannelMaxDuration: 5
   TargetingMode: 3
   IndicatorType: 1
-  Range: 15
+  Range: 8
   Radius: 1
   Angle: 60
   Category: 1
@@ -35,9 +38,9 @@ MonoBehaviour:
   ApplyToSelf: []
   ProjectilePrefab: {fileID: 0}
   ProjectileSpeed: 0
-  IndicatorMaterial: {fileID: 0}
-  CastVFX: {fileID: 0}
-  ImpactVFX: {fileID: 0}
+  IndicatorMaterial: {fileID: 2100000, guid: ccc7986bd53c54c448bafdcb87bc61b2, type: 2}
+  CastVFX: {fileID: 2009436335926725086, guid: a83d63e8d48fb4c319b1a41a98ecd5b0, type: 3}
+  ImpactVFX: {fileID: 5368608346029468957, guid: ab65935bceb3e4cfa9aea1958acaf946, type: 3}
   CastSound: {fileID: 0}
   ImpactSound: {fileID: 0}
   AnimationTrigger: Cast

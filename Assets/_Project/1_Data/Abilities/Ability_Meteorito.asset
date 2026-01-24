@@ -26,7 +26,7 @@ MonoBehaviour:
   TargetingMode: 3
   IndicatorType: 2
   Range: 20
-  Radius: 0.5
+  Radius: 3
   Angle: 60
   Category: 1
   BaseDamage: 150
@@ -35,7 +35,7 @@ MonoBehaviour:
   ApplyToSelf: []
   ProjectilePrefab: {fileID: 0}
   ProjectileSpeed: 0
-  IndicatorMaterial: {fileID: 0}
+  IndicatorMaterial: {fileID: 2100000, guid: ca318529c74824d558cd2c5c6f6bda79, type: 2}
   CastVFX: {fileID: 0}
   ImpactVFX: {fileID: 0}
   CastSound: {fileID: 0}

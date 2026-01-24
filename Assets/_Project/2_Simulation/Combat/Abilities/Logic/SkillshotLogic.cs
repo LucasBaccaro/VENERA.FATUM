@@ -43,12 +43,8 @@ namespace Genesis.Simulation.Combat {
             // Spawn en red
             FishNet.InstanceFinder.ServerManager.Spawn(instance);
 
-            // Cast VFX (en el caster)
-            if (data.CastVFX != null) {
-                GameObject castVfx = Instantiate(data.CastVFX, spawnPos, Quaternion.LookRotation(direction));
-                FishNet.InstanceFinder.ServerManager.Spawn(castVfx);
-                Destroy(castVfx, 1f);
-            }
+            // NOTE: CastVFX se spawna en PlayerCombat durante el casting
+            // Aquí solo spawneamos el proyectil
 
             Debug.Log($"[SkillshotLogic] {caster.name} cast {data.Name} in direction {direction}");
         }

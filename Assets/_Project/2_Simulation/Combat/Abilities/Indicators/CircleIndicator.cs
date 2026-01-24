@@ -1,21 +1,25 @@
 using UnityEngine;
 using Genesis.Data;
+using UnityEngine.Rendering.Universal;
 
 namespace Genesis.Simulation.Combat
 {
     /// <summary>
     /// Indicador circular para habilidades AOE (ej: Meteorito, Sagrario, Torbellino)
     /// Puede ser ground-targeted (movible con mouse) o self-centered (fijo en el caster)
+    /// Versión decal: proyecta una textura circular en el suelo adaptándose al terreno.
     /// </summary>
     public class CircleIndicator : AbilityIndicator
     {
-        [Header("Circle Components")]
-        [SerializeField] private GameObject circlePrefab; // Cylinder o Decal
-        [SerializeField] private Renderer circleRenderer;
+        [Header("Decal Components")]
+        [SerializeField] private DecalProjector decal;
+        [SerializeField] private float projectionDepth = 6f; // Profundidad de proyección del decal
 
         [Header("Settings")]
         [SerializeField] private bool isSelfCentered = false; // True para Torbellino/Nova
         [SerializeField] private float maxDistance = 30f;     // Máxima distancia de placement
+        [Tooltip("Altura del volumen de proyección del decal.")]
+        [SerializeField] private float decalHeight = 3f;
 
         private float _radius;
         private Vector3 _targetPoint;
@@ -34,12 +38,29 @@ namespace Genesis.Simulation.Combat
             // Detectar si es self-centered basado en TargetingMode
             isSelfCentered = (abilityData.TargetingMode == TargetType.Self);
 
-            // Configurar escala del círculo (diametro en X/Z)
-            if (circlePrefab != null)
+            // Buscar DecalProjector si no está asignado
+            if (decal == null)
+                decal = GetComponentInChildren<DecalProjector>(true);
+
+            // Configurar DecalProjector para que coincida con el radius de la habilidad
+            if (decal != null)
             {
+                // Material personalizado por habilidad (si existe)
+                if (abilityData.IndicatorMaterial != null)
+                    decal.material = abilityData.IndicatorMaterial;
+
+                // Configurar tamaño del decal
+                // Para un círculo, width y height deben ser el diámetro
                 float diameter = _radius * 2f;
-                // Y no importa mucho (es un “disco”), pero no la pongas 0
-                circlePrefab.transform.localScale = new Vector3(diameter, 1f, diameter);
+
+                // DecalProjector con rotación 90° en X (proyectando hacia abajo):
+                // - size.x = ancho del círculo (diámetro)
+                // - size.y = largo del círculo (diámetro)
+                // - size.z = profundidad de proyección
+                decal.size = new Vector3(diameter, diameter, projectionDepth);
+
+                // Pivot centrado
+                decal.pivot = Vector3.zero;
             }
 
             _isValid = true;
@@ -47,32 +68,65 @@ namespace Genesis.Simulation.Combat
 
         public override void UpdatePosition(Vector3 worldPoint, Vector3 direction)
         {
-            // === PROYECCIÓN A SUELO CENTRALIZADA ===
+            // === PROYECCIÓN A SUELO ===
             if (isSelfCentered)
             {
-                // Self-centered pero apoyado en el suelo bajo el jugador
+                // Self-centered: usar posición del caster
                 TryProjectToGround(transform.position, out _targetPoint);
             }
             else
             {
-                // Apuntado con mouse, apoyado en el suelo bajo el mouse
+                // Ground-targeted: usar posición del mouse
                 TryProjectToGround(worldPoint, out _targetPoint);
             }
 
-            // === VISUAL SIEMPRE ===
-            if (circlePrefab != null)
-                circlePrefab.transform.position = _targetPoint + Vector3.up * groundProjectionOffset;
+            // === ACTUALIZAR DECAL PROJECTOR ===
+            if (decal != null)
+            {
+                // Posición: levantar el projector arriba del suelo para que atraviese el terreno
+                float yLift = Mathf.Max(0.25f, decalHeight * 0.5f);
+                decal.transform.position = _targetPoint + Vector3.up * yLift;
+
+                // Rotación: proyectar hacia abajo (90° en X)
+                decal.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+
+                // Color del decal según validez (si el material lo soporta)
+                UpdateDecalColor();
+            }
 
             // === VALIDACIÓN (throttleada) ===
             if (ShouldValidate())
             {
-                float distance = Vector3.Distance(transform.position, _targetPoint);
-                _isValid = distance <= maxDistance;
+                // Self-centered abilities siempre son válidas
+                if (isSelfCentered)
+                {
+                    _isValid = true;
+                }
+                else
+                {
+                    // Ground-targeted: validar distancia al target
+                    float distance = Vector3.Distance(transform.position, _targetPoint);
+                    _isValid = distance <= maxDistance;
+                }
             }
+        }
 
-            // === COLOR (sin instanciar materiales) ===
-            if (circleRenderer != null)
-                UpdateRendererColor(circleRenderer);
+        /// <summary>
+        /// Actualiza el color del decal según validez
+        /// </summary>
+        private void UpdateDecalColor()
+        {
+            if (decal == null || decal.material == null) return;
+
+            // Usar el sistema de colores del parent (validColor/invalidColor)
+            Color targetColor = _isValid ? validColor : invalidColor;
+
+            // Intentar setear el color en el material del decal
+            // Nota: Esto depende de qué propiedad use tu shader
+            if (decal.material.HasProperty("_BaseColor"))
+                decal.material.SetColor("_BaseColor", targetColor);
+            else if (decal.material.HasProperty("_Color"))
+                decal.material.SetColor("_Color", targetColor);
         }
 
         public override Vector3 GetTargetPoint() => _targetPoint;
@@ -90,15 +144,15 @@ namespace Genesis.Simulation.Combat
         public override void Show()
         {
             base.Show();
-            if (circlePrefab != null)
-                circlePrefab.SetActive(true);
+            if (decal != null)
+                decal.enabled = true;
         }
 
         public override void Hide()
         {
             base.Hide();
-            if (circlePrefab != null)
-                circlePrefab.SetActive(false);
+            if (decal != null)
+                decal.enabled = false;
         }
 
         /// <summary>

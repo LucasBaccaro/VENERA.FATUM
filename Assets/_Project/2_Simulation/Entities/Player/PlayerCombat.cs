@@ -20,6 +20,7 @@ namespace Genesis.Simulation {
         [SerializeField] private TargetingSystem targeting;
         [SerializeField] private Animator animator;
         [SerializeField] private AbilityIndicatorSystem indicatorSystem;
+        [SerializeField] private Transform castVFXSpawnPoint;
 
         [Header("Loadout")]
         public List<AbilityData> abilitySlots = new List<AbilityData>();
@@ -36,12 +37,21 @@ namespace Genesis.Simulation {
         private float _castDuration;
         private string _castingAbilityName = "";
         private Coroutine _currentCastCoroutine;
+        private NetworkObject _currentCastVFX;
 
         // Data para ejecutar después del cast
         private int _pendingTargetId = -1;
         private Vector3 _pendingTargetPoint = Vector3.zero;
         private Vector3 _pendingDirection = Vector3.zero;
         private bool _isDirectionalCast = false;
+
+        // Channeling tracking
+        private float _channelStartTime;
+        private float _nextChannelTick;
+        private float _channelTickRate;
+        private float _channelMaxDuration;
+        private float _movementGracePeriod = 0.3f; // Coyote time para evitar cancelación por movimiento accidental
+        private bool _isInMovementGracePeriod = false;
 
         // ═══════════════════════════════════════════════════════
         // ENUMS
@@ -114,12 +124,56 @@ namespace Genesis.Simulation {
         }
 
         /// <summary>
-        /// Input handling para habilidades channeled (mantener para continuar)
+        /// Input handling para habilidades channeled
+        /// Actualiza la dirección del rayo con el mouse y ejecuta ticks de daño
         /// </summary>
         private void HandleChannelingInput() {
-            // TODO: Implementar en Fase 7 (Rayo de Hielo)
-            // Si Left Click se mantiene presionado → continuar channel
-            // Si se suelta → terminar channel
+            if (_pendingAbility == null) {
+                StopChanneling();
+                return;
+            }
+
+            // Verificar duración máxima (si existe)
+            if (_channelMaxDuration > 0 && Time.time - _channelStartTime >= _channelMaxDuration) {
+                StopChanneling();
+                return;
+            }
+
+            // Actualizar dirección del LineIndicator con la posición del mouse
+            if (indicatorSystem != null && Mouse.current != null) {
+                indicatorSystem.UpdateIndicator(Mouse.current.position.ReadValue());
+            }
+
+            // Ejecutar tick de daño si es momento
+            if (Time.time >= _nextChannelTick) {
+                ExecuteChannelTick();
+                _nextChannelTick = Time.time + _channelTickRate;
+            }
+
+            // Cancelar con Escape
+            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) {
+                StopChanneling();
+            }
+
+            // TODO: Detectar movimiento y cancelar si !CanMoveWhileCasting y no está en grace period
+            // (Implementar después con el sistema de movimiento)
+        }
+
+        /// <summary>
+        /// Ejecuta un tick de daño/efecto del channeling
+        /// </summary>
+        private void ExecuteChannelTick() {
+            if (_pendingAbility == null || indicatorSystem == null) return;
+
+            // Obtener dirección actual del LineIndicator
+            AbilityIndicator indicator = indicatorSystem.GetCurrentIndicator();
+            if (indicator == null) return;
+
+            Vector3 direction = indicator.GetDirection();
+            Vector3 targetPoint = indicator.GetTargetPoint();
+
+            // Enviar tick al servidor
+            CmdChannelTick(_pendingAbility.ID, targetPoint, direction);
         }
 
         /// <summary>
@@ -183,6 +237,9 @@ namespace Genesis.Simulation {
             _castingAbilityName = "";
             EventBus.Trigger<float, string>("OnCastProgress", 0f, ""); // Clear cast bar
 
+            // Destruir Cast VFX
+            DestroyCastVFX();
+
             _pendingAbility = null;
 
             Debug.Log("[PlayerCombat] Cast interrupted");
@@ -204,8 +261,19 @@ namespace Genesis.Simulation {
             // Validaciones básicas (comunes a ambos sistemas)
             if (!ValidateBasicRequirements(ability)) return;
 
-            // DECISIÓN ARQUITECTÓNICA CLAVE: Targeted vs Skillshot
-            if (ability.IndicatorType == IndicatorType.None) {
+            // DECISIÓN ARQUITECTÓNICA CLAVE: Channeling vs Targeted vs Skillshot
+            if (ability.CastType == CastingType.Channeling) {
+                // FLUJO CHANNELING: Habilidad de canal continuo (Rayo de Hielo, etc)
+                // Press-once para iniciar, press-again para cancelar
+                if (_combatState == CombatState.Channeling && _pendingAbility == ability) {
+                    // Ya está channeling esta habilidad → cancelar
+                    StopChanneling();
+                } else {
+                    // Iniciar channeling
+                    EnterChannelingMode(ability, slotIndex);
+                }
+            }
+            else if (ability.IndicatorType == IndicatorType.None) {
                 // FLUJO LEGACY: Targeted ability (sistema actual - Fase 5)
                 ExecuteTargetedAbility(ability);
             } else {
@@ -293,6 +361,9 @@ namespace Genesis.Simulation {
             _pendingTargetPoint = Vector3.zero;
             _isDirectionalCast = false;
 
+            // SPAWNER CAST VFX (durante el casting)
+            SpawnCastVFX(ability);
+
             // Si tiene cast time, esperar; si no, ejecutar inmediatamente
             if (ability.CastTime > 0) {
                 _currentCastCoroutine = StartCoroutine(CastTimeCoroutine(ability));
@@ -320,11 +391,13 @@ namespace Genesis.Simulation {
 
             // Validaciones de servidor
             if (stats.CurrentMana < ability.ManaCost) {
+                DestroyCastVFX(); // Limpiar VFX antes de notificar fallo
                 RpcCastFailed(base.Owner, "No mana");
                 return;
             }
 
             if (!stats.ConsumeMana(ability.ManaCost)) {
+                DestroyCastVFX(); // Limpiar VFX antes de notificar fallo
                 RpcCastFailed(base.Owner, "No mana (Server Check)");
                 return;
             }
@@ -346,6 +419,95 @@ namespace Genesis.Simulation {
 
             // Notificar éxito
             RpcCastSuccess(abilityId);
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // FLUJO CHANNELING: CHANNELING ABILITIES
+        // ═══════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Entra en modo Channeling (press-once para iniciar)
+        /// </summary>
+        private void EnterChannelingMode(AbilityData ability, int slotIndex) {
+            _combatState = CombatState.Channeling;
+            _pendingAbility = ability;
+            _pendingSlotIndex = slotIndex;
+            EventBus.Trigger<string>("OnCombatStateChanged", _combatState.ToString());
+
+            // Setup channeling timing
+            _channelStartTime = Time.time;
+            _nextChannelTick = Time.time + ability.ChannelTickRate;
+            _channelTickRate = ability.ChannelTickRate;
+            _channelMaxDuration = ability.ChannelMaxDuration;
+
+            // Activar grace period para evitar cancelación por movimiento accidental
+            _isInMovementGracePeriod = true;
+            StartCoroutine(MovementGracePeriodCoroutine());
+
+            // Mostrar LineIndicator en modo channeling
+            if (indicatorSystem != null) {
+                indicatorSystem.ShowIndicator(ability, transform);
+
+                // Activar modo channeling en el LineIndicator
+                AbilityIndicator indicator = indicatorSystem.GetCurrentIndicator();
+                if (indicator is LineIndicator lineIndicator) {
+                    lineIndicator.SetChannelMode(true);
+                }
+            }
+
+            // SPAWNER CHANNEL VFX (durante el channeling)
+            SpawnCastVFX(ability);
+
+            // Notificar servidor que inició channeling
+            CmdStartChanneling(ability.ID);
+
+            Debug.Log($"[PlayerCombat] Started Channeling: {ability.Name}");
+        }
+
+        /// <summary>
+        /// Coroutine para el grace period de movimiento
+        /// </summary>
+        private System.Collections.IEnumerator MovementGracePeriodCoroutine() {
+            yield return new UnityEngine.WaitForSeconds(_movementGracePeriod);
+            _isInMovementGracePeriod = false;
+        }
+
+        /// <summary>
+        /// Detiene el channeling (usuario presionó tecla nuevamente)
+        /// </summary>
+        private void StopChanneling() {
+            if (_combatState != CombatState.Channeling) return;
+
+            // Limpiar estado
+            _combatState = CombatState.Idle;
+            EventBus.Trigger<string>("OnCombatStateChanged", _combatState.ToString());
+
+            // Ocultar LineIndicator y desactivar modo channel
+            if (indicatorSystem != null) {
+                AbilityIndicator indicator = indicatorSystem.GetCurrentIndicator();
+                if (indicator is LineIndicator lineIndicator) {
+                    lineIndicator.SetChannelMode(false);
+                }
+                indicatorSystem.HideIndicator();
+            }
+
+            // Destruir VFX
+            DestroyCastVFX();
+
+            // Notificar servidor
+            CmdStopChanneling();
+
+            // Aplicar cooldown
+            if (_pendingAbility != null) {
+                _gcdEndTime = Time.time + _pendingAbility.GCD;
+                _cooldowns[_pendingAbility.ID] = Time.time + _pendingAbility.Cooldown;
+
+                EventBus.Trigger<int, float>("OnAbilityCooldownStart", _pendingAbility.ID, _pendingAbility.Cooldown);
+            }
+
+            _pendingAbility = null;
+
+            Debug.Log("[PlayerCombat] Stopped Channeling");
         }
 
         // ═══════════════════════════════════════════════════════
@@ -409,6 +571,9 @@ namespace Genesis.Simulation {
             _pendingDirection = direction;
             _isDirectionalCast = true;
 
+            // SPAWNER CAST VFX (durante el casting)
+            SpawnCastVFX(_pendingAbility);
+
             // CLIENT PREDICTION PARA DASH
             // Si es un movimiento, debemos ejecutarlo localmente para que el Client Authoritative funcione
             if (_pendingAbility.IndicatorType == IndicatorType.Arrow) { // Arrow = Dash
@@ -460,11 +625,13 @@ namespace Genesis.Simulation {
 
             // Validaciones de servidor
             if (stats.CurrentMana < ability.ManaCost) {
+                DestroyCastVFX(); // Limpiar VFX antes de notificar fallo
                 RpcCastFailed(base.Owner, "No mana");
                 return;
             }
 
             if (!stats.ConsumeMana(ability.ManaCost)) {
+                DestroyCastVFX(); // Limpiar VFX antes de notificar fallo
                 RpcCastFailed(base.Owner, "No mana (Server Check)");
                 return;
             }
@@ -472,6 +639,7 @@ namespace Genesis.Simulation {
             // VALIDACIÓN DE DISTANCIA (Anti-cheat)
             float distanceToTarget = Vector3.Distance(transform.position, targetPoint);
             if (distanceToTarget > ability.Range * 1.2f) { // 20% tolerance for lag
+                DestroyCastVFX(); // Limpiar VFX antes de notificar fallo
                 RpcCastFailed(base.Owner, "Too far");
                 return;
             }
@@ -488,12 +656,79 @@ namespace Genesis.Simulation {
         }
 
         // ═══════════════════════════════════════════════════════
+        // CHANNELING RPCs
+        // ═══════════════════════════════════════════════════════
+
+        /// <summary>
+        /// ServerRpc: Inicia channeling en el servidor
+        /// </summary>
+        [ServerRpc]
+        private void CmdStartChanneling(int abilityId) {
+            if (AbilityDatabase.Instance == null) return;
+
+            AbilityData ability = AbilityDatabase.Instance.GetAbility(abilityId);
+            if (ability == null) return;
+
+            // Validaciones de servidor
+            if (stats.CurrentMana < ability.ManaCost) {
+                DestroyCastVFX();
+                RpcCastFailed(base.Owner, "No mana");
+                return;
+            }
+
+            if (!stats.ConsumeMana(ability.ManaCost)) {
+                DestroyCastVFX();
+                RpcCastFailed(base.Owner, "No mana (Server Check)");
+                return;
+            }
+
+            Debug.Log($"[PlayerCombat] Server: Channeling started for {ability.Name}");
+        }
+
+        /// <summary>
+        /// ServerRpc: Ejecuta un tick de channeling
+        /// </summary>
+        [ServerRpc]
+        private void CmdChannelTick(int abilityId, Vector3 targetPoint, Vector3 direction) {
+            if (AbilityDatabase.Instance == null) return;
+
+            AbilityData ability = AbilityDatabase.Instance.GetAbility(abilityId);
+            if (ability == null) return;
+
+            // VALIDACIÓN: Verificar que el targetPoint esté dentro del rango
+            float distance = Vector3.Distance(transform.position, targetPoint);
+            if (distance > ability.Range * 1.2f) { // 20% tolerance
+                // Clampear al rango máximo
+                targetPoint = transform.position + direction.normalized * ability.Range;
+            }
+
+            // EJECUTAR LÓGICA DEL CHANNEL
+            if (ability.Logic != null) {
+                ability.Logic.ExecuteDirectional(base.NetworkObject, targetPoint, direction, ability);
+            } else {
+                Debug.LogError($"Habilidad {ability.Name} no tiene Logic asignado!");
+            }
+        }
+
+        /// <summary>
+        /// ServerRpc: Detiene el channeling
+        /// </summary>
+        [ServerRpc]
+        private void CmdStopChanneling() {
+            Debug.Log("[PlayerCombat] Server: Channeling stopped");
+            // El servidor puede hacer cleanup adicional aquí si es necesario
+        }
+
+        // ═══════════════════════════════════════════════════════
         // RPCs (COMUNES A AMBOS SISTEMAS)
         // ═══════════════════════════════════════════════════════
 
         [ObserversRpc]
         private void RpcCastSuccess(int abilityId) {
-            // Reset state
+            // Destruir Cast VFX (en todos los clientes, pero solo el servidor ejecutará el Despawn)
+            DestroyCastVFX();
+
+            // Reset state (solo para el owner)
             if (base.IsOwner) {
                 // Stop cast coroutine if still running
                 if (_currentCastCoroutine != null) {
@@ -545,6 +780,9 @@ namespace Genesis.Simulation {
             _castingAbilityName = "";
             EventBus.Trigger<float, string>("OnCastProgress", 0f, ""); // Clear cast bar
 
+            // Destruir Cast VFX
+            DestroyCastVFX();
+
             // Trigger EventBus event for UI (if we have a pending ability)
             if (_pendingAbility != null) {
                 EventBus.Trigger<int, string>("OnAbilityFailed", _pendingAbility.ID, reason);
@@ -586,6 +824,133 @@ namespace Genesis.Simulation {
         /// </summary>
         public float GetGCDRemaining() {
             return Mathf.Max(0, _gcdEndTime - Time.time);
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // CAST VFX HELPERS
+        // ═══════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Spawna el VFX de casting (se muestra DURANTE el cast)
+        /// NETWORKED: Visible para todos los jugadores
+        /// </summary>
+        private void SpawnCastVFX(AbilityData ability) {
+            if (ability.CastVFX == null) {
+                Debug.LogWarning($"[PlayerCombat] {ability.Name} no tiene CastVFX asignado");
+                return;
+            }
+
+            // Destruir VFX anterior si existe
+            DestroyCastVFX();
+
+            // Determinar posición y rotación de spawn
+            Vector3 spawnPos;
+            Quaternion spawnRot;
+
+            if (castVFXSpawnPoint != null) {
+                // Usar el spawn point asignado
+                spawnPos = castVFXSpawnPoint.position;
+                spawnRot = castVFXSpawnPoint.rotation;
+            } else {
+                // Fallback: 1 metro arriba del jugador
+                spawnPos = transform.position + Vector3.up * 1f;
+                spawnRot = Quaternion.identity;
+                Debug.LogWarning("[PlayerCombat] castVFXSpawnPoint no asignado, usando posición default");
+            }
+
+            // Determinar si debe ser hijo del spawn point (para seguir al jugador)
+            bool attachToPlayer = castVFXSpawnPoint != null;
+
+            // Solicitar spawn en red via ServerRpc
+            CmdSpawnCastVFX(ability.CastVFX, spawnPos, spawnRot, ability.CastTime, attachToPlayer);
+
+            Debug.Log($"[PlayerCombat] Requesting CastVFX spawn for {ability.Name} at {spawnPos} (CastTime: {ability.CastTime}s, Attached: {attachToPlayer})");
+        }
+
+        /// <summary>
+        /// ServerRpc: Spawna el VFX en red
+        /// </summary>
+        [ServerRpc]
+        private void CmdSpawnCastVFX(GameObject vfxPrefab, Vector3 position, Quaternion rotation, float castTime, bool attachToPlayer) {
+            if (vfxPrefab == null) return;
+
+            // Instanciar el VFX con la posición y rotación especificada
+            GameObject vfxInstance = Instantiate(vfxPrefab, position, rotation);
+
+            // Si debe attachear al spawn point, hacerlo como hijo
+            if (attachToPlayer && castVFXSpawnPoint != null) {
+                vfxInstance.transform.SetParent(castVFXSpawnPoint);
+            }
+
+            // Si tiene NetworkObject, spawnearlo en red
+            NetworkObject nob = vfxInstance.GetComponent<NetworkObject>();
+            if (nob != null) {
+                FishNet.InstanceFinder.ServerManager.Spawn(vfxInstance, base.Owner);
+
+                // Notificar a todos los clientes (incluyendo owner) sobre el VFX spawneado
+                RpcSetCastVFX(nob, castTime, attachToPlayer);
+            } else {
+                // Si no tiene NetworkObject, solo es local del servidor (no se verá en clientes)
+                Debug.LogWarning("[PlayerCombat] CastVFX no tiene NetworkObject, no se sincronizará en red");
+                Destroy(vfxInstance);
+            }
+        }
+
+        /// <summary>
+        /// ObserversRpc: Guarda referencia al VFX spawneado y programa destrucción
+        /// </summary>
+        [ObserversRpc]
+        private void RpcSetCastVFX(NetworkObject vfx, float castTime, bool attachToPlayer) {
+            _currentCastVFX = vfx;
+
+            // Activar el VFX si está desactivado (el prefab tiene el hijo desactivado)
+            if (vfx != null && vfx.gameObject != null) {
+                // Activar todos los hijos
+                foreach (Transform child in vfx.transform) {
+                    child.gameObject.SetActive(true);
+                }
+
+                // Si debe attachear al spawn point, hacerlo en todos los clientes
+                if (attachToPlayer && castVFXSpawnPoint != null) {
+                    vfx.transform.SetParent(castVFXSpawnPoint);
+                    // Resetear posición y rotación local (para que use el transform del spawn point)
+                    vfx.transform.localPosition = Vector3.zero;
+                    vfx.transform.localRotation = Quaternion.identity;
+                }
+            }
+
+            Debug.Log($"[PlayerCombat] CastVFX set on client (CastTime: {castTime}s, Attached: {attachToPlayer})");
+
+            // Para instant casts, programar destrucción rápida
+            if (castTime == 0 && base.IsServer) {
+                StartCoroutine(DestroyCastVFXDelayed(0.5f));
+            }
+        }
+
+        /// <summary>
+        /// Coroutine para destruir VFX después de un delay
+        /// </summary>
+        private System.Collections.IEnumerator DestroyCastVFXDelayed(float delay) {
+            yield return new UnityEngine.WaitForSeconds(delay);
+            DestroyCastVFX();
+        }
+
+        /// <summary>
+        /// Destruye el VFX de casting actual (si existe)
+        /// NETWORKED: Solo el servidor puede despawnear NetworkObjects
+        /// </summary>
+        private void DestroyCastVFX() {
+            if (_currentCastVFX != null) {
+                Debug.Log("[PlayerCombat] Destroying CastVFX");
+
+                // Solo el servidor puede despawnear NetworkObjects
+                if (base.IsServer) {
+                    FishNet.InstanceFinder.ServerManager.Despawn(_currentCastVFX.gameObject);
+                }
+
+                // Limpiar referencia en todos los clientes
+                _currentCastVFX = null;
+            }
         }
     }
 }

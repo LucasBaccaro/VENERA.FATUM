@@ -468,7 +468,6 @@ namespace Genesis.Simulation {
 
             // SPAWNER CAST VFX (durante el casting)
             SpawnCastVFX(ability);
-
             // Si tiene cast time, esperar; si no, ejecutar inmediatamente
             if (ability.CastTime > 0) {
                 _currentCastCoroutine = StartCoroutine(CastTimeCoroutine(ability));
@@ -524,6 +523,9 @@ namespace Genesis.Simulation {
 
             // Notificar éxito
             RpcCastSuccess(abilityId);
+
+            // Trigger END animation
+            RpcPlayAbilityAnimation(abilityId, false);
         }
 
         // ═══════════════════════════════════════════════════════
@@ -561,7 +563,7 @@ namespace Genesis.Simulation {
             DestroyCastVFX();
 
             // Notificar servidor
-            CmdStopChanneling();
+            CmdStopChanneling(_pendingAbility != null ? _pendingAbility.ID : -1);
 
             // Aplicar cooldown
             if (_pendingAbility != null) {
@@ -771,7 +773,6 @@ namespace Genesis.Simulation {
             } else {
                 // Instant cast
                 CmdCastAbilityDirectional(_pendingAbility.ID, targetPoint, direction);
-                _pendingAbility = null;
             }
         }
 
@@ -836,6 +837,9 @@ namespace Genesis.Simulation {
 
             // Notificar éxito
             RpcCastSuccess(abilityId);
+
+            // Trigger END animation
+            RpcPlayAbilityAnimation(abilityId, false);
         }
 
         // ═══════════════════════════════════════════════════════
@@ -897,9 +901,28 @@ namespace Genesis.Simulation {
         /// ServerRpc: Detiene el channeling
         /// </summary>
         [ServerRpc]
-        private void CmdStopChanneling() {
-            Debug.Log("[PlayerCombat] Server: Channeling stopped");
-            // El servidor puede hacer cleanup adicional aquí si es necesario
+        private void CmdStopChanneling(int abilityId) {
+            Debug.Log($"[PlayerCombat] Server: Channeling stopped for {abilityId}");
+            
+            // Trigger END animation for Channeling
+            if (abilityId != -1) {
+                RpcPlayAbilityAnimation(abilityId, false);
+            }
+        }
+
+        [ObserversRpc]
+        private void RpcPlayAbilityAnimation(int abilityId, bool isStart) {
+            if (animator == null || AbilityDatabase.Instance == null) return;
+
+            AbilityData ability = AbilityDatabase.Instance.GetAbility(abilityId);
+            if (ability == null) return;
+
+            string trigger = isStart ? ability.StartCastAnimationTrigger : ability.AnimationTrigger;
+            
+            if (!string.IsNullOrEmpty(trigger)) {
+                animator.SetTrigger(trigger);
+                Debug.Log($"[PlayerCombat] RpcPlayAnimation: {trigger} (Starting: {isStart})");
+            }
         }
 
         // ═══════════════════════════════════════════════════════
@@ -910,6 +933,8 @@ namespace Genesis.Simulation {
         private void RpcCastSuccess(int abilityId) {
             // Destruir Cast VFX (en todos los clientes, pero solo el servidor ejecutará el Despawn)
             DestroyCastVFX();
+
+            AbilityData ability = AbilityDatabase.Instance != null ? AbilityDatabase.Instance.GetAbility(abilityId) : null;
 
             // Reset state (solo para el owner)
             if (base.IsOwner) {
@@ -929,7 +954,6 @@ namespace Genesis.Simulation {
                 EventBus.Trigger<float, string>("OnCastProgress", 0f, ""); // Clear cast bar
 
                 // Aplicar Cooldowns
-                AbilityData ability = AbilityDatabase.Instance.GetAbility(abilityId);
                 if (ability != null) {
                     _gcdEndTime = Time.time + ability.GCD;
                     _cooldowns[ability.ID] = Time.time + ability.Cooldown;
@@ -941,9 +965,7 @@ namespace Genesis.Simulation {
                     EventBus.Trigger<int, float>("OnAbilityCooldownStart", abilityId, ability.Cooldown);
                 }
             }
-
-            // Play Animation trigger (en todos los clientes)
-            if (animator != null) animator.SetTrigger("Cast");
+            // Play Animation trigger (ELIMINADO: ahora se usa RpcPlayAbilityAnimation)
         }
 
         [TargetRpc]
@@ -1018,13 +1040,18 @@ namespace Genesis.Simulation {
         /// NETWORKED: Visible para todos los jugadores
         /// </summary>
         private void SpawnCastVFX(AbilityData ability) {
-            if (ability.CastVFX == null) {
-                Debug.LogWarning($"[PlayerCombat] {ability.Name} no tiene CastVFX asignado");
-                return;
-            }
-
             // Destruir VFX anterior si existe
             DestroyCastVFX();
+
+            // Determinar si es channeling para el attachment logic
+            bool isChanneling = (ability.CastType == CastingType.Channeling);
+            bool attachToPlayer = castVFXSpawnPoint != null && !isChanneling;
+
+            if (ability.CastVFX == null) {
+                // No hay VFX, pero debemos notificar al servidor para disparar la animación de inicio
+                CmdSpawnCastVFX(null, transform.position, transform.rotation, ability.CastTime, attachToPlayer, ability.ID);
+                return;
+            }
 
             // Determinar posición y rotación de spawn
             Vector3 spawnPos;
@@ -1043,11 +1070,10 @@ namespace Genesis.Simulation {
 
             // Determinar si debe ser hijo del spawn point (para seguir al jugador)
             // IMPORTANTE: Para channeling, NO attachear porque rotaremos el VFX manualmente cada frame
-            bool isChanneling = (ability.CastType == CastingType.Channeling);
-            bool attachToPlayer = castVFXSpawnPoint != null && !isChanneling;
+            // variables isChanneling y attachToPlayer ya declaradas arriba
 
             // Solicitar spawn en red via ServerRpc
-            CmdSpawnCastVFX(ability.CastVFX, spawnPos, spawnRot, ability.CastTime, attachToPlayer);
+            CmdSpawnCastVFX(ability.CastVFX, spawnPos, spawnRot, ability.CastTime, attachToPlayer, ability.ID);
 
             Debug.Log($"[PlayerCombat] Requesting CastVFX spawn for {ability.Name} at {spawnPos} (CastTime: {ability.CastTime}s, Attached: {attachToPlayer}, Channeling: {isChanneling})");
         }
@@ -1056,8 +1082,15 @@ namespace Genesis.Simulation {
         /// ServerRpc: Spawna el VFX en red
         /// </summary>
         [ServerRpc]
-        private void CmdSpawnCastVFX(GameObject vfxPrefab, Vector3 position, Quaternion rotation, float castTime, bool attachToPlayer) {
-            if (vfxPrefab == null) return;
+        private void CmdSpawnCastVFX(GameObject vfxPrefab, Vector3 position, Quaternion rotation, float castTime, bool attachToPlayer, int abilityId) {
+            if (vfxPrefab == null) {
+                // Notificar a los clientes sobre el inicio del cast aunque no haya VFX (para animaciones/sonidos)
+                RpcSetCastVFX(null, castTime, attachToPlayer, abilityId);
+                
+                // Trigger START animation
+                RpcPlayAbilityAnimation(abilityId, true);
+                return;
+            }
 
             // Instanciar el VFX con la posición y rotación especificada
             GameObject vfxInstance = Instantiate(vfxPrefab, position, rotation);
@@ -1073,7 +1106,10 @@ namespace Genesis.Simulation {
                 FishNet.InstanceFinder.ServerManager.Spawn(vfxInstance, base.Owner);
 
                 // Notificar a todos los clientes (incluyendo owner) sobre el VFX spawneado
-                RpcSetCastVFX(nob, castTime, attachToPlayer);
+                RpcSetCastVFX(nob, castTime, attachToPlayer, abilityId);
+
+                // Trigger START animation
+                RpcPlayAbilityAnimation(abilityId, true);
             } else {
                 // Si no tiene NetworkObject, solo es local del servidor (no se verá en clientes)
                 Debug.LogWarning("[PlayerCombat] CastVFX no tiene NetworkObject, no se sincronizará en red");
@@ -1085,7 +1121,7 @@ namespace Genesis.Simulation {
         /// ObserversRpc: Guarda referencia al VFX spawneado y programa destrucción
         /// </summary>
         [ObserversRpc]
-        private void RpcSetCastVFX(NetworkObject vfx, float castTime, bool attachToPlayer) {
+        private void RpcSetCastVFX(NetworkObject vfx, float castTime, bool attachToPlayer, int abilityId) {
             _currentCastVFX = vfx;
 
             // Activar el VFX si está desactivado (el prefab tiene el hijo desactivado)
@@ -1104,7 +1140,9 @@ namespace Genesis.Simulation {
                 }
             }
 
-            Debug.Log($"[PlayerCombat] CastVFX set on client (CastTime: {castTime}s, Attached: {attachToPlayer})");
+            // Trigger Start Cast Animation (ELIMINADO: ahora se usa RpcPlayAbilityAnimation)
+
+            Debug.Log($"[PlayerCombat] CastVFX set on client (CastTime: {castTime}s, Attached: {attachToPlayer}, Ability: {abilityId})");
 
             // Para instant casts, programar destrucción rápida
             if (castTime == 0 && base.IsServer) {

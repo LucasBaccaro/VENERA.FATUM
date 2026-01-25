@@ -66,7 +66,8 @@ public Material IndicatorMaterial;
         public GameObject ImpactVFX;
         public AudioClip CastSound;
         public AudioClip ImpactSound;
-        public string AnimationTrigger = "Cast"; // Trigger en el Animator
+        public string StartCastAnimationTrigger = "StartCast"; // Trigger al INICIAR el cast
+        public string AnimationTrigger = "Cast"; // Trigger al FINALIZAR el cast
     }
 
     /// <summary>

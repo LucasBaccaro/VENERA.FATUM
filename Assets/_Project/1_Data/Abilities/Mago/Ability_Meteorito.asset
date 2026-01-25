@@ -39,8 +39,9 @@ MonoBehaviour:
   ProjectilePrefab: {fileID: 0}
   ProjectileSpeed: 0
   IndicatorMaterial: {fileID: 2100000, guid: ca318529c74824d558cd2c5c6f6bda79, type: 2}
-  CastVFX: {fileID: 0}
+  CastVFX: {fileID: 787241240253385312, guid: 89bf387f01e514e3f8a668bbf8ffdee1, type: 3}
   ImpactVFX: {fileID: 5368608346029468957, guid: f41f9c17024d3aa448d7db223490c53f, type: 3}
   CastSound: {fileID: 0}
   ImpactSound: {fileID: 0}
-  AnimationTrigger: Cast
+  StartCastAnimationTrigger: ChannelUP
+  AnimationTrigger: ChannelUP_Sucess

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9270c20d0f4e645048c342fab652c587, type: 3}
   m_Name: Effect_RootAutoTtack
   m_EditorClassIdentifier: Genesis.Data::Genesis.Data.StatusEffectData
-  ID: 2
+  ID: 15
   Name: Root
   Icon: {fileID: 0}
   Description: Cannot move but can cast abilities.

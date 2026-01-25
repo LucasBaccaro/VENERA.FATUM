@@ -37,6 +37,7 @@ MonoBehaviour:
   ApplyToTarget: []
   ApplyToSelf:
   - {fileID: 11400000, guid: bc26efc5e226e4fd9929b1e0051f6499, type: 2}
+  - {fileID: 11400000, guid: 0769282753f96b245b3418efca8da16a, type: 2}
   ProjectilePrefab: {fileID: 0}
   ProjectileSpeed: 0
   IndicatorMaterial: {fileID: 0}
@@ -44,4 +45,5 @@ MonoBehaviour:
   ImpactVFX: {fileID: 0}
   CastSound: {fileID: 0}
   ImpactSound: {fileID: 0}
-  AnimationTrigger: Cast
+  StartCastAnimationTrigger: CastInstant
+  AnimationTrigger: 

@@ -18,25 +18,26 @@ MonoBehaviour:
   Description: "Explosi\xF3n de hielo que da\xF1a y ralentiza enemigos cercanos."
   Logic: {fileID: 11400000, guid: 114e55307f37a4c1eb81103d8984eb8d, type: 2}
   ManaCost: 35
-  Cooldown: 12
+  Cooldown: 2
   GCD: 1
   CastType: 0
   CastTime: 0
-  CanMoveWhileCasting: 0
+  CanMoveWhileCasting: 1
   ChannelTickRate: 0.1
   ChannelHitAllTargets: 1
   ChannelMaxDuration: 0
   TargetingMode: 5
   IndicatorType: 2
   Range: 5
-  Radius: 5
+  Radius: 4.36
   Angle: 60
   Category: 1
   BaseDamage: 50
   BaseHeal: 0
   ApplyToTarget:
   - {fileID: 11400000, guid: 4c9b9197e03d14aa3a61ac4c94080f41, type: 2}
-  ApplyToSelf: []
+  ApplyToSelf:
+  - {fileID: 11400000, guid: 0769282753f96b245b3418efca8da16a, type: 2}
   ProjectilePrefab: {fileID: 0}
   ProjectileSpeed: 0
   IndicatorMaterial: {fileID: 2100000, guid: c08323f7612d34807a64fe840a5eb2c5, type: 2}
@@ -44,4 +45,5 @@ MonoBehaviour:
   ImpactVFX: {fileID: 0}
   CastSound: {fileID: 0}
   ImpactSound: {fileID: 0}
-  AnimationTrigger: Cast
+  StartCastAnimationTrigger: ChannelUP_Sucess
+  AnimationTrigger: 

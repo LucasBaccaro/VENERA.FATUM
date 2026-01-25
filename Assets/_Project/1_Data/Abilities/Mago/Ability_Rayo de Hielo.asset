@@ -44,4 +44,5 @@ MonoBehaviour:
   ImpactVFX: {fileID: 5368608346029468957, guid: ab65935bceb3e4cfa9aea1958acaf946, type: 3}
   CastSound: {fileID: 0}
   ImpactSound: {fileID: 0}
-  AnimationTrigger: Cast
+  StartCastAnimationTrigger: ChannelFront
+  AnimationTrigger: ChannelFront_Success

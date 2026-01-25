@@ -21,8 +21,11 @@ MonoBehaviour:
   Cooldown: 0.5
   GCD: 1
   CastType: 1
-  CastTime: 0.4
+  CastTime: 0
   CanMoveWhileCasting: 0
+  ChannelTickRate: 0.1
+  ChannelHitAllTargets: 1
+  ChannelMaxDuration: 0
   TargetingMode: 1
   IndicatorType: 0
   Range: 20
@@ -32,7 +35,8 @@ MonoBehaviour:
   BaseDamage: 30
   BaseHeal: 0
   ApplyToTarget: []
-  ApplyToSelf: []
+  ApplyToSelf:
+  - {fileID: 11400000, guid: 0769282753f96b245b3418efca8da16a, type: 2}
   ProjectilePrefab: {fileID: 5805970533694594322, guid: 08fbaf3fc57c56940a386438d56503a7, type: 3}
   ProjectileSpeed: 0
   IndicatorMaterial: {fileID: 0}

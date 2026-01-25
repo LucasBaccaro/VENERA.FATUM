@@ -18,11 +18,11 @@ MonoBehaviour:
   Description: Cannot move but can cast abilities.
   Type: 2
   IsBuff: 0
-  Duration: 3
+  Duration: 10
   IsStackable: 0
   MaxStacks: 1
   PercentageValue: 0
   FlatValue: 0
   TickInterval: 1
-  VFXPrefab: {fileID: 0}
+  VFXPrefab: {fileID: 6687510376968911706, guid: aa54f9a9866c0994c89db3ba93b8192f, type: 3}
   ApplySound: {fileID: 0}

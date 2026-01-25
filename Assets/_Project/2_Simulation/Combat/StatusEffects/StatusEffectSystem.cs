@@ -440,7 +440,7 @@ namespace Genesis.Simulation.Combat {
             if (_vfxInstances.ContainsKey(effectID)) return;
 
             GameObject vfx = Instantiate(vfxPrefab);
-            vfx.transform.position = transform.position + Vector3.up * 1.5f;
+            vfx.transform.position = transform.position + Vector3.up;
             
             // Spawnear en la red
             NetworkObject vfxNetObj = vfx.GetComponent<NetworkObject>();
@@ -462,7 +462,7 @@ namespace Genesis.Simulation.Combat {
 
             // Establecer como hijo de este player
             vfxNetObj.transform.SetParent(transform);
-            vfxNetObj.transform.localPosition = Vector3.up * 1.5f;
+            vfxNetObj.transform.localPosition = Vector3.up * 0f;
 
             // Cachear en clientes también (para cleanup)
             if (!base.IsServer && !_vfxInstances.ContainsKey(effectID)) {
@@ -524,7 +524,7 @@ namespace Genesis.Simulation.Combat {
             if (_vfxInstances.ContainsKey(key)) return;
 
             GameObject vfx = Instantiate(data.VFXPrefab, transform);
-            vfx.transform.localPosition = Vector3.up * 1.5f; // Sobre la cabeza
+            vfx.transform.localPosition = Vector3.up * 0f; // Sobre la cabeza
             _vfxInstances[key] = vfx;
 
             Debug.Log($"[StatusEffectSystem] Local VFX spawned for {data.Name}");
@@ -686,6 +686,16 @@ namespace Genesis.Simulation.Combat {
                 return;
             }
             StatusEffectData data = StatusEffectDatabase.Instance?.GetEffect(1);
+            if (data != null) ApplyEffect(data);
+        }
+
+        [ContextMenu("Test: Apply Root (3s)")]
+        private void TestApplyRoot() {
+            if (!base.IsServer) {
+                Debug.LogWarning("Can only apply effects on server!");
+                return;
+            }
+            StatusEffectData data = StatusEffectDatabase.Instance?.GetEffect(2);
             if (data != null) ApplyEffect(data);
         }
 

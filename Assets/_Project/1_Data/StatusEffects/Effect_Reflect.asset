@@ -18,11 +18,11 @@ MonoBehaviour:
   Description: Reflects the next projectile back to the attacker.
   Type: 32
   IsBuff: 1
-  Duration: 5
+  Duration: 10
   IsStackable: 0
   MaxStacks: 1
   PercentageValue: 0
   FlatValue: 0
   TickInterval: 1
-  VFXPrefab: {fileID: 0}
+  VFXPrefab: {fileID: 4740933760488841012, guid: 6ff56965d11d32f49998acbe06f751d1, type: 3}
   ApplySound: {fileID: 0}

@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9270c20d0f4e645048c342fab652c587, type: 3}
-  m_Name: Effect_Haste
+  m_Name: Effect_RootAutoTtack
   m_EditorClassIdentifier: Genesis.Data::Genesis.Data.StatusEffectData
-  ID: 31
-  Name: Haste
+  ID: 2
+  Name: Root
   Icon: {fileID: 0}
-  Description: Cast speed and attack speed increased by 25%.
-  Type: 512
-  IsBuff: 1
-  Duration: 12
+  Description: Cannot move but can cast abilities.
+  Type: 2
+  IsBuff: 0
+  Duration: 0.5
   IsStackable: 0
   MaxStacks: 1
-  PercentageValue: 0.25
+  PercentageValue: 0
   FlatValue: 0
   TickInterval: 1
-  VFXPrefab: {fileID: 4372535554157080522, guid: 49212baf3ec82384db480062e6b5283f, type: 3}
+  VFXPrefab: {fileID: 0}
   ApplySound: {fileID: 0}

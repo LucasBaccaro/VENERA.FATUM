@@ -295,7 +295,7 @@ ModelImporter:
       name: Mage_Combat_Attack01_Action
       takeName: Mage_Combat_Attack01_Action
       internalID: -6040466423541724718
-      firstFrame: 0
+      firstFrame: 8
       lastFrame: 42
       wrapMode: 0
       orientationOffsetY: 0

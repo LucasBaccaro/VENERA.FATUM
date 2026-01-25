@@ -123,6 +123,7 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 5015743577735707121}
   cameraTransform: {fileID: 0}
   animator: {fileID: 2633805355379026433}
+  targeting: {fileID: -186485539870015897}
   walkSpeed: 6
   runSpeed: 6
   rotationSpeed: 15

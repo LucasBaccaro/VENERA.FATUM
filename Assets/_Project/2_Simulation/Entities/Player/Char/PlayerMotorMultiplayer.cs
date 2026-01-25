@@ -12,6 +12,7 @@ namespace Genesis.Simulation {
         [Header("References")]
         public Transform cameraTransform;
         public Animator animator;
+        [SerializeField] private TargetingSystem targeting;
 
         [Header("Movement Settings")]
         public float walkSpeed = 6f;
@@ -130,6 +131,16 @@ namespace Genesis.Simulation {
                 if (_statusEffects.HasEffect(Data.EffectType.Root)) {
                     // Animación idle forzada
                     if (animator != null) animator.SetFloat("Speed", 0f);
+
+                    // FIX: Mantener rotación hacia el target aunque esté rooteado
+                    if (targeting != null && targeting.CurrentTarget != null) {
+                        Vector3 dirToTarget = (targeting.CurrentTarget.transform.position - transform.position);
+                        dirToTarget.y = 0;
+                        if (dirToTarget.sqrMagnitude > 0.001f) {
+                            Quaternion targetRot = Quaternion.LookRotation(dirToTarget);
+                            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, rotationSpeed * Time.deltaTime);
+                        }
+                    }
                     return;
                 }
             }

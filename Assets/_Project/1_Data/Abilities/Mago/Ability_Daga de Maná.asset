@@ -41,7 +41,7 @@ MonoBehaviour:
   ProjectileSpeed: 0
   IndicatorMaterial: {fileID: 0}
   CastVFX: {fileID: 0}
-  ImpactVFX: {fileID: 0}
+  ImpactVFX: {fileID: 7916383555196542610, guid: f3c8a76df4b32284c93f05c4e5d6da73, type: 3}
   CastSound: {fileID: 0}
   ImpactSound: {fileID: 0}
   StartCastAnimationTrigger: 

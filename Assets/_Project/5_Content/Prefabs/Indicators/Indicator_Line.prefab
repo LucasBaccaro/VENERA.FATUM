@@ -251,8 +251,18 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 6472
+  validationInterval: 0.05
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  groundRayHeight: 100
+  groundRayDistance: 250
+  groundProjectionOffset: 0.02
   lineRenderer: {fileID: 1200995839752082491}
   endMarker: {fileID: 3947130079436233675}
   defaultWidth: 4
   projectileRadius: 0.15
-  impactSkin: 0.2
+  impactSkin: 0.5
+  channelObstacleMask:
+    serializedVersion: 2
+    m_Bits: 0

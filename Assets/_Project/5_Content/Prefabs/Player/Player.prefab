@@ -165,7 +165,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584322858593736312
+  _initializedTimestamp: -8584321365073039176
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -181,7 +181,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 12
+  <PrefabId>k__BackingField: 13
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 10407916748453484099
   SceneId: 0
@@ -323,12 +323,12 @@ MonoBehaviour:
   indicatorSystem: {fileID: -1511099638696177002}
   castVFXSpawnPoint: {fileID: 7752732318354539809}
   abilitySlots:
-  - {fileID: 11400000, guid: a038d18b4badf468ab8f330e270f5d96, type: 2}
-  - {fileID: 11400000, guid: 67583c2d9b11d4093b6ee596bfad9007, type: 2}
-  - {fileID: 11400000, guid: 5717b8f0092894f76a510a610b4ad8f0, type: 2}
-  - {fileID: 11400000, guid: 4533b217260b145fe8f808b28f729c9e, type: 2}
-  - {fileID: 11400000, guid: 4fbaf26ff9c0444c185cae0ac397ecd4, type: 2}
-  - {fileID: 11400000, guid: 728567e18a9ee470196a9fbcae362580, type: 2}
+  - {fileID: 11400000, guid: 03f21edff8e0b4ef6bd56d786104a64b, type: 2}
+  - {fileID: 11400000, guid: 783226a409cd24c69a7fa38b009fbec9, type: 2}
+  - {fileID: 11400000, guid: 6f1473c9f4dbb4e738ca54b4299f02b6, type: 2}
+  - {fileID: 11400000, guid: ef9fa2f7642e5472ba8f75a3585ec345, type: 2}
+  - {fileID: 11400000, guid: d4f040a1150c04811a97e752198deb02, type: 2}
+  - {fileID: 11400000, guid: 5e435d0e1ee4c44e0ae5c808132d13dc, type: 2}
 --- !u!114 &-1511099638696177002
 MonoBehaviour:
   m_ObjectHideFlags: 0

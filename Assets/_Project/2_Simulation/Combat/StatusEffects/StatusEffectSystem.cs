@@ -27,6 +27,7 @@ namespace Genesis.Simulation.Combat {
 
         // Referencias
         private PlayerStats _stats;
+        private Animator _animator;
 
         // ═══════════════════════════════════════════════════════
         // INITIALIZATION
@@ -34,6 +35,7 @@ namespace Genesis.Simulation.Combat {
 
         void Awake() {
             _stats = GetComponent<PlayerStats>();
+            _animator = GetComponentInChildren<Animator>();
         }
 
         public override void OnStartNetwork() {
@@ -56,6 +58,9 @@ namespace Genesis.Simulation.Combat {
                     }
                 }
             }
+
+            // Actualizar visuales iniciales (incluyendo Animator speed)
+            UpdateAnimatorVisuals();
         }
 
         // ═══════════════════════════════════════════════════════
@@ -400,6 +405,23 @@ namespace Genesis.Simulation.Combat {
                 case SyncDictionaryOperation.Remove:
                     DespawnLocalVFX(key);
                     break;
+            }
+
+            // Actualizar velocidad de animación si cambió el estado de Slow
+            UpdateAnimatorVisuals();
+        }
+
+        /// <summary>
+        /// Actualiza visuales afectados por status effects (ej: velocidad del Animator).
+        /// </summary>
+        private void UpdateAnimatorVisuals() {
+            if (_animator == null) return;
+
+            // Al momento de aplicar un slow, también se realintice la animación del animator en curso, bajemosla un 50%
+            if (HasEffect(EffectType.Slow)) {
+                _animator.speed = 0.5f;
+            } else {
+                _animator.speed = 1.0f;
             }
         }
 

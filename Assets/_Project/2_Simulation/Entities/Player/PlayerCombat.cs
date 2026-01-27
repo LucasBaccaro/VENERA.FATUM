@@ -506,6 +506,15 @@ namespace Genesis.Simulation {
                 return;
             }
 
+            // APLICACIÓN INSTANTÁNEA (si está activada)
+            if (ability.ApplyEffectsInstant) {
+                NetworkObject targetNetObj = null;
+                if (targetId != -1 && FishNet.InstanceFinder.ServerManager.Objects.Spawned.TryGetValue(targetId, out NetworkObject found)) {
+                    targetNetObj = found;
+                }
+                ApplyAbilityStatusEffects(ability, targetNetObj);
+            }
+
             // Encontrar target
             NetworkObject target = null;
             if (targetId != -1) {
@@ -828,6 +837,11 @@ namespace Genesis.Simulation {
                 return;
             }
 
+            // APLICACIÓN INSTANTÁNEA (si está activada) - En direccionales solo self buffs
+            if (ability.ApplyEffectsInstant) {
+                ApplyAbilityStatusEffects(ability, null);
+            }
+
             // EJECUTAR LÓGICA DIRECCIONAL (nuevo método)
             if (ability.Logic != null) {
                 ability.Logic.ExecuteDirectional(base.NetworkObject, targetPoint, direction, ability);
@@ -867,6 +881,11 @@ namespace Genesis.Simulation {
                 DestroyCastVFX();
                 RpcCastFailed(base.Owner, "No mana (Server Check)");
                 return;
+            }
+
+            // APLICACIÓN INSTANTÁNEA (si está activada)
+            if (ability.ApplyEffectsInstant) {
+                ApplyAbilityStatusEffects(ability, null);
             }
 
             Debug.Log($"[PlayerCombat] Server: Channeling started for {ability.Name}");
@@ -1187,6 +1206,33 @@ namespace Genesis.Simulation {
             if (_currentCastVFX != null) {
                 FishNet.InstanceFinder.ServerManager.Despawn(_currentCastVFX.gameObject);
                 _currentCastVFX = null;
+            }
+        }
+
+        /// <summary>
+        /// Aplica los status effects de una habilidad (Self y opcionalmente Target).
+        /// </summary>
+        [Server]
+        private void ApplyAbilityStatusEffects(AbilityData ability, NetworkObject target) {
+            if (ability == null) return;
+
+            // 1. Aplicar al caster (Self)
+            if (ability.ApplyToSelf != null && ability.ApplyToSelf.Length > 0) {
+                if (_statusEffects != null) {
+                    foreach (var effect in ability.ApplyToSelf) {
+                        _statusEffects.ApplyEffect(effect);
+                    }
+                }
+            }
+
+            // 2. Aplicar al target (si existe y es Targeted)
+            if (target != null && ability.ApplyToTarget != null && ability.ApplyToTarget.Length > 0) {
+                StatusEffectSystem targetStatus = target.GetComponent<StatusEffectSystem>();
+                if (targetStatus != null) {
+                    foreach (var effect in ability.ApplyToTarget) {
+                        targetStatus.ApplyEffect(effect);
+                    }
+                }
             }
         }
     }

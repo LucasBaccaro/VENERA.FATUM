@@ -34,13 +34,16 @@ MonoBehaviour:
   Category: 0
   BaseDamage: 40
   BaseHeal: 0
+  ApplyEffectsInstant: 1
   ApplyToTarget: []
-  ApplyToSelf: []
+  ApplyToSelf:
+  - {fileID: 11400000, guid: 959e3681c7893b6498ce76e7830bb11d, type: 2}
   ProjectilePrefab: {fileID: 0}
   ProjectileSpeed: 0
-  IndicatorMaterial: {fileID: 0}
+  IndicatorMaterial: {fileID: 2100000, guid: 3258978d9cd3146438d523e59dde8f04, type: 2}
   CastVFX: {fileID: 0}
   ImpactVFX: {fileID: 0}
   CastSound: {fileID: 0}
   ImpactSound: {fileID: 0}
-  AnimationTrigger: Cast
+  StartCastAnimationTrigger: 
+  AnimationTrigger: 

@@ -48,6 +48,10 @@ namespace Genesis.Data {
         public int BaseDamage; // Usamos int para daño RPG clásico, float si prefieres
         public int BaseHeal;
         
+        [Header("Status Effects (Execution)")]
+        [Tooltip("Si es true, los efectos se aplican al INICIAR el cast/channel (antes de la barra). Si es false, al FINALIZAR.")]
+        public bool ApplyEffectsInstant = false;
+        
         [Header("Status Effects")]
         public StatusEffectData[] ApplyToTarget;
         public StatusEffectData[] ApplyToSelf;

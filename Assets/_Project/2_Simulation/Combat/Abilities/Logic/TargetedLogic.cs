@@ -41,11 +41,18 @@ namespace Genesis.Simulation.Combat {
                 SpawnTargetedProjectile(caster, target, data);
             } else {
                 // MODO INSTANTÁNEO (sin proyectil): Aplicar efectos inmediatamente
-                ApplyEffectsToTarget(caster, target, data);
+                // Si ApplyEffectsInstant es true, ya se aplicaron en PlayerCombat
+                if (!data.ApplyEffectsInstant) {
+                    ApplyEffectsToTarget(caster, target, data);
+                } else if (data.BaseDamage > 0 || data.BaseHeal > 0 || data.ImpactVFX != null) {
+                    // Si es instant, igual necesitamos aplicar daño/heal/vfx si NO hay proyectil
+                    ApplyCombatValuesToTarget(caster, target, data);
+                }
             }
 
             // STATUS EFFECTS (to self) - Estos se aplican siempre al castear
-            if (data.ApplyToSelf != null && data.ApplyToSelf.Length > 0) {
+            // Si ApplyEffectsInstant es true, ya se aplicaron en PlayerCombat
+            if (!data.ApplyEffectsInstant && data.ApplyToSelf != null && data.ApplyToSelf.Length > 0) {
                 StatusEffectSystem casterStatus = caster.GetComponent<StatusEffectSystem>();
                 if (casterStatus != null) {
                     foreach (var effectData in data.ApplyToSelf) {
@@ -100,13 +107,44 @@ namespace Genesis.Simulation.Combat {
             }
 
             // STATUS EFFECTS (to target)
-            if (data.ApplyToTarget != null && data.ApplyToTarget.Length > 0) {
+            // Si ApplyEffectsInstant es true, ya se aplicaron en PlayerCombat al inicio
+            if (!data.ApplyEffectsInstant && data.ApplyToTarget != null && data.ApplyToTarget.Length > 0) {
                 StatusEffectSystem targetStatus = target.GetComponent<StatusEffectSystem>();
                 if (targetStatus != null) {
                     foreach (var effectData in data.ApplyToTarget) {
                         targetStatus.ApplyEffect(effectData);
                         Debug.Log($"[TargetedLogic] Applied {effectData.Name} to {target.name}");
                     }
+                }
+            }
+
+            // IMPACT VFX
+            if (data.ImpactVFX != null) {
+                Vector3 impactPos = target.transform.position + Vector3.up * 1f;
+                GameObject vfx = Object.Instantiate(data.ImpactVFX, impactPos, Quaternion.identity);
+                FishNet.InstanceFinder.ServerManager.Spawn(vfx);
+                Object.Destroy(vfx, 2f);
+            }
+        }
+
+        /// <summary>
+        /// Aplica solo daño, heal y VFX (sin status effects).
+        /// Usado cuando ApplyEffectsInstant es true.
+        /// </summary>
+        private static void ApplyCombatValuesToTarget(NetworkObject caster, NetworkObject target, AbilityData data) {
+            if (target == null) return;
+
+            // DAMAGE
+            if (data.BaseDamage > 0) {
+                if (target.TryGetComponent(out IDamageable damageable)) {
+                    damageable.TakeDamage(data.BaseDamage, caster);
+                }
+            }
+
+            // HEAL
+            if (data.BaseHeal > 0) {
+                if (target.TryGetComponent(out PlayerStats stats)) {
+                    stats.RestoreHealth(data.BaseHeal);
                 }
             }
 

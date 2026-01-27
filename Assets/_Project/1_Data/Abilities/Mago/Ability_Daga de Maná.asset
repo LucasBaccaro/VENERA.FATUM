@@ -34,6 +34,7 @@ MonoBehaviour:
   Category: 1
   BaseDamage: 30
   BaseHeal: 0
+  ApplyEffectsInstant: 1
   ApplyToTarget: []
   ApplyToSelf:
   - {fileID: 11400000, guid: 0769282753f96b245b3418efca8da16a, type: 2}

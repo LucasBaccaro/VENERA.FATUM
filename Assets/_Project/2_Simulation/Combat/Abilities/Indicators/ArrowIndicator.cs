@@ -17,6 +17,8 @@ namespace Genesis.Simulation.Combat {
         [Header("Dash Settings")]
         [SerializeField] private bool isBackwards = false; // True para Desenganche
         [SerializeField] private float maxDashDistance = 15f;
+        [SerializeField] private float projectileRadius = 0.4f;
+        [SerializeField] private float impactSkin = 0.15f;
 
         private Vector3 _startPoint;
         private Vector3 _targetPoint;
@@ -53,12 +55,19 @@ namespace Genesis.Simulation.Combat {
             // 1. Levantar el origen del Raycast para evitar chocar con el suelo (pequeños desniveles)
             Vector3 checkOrigin = _startPoint + Vector3.up * 0.5f;
 
-            // Raycast para detectar obstáculos en el camino
-            if (Physics.Raycast(checkOrigin, _direction, out RaycastHit hit, maxDashDistance, obstacleMask)) {
-                
-                // Hay un obstáculo - ajustar punto antes del obstáculo (Partial Dash)
-                // En lugar de invalidar, permitimos cargar HASTA el obstáculo.
-                _targetPoint = hit.point - _direction * 0.9f; 
+            // SphereCast = trayectoria con volumen (no rayo infinitamente fino)
+            // Esto evita que la flecha atraviese huecos por donde el personaje no cabría
+            if (Physics.SphereCast(
+                    checkOrigin,
+                    projectileRadius,
+                    _direction,
+                    out RaycastHit hit,
+                    maxDashDistance,
+                    obstacleMask,
+                    QueryTriggerInteraction.Ignore))
+            {
+                // Hay un obstáculo - ajustar punto antes del obstáculo (Impact Skin para evitar clipping)
+                _targetPoint = hit.point + hit.normal * impactSkin; 
                 
                 // Bajamos el punto al suelo visualmente si es posible, para que la flecha no quede flotando
                 if (Physics.Raycast(_targetPoint + Vector3.up, Vector3.down, out RaycastHit floorHit, 2f, _groundLayer)) {
@@ -76,15 +85,12 @@ namespace Genesis.Simulation.Combat {
                 Ray groundRay = new Ray(desiredPoint + Vector3.up * 2f, Vector3.down);
 
                 if (Physics.Raycast(groundRay, out RaycastHit groundHit, 5f, _groundLayer)) {
-                    _targetPoint = groundHit.point + Vector3.up * 0.1f; // Ajuste fino
-                    _isValid = true;
+                    _targetPoint = groundHit.point + Vector3.up * 0.15f; // Ajuste fino con skin
                 } else {
                     // No hay suelo (ej: precipicio).
-                    // Opción A: Invalidar. Opción B: Clamp al borde.
-                    // Mantenemos invalidar para seguridad, pero rara vez pasa en terreno plano.
                     _targetPoint = desiredPoint;
-                    _isValid = false; 
                 }
+                _isValid = true; // Siempre válido, como el LineIndicator
             }
 
             // Actualizar visual - Flecha

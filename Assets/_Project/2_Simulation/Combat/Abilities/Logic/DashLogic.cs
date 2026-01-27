@@ -81,7 +81,8 @@ namespace Genesis.Simulation.Combat {
             }
 
             // Aplicar STATUS EFFECTS a sí mismo (ej: invulnerabilidad durante dash)
-            if (data.ApplyToSelf != null && data.ApplyToSelf.Length > 0) {
+            // Si ApplyEffectsInstant es true, ya se aplicaron en PlayerCombat al inicio
+            if (!data.ApplyEffectsInstant && data.ApplyToSelf != null && data.ApplyToSelf.Length > 0) {
                 StatusEffectSystem casterStatus = caster.GetComponent<StatusEffectSystem>();
                 if (casterStatus != null) {
                     foreach (var effectData in data.ApplyToSelf) {

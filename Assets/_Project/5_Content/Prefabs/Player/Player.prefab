@@ -165,7 +165,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584321365073039176
+  _initializedTimestamp: -8584321319682970158
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -181,7 +181,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 13
+  <PrefabId>k__BackingField: 14
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 10407916748453484099
   SceneId: 0
@@ -323,7 +323,7 @@ MonoBehaviour:
   indicatorSystem: {fileID: -1511099638696177002}
   castVFXSpawnPoint: {fileID: 7752732318354539809}
   abilitySlots:
-  - {fileID: 11400000, guid: 03f21edff8e0b4ef6bd56d786104a64b, type: 2}
+  - {fileID: 11400000, guid: a038d18b4badf468ab8f330e270f5d96, type: 2}
   - {fileID: 11400000, guid: 783226a409cd24c69a7fa38b009fbec9, type: 2}
   - {fileID: 11400000, guid: 6f1473c9f4dbb4e738ca54b4299f02b6, type: 2}
   - {fileID: 11400000, guid: ef9fa2f7642e5472ba8f75a3585ec345, type: 2}

@@ -23,7 +23,18 @@ namespace Genesis.Simulation.Combat {
             // NOTE: CastVFX se spawna en PlayerCombat durante el casting
             // Aquí solo spawneamos el ImpactVFX
 
-            // Detectar enemigos en radio
+            // 1. APLICAR STATUS EFFECTS AL CASTER (Self)
+            // Si ApplyEffectsInstant es true, ya se aplicaron en PlayerCombat al inicio
+            if (!data.ApplyEffectsInstant && data.ApplyToSelf != null && data.ApplyToSelf.Length > 0) {
+                StatusEffectSystem casterStatus = caster.GetComponent<StatusEffectSystem>();
+                if (casterStatus != null) {
+                    foreach (var effectData in data.ApplyToSelf) {
+                        casterStatus.ApplyEffect(effectData);
+                    }
+                }
+            }
+
+            // 2. DETECTAR OBJETIVOS EN RADIO
             Collider[] hits = Physics.OverlapSphere(casterPos, data.Radius, LayerMask.GetMask("Enemy", "Player"));
 
             int hitCount = 0;
@@ -34,7 +45,7 @@ namespace Genesis.Simulation.Combat {
                     // Ignorar al caster (a menos que includeSelf = true)
                     if (netObj == caster && !includeSelf) continue;
 
-                    Debug.Log($"[SelfAOELogic] Hit {hit.name} (Layer: {LayerMask.LayerToName(hit.gameObject.layer)})");
+                    Debug.Log($"[SelfAOELogic] Hit {hit.name}");
 
                     // Aplicar DAMAGE
                     if (data.BaseDamage > 0) {
@@ -44,7 +55,11 @@ namespace Genesis.Simulation.Combat {
                         }
                     }
 
-                    // Aplicar STATUS EFFECTS
+                    // Aplicar STATUS EFFECTS AL TARGET
+                    // NOTA: Para habilidades channeled (como Torbellino), los efectos a objetivos se suelen aplicar en cada tick.
+                    // Si ApplyEffectsInstant es true, los efectos al TARGET en una habilidad NO dirigida (ground/aoe)
+                    // son ambiguos. Pero para Targeted abilities ya lo manejamos.
+                    // En SelfAOE, asumimos que ApplyEffectsInstant afecta principalmente a Self.
                     if (data.ApplyToTarget != null && data.ApplyToTarget.Length > 0) {
                         StatusEffectSystem statusSystem = netObj.GetComponent<StatusEffectSystem>();
                         if (statusSystem != null) {

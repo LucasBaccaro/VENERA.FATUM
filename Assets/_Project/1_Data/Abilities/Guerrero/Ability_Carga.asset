@@ -28,7 +28,7 @@ MonoBehaviour:
   ChannelMaxDuration: 0
   TargetingMode: 3
   IndicatorType: 4
-  Range: 15
+  Range: 8
   Radius: 1.5
   Angle: 60
   Category: 0
@@ -44,5 +44,5 @@ MonoBehaviour:
   ImpactVFX: {fileID: 0}
   CastSound: {fileID: 0}
   ImpactSound: {fileID: 0}
-  StartCastAnimationTrigger: StartCast
-  AnimationTrigger: Cast
+  StartCastAnimationTrigger: CastInstant
+  AnimationTrigger: EndCast

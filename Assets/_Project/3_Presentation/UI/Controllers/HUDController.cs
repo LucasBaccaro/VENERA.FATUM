@@ -28,6 +28,7 @@ namespace Genesis.Presentation.UI {
         private ProgressBar _gcdBar;
         private Label _castText;
         private Label _gcdText;
+        private Label _notificationLabel;
 
         // Targeting UI (Fase 3)
         private VisualElement _targetFrame;
@@ -56,6 +57,9 @@ namespace Genesis.Presentation.UI {
 
             // Class
             EventBus.Subscribe<string, Sprite>("OnClassChanged", OnClassChanged);
+
+            // Errors
+            EventBus.Subscribe<string>("OnCombatError", OnCombatError);
         }
 
         void OnDisable() {
@@ -69,6 +73,9 @@ namespace Genesis.Presentation.UI {
 
             // Class
             EventBus.Unsubscribe<string, Sprite>("OnClassChanged", OnClassChanged);
+
+            // Errors
+            EventBus.Unsubscribe<string>("OnCombatError", OnCombatError);
         }
 
         void Update() {
@@ -106,6 +113,7 @@ namespace Genesis.Presentation.UI {
             _gcdBar = _root.Q<ProgressBar>("GCDBar");
             _castText = _root.Q<Label>("CastText");
             _gcdText = _root.Q<Label>("GCDText");
+            _notificationLabel = _root.Q<Label>("NotificationLabel");
 
             // Targeting
             _targetFrame = _root.Q<VisualElement>("TargetFrame");
@@ -198,6 +206,27 @@ namespace Genesis.Presentation.UI {
         private void OnClassChanged(string className, Sprite classIcon) {
             // TODO: Implementar visualización de clase en HUD si se requiere
             Debug.Log($"[HUD] Class UI Update: {className}");
+        }
+
+        private void OnCombatError(string message) {
+            ShowNotification(message);
+        }
+
+        private void ShowNotification(string message) {
+            if (_notificationLabel == null) return;
+
+            _notificationLabel.text = message;
+            _notificationLabel.style.opacity = 1;
+
+            // Cancelar invocaciones previas para no ocultar antes de tiempo si hay spam
+            CancelInvoke(nameof(HideNotification));
+            Invoke(nameof(HideNotification), 2f);
+        }
+
+        private void HideNotification() {
+            if (_notificationLabel != null) {
+                _notificationLabel.style.opacity = 0;
+            }
         }
 
         // ═══════════════════════════════════════════════════════

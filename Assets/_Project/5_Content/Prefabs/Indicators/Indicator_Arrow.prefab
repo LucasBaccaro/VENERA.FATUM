@@ -58,7 +58,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 55b69f6f9f5e24fca8949c2b22ff375d, type: 2}
+  - {fileID: 2100000, guid: b825aaa1376b2a741991ca928da9491b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -86,7 +86,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.2
+    widthMultiplier: 0.5
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -268,9 +268,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: c0f70a9282936480082c570cf3119b94, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: c0f70a9282936480082c570cf3119b94, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 55b69f6f9f5e24fca8949c2b22ff375d, type: 2}
+      objectReference: {fileID: 2100000, guid: b825aaa1376b2a741991ca928da9491b, type: 2}
+    - target: {fileID: -7511558181221131132, guid: c0f70a9282936480082c570cf3119b94, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b825aaa1376b2a741991ca928da9491b, type: 2}
     - target: {fileID: 919132149155446097, guid: c0f70a9282936480082c570cf3119b94, type: 3}
       propertyPath: m_Name
       value: ArrowPoint

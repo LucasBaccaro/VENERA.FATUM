@@ -23,6 +23,9 @@
                 <ui:Label text="" name="GCDText" style="font-size: 11px; color: white; margin-top: 3px;"/>
             </ui:VisualElement>
         </ui:VisualElement>
+        <ui:VisualElement name="NotificationContainer" style="position: absolute; top: 25%; left: 0; width: 100%; height: 50px; align-items: center; justify-content: center; display: flex; pointer-events: none;">
+            <ui:Label text="Error Message" name="NotificationLabel" style="font-size: 24px; color: rgb(255, 69, 69); -unity-font-style: bold; -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(0, 0, 0); opacity: 0; transition-property: opacity; transition-duration: 0.3s;"/>
+        </ui:VisualElement>
         <ui:VisualElement name="TargetFrame" class="target-frame-container" style="position: absolute; top: 15px; left: 50%; width: 280px; translate: -50% 0; height: 94px;">
             <ui:Label text="Target Name" name="TargetName" class="target-name-label"/>
             <ui:VisualElement name="TargetHeader" class="target-header"/>

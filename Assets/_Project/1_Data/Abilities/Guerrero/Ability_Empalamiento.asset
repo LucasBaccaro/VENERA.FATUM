@@ -22,7 +22,7 @@ MonoBehaviour:
   GCD: 1
   CastType: 0
   CastTime: 0
-  CanMoveWhileCasting: 0
+  CanMoveWhileCasting: 1
   ChannelTickRate: 0.1
   ChannelHitAllTargets: 1
   ChannelMaxDuration: 0
@@ -34,8 +34,9 @@ MonoBehaviour:
   Category: 0
   BaseDamage: 35
   BaseHeal: 0
+  ApplyEffectsInstant: 1
   ApplyToTarget:
-  - {fileID: 11400000, guid: d8e2b8e81bed64484a75ceaa78924ceb, type: 2}
+  - {fileID: 11400000, guid: 79124c4e5365e4c91a694706a8ccd5d0, type: 2}
   ApplyToSelf: []
   ProjectilePrefab: {fileID: 0}
   ProjectileSpeed: 0
@@ -44,4 +45,5 @@ MonoBehaviour:
   ImpactVFX: {fileID: 0}
   CastSound: {fileID: 0}
   ImpactSound: {fileID: 0}
-  AnimationTrigger: Cast
+  StartCastAnimationTrigger: CastInstant
+  AnimationTrigger: EndCast

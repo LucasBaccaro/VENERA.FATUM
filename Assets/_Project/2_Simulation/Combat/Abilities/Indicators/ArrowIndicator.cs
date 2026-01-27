@@ -49,20 +49,25 @@ namespace Genesis.Simulation.Combat {
 
             _direction = direction.normalized;
 
-            // Calcular punto deseado
-            Vector3 desiredPoint = _startPoint + _direction * maxDashDistance;
+            // --- NUEVO: DISTANCIA DINÁMICA ---
+            // Calcular distancia al mouse, clamepada al rango máximo
+            float mouseDist = Vector3.Distance(_startPoint, worldPoint);
+            float currentMaxDist = Mathf.Min(mouseDist, maxDashDistance);
+
+            // Calcular punto deseado basado en la distancia del mouse (pero limitado por el max)
+            Vector3 desiredPoint = _startPoint + _direction * currentMaxDist;
 
             // 1. Levantar el origen del Raycast para evitar chocar con el suelo (pequeños desniveles)
             Vector3 checkOrigin = _startPoint + Vector3.up * 0.5f;
 
             // SphereCast = trayectoria con volumen (no rayo infinitamente fino)
-            // Esto evita que la flecha atraviese huecos por donde el personaje no cabría
+            // Usamos currentMaxDist en lugar de maxDashDistance para que la flecha no atraviese paredes más allá de donde apunta el mouse
             if (Physics.SphereCast(
                     checkOrigin,
                     projectileRadius,
                     _direction,
                     out RaycastHit hit,
-                    maxDashDistance,
+                    currentMaxDist,
                     obstacleMask,
                     QueryTriggerInteraction.Ignore))
             {
@@ -79,7 +84,7 @@ namespace Genesis.Simulation.Combat {
                 _isValid = true; // AHORA ES VÁLIDO (Carga parcial)
 
             } else {
-                // Camino libre
+                // Camino libre hacia el punto del mouse (clamepado)
                 
                 // Validar que haya suelo en el destino (para no caer al vacío)
                 Ray groundRay = new Ray(desiredPoint + Vector3.up * 2f, Vector3.down);

@@ -34,6 +34,7 @@ MonoBehaviour:
   Category: 2
   BaseDamage: 0
   BaseHeal: 0
+  ApplyEffectsInstant: 0
   ApplyToTarget: []
   ApplyToSelf:
   - {fileID: 11400000, guid: e1b9606fc62d54f55aa0235f491ebdea, type: 2}
@@ -44,4 +45,5 @@ MonoBehaviour:
   ImpactVFX: {fileID: 0}
   CastSound: {fileID: 0}
   ImpactSound: {fileID: 0}
-  AnimationTrigger: Cast
+  StartCastAnimationTrigger: CastInstant
+  AnimationTrigger: EndCast

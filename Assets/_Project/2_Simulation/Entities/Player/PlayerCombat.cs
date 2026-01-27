@@ -22,6 +22,7 @@ namespace Genesis.Simulation {
         [SerializeField] private AbilityIndicatorSystem indicatorSystem;
         [SerializeField] private Transform castVFXSpawnPoint;
         private StatusEffectSystem _statusEffects;
+        private CharacterController _cc;
 
         [Header("Loadout")]
         public List<AbilityData> abilitySlots = new List<AbilityData>();
@@ -73,6 +74,7 @@ namespace Genesis.Simulation {
 
         void Awake() {
             _statusEffects = GetComponent<StatusEffectSystem>();
+            _cc = GetComponent<CharacterController>();
         }
 
         // ═══════════════════════════════════════════════════════
@@ -199,7 +201,7 @@ namespace Genesis.Simulation {
                 float distanceMoved = Vector3.Distance(transform.position, _castStartPosition);
                 if (distanceMoved > _currentMovementThreshold) {
                     Debug.Log($"[PlayerCombat] Channeling interrupted by movement (moved {distanceMoved:F2}m)");
-                    StopChanneling();
+                    StopChanneling(true); // <--- Interrumpido por movimiento
                     return;
                 }
             }
@@ -288,6 +290,9 @@ namespace Genesis.Simulation {
         /// Interrumpe el cast actual
         /// </summary>
         private void InterruptCast() {
+            if (_pendingAbility == null) return;
+            int abilityId = _pendingAbility.ID;
+
             if (_currentCastCoroutine != null) {
                 StopCoroutine(_currentCastCoroutine);
                 _currentCastCoroutine = null;
@@ -295,6 +300,11 @@ namespace Genesis.Simulation {
 
             _combatState = CombatState.Idle;
             EventBus.Trigger<string>("OnCombatStateChanged", _combatState.ToString());
+            
+            // FIX: Reset animator triggers network-wide
+            if (base.IsOwner) {
+                CmdInterruptCast(abilityId);
+            }
 
             // Clear cast tracking
             _castDuration = 0f;
@@ -390,6 +400,26 @@ namespace Genesis.Simulation {
             return true;
         }
 
+        /// <summary>
+        /// Valida si el jugador puede lanzar la habilidad basado en su movimiento actual.
+        /// Retorna true si puede lanzar, false si está moviéndose y la habilidad no lo permite.
+        /// </summary>
+        private bool ValidateMovement(AbilityData ability) {
+            if (ability.CanMoveWhileCasting) return true;
+
+            // Chequear velocidad del motor (horizontal)
+            Vector3 currentVelocity = _cc != null ? _cc.velocity : Vector3.zero;
+            currentVelocity.y = 0;
+
+            if (currentVelocity.magnitude > 0.1f) {
+                Debug.LogWarning($"[PlayerCombat] Cannot cast {ability.Name} while moving");
+                EventBus.Trigger("OnCombatError", "No puedes lanzar eso en movimiento");
+                return false;
+            }
+
+            return true;
+        }
+
         // ═══════════════════════════════════════════════════════
         // FLUJO LEGACY: TARGETED ABILITIES
         // ═══════════════════════════════════════════════════════
@@ -399,6 +429,9 @@ namespace Genesis.Simulation {
         /// Requiere target seleccionado previamente
         /// </summary>
         private void ExecuteTargetedAbility(AbilityData ability) {
+            // Validar movimiento antes de proceder (Targeted no tiene aiming phase)
+            if (!ValidateMovement(ability)) return;
+
             int targetId = -1;
             bool isSelfCast = Keyboard.current.leftAltKey.isPressed;
             NetworkObject targetObject = null;
@@ -552,12 +585,22 @@ namespace Genesis.Simulation {
         /// <summary>
         /// Detiene el channeling (usuario presionó tecla nuevamente)
         /// </summary>
-        private void StopChanneling() {
+        private void StopChanneling(bool isInterrupted = false) {
             if (_combatState != CombatState.Channeling) return;
+
+            int abilityId = _pendingAbility != null ? _pendingAbility.ID : -1;
 
             // Limpiar estado
             _combatState = CombatState.Idle;
             EventBus.Trigger<string>("OnCombatStateChanged", _combatState.ToString());
+
+            // Reset local triggers
+            if (animator != null && _pendingAbility != null) {
+                if (!string.IsNullOrEmpty(_pendingAbility.StartCastAnimationTrigger))
+                    animator.ResetTrigger(_pendingAbility.StartCastAnimationTrigger);
+                if (!string.IsNullOrEmpty(_pendingAbility.AnimationTrigger))
+                    animator.ResetTrigger(_pendingAbility.AnimationTrigger);
+            }
 
             // Ocultar LineIndicator y desactivar modo channel
             if (indicatorSystem != null) {
@@ -571,8 +614,8 @@ namespace Genesis.Simulation {
             // Destruir VFX
             DestroyCastVFX();
 
-            // Notificar servidor
-            CmdStopChanneling(_pendingAbility != null ? _pendingAbility.ID : -1);
+            // Notificar servidor (pasando si fue interrumpido o no)
+            CmdStopChanneling(abilityId, isInterrupted);
 
             // Aplicar cooldown
             if (_pendingAbility != null) {
@@ -621,11 +664,8 @@ namespace Genesis.Simulation {
             AbilityIndicator indicator = indicatorSystem.GetCurrentIndicator();
             if (indicator == null) return;
 
-            // Validar que la posición sea válida
-            if (!indicator.IsValid()) {
-                Debug.LogWarning("[PlayerCombat] Invalid position!");
-                return;
-            }
+            // Confirma la habilidad (usuario hizo click)
+            if (!ValidateMovement(_pendingAbility)) return;
 
             // DECISIÓN: Channeling vs Skillshot Normal
             if (_pendingAbility.CastType == CastingType.Channeling) {
@@ -920,12 +960,17 @@ namespace Genesis.Simulation {
         /// ServerRpc: Detiene el channeling
         /// </summary>
         [ServerRpc]
-        private void CmdStopChanneling(int abilityId) {
-            Debug.Log($"[PlayerCombat] Server: Channeling stopped for {abilityId}");
+        private void CmdStopChanneling(int abilityId, bool isInterrupted) {
+            Debug.Log($"[PlayerCombat] Server: Channeling stopped for {abilityId} (Interrupted: {isInterrupted})");
             
-            // Trigger END animation for Channeling
             if (abilityId != -1) {
-                RpcPlayAbilityAnimation(abilityId, false);
+                if (isInterrupted) {
+                    // Si fue interrumpido, resetear triggers en lugar de disparar el de éxito
+                    RpcResetAbilityTriggers(abilityId);
+                } else {
+                    // Si fue manual, disparar animación de "End/Success"
+                    RpcPlayAbilityAnimation(abilityId, false);
+                }
             }
         }
 
@@ -942,6 +987,27 @@ namespace Genesis.Simulation {
                 animator.SetTrigger(trigger);
                 Debug.Log($"[PlayerCombat] RpcPlayAnimation: {trigger} (Starting: {isStart})");
             }
+        }
+
+        [ServerRpc]
+        private void CmdInterruptCast(int abilityId) {
+            RpcResetAbilityTriggers(abilityId);
+        }
+
+        [ObserversRpc]
+        private void RpcResetAbilityTriggers(int abilityId) {
+            if (animator == null || AbilityDatabase.Instance == null) return;
+
+            AbilityData ability = AbilityDatabase.Instance.GetAbility(abilityId);
+            if (ability == null) return;
+
+            if (!string.IsNullOrEmpty(ability.StartCastAnimationTrigger))
+                animator.ResetTrigger(ability.StartCastAnimationTrigger);
+            
+            if (!string.IsNullOrEmpty(ability.AnimationTrigger))
+                animator.ResetTrigger(ability.AnimationTrigger);
+
+            Debug.Log($"[PlayerCombat] RpcResetAbilityTriggers for {ability.Name}");
         }
 
         // ═══════════════════════════════════════════════════════
@@ -997,6 +1063,15 @@ namespace Genesis.Simulation {
 
             _combatState = CombatState.Idle;
             EventBus.Trigger<string>("OnCombatStateChanged", _combatState.ToString());
+
+            // FIX: Reset animator triggers on failure
+            if (animator != null && _pendingAbility != null) {
+                if (!string.IsNullOrEmpty(_pendingAbility.StartCastAnimationTrigger))
+                    animator.ResetTrigger(_pendingAbility.StartCastAnimationTrigger);
+                if (!string.IsNullOrEmpty(_pendingAbility.AnimationTrigger))
+                    animator.ResetTrigger(_pendingAbility.AnimationTrigger);
+            }
+
             Debug.LogWarning($"[PlayerCombat] Cast failed: {reason}");
 
             // Clear cast tracking

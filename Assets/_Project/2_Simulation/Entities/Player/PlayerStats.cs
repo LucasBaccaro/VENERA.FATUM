@@ -14,15 +14,15 @@ namespace Genesis.Simulation {
     [RequireComponent(typeof(NetworkObject))]
     public class PlayerStats : NetworkBehaviour, IDamageable {
 
-        [Header("Base Stats")]
-        [SerializeField] private float maxHealth = 100f;
-        [SerializeField] private float maxMana = 100f;
+        [Header("Base Stats (Synced)")]
+        private readonly SyncVar<float> _maxHealth = new SyncVar<float>(800f);
+        private readonly SyncVar<float> _maxMana = new SyncVar<float>(800f);
         [SerializeField] private float manaRegenPerSecond = 5f;
 
         [Header("Current Stats (Synced - FishNet v4)")]
         // FishNet v4: Usar SyncVar<T> en lugar de [SyncVar]
-        private readonly SyncVar<float> _currentHealth = new SyncVar<float>(100f);
-        private readonly SyncVar<float> _currentMana = new SyncVar<float>(100f);
+        private readonly SyncVar<float> _currentHealth = new SyncVar<float>(800f);
+        private readonly SyncVar<float> _currentMana = new SyncVar<float>(800f);
         private readonly SyncVar<float> _currentShield = new SyncVar<float>(0f);
 
         // Estado
@@ -40,9 +40,9 @@ namespace Genesis.Simulation {
         // ═══════════════════════════════════════════════════════
 
         public float CurrentHealth => _currentHealth.Value;
-        public float MaxHealth => maxHealth;
+        public float MaxHealth => _maxHealth.Value;
         public float CurrentMana => _currentMana.Value;
-        public float MaxMana => maxMana;
+        public float MaxMana => _maxMana.Value;
         public float CurrentShield => _currentShield.Value;
         // public bool IsDead => _isDead; // REMOVIDO: Ya implementado abajo en la región de IDamageable
 
@@ -57,24 +57,42 @@ namespace Genesis.Simulation {
             _currentHealth.OnChange += OnHealthChanged;
             _currentMana.OnChange += OnManaChanged;
             _currentShield.OnChange += OnShieldChanged;
+            
+            // También suscribirse a cambios de Max para actualizar UI
+            _maxHealth.OnChange += (oldVal, newVal, asServer) => OnHealthChanged(_currentHealth.Value, _currentHealth.Value, asServer);
+            _maxMana.OnChange += (oldVal, newVal, asServer) => OnManaChanged(_currentMana.Value, _currentMana.Value, asServer);
         }
 
         public override void OnStartServer() {
             base.OnStartServer();
 
-            // Inicializar con stats completos
-            _currentHealth.Value = maxHealth;
-            _currentMana.Value = maxMana;
+            // Inicializar con stats completos (será sobrescrito por PlayerClassManager si existe)
+            _currentHealth.Value = _maxHealth.Value;
+            _currentMana.Value = _maxMana.Value;
             _currentShield.Value = 0f;
             _isDead = false;
+        }
+
+        [Server]
+        public void InitializeFromClass(ClassData data) {
+            _maxHealth.Value = data.MaxHealth;
+            _maxMana.Value = data.MaxMana;
+            manaRegenPerSecond = data.ManaRegenPerSecond;
+
+            // Al cambiar de clase, sanamos al jugador y le damos maná completo
+            _currentHealth.Value = _maxHealth.Value;
+            _currentMana.Value = _maxMana.Value;
+            _isDead = false;
+            
+            Debug.Log($"[PlayerStats] Class updated: {data.ClassName}. Stats re-initialized.");
         }
 
         void Update() {
             if (!base.IsServer) return;
 
             // Regenerar maná pasivamente
-            if (_currentMana.Value < maxMana) {
-                _currentMana.Value = Mathf.Min(_currentMana.Value + manaRegenPerSecond * Time.deltaTime, maxMana);
+            if (_currentMana.Value < _maxMana.Value) {
+                _currentMana.Value = Mathf.Min(_currentMana.Value + manaRegenPerSecond * Time.deltaTime, _maxMana.Value);
             }
         }
 
@@ -124,7 +142,9 @@ namespace Genesis.Simulation {
                 _currentShield.Value -= shieldAbsorbed;
                 damage -= shieldAbsorbed;
 
-                RpcShowDamageText($"{shieldAbsorbed:F0} (SHIELD)", new Color(0.5f, 0.8f, 1f));
+                if (attacker != null && attacker.Owner.IsValid) {
+                    TargetShowDamageText(attacker.Owner, $"{shieldAbsorbed:F0}", "shield");
+                }
             }
 
             // LIMPIEZA DE ESCUDO (Chequeo robusto fuera del if anterior)
@@ -142,7 +162,9 @@ namespace Genesis.Simulation {
             // ═══ PASO 2: Daño a HP ═══
             _currentHealth.Value = Mathf.Max(0, _currentHealth.Value - damage);
 
-            RpcShowDamageText($"-{damage:F0}", Color.red);
+            if (attacker != null && attacker.Owner.IsValid) {
+                TargetShowDamageText(attacker.Owner, $"{damage:F0}", "damage");
+            }
 
             // ═══ PASO 3: Check Death ═══
             if (_currentHealth.Value <= 0) {
@@ -157,7 +179,7 @@ namespace Genesis.Simulation {
         public bool IsAlive() => !_isDead;
 
         public float GetCurrentHealth() => _currentHealth.Value;
-        public float GetMaxHealth() => maxHealth;
+        public float GetMaxHealth() => _maxHealth.Value;
 
         // ═══════════════════════════════════════════════════════
         // HEALING
@@ -167,10 +189,12 @@ namespace Genesis.Simulation {
         public void Heal(float amount) {
             if (_isDead) return;
 
-            float healAmount = Mathf.Min(amount, maxHealth - _currentHealth.Value);
+            float healAmount = Mathf.Min(amount, _maxHealth.Value - _currentHealth.Value);
             _currentHealth.Value += healAmount;
 
-            RpcShowDamageText($"+{healAmount:F0}", Color.green);
+            if (base.Owner.IsValid) {
+                TargetShowDamageText(base.Owner, $"+{healAmount:F0}", "heal");
+            }
 
             EventBus.Trigger("OnPlayerHealed", healAmount);
         }
@@ -197,7 +221,7 @@ namespace Genesis.Simulation {
 
         [Server]
         public void RestoreMana(float amount) {
-            _currentMana.Value = Mathf.Min(_currentMana.Value + amount, maxMana);
+            _currentMana.Value = Mathf.Min(_currentMana.Value + amount, _maxMana.Value);
         }
 
         // ═══════════════════════════════════════════════════════
@@ -254,14 +278,14 @@ namespace Genesis.Simulation {
         private void OnHealthChanged(float oldValue, float newValue, bool asServer) {
             // Trigger evento para UI (solo en clientes)
             if (base.IsOwner) {
-                EventBus.Trigger("OnHealthChanged", newValue, maxHealth);
+                EventBus.Trigger("OnHealthChanged", newValue, _maxHealth.Value);
             }
         }
 
         private void OnManaChanged(float oldValue, float newValue, bool asServer) {
             // Trigger evento para UI (solo en clientes)
             if (base.IsOwner) {
-                EventBus.Trigger("OnManaChanged", newValue, maxMana);
+                EventBus.Trigger("OnManaChanged", newValue, _maxMana.Value);
             }
         }
 
@@ -276,11 +300,21 @@ namespace Genesis.Simulation {
         // RPC - FLOATING TEXT
         // ═══════════════════════════════════════════════════════
 
+        // ═══════════════════════════════════════════════════════
+        // RPC - FLOATING TEXT (Visibilidad para el atacante)
+        // ═══════════════════════════════════════════════════════
+
+        [TargetRpc]
+        private void TargetShowDamageText(FishNet.Connection.NetworkConnection conn, string text, string type, bool isCritical = false) {
+            Debug.Log($"[PlayerStats] TargetShowDamageText received on client: {text} ({type})");
+            // Desacoplado: Usar EventBus con un struct de datos
+            var data = new Genesis.Data.FloatingTextData(transform.position + Vector3.up * 1.5f, text, type, isCritical);
+            EventBus.Trigger("OnShowFloatingText", data);
+        }
+
         [ObserversRpc]
         private void RpcShowDamageText(string text, Color color) {
-            // TODO: Implementar FloatingText en FASE 11
-            // Por ahora solo log
-            Debug.Log($"[Damage] {gameObject.name}: {text}");
+            // Obsoleto, migrado a TargetShowDamageText
         }
 
         // ═══════════════════════════════════════════════════════

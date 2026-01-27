@@ -65,14 +65,22 @@ namespace Genesis.Core {
         }
 
         void OnEnable() {
-            if (_playerActionMap != null) {
-                _playerActionMap.Enable();
+            if (inputActions != null) {
+                // Habilitar el asset completo es más robusto para manejar el estado interno
+                inputActions.Enable();
+                
+                // Re-vincular el mapa por si el asset fue recargado o modificado
+                _playerActionMap = inputActions.FindActionMap("Player");
+                if (_playerActionMap != null) {
+                    _playerActionMap.Enable();
+                }
             }
         }
 
         void OnDisable() {
-            if (_playerActionMap != null) {
-                _playerActionMap.Disable();
+            if (inputActions != null) {
+                // Al deshabilitar el asset se deshabilitan todos sus mapas
+                inputActions.Disable();
             }
         }
 

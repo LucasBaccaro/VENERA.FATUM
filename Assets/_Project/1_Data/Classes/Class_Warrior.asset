@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c37d7cbb7be80ee418fae9a8be8f2869, type: 3}
+  m_Name: Class_Warrior
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.ClassData
+  ClassName: Warrior
+  ClassIcon: {fileID: 0}
+  MaxHealth: 400
+  MaxMana: 100
+  ManaRegenPerSecond: 3
+  AnimatorController: {fileID: 9100000, guid: 88b802e3646bdef4fbcfba2b6832591d, type: 2}
+  ModelPrefab: {fileID: 5913393234964246974, guid: 31c8ba11d8a496540b8d530ee032ed09, type: 3}
+  InitialAbilities:
+  - {fileID: 11400000, guid: ef9fa2f7642e5472ba8f75a3585ec345, type: 2}
+  - {fileID: 11400000, guid: 783226a409cd24c69a7fa38b009fbec9, type: 2}
+  - {fileID: 11400000, guid: 6f1473c9f4dbb4e738ca54b4299f02b6, type: 2}
+  - {fileID: 11400000, guid: 03f21edff8e0b4ef6bd56d786104a64b, type: 2}
+  - {fileID: 11400000, guid: d4f040a1150c04811a97e752198deb02, type: 2}
+  - {fileID: 11400000, guid: 5e435d0e1ee4c44e0ae5c808132d13dc, type: 2}

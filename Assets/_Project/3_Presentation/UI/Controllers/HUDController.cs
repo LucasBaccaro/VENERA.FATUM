@@ -33,9 +33,13 @@ namespace Genesis.Presentation.UI {
         private VisualElement _targetFrame;
         private Label _targetNameLabel;
         private ProgressBar _targetHealthBar;
+        private Label _targetHealthText;
+        private ProgressBar _targetManaBar;
 
-        // Player reference
+        // Player & Target references
         private PlayerStats _localPlayerStats;
+        private NetworkObject _currentTarget;
+        private PlayerStats _currentTargetStats;
 
         // ═══════════════════════════════════════════════════════
         // INITIALIZATION
@@ -49,6 +53,9 @@ namespace Genesis.Presentation.UI {
             // Targeting
             EventBus.Subscribe<NetworkObject>("OnTargetChanged", OnTargetChanged);
             EventBus.Subscribe("OnTargetCleared", OnTargetCleared);
+
+            // Class
+            EventBus.Subscribe<string, Sprite>("OnClassChanged", OnClassChanged);
         }
 
         void OnDisable() {
@@ -59,6 +66,13 @@ namespace Genesis.Presentation.UI {
             // Targeting
             EventBus.Unsubscribe<NetworkObject>("OnTargetChanged", OnTargetChanged);
             EventBus.Unsubscribe("OnTargetCleared", OnTargetCleared);
+
+            // Class
+            EventBus.Unsubscribe<string, Sprite>("OnClassChanged", OnClassChanged);
+        }
+
+        void Update() {
+            UpdateTargetUI();
         }
 
         void Start() {
@@ -94,10 +108,12 @@ namespace Genesis.Presentation.UI {
             _gcdText = _root.Q<Label>("GCDText");
 
             // Targeting
-            _targetFrame = _root.Q<VisualElement>("TargetFrame"); // Asumimos que existe o lo crearemos en UXML
+            _targetFrame = _root.Q<VisualElement>("TargetFrame");
             if (_targetFrame != null) {
                 _targetNameLabel = _targetFrame.Q<Label>("TargetName");
                 _targetHealthBar = _targetFrame.Q<ProgressBar>("TargetHealth");
+                _targetHealthText = _targetFrame.Q<Label>("TargetHealthText");
+                _targetManaBar = _targetFrame.Q<ProgressBar>("TargetMana");
                 _targetFrame.style.display = DisplayStyle.None; // Ocultar por defecto
             }
 
@@ -121,20 +137,67 @@ namespace Genesis.Presentation.UI {
         }
 
         private void OnTargetChanged(NetworkObject target) {
-            if (_targetFrame == null) return;
+            if (_targetFrame == null || target == null) return;
+            
+            _currentTarget = target;
+            _currentTargetStats = target.GetComponent<PlayerStats>();
             
             _targetFrame.style.display = DisplayStyle.Flex;
-            if (_targetNameLabel != null) _targetNameLabel.text = target.name;
             
-            // TODO: Suscribirse a cambios de vida del target
-            // Por ahora solo mostramos el nombre
-            Debug.Log($"[HUD] Target Selected: {target.name}");
+            // Determinar nombre
+            if (target.CompareTag("Player")) {
+                _targetNameLabel.text = "Player_Enemy";
+            } else if (target.name.Contains("Dummy")) {
+                // Limpiar el "(Clone)" si existe
+                string cleanName = target.name.Replace("(Clone)", "").Trim();
+                _targetNameLabel.text = cleanName;
+            } else {
+                _targetNameLabel.text = target.name.Replace("(Clone)", "").Trim();
+            }
+            
+            UpdateTargetUI();
+            Debug.Log($"[HUD] Target Selected: {_targetNameLabel.text}");
         }
 
         private void OnTargetCleared() {
-            if (_targetFrame == null) return;
-            _targetFrame.style.display = DisplayStyle.None;
+            _currentTarget = null;
+            _currentTargetStats = null;
+            
+            if (_targetFrame != null) {
+                _targetFrame.style.display = DisplayStyle.None;
+            }
             Debug.Log("[HUD] Target Cleared");
+        }
+
+        private void UpdateTargetUI() {
+            if (_currentTarget == null || _targetFrame == null || _targetFrame.style.display == DisplayStyle.None) return;
+
+            if (_currentTargetStats != null) {
+                // Actualizar Vida
+                float hpPercent = (_currentTargetStats.CurrentHealth / _currentTargetStats.MaxHealth) * 100f;
+                if (_targetHealthBar != null) _targetHealthBar.value = hpPercent;
+                if (_targetHealthText != null) _targetHealthText.text = $"{_currentTargetStats.CurrentHealth:F0} / {_currentTargetStats.MaxHealth:F0}";
+
+                // Actualizar Maná (Solo si tiene maná máximo > 0)
+                if (_currentTargetStats.MaxMana > 0) {
+                    if (_targetManaBar != null) {
+                        _targetManaBar.style.display = DisplayStyle.Flex;
+                        _targetManaBar.value = (_currentTargetStats.CurrentMana / _currentTargetStats.MaxMana) * 100f;
+                    }
+                } else {
+                    if (_targetManaBar != null) _targetManaBar.style.display = DisplayStyle.None;
+                }
+            } else {
+                // Si no tiene PlayerStats (ej: un objeto decorativo targeteable), ocultar barras o mostrar 0
+                if (_targetHealthBar != null) _targetHealthBar.value = 0;
+                if (_targetHealthText != null) _targetHealthText.text = "- / -";
+                if (_targetManaBar != null) _targetManaBar.style.display = DisplayStyle.None;
+            }
+        }
+
+        private void OnClassChanged(string className, Sprite classIcon) {
+            // TODO: Implementar visualización de clase en HUD si se requiere
+            Debug.Log($"[HUD] Class UI Update: {className}");
         }
 
         // ═══════════════════════════════════════════════════════

@@ -63,6 +63,7 @@ namespace Genesis.Presentation.UI {
             EventBus.Subscribe<string>("OnCombatStateChanged", OnCombatStateChanged);
             EventBus.Subscribe<int, string>("OnAbilityFailed", OnAbilityFailed);
             EventBus.Subscribe<float, string>("OnCastProgress", OnCastProgress);
+            EventBus.Subscribe("OnLoadoutChanged", UpdateAllSlots);
         }
 
         void OnDisable() {
@@ -72,6 +73,7 @@ namespace Genesis.Presentation.UI {
             EventBus.Unsubscribe<string>("OnCombatStateChanged", OnCombatStateChanged);
             EventBus.Unsubscribe<int, string>("OnAbilityFailed", OnAbilityFailed);
             EventBus.Unsubscribe<float, string>("OnCastProgress", OnCastProgress);
+            EventBus.Unsubscribe("OnLoadoutChanged", UpdateAllSlots);
         }
 
         void Start() {

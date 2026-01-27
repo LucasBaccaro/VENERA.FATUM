@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/MainStyle.uss?fileID=7433441132597879392&amp;guid=cf8f1d6e307ab41bb9434dc2ec321cee&amp;type=3#MainStyle"/>
     <ui:VisualElement name="HUD" style="flex-grow: 1; width: 100%; height: 100%; position: absolute;">
-        <ui:VisualElement name="StatsContainer" style="position: absolute; left: 20px; top: 20px; width: 300px;">
+        <ui:VisualElement name="StatsContainer" style="position: absolute; left: 20px; top: 20px; width: 300px; display: flex;">
             <ui:VisualElement name="HealthContainer" style="margin-bottom: 10px;">
                 <ui:Label text="Health" name="HealthLabel" style="font-size: 14px; color: white; -unity-font-style: bold; margin-bottom: 5px;"/>
                 <ui:ProgressBar value="100" name="HealthBar" high-value="100" style="height: 25px;"/>
@@ -22,6 +22,17 @@
                 <ui:ProgressBar value="0" name="GCDBar" high-value="100" style="height: 20px;"/>
                 <ui:Label text="" name="GCDText" style="font-size: 11px; color: white; margin-top: 3px;"/>
             </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="TargetFrame" class="target-frame-container" style="position: absolute; top: 15px; left: 50%; width: 280px; translate: -50% 0; height: 94px;">
+            <ui:Label text="Target Name" name="TargetName" class="target-name-label"/>
+            <ui:VisualElement name="TargetHeader" class="target-header"/>
+            <ui:VisualElement name="TargetBody" class="target-body">
+                <ui:VisualElement name="TargetHealthGroup">
+                    <ui:ProgressBar value="100" name="TargetHealth" high-value="100" class="target-health-bar"/>
+                    <ui:Label text="1000 / 1000" name="TargetHealthText" class="target-health-text" style="font-size: 8px; -unity-text-align: middle-center;"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:ProgressBar value="100" name="TargetMana" high-value="100" class="target-mana-bar" style="height: 21px;"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

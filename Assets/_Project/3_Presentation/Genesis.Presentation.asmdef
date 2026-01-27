@@ -6,7 +6,8 @@
         "Genesis.Data",
         "Genesis.Simulation",
         "FishNet.Runtime",
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

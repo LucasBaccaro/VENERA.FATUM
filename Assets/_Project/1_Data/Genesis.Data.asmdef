@@ -3,7 +3,8 @@
     "rootNamespace": "Genesis.Data",
     "references": [
         "Genesis.Core",
-        "FishNet.Runtime"
+        "FishNet.Runtime",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

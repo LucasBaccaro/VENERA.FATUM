@@ -18,7 +18,7 @@ MonoBehaviour:
   Description: Gira golpeando a todos los enemigos cercanos.
   Logic: {fileID: 11400000, guid: 114e55307f37a4c1eb81103d8984eb8d, type: 2}
   ManaCost: 25
-  Cooldown: 5
+  Cooldown: 2
   GCD: 1
   CastType: 2
   CastTime: 0

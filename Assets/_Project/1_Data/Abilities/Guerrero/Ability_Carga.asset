@@ -18,11 +18,14 @@ MonoBehaviour:
   Description: "Carga hacia adelante da\xF1ando enemigos en el camino."
   Logic: {fileID: 11400000, guid: 5a1b0d39e42c947269481a5fd24b2a03, type: 2}
   ManaCost: 15
-  Cooldown: 10
+  Cooldown: 2
   GCD: 1
   CastType: 3
   CastTime: 0
   CanMoveWhileCasting: 1
+  ChannelTickRate: 0.1
+  ChannelHitAllTargets: 1
+  ChannelMaxDuration: 0
   TargetingMode: 3
   IndicatorType: 4
   Range: 15
@@ -31,6 +34,7 @@ MonoBehaviour:
   Category: 0
   BaseDamage: 30
   BaseHeal: 0
+  ApplyEffectsInstant: 0
   ApplyToTarget: []
   ApplyToSelf: []
   ProjectilePrefab: {fileID: 0}
@@ -40,4 +44,5 @@ MonoBehaviour:
   ImpactVFX: {fileID: 0}
   CastSound: {fileID: 0}
   ImpactSound: {fileID: 0}
+  StartCastAnimationTrigger: StartCast
   AnimationTrigger: Cast

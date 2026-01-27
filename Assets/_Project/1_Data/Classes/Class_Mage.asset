@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c37d7cbb7be80ee418fae9a8be8f2869, type: 3}
+  m_Name: Class_Mage
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.ClassData
+  ClassName: Mage
+  ClassIcon: {fileID: 0}
+  MaxHealth: 300
+  MaxMana: 150
+  ManaRegenPerSecond: 5
+  AnimatorController: {fileID: 9100000, guid: 3f7530d14d0e52048b328bd18b21bd0f, type: 2}
+  ModelPrefab: {fileID: 5210444326678646037, guid: 4be2dd1630fdc1b4dbe36e2a1ed4787e, type: 3}
+  InitialAbilities:
+  - {fileID: 11400000, guid: a038d18b4badf468ab8f330e270f5d96, type: 2}
+  - {fileID: 11400000, guid: 67583c2d9b11d4093b6ee596bfad9007, type: 2}
+  - {fileID: 11400000, guid: 5717b8f0092894f76a510a610b4ad8f0, type: 2}
+  - {fileID: 11400000, guid: 4533b217260b145fe8f808b28f729c9e, type: 2}
+  - {fileID: 11400000, guid: 4fbaf26ff9c0444c185cae0ac397ecd4, type: 2}
+  - {fileID: 11400000, guid: 728567e18a9ee470196a9fbcae362580, type: 2}

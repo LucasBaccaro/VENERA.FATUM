@@ -1235,5 +1235,22 @@ namespace Genesis.Simulation {
                 }
             }
         }
+        public void UpdateAbilitiesFromClass(ClassData data) {
+            abilitySlots.Clear();
+            if (data.InitialAbilities != null) {
+                abilitySlots.AddRange(data.InitialAbilities);
+            }
+            
+            _cooldowns.Clear();
+            _gcdEndTime = 0;
+            
+            Debug.Log($"[PlayerCombat] Abilities updated for class: {data.ClassName}");
+        }
+
+        public void UpdateVisualReferences(Animator newAnimator, Transform newSpawnPoint) {
+            animator = newAnimator;
+            castVFXSpawnPoint = newSpawnPoint; // Asignar siempre para limpiar si es null
+            Debug.Log($"[PlayerCombat] Visual references rebound: Animator={(animator != null)}, SpawnPoint={(castVFXSpawnPoint != null)}");
+        }
     }
 }

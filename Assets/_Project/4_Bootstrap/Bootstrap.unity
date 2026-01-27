@@ -297,7 +297,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2801701998511885239, guid: 4936c326a3dec4e06a9cde9414cf77fd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 933630952}
   m_SourcePrefab: {fileID: 100100000, guid: 4936c326a3dec4e06a9cde9414cf77fd, type: 3}
 --- !u!1 &234889430
 GameObject:
@@ -526,10 +529,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1430933679409742920, guid: d1ecca06559984643ac2d2e95c4684cd, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3799986528470056774, guid: d1ecca06559984643ac2d2e95c4684cd, type: 3}
-      propertyPath: m_fontStyle
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1052,6 +1051,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 364127482}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &933630944 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2801701998511885239, guid: 4936c326a3dec4e06a9cde9414cf77fd, type: 3}
+  m_PrefabInstance: {fileID: 157539256}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &933630947 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 972367328912429100, guid: 4936c326a3dec4e06a9cde9414cf77fd, type: 3}
+  m_PrefabInstance: {fileID: 157539256}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 933630944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FishNet.Runtime::FishNet.Object.NetworkObject
+--- !u!114 &933630952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 933630944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f904ecc7f7074b8f92201891ca36e09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.Combat.StatusEffectSystem
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 933630947}
+  _networkObjectCache: {fileID: 0}
 --- !u!1 &980082228
 GameObject:
   m_ObjectHideFlags: 0
@@ -1320,7 +1350,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2801701998511885239, guid: 4936c326a3dec4e06a9cde9414cf77fd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1744427545}
   m_SourcePrefab: {fileID: 100100000, guid: 4936c326a3dec4e06a9cde9414cf77fd, type: 3}
 --- !u!1001 &1477071874
 PrefabInstance:
@@ -1499,6 +1532,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8906210483557050486, guid: b69f335e28e4745a58dd5089cd8294f0, type: 3}
   m_PrefabInstance: {fileID: 1654514764}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1744427537 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2801701998511885239, guid: 4936c326a3dec4e06a9cde9414cf77fd, type: 3}
+  m_PrefabInstance: {fileID: 1351981908}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1744427540 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 972367328912429100, guid: 4936c326a3dec4e06a9cde9414cf77fd, type: 3}
+  m_PrefabInstance: {fileID: 1351981908}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1744427537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FishNet.Runtime::FishNet.Object.NetworkObject
+--- !u!114 &1744427545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1744427537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f904ecc7f7074b8f92201891ca36e09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.Combat.StatusEffectSystem
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 1744427540}
+  _networkObjectCache: {fileID: 0}
 --- !u!1 &1889061010
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9270c20d0f4e645048c342fab652c587, type: 3}
-  m_Name: Effect_Slow_War
+  m_Name: Effect_SelfRoot_Fortify
   m_EditorClassIdentifier: Genesis.Data::Genesis.Data.StatusEffectData
-  ID: 3
-  Name: Slow
+  ID: 15
+  Name: Root
   Icon: {fileID: 0}
-  Description: Movement speed reduced by 50%.
-  Type: 8
-  IsBuff: 0
-  Duration: 3
+  Description: Cannot move but can cast abilities.
+  Type: 2
+  IsBuff: 1
+  Duration: 2
   IsStackable: 0
   MaxStacks: 1
-  PercentageValue: 0.5
+  PercentageValue: 0
   FlatValue: 0
   TickInterval: 1
   VFXPrefab: {fileID: 0}

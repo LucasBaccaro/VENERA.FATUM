@@ -513,6 +513,19 @@ namespace Genesis.Simulation {
 
             // SPAWNER CAST VFX (durante el casting)
             SpawnCastVFX(ability);
+            
+            // ═══════════════════════════════════════════════════════
+            // CLIENT PREDICTION: Aplicar efectos "to Self" instantáneamente
+            // ═══════════════════════════════════════════════════════
+            if (ability.ApplyEffectsInstant && ability.ApplyToSelf != null && ability.ApplyToSelf.Length > 0) {
+                if (_statusEffects != null) {
+                    foreach (var effect in ability.ApplyToSelf) {
+                        _statusEffects.ApplyEffect(effect);
+                        Debug.Log($"[PlayerCombat] CLIENT PREDICTION: Applied {effect.Name} to self instantly");
+                    }
+                }
+            }
+            
             // Si tiene cast time, esperar; si no, ejecutar inmediatamente
             if (ability.CastTime > 0) {
                 _currentCastCoroutine = StartCoroutine(CastTimeCoroutine(ability));
@@ -747,6 +760,7 @@ namespace Genesis.Simulation {
                 _currentMovementThreshold = _pendingAbility.Logic.MovementThreshold;
             }
 
+
             // Guardar posición inicial para detectar movimiento
             _castStartPosition = transform.position;
 
@@ -761,6 +775,18 @@ namespace Genesis.Simulation {
 
             // SPAWNER CHANNEL VFX
             SpawnCastVFX(_pendingAbility);
+
+            // ═══════════════════════════════════════════════════════
+            // CLIENT PREDICTION: Aplicar efectos "to Self" instantáneamente
+            // ═══════════════════════════════════════════════════════
+            if (_pendingAbility.ApplyEffectsInstant && _pendingAbility.ApplyToSelf != null && _pendingAbility.ApplyToSelf.Length > 0) {
+                if (_statusEffects != null) {
+                    foreach (var effect in _pendingAbility.ApplyToSelf) {
+                        _statusEffects.ApplyEffect(effect);
+                        Debug.Log($"[PlayerCombat] CLIENT PREDICTION (Channeling): Applied {effect.Name} to self instantly");
+                    }
+                }
+            }
 
             // Notificar servidor
             CmdStartChanneling(_pendingAbility.ID);
@@ -830,6 +856,18 @@ namespace Genesis.Simulation {
 
             // SPAWNER CAST VFX (durante el casting)
             SpawnCastVFX(_pendingAbility);
+
+            // ═══════════════════════════════════════════════════════
+            // CLIENT PREDICTION: Aplicar efectos "to Self" instantáneamente
+            // ═══════════════════════════════════════════════════════
+            if (_pendingAbility.ApplyEffectsInstant && _pendingAbility.ApplyToSelf != null && _pendingAbility.ApplyToSelf.Length > 0) {
+                if (_statusEffects != null) {
+                    foreach (var effect in _pendingAbility.ApplyToSelf) {
+                        _statusEffects.ApplyEffect(effect);
+                        Debug.Log($"[PlayerCombat] CLIENT PREDICTION (Skillshot): Applied {effect.Name} to self instantly");
+                    }
+                }
+            }
 
             // CLIENT PREDICTION PARA DASH
             // Si es un movimiento, debemos ejecutarlo localmente para que el Client Authoritative funcione
@@ -1309,18 +1347,24 @@ namespace Genesis.Simulation {
 
         /// <summary>
         /// Aplica los status effects de una habilidad (Self y opcionalmente Target).
+        /// NOTA: Si ApplyEffectsInstant es true, los efectos "to Self" ya fueron aplicados
+        /// en el cliente via client prediction, así que solo aplicamos "to Target" aquí.
         /// </summary>
         [Server]
         private void ApplyAbilityStatusEffects(AbilityData ability, NetworkObject target) {
             if (ability == null) return;
 
             // 1. Aplicar al caster (Self)
-            if (ability.ApplyToSelf != null && ability.ApplyToSelf.Length > 0) {
+            // SKIP si ApplyEffectsInstant = true (ya aplicado en cliente)
+            if (!ability.ApplyEffectsInstant && ability.ApplyToSelf != null && ability.ApplyToSelf.Length > 0) {
                 if (_statusEffects != null) {
                     foreach (var effect in ability.ApplyToSelf) {
                         _statusEffects.ApplyEffect(effect);
+                        Debug.Log($"[PlayerCombat] SERVER: Applied {effect.Name} to self");
                     }
                 }
+            } else if (ability.ApplyEffectsInstant && ability.ApplyToSelf != null && ability.ApplyToSelf.Length > 0) {
+                Debug.Log($"[PlayerCombat] SERVER: Skipping 'to Self' effects (already applied via client prediction)");
             }
 
             // 2. Aplicar al target (si existe y es Targeted)
@@ -1329,6 +1373,7 @@ namespace Genesis.Simulation {
                 if (targetStatus != null) {
                     foreach (var effect in ability.ApplyToTarget) {
                         targetStatus.ApplyEffect(effect);
+                        Debug.Log($"[PlayerCombat] SERVER: Applied {effect.Name} to target");
                     }
                 }
             }

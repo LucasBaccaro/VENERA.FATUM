@@ -18,7 +18,7 @@ MonoBehaviour:
   Description: "Empala al enemigo inmoviliz\xE1ndolo."
   Logic: {fileID: 11400000, guid: 5ac003cf0993e49989c66756c68f1855, type: 2}
   ManaCost: 20
-  Cooldown: 12
+  Cooldown: 2
   GCD: 1
   CastType: 0
   CastTime: 0
@@ -44,6 +44,7 @@ MonoBehaviour:
   IndicatorMaterial: {fileID: 0}
   CastVFX: {fileID: 0}
   ImpactVFX: {fileID: 0}
+  ImpactVFXDuration: 2
   CastSound: {fileID: 0}
   ImpactSound: {fileID: 0}
   StartCastAnimationTrigger: CastInstant

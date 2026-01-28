@@ -62,6 +62,9 @@ namespace Genesis.Simulation.Combat {
                         decal.material.SetColor("_Color", warningColor);
                 }
 
+                // FIX: Asegurar que el objeto del decal no tenga escala que interfiera
+                decal.transform.localScale = Vector3.one;
+
                 Debug.Log($"[AOEWarningIndicator] Configured decal at {position} with radius {radius} for {duration}s");
             } else {
                 Debug.LogError("[AOEWarningIndicator] DecalProjector is NULL! Cannot display warning.");

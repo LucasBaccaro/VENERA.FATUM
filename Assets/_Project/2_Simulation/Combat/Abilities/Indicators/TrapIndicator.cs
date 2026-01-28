@@ -29,6 +29,7 @@ namespace Genesis.Simulation.Combat {
         private Vector3 _targetPoint;
 
         public override void Initialize(AbilityData abilityData) {
+            this.transform.localScale = Vector3.one; // FIX: Reset root scale
             _abilityData = abilityData;
             _triggerRadius = abilityData.Radius;
             maxPlacementDistance = abilityData.Range;
@@ -54,6 +55,9 @@ namespace Genesis.Simulation.Combat {
 
                 // Pivot centrado
                 decal.pivot = Vector3.zero;
+
+                // FIX: Asegurar que el objeto del decal no tenga escala que interfiera
+                decal.transform.localScale = Vector3.one;
             }
 
             _isValid = true;

@@ -29,11 +29,12 @@ MonoBehaviour:
   TargetingMode: 5
   IndicatorType: 2
   Range: 5
-  Radius: 4.36
+  Radius: 2.5
   Angle: 60
   Category: 1
   BaseDamage: 50
   BaseHeal: 0
+  ApplyEffectsInstant: 0
   ApplyToTarget:
   - {fileID: 11400000, guid: 4c9b9197e03d14aa3a61ac4c94080f41, type: 2}
   ApplyToSelf:
@@ -42,7 +43,7 @@ MonoBehaviour:
   ProjectileSpeed: 0
   IndicatorMaterial: {fileID: 2100000, guid: c08323f7612d34807a64fe840a5eb2c5, type: 2}
   CastVFX: {fileID: 0}
-  ImpactVFX: {fileID: 0}
+  ImpactVFX: {fileID: 4556068396062086951, guid: 006c7de7169e99d43b3dcf7cd17a0170, type: 3}
   CastSound: {fileID: 0}
   ImpactSound: {fileID: 0}
   StartCastAnimationTrigger: ChannelUP_Sucess

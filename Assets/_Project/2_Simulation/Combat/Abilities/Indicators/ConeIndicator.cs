@@ -35,6 +35,7 @@ namespace Genesis.Simulation.Combat
 
         public override void Initialize(AbilityData abilityData)
         {
+            this.transform.localScale = Vector3.one; // FIX: Reset root scale
             _abilityData = abilityData;
             _range = abilityData.Range;
             _angle = abilityData.Angle;
@@ -69,9 +70,12 @@ namespace Genesis.Simulation.Combat
 
                 // Pivot: queremos que el volumen "arranque" en el caster y vaya hacia adelante
                 decal.pivot = new Vector3(0f, _range * 0.5f, 0);
-		Vector3 size = decal.size;
-    		size.z = projectionDepth;
-    		decal.size = size;
+                Vector3 size = decal.size;
+                size.z = projectionDepth;
+                decal.size = size;
+
+                // FIX: Asegurar que el objeto del decal no tenga escala que interfiera
+                decal.transform.localScale = Vector3.one;
             }
 
             _isValid = true;

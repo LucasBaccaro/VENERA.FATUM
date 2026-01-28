@@ -34,7 +34,14 @@ namespace Genesis.Simulation.Combat {
                 }
             }
 
-            // 2. DETECTAR OBJETIVOS EN RADIO
+            // 2. SPAWN CENTRAL IMPACT VFX (Feedback visual constante)
+            if (data.ImpactVFX != null) {
+                GameObject centralVfx = Object.Instantiate(data.ImpactVFX, casterPos + Vector3.up * 0.1f, Quaternion.identity);
+                FishNet.InstanceFinder.ServerManager.Spawn(centralVfx);
+                Object.Destroy(centralVfx, 3f); // 3s para consistencia con AOELogic
+            }
+
+            // 3. DETECTAR OBJETIVOS EN RADIO
             Collider[] hits = Physics.OverlapSphere(casterPos, data.Radius, LayerMask.GetMask("Enemy", "Player"));
 
             int hitCount = 0;
@@ -56,10 +63,6 @@ namespace Genesis.Simulation.Combat {
                     }
 
                     // Aplicar STATUS EFFECTS AL TARGET
-                    // NOTA: Para habilidades channeled (como Torbellino), los efectos a objetivos se suelen aplicar en cada tick.
-                    // Si ApplyEffectsInstant es true, los efectos al TARGET en una habilidad NO dirigida (ground/aoe)
-                    // son ambiguos. Pero para Targeted abilities ya lo manejamos.
-                    // En SelfAOE, asumimos que ApplyEffectsInstant afecta principalmente a Self.
                     if (data.ApplyToTarget != null && data.ApplyToTarget.Length > 0) {
                         StatusEffectSystem statusSystem = netObj.GetComponent<StatusEffectSystem>();
                         if (statusSystem != null) {
@@ -69,12 +72,8 @@ namespace Genesis.Simulation.Combat {
                         }
                     }
 
-                    // Impact VFX individual en cada enemigo
-                    if (data.ImpactVFX != null) {
-                        GameObject impactVfx = Object.Instantiate(data.ImpactVFX, hit.transform.position + Vector3.up * 1f, Quaternion.identity);
-                        FishNet.InstanceFinder.ServerManager.Spawn(impactVfx);
-                        Object.Destroy(impactVfx, 1f);
-                    }
+                    // NOTA: Hemos eliminado el ImpactVFX individual por enemigo para usar el CENTRAL
+                    // y mantener consistencia con AOELogic, evitando ruido visual excesivo.
                 }
             }
 

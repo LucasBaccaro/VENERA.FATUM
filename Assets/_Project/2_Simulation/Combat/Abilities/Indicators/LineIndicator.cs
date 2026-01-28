@@ -29,6 +29,7 @@ namespace Genesis.Simulation.Combat {
         private bool _isChannelMode = false; // True cuando está siendo usado para channeling
 
         public override void Initialize(AbilityData abilityData) {
+            this.transform.localScale = Vector3.one; // FIX: Reset root scale
             _abilityData = abilityData;
             _range = abilityData.Range;
             _width = abilityData.Radius > 0 ? abilityData.Radius : defaultWidth;

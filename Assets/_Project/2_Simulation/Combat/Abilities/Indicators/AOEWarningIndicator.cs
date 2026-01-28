@@ -19,6 +19,8 @@ namespace Genesis.Simulation.Combat {
 
         [Header("Visual Settings")]
         [SerializeField] private Color warningColor = new Color(.7f, 0f, 0f, 1f); // Rojo semi-transparente
+        [Tooltip("Radio con el que fue diseñado el prefab (escala 1).")]
+        [SerializeField] private float baseRadius = 2.5f;
 
         private float _destroyTime = float.MaxValue; // Inicializar con valor alto para evitar destrucción prematura
         private bool _isConfigured = false;
@@ -29,8 +31,10 @@ namespace Genesis.Simulation.Combat {
         /// </summary>
         [Server]
         public void Initialize(Vector3 position, float radius, float duration) {
-            // La posición ya está configurada al spawnearse
-            // Sincronizar configuración a todos los clientes
+            // Aplicar configuración en el servidor inmediatamente para que se sincronice el transform
+            ApplyScaleAndSize(radius);
+            
+            // Sincronizar configuración a todos los clientes (especialmente el decal que no se sincroniza solo)
             RpcConfigureIndicator(position, radius, duration);
         }
 
@@ -45,13 +49,12 @@ namespace Genesis.Simulation.Combat {
 
             // Configurar posición (la rotación ya viene correcta del spawn)
             transform.position = position + Vector3.up * Mathf.Max(0.25f, decalHeight * 0.5f);
-            // NO setear rotación aquí - ya viene correcta del Instantiate para evitar glitch visual
 
-            // Configurar tamaño del decal
+            // Aplicar escala y tamaño del decal
+            ApplyScaleAndSize(radius);
+
+            // Configurar color y estado del decal
             if (decal != null) {
-                float diameter = radius * 2f;
-                decal.size = new Vector3(diameter, diameter, projectionDepth);
-                decal.pivot = Vector3.zero;
                 decal.enabled = true;
 
                 // Configurar color de warning
@@ -61,18 +64,36 @@ namespace Genesis.Simulation.Combat {
                     else if (decal.material.HasProperty("_Color"))
                         decal.material.SetColor("_Color", warningColor);
                 }
-
-                // FIX: Asegurar que el objeto del decal no tenga escala que interfiera
-                decal.transform.localScale = Vector3.one;
-
-                Debug.Log($"[AOEWarningIndicator] Configured decal at {position} with radius {radius} for {duration}s");
-            } else {
-                Debug.LogError("[AOEWarningIndicator] DecalProjector is NULL! Cannot display warning.");
             }
 
             // Programar destrucción
             _destroyTime = Time.time + duration;
             _isConfigured = true;
+        }
+
+        private void ApplyScaleAndSize(float radius) {
+            if (decal == null)
+                decal = GetComponentInChildren<DecalProjector>(true);
+
+            if (decal != null) {
+                // 1. FORZAR MODO DE ESCALADO
+                decal.scaleMode = DecalScaleMode.InheritFromHierarchy;
+
+                // 2. ESCALAR EL TRANSFORM
+                this.transform.localScale = Vector3.one;
+                float scaleMultiplier = radius / baseRadius;
+                this.transform.localScale = new Vector3(scaleMultiplier, scaleMultiplier, scaleMultiplier);
+
+                // 3. CONFIGURAR TAMAÑO BASE
+                float baseDiameter = baseRadius * 2f;
+                decal.size = new Vector3(baseDiameter, baseDiameter, projectionDepth);
+                decal.pivot = Vector3.zero;
+
+                // Asegurar que el objeto del decal no tenga escala propia que interfiera
+                decal.transform.localScale = Vector3.one;
+
+                Debug.Log($"[AOEWarningIndicator] {gameObject.name}: Radius {radius}, Base {baseRadius}, Multiplier {scaleMultiplier:F3}");
+            }
         }
 
         public override void OnStartServer() {

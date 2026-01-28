@@ -18,6 +18,8 @@ namespace Genesis.Simulation.Combat
         [Header("Settings")]
         [SerializeField] private bool isSelfCentered = false; // True para Torbellino/Nova
         [SerializeField] private float maxDistance = 30f;     // Máxima distancia de placement
+        [Tooltip("Radio con el que fue diseñado el prefab (escala 1). Permite que el código escale el transform proporcionalmente.")]
+        [SerializeField] private float baseRadius = 2.5f;
         [Tooltip("Altura del volumen de proyección del decal.")]
         [SerializeField] private float decalHeight = 3f;
 
@@ -43,27 +45,25 @@ namespace Genesis.Simulation.Combat
             if (decal == null)
                 decal = GetComponentInChildren<DecalProjector>(true);
 
-            // Configurar DecalProjector para que coincida con el radius de la habilidad
+            // Configurar DecalProjector y Transform
             if (decal != null)
             {
                 // Material personalizado por habilidad (si existe)
                 if (abilityData.IndicatorMaterial != null)
                     decal.material = abilityData.IndicatorMaterial;
 
-                // Configurar tamaño del decal
-                // Para un círculo, width y height deben ser el diámetro
-                float diameter = _radius * 2f;
+                // 1. FORZAR MODO DE ESCALADO (Vital para consistencia entre prefabs)
+                decal.scaleMode = DecalScaleMode.InheritFromHierarchy;
 
-                // DecalProjector con rotación 90° en X (proyectando hacia abajo):
-                // - size.x = ancho del círculo (diámetro)
-                // - size.y = largo del círculo (diámetro)
-                // - size.z = profundidad de proyección
-                decal.size = new Vector3(diameter, diameter, projectionDepth);
+                // 2. ESCALAR EL TRANSFORM
+                this.transform.localScale = Vector3.one; // Limpiar antes de aplicar
+                float scaleMultiplier = _radius / baseRadius;
+                this.transform.localScale = new Vector3(scaleMultiplier, scaleMultiplier, scaleMultiplier);
 
-                // Pivot centrado
+                // 3. CONFIGURAR TAMAÑO BASE
+                float baseDiameter = baseRadius * 2f;
+                decal.size = new Vector3(baseDiameter, baseDiameter, projectionDepth);
                 decal.pivot = Vector3.zero;
-
-                // FIX: Asegurar que el objeto del decal no tenga escala que interfiera
                 decal.transform.localScale = Vector3.one;
             }
 

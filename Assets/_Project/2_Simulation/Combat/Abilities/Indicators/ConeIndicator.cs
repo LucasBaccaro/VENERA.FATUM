@@ -15,8 +15,11 @@ namespace Genesis.Simulation.Combat
 
         [Header("Decal Components")]
         [SerializeField] private DecalProjector decal;
-	[SerializeField] private float projectionDepth = 6f; // lo que querés (6)
+        [SerializeField] private float projectionDepth = 6f;
 
+        [Header("Settings")]
+        [Tooltip("Rango con el que fue diseñado el prefab (escala 1).")]
+        [SerializeField] private float baseRange = 5f;
         [Tooltip("Altura del volumen de proyección del decal.")]
         [SerializeField] private float decalHeight = 3f;
 
@@ -51,30 +54,29 @@ namespace Genesis.Simulation.Combat
                 if (abilityData.IndicatorMaterial != null)
                     decal.material = abilityData.IndicatorMaterial;
 
-                // ANCHO geométrico del cono al final
+                // 1. FORZAR MODO DE ESCALADO
+                decal.scaleMode = DecalScaleMode.InheritFromHierarchy;
+
+                // 2. ESCALAR EL TRANSFORM
+                this.transform.localScale = Vector3.one;
+                float scaleMultiplier = _range / baseRange;
+                this.transform.localScale = new Vector3(scaleMultiplier, scaleMultiplier, scaleMultiplier);
+
+                // 3. CONFIGURAR TAMAÑO BASE (Basado en baseRange)
                 float halfAngleRad = _angle * 0.5f * Mathf.Deg2Rad;
-                float coneWidth = 2f * Mathf.Tan(halfAngleRad) * _range;
+                float baseConeWidth = 2f * Mathf.Tan(halfAngleRad) * baseRange;
 
-                // IMPORTANTE:
-                // Con el projector inclinado 90° en X (hacia abajo), en tu setup
-                // se ve correcto cuando "Width" y "Height" están invertidos.
-                // Por eso seteamos:
-                // - size.x = coneWidth (ancho del cono)
-                // - size.y = decalHeight (altura del volumen)
-                // - size.z = range (largo)
-                //
-                // Pero como comprobaste que Unity lo interpreta al revés al rotarlo,
-                // hacemos el SWAP que te lo arregla:
-                decal.size = new Vector3(coneWidth, _range, decalHeight);
-
+                // Invertimos Width/Height según el setup observado anteriormente (90° en X)
+                decal.size = new Vector3(baseConeWidth, baseRange, decalHeight);
 
                 // Pivot: queremos que el volumen "arranque" en el caster y vaya hacia adelante
-                decal.pivot = new Vector3(0f, _range * 0.5f, 0);
-                Vector3 size = decal.size;
-                size.z = projectionDepth;
-                decal.size = size;
+                decal.pivot = new Vector3(0f, baseRange * 0.5f, 0);
+                
+                Vector3 decalSize = decal.size;
+                decalSize.z = projectionDepth;
+                decal.size = decalSize;
 
-                // FIX: Asegurar que el objeto del decal no tenga escala que interfiera
+                // Asegurar que el objeto del decal no tenga escala propia que interfiera
                 decal.transform.localScale = Vector3.one;
             }
 

@@ -48,8 +48,22 @@ namespace Genesis.Simulation.Combat {
 
             if (_currentIndicator != null) {
                 _currentIndicator.Initialize(ability);
-                _currentIndicator.transform.SetParent(playerTransform);
-                _currentIndicator.transform.localPosition = new Vector3(0f, 1f, 0f);
+                
+                // PARENTING LOGIC:
+                // - Circle indicators ground-targeted (Meteorito) NO se parentean para evitar heredar escala del Player
+                //   y así coincidir con el AOE Warning (que es un objeto de mundo)
+                // - Line, Arrow, Cone, Trap, y Self-centered SÍ se parentean para seguir al jugador
+                bool shouldUnparent = (ability.IndicatorType == IndicatorType.Circle && ability.TargetingMode == TargetType.Ground);
+                
+                if (shouldUnparent) {
+                    _currentIndicator.transform.SetParent(null); // Objeto en el mundo
+                    _currentIndicator.transform.position = spawnPos;
+                } else {
+                    // Parentear al jugador (Line, Arrow, Cone, Trap, Self)
+                    _currentIndicator.transform.SetParent(playerTransform);
+                    _currentIndicator.transform.localPosition = new Vector3(0f, 1f, 0f);
+                }
+                
                 _currentIndicator.Show();
 
                 Debug.Log($"[AbilityIndicatorSystem] Showing {ability.IndicatorType} indicator for {ability.Name}");

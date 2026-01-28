@@ -68,6 +68,8 @@ public Material IndicatorMaterial;
         [Header("Visuals & Audio")]
         public GameObject CastVFX;
         public GameObject ImpactVFX;
+        [Tooltip("Duración del VFX de impacto antes de ser destruido.")]
+        public float ImpactVFXDuration = 2.0f;
         public AudioClip CastSound;
         public AudioClip ImpactSound;
         public string StartCastAnimationTrigger = "StartCast"; // Trigger al INICIAR el cast

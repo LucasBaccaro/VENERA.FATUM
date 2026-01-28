@@ -29,7 +29,7 @@ MonoBehaviour:
   TargetingMode: 5
   IndicatorType: 2
   Range: 5
-  Radius: 2.5
+  Radius: 5
   Angle: 60
   Category: 1
   BaseDamage: 50

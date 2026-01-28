@@ -123,7 +123,7 @@ namespace Genesis.Simulation.Combat {
                 Vector3 impactPos = target.transform.position + Vector3.up * 1f;
                 GameObject vfx = Object.Instantiate(data.ImpactVFX, impactPos, Quaternion.identity);
                 FishNet.InstanceFinder.ServerManager.Spawn(vfx);
-                Object.Destroy(vfx, 2f);
+                Object.Destroy(vfx, data.ImpactVFXDuration);
             }
         }
 
@@ -153,7 +153,7 @@ namespace Genesis.Simulation.Combat {
                 Vector3 impactPos = target.transform.position + Vector3.up * 1f;
                 GameObject vfx = Object.Instantiate(data.ImpactVFX, impactPos, Quaternion.identity);
                 FishNet.InstanceFinder.ServerManager.Spawn(vfx);
-                Object.Destroy(vfx, 2f);
+                Object.Destroy(vfx, data.ImpactVFXDuration);
             }
         }
 

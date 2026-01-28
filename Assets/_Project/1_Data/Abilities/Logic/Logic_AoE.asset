@@ -12,7 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8cc216844c7f49cab7d68730c4c67f7, type: 3}
   m_Name: Logic_AoE
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.Combat.AOELogic
-  impactDelay: 1
+  MovementGracePeriod: 0.3
+  CancelOnMovement: 1
+  MovementThreshold: 0.1
+  impactDelay: 3
   affectsAllies: 0
   affectsEnemies: 1
+  baseVisualRadius: 2.5
   warningIndicatorPrefab: {fileID: 1234567890123456792, guid: b9f0e2345678901bcdef2345678901ab, type: 3}

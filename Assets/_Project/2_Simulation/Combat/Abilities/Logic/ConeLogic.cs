@@ -70,7 +70,7 @@ namespace Genesis.Simulation.Combat {
                         if (data.ImpactVFX != null) {
                             GameObject impactVfx = Object.Instantiate(data.ImpactVFX, hit.transform.position + Vector3.up * 1f, Quaternion.identity);
                             FishNet.InstanceFinder.ServerManager.Spawn(impactVfx);
-                            Object.Destroy(impactVfx, 1f);
+                            Object.Destroy(impactVfx, data.ImpactVFXDuration);
                         }
                     }
                 }

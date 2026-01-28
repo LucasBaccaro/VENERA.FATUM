@@ -136,11 +136,11 @@ namespace Genesis.Simulation.Combat {
             if (_abilityData != null && _abilityData.ImpactVFX != null) {
                 GameObject vfx = Instantiate(_abilityData.ImpactVFX, transform.position, Quaternion.identity);
                 FishNet.InstanceFinder.ServerManager.Spawn(vfx);
-                Destroy(vfx, 2f);
+                Destroy(vfx, _abilityData.ImpactVFXDuration);
             } else if (triggerVFX != null) {
                 GameObject vfx = Instantiate(triggerVFX, transform.position, Quaternion.identity);
                 FishNet.InstanceFinder.ServerManager.Spawn(vfx);
-                Destroy(vfx, 2f);
+                Destroy(vfx, 2f); // Fallback para VFX legacy
             }
 
             // Ocultar modelo (o destruir después de VFX)

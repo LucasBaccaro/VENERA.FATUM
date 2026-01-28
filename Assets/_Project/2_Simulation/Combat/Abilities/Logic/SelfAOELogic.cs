@@ -14,6 +14,8 @@ namespace Genesis.Simulation.Combat {
 
         [Header("Self AOE Settings")]
         [SerializeField] private bool includeSelf = false; // Si el caster se daña a sí mismo
+        [Tooltip("Radio con el que fue diseñado el efecto visual (escala 1).")]
+        [SerializeField] private float baseVisualRadius = 2.5f;
 
         public override void ExecuteDirectional(NetworkObject caster, Vector3 targetPoint, Vector3 direction, AbilityData data) {
 
@@ -37,8 +39,13 @@ namespace Genesis.Simulation.Combat {
             // 2. SPAWN CENTRAL IMPACT VFX (Feedback visual constante)
             if (data.ImpactVFX != null) {
                 GameObject centralVfx = Object.Instantiate(data.ImpactVFX, casterPos + Vector3.up * 0.1f, Quaternion.identity);
+                
+                // ESCALAR EL VFX
+                float scaleMultiplier = data.Radius / baseVisualRadius;
+                centralVfx.transform.localScale = new Vector3(scaleMultiplier, scaleMultiplier, scaleMultiplier);
+
                 FishNet.InstanceFinder.ServerManager.Spawn(centralVfx);
-                Object.Destroy(centralVfx, 3f); // 3s para consistencia con AOELogic
+                Object.Destroy(centralVfx, data.ImpactVFXDuration);
             }
 
             // 3. DETECTAR OBJETIVOS EN RADIO

@@ -17,6 +17,8 @@ namespace Genesis.Simulation.Combat {
         [SerializeField] private float impactDelay = 0f; // Delay antes del impacto (ej: Meteorito 1s)
         [SerializeField] private bool affectsAllies = false;
         [SerializeField] private bool affectsEnemies = true;
+        [Tooltip("Radio con el que fue diseñado el efecto visual (escala 1).")]
+        [SerializeField] private float baseVisualRadius = 2.5f;
 
         [Header("Warning Indicator")]
         [Tooltip("Prefab de AOEWarningIndicator para mostrar durante el delay. Opcional.")]
@@ -74,8 +76,13 @@ namespace Genesis.Simulation.Combat {
             // Spawn impact VFX
             if (data.ImpactVFX != null) {
                 GameObject vfx = Object.Instantiate(data.ImpactVFX, targetPoint, Quaternion.identity);
+                
+                // ESCALAR EL VFX
+                float scaleMultiplier = data.Radius / baseVisualRadius;
+                vfx.transform.localScale = new Vector3(scaleMultiplier, scaleMultiplier, scaleMultiplier);
+                
                 FishNet.InstanceFinder.ServerManager.Spawn(vfx);
-                Object.Destroy(vfx, 3f);
+                Object.Destroy(vfx, data.ImpactVFXDuration);
             }
 
             // Detectar todos los targets en radio

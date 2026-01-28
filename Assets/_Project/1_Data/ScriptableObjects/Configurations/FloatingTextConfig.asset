@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 659c95ef478a6cd42b56fdc61579441f, type: 3}
   m_Name: FloatingTextConfig
   m_EditorClassIdentifier: Genesis.Data::Genesis.Data.FloatingTextConfig
-  animationMode: 1
+  animationMode: 0
   damageColor: {r: 1, g: 0, b: 0, a: 1}
   healColor: {r: 0, g: 1, b: 0, a: 1}
   shieldColor: {r: 0.5, g: 0.8, b: 1, a: 1}

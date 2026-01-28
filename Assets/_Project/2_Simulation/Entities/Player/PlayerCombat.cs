@@ -458,6 +458,18 @@ namespace Genesis.Simulation {
             }
 
             // ═══════════════════════════════════════════════════════
+            // RANGE VALIDATION (Targeted)
+            // ═══════════════════════════════════════════════════════
+            if (targetObject != null && targetObject != base.NetworkObject) {
+                float distance = Vector3.Distance(transform.position, targetObject.transform.position);
+                if (distance > ability.Range) {
+                    Debug.LogWarning($"[PlayerCombat] Target out of range ({distance:F2} > {ability.Range})");
+                    EventBus.Trigger("OnCombatError", "Target is too far!");
+                    return;
+                }
+            }
+
+            // ═══════════════════════════════════════════════════════
             // FIX: ROTAR PLAYER HACIA EL TARGET (TARGETED ABILITIES)
             // ═══════════════════════════════════════════════════════
             if (targetObject != null && targetObject != base.NetworkObject) {
@@ -553,6 +565,17 @@ namespace Genesis.Simulation {
             if (targetId != -1) {
                 if (FishNet.InstanceFinder.ServerManager.Objects.Spawned.TryGetValue(targetId, out NetworkObject found)) {
                     target = found;
+                }
+            }
+
+            // VALIDACIÓN DE RANGO (Anti-cheat)
+            if (target != null && target != base.NetworkObject) {
+                float distance = Vector3.Distance(transform.position, target.transform.position);
+                if (distance > ability.Range * 1.2f) { // 20% tolerance for lag
+                    Debug.LogWarning($"[PlayerCombat] Server: Target {target.name} out of range ({distance:F2} > {ability.Range})");
+                    DestroyCastVFX();
+                    RpcCastFailed(base.Owner, "Too far");
+                    return;
                 }
             }
 

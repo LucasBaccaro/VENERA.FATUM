@@ -28,7 +28,7 @@ MonoBehaviour:
   ChannelMaxDuration: 0
   TargetingMode: 1
   IndicatorType: 0
-  Range: 0.2
+  Range: 2
   Radius: 0
   Angle: 60
   Category: 0
@@ -36,7 +36,8 @@ MonoBehaviour:
   BaseHeal: 0
   ApplyEffectsInstant: 0
   ApplyToTarget: []
-  ApplyToSelf: []
+  ApplyToSelf:
+  - {fileID: 11400000, guid: 0769282753f96b245b3418efca8da16a, type: 2}
   ProjectilePrefab: {fileID: 0}
   ProjectileSpeed: 0
   IndicatorMaterial: {fileID: 0}

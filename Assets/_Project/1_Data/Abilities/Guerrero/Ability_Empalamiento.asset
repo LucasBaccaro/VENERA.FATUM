@@ -37,7 +37,8 @@ MonoBehaviour:
   ApplyEffectsInstant: 1
   ApplyToTarget:
   - {fileID: 11400000, guid: 79124c4e5365e4c91a694706a8ccd5d0, type: 2}
-  ApplyToSelf: []
+  ApplyToSelf:
+  - {fileID: 11400000, guid: 0769282753f96b245b3418efca8da16a, type: 2}
   ProjectilePrefab: {fileID: 0}
   ProjectileSpeed: 0
   IndicatorMaterial: {fileID: 0}

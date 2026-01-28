@@ -24,5 +24,5 @@ MonoBehaviour:
   PercentageValue: 0
   FlatValue: 0
   TickInterval: 1
-  VFXPrefab: {fileID: 0}
+  VFXPrefab: {fileID: 121080853958471564, guid: 6d0f85c7b800e9340bbd7529c1610cc9, type: 3}
   ApplySound: {fileID: 0}

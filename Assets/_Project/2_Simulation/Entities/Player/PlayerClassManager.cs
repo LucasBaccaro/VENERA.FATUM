@@ -51,9 +51,9 @@ namespace Genesis.Simulation {
         [Server]
         private void SetClass(int index) {
             _currentClassIndex.Value = index;
-            
+
             ClassData data = availableClasses[index];
-            
+
             // 1. Actualizar Stats en el Servidor
             if (stats != null) {
                 stats.InitializeFromClass(data);
@@ -62,6 +62,12 @@ namespace Genesis.Simulation {
             // 2. Actualizar Habilidades en el Servidor
             if (combat != null) {
                 combat.UpdateAbilitiesFromClass(data);
+            }
+
+            // 3. Notificar EquipmentManager para recalcular stats (Phase 9)
+            var equipmentManager = GetComponent<Genesis.Simulation.EquipmentManager>();
+            if (equipmentManager != null) {
+                equipmentManager.UpdateBaseStats(data.MaxHealth, data.MaxMana);
             }
         }
 

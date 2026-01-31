@@ -1395,5 +1395,35 @@ namespace Genesis.Simulation {
             castVFXSpawnPoint = newSpawnPoint; // Asignar siempre para limpiar si es null
             Debug.Log($"[PlayerCombat] Visual references rebound: Animator={(animator != null)}, SpawnPoint={(castVFXSpawnPoint != null)}");
         }
+
+        // ═══════════════════════════════════════════════════════
+        // SPELL POWER INTEGRATION (Phase 9 - Item System)
+        // ═══════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Calculate final damage including equipment bonuses (SpellPower).
+        /// Formula: Damage = BaseDamage * (1 + SpellPowerBonus)
+        ///
+        /// Example:
+        /// - BaseDamage: 100
+        /// - SpellPowerBonus: 0.25 (25%)
+        /// - Final Damage: 100 * (1 + 0.25) = 125
+        /// </summary>
+        public float CalculateFinalDamage(float baseDamage) {
+            var equipmentManager = GetComponent<Genesis.Simulation.EquipmentManager>();
+
+            if (equipmentManager != null) {
+                float spellPowerBonus = equipmentManager.SpellPowerBonus;
+                float finalDamage = baseDamage * (1f + spellPowerBonus);
+
+                if (spellPowerBonus > 0f) {
+                    Debug.Log($"[PlayerCombat] Damage calculated: {baseDamage} * (1 + {spellPowerBonus}) = {finalDamage}");
+                }
+
+                return finalDamage;
+            }
+
+            return baseDamage;
+        }
     }
 }

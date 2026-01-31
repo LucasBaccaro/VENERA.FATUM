@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement name="InventoryWindow" style="position: absolute; right: 10px; top: 10px; width: 300px; background-color: rgba(0, 0, 0, 0.8); padding: 10px;">
+        <ui:Label text="INVENTARIO (Presiona I)" style="font-size: 16px; color: white; -unity-font-style: bold; margin-bottom: 10px;" />
+        <ui:ScrollView name="InventoryScroll" style="max-height: 400px;">
+            <ui:VisualElement name="InventoryList" />
+        </ui:ScrollView>
+    </ui:VisualElement>
+</ui:UXML>

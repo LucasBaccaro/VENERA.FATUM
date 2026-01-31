@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fcbe1be2fbad49b7a2f014fbbe45f73, type: 3}
+  m_Name: Potion_Mana_Blue
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Items.ConsumableItemData
+  ItemID: 1002
+  ItemName: Potion_Mana_Blue
+  Description: Restaura 100 Mana
+  Icon: {fileID: 21300000, guid: 6fa2b881ce1d3420493f4c11c5dc0ea0, type: 3}
+  Type: 0
+  IsStackable: 1
+  MaxStackSize: 99
+  IsProtected: 0
+  ConsumableType: 1
+  RestoreAmount: 100
+  Cooldown: 3
+  UsableInCombat: 1
+  UsableWhileMoving: 1

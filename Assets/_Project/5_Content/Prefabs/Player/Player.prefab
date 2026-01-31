@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 7076565319570934298}
   - component: {fileID: 5715247499138192967}
   - component: {fileID: 1727199783770110194}
-  - component: {fileID: 1567202639774523105}
   - component: {fileID: 902623049883095979}
   - component: {fileID: 5015743577735707121}
   - component: {fileID: 2434602104015450095}
@@ -27,6 +26,11 @@ GameObject:
   - component: {fileID: -5246818816157547704}
   - component: {fileID: 1173444517612567798}
   - component: {fileID: 3488668010120455320}
+  - component: {fileID: -1443952739526293260}
+  - component: {fileID: -7130774642972233301}
+  - component: {fileID: -2104996594180317446}
+  - component: {fileID: 5683014262376530763}
+  - component: {fileID: 6687539303086172723}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -95,22 +99,6 @@ MonoBehaviour:
   rayDistance: 1
   heightSmooth: 10.8
   maxOffset: 0.02
---- !u!114 &1567202639774523105
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3168934939399175360}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0587b5526177bde43ab7b1233896a516, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MovementDebugHUD
-  motor: {fileID: 0}
-  cc: {fileID: 5715247499138192967}
-  player: {fileID: 7076565319570934298}
-  screenOffset: {x: 10, y: 10}
 --- !u!114 &902623049883095979
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161,6 +149,15 @@ MonoBehaviour:
   - {fileID: -6674976540633462443}
   - {fileID: 46509935400827827}
   - {fileID: 7206823507675245977}
+  - {fileID: -6388155961090861808}
+  - {fileID: -5246818816157547704}
+  - {fileID: 1173444517612567798}
+  - {fileID: 3488668010120455320}
+  - {fileID: -1443952739526293260}
+  - {fileID: -7130774642972233301}
+  - {fileID: -2104996594180317446}
+  - {fileID: 5683014262376530763}
+  - {fileID: 6687539303086172723}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -171,7 +168,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584317790891115718
+  _initializedTimestamp: -8584317087915776858
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -187,7 +184,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 16
+  <PrefabId>k__BackingField: 17
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 10407916748453484099
   SceneId: 0
@@ -414,9 +411,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b4773f346f904e52aad731da50e1399, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.World.PlayerChunkTracker
-  _componentIndexCache: 255
+  _componentIndexCache: 9
   _addedNetworkObject: {fileID: 5015743577735707121}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 5015743577735707121}
 --- !u!114 &-5246818816157547704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -429,9 +426,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f40a505eaab6d4a6eb1ab36b7a2a8700, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.World.PlayerState
-  _componentIndexCache: 255
+  _componentIndexCache: 10
   _addedNetworkObject: {fileID: 5015743577735707121}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 5015743577735707121}
 --- !u!114 &1173444517612567798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -444,9 +441,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf081042e5cf347a0978b89d75e6bfd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.World.PlayerSpawnHandler
-  _componentIndexCache: 255
+  _componentIndexCache: 11
   _addedNetworkObject: {fileID: 5015743577735707121}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 5015743577735707121}
 --- !u!114 &3488668010120455320
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -459,13 +456,107 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4181856795c9c4e459370f31de733eb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Genesis.Core::Genesis.Core.Networking.NetworkDistanceCulling
-  _componentIndexCache: 255
+  _componentIndexCache: 12
   _addedNetworkObject: {fileID: 5015743577735707121}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 5015743577735707121}
   profile: {fileID: 11400000, guid: 0a3f20ab4e39b429d9e4d1aaa301edc3, type: 2}
   useCustomDistance: 0
   customDistance: 100
   _isConfigured: 0
+--- !u!114 &-1443952739526293260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3168934939399175360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a72a41ec84914ca29289c940a800d0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.PlayerInventory
+  _componentIndexCache: 13
+  _addedNetworkObject: {fileID: 5015743577735707121}
+  _networkObjectCache: {fileID: 5015743577735707121}
+  _inventorySize: 25
+--- !u!114 &-7130774642972233301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3168934939399175360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 421b25cba57624caea5b68c71fd1fd29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.EquipmentManager
+  _componentIndexCache: 14
+  _addedNetworkObject: {fileID: 5015743577735707121}
+  _networkObjectCache: {fileID: 5015743577735707121}
+  _playerStats: {fileID: 4211813207622510440}
+--- !u!114 &-2104996594180317446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3168934939399175360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cd0c62e89e46467f82d8a1164872832, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.ConsumableHandler
+  _componentIndexCache: 15
+  _addedNetworkObject: {fileID: 5015743577735707121}
+  _networkObjectCache: {fileID: 5015743577735707121}
+  _playerStats: {fileID: 4211813207622510440}
+  _playerInventory: {fileID: -1443952739526293260}
+  _globalPotionCooldown: 3
+--- !u!114 &5683014262376530763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3168934939399175360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13b654771616a4f6a86df2486bbebfa5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.LootDropper
+  _componentIndexCache: 16
+  _addedNetworkObject: {fileID: 5015743577735707121}
+  _networkObjectCache: {fileID: 5015743577735707121}
+  _lootBagPrefab: {fileID: 1518507829531864150, guid: 9d1e389be81094476aac15ceb9610e09, type: 3}
+  _spawnOffset: {x: 0, y: 0.5, z: 0}
+--- !u!114 &6687539303086172723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3168934939399175360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37f443c13c7814b28a7c3c23dc5c8400, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.StarterItemGranter
+  _componentIndexCache: 17
+  _addedNetworkObject: {fileID: 5015743577735707121}
+  _networkObjectCache: {fileID: 5015743577735707121}
+  _healthPotionID: 1001
+  _manaPotionID: 1002
+  _potionQuantity: 5
+  _headEquipmentID: 2001
+  _chestEquipmentID: 2002
+  _legsEquipmentID: 2003
+  _feetEquipmentID: 2004
+  _handsEquipmentID: 2005
+  _beltEquipmentID: 2006
+  _grantDelay: 0.5
+  _starterTier: 0
+  _starterRarity: 0
 --- !u!1 &8233073365634962066
 GameObject:
   m_ObjectHideFlags: 0

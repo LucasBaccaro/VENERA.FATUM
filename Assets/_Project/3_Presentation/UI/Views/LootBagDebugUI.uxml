@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement name="LootBagWindow" style="position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: 400px; background-color: rgba(0, 0, 0, 0.9); padding: 15px; border-width: 2px; border-color: rgb(200, 150, 50);">
+        <ui:Label name="LootTitle" text="LOOT BAG" style="font-size: 18px; color: rgb(255, 200, 100); -unity-font-style: bold; margin-bottom: 10px; -unity-text-align: upper-center;" />
+        <ui:ScrollView name="LootScroll" style="max-height: 300px;">
+            <ui:VisualElement name="LootList" />
+        </ui:ScrollView>
+        <ui:Button name="TakeAllButton" text="TAKE ALL" style="margin-top: 10px; height: 30px; background-color: rgb(50, 150, 50); color: white; font-size: 14px; -unity-font-style: bold;" />
+        <ui:Button name="CloseButton" text="CERRAR" style="margin-top: 5px; height: 25px; background-color: rgb(150, 50, 50); color: white;" />
+    </ui:VisualElement>
+</ui:UXML>

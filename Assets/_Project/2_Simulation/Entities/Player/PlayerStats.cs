@@ -193,7 +193,7 @@ namespace Genesis.Simulation {
         // ═══════════════════════════════════════════════════════
 
         [Server]
-        public void Heal(float amount) {
+        public void Heal(float amount, NetworkObject healer = null) {
             if (_isDead) return;
 
             float healAmount = Mathf.Min(amount, _maxHealth.Value - _currentHealth.Value);
@@ -228,7 +228,51 @@ namespace Genesis.Simulation {
 
         [Server]
         public void RestoreMana(float amount) {
-            _currentMana.Value = Mathf.Min(_currentMana.Value + amount, _maxMana.Value);
+            if (_isDead) return;
+
+            float restoreAmount = Mathf.Min(amount, _maxMana.Value - _currentMana.Value);
+            _currentMana.Value += restoreAmount;
+
+            // Show floating text for mana restoration
+            if (base.Owner.IsValid) {
+                TargetShowDamageText(base.Owner, $"+{restoreAmount:F0}", "mana");
+            }
+
+            EventBus.Trigger("OnPlayerManaRestored", restoreAmount);
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // MAX STATS SETTERS (For Equipment System - Phase 9)
+        // ═══════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Set max health (called by EquipmentManager)
+        /// </summary>
+        [Server]
+        public void SetMaxHealth(float value) {
+            _maxHealth.Value = value;
+
+            // Clamp current health if it exceeds new max
+            if (_currentHealth.Value > _maxHealth.Value) {
+                _currentHealth.Value = _maxHealth.Value;
+            }
+
+            Debug.Log($"[PlayerStats] MaxHealth set to {value}");
+        }
+
+        /// <summary>
+        /// Set max mana (called by EquipmentManager)
+        /// </summary>
+        [Server]
+        public void SetMaxMana(float value) {
+            _maxMana.Value = value;
+
+            // Clamp current mana if it exceeds new max
+            if (_currentMana.Value > _maxMana.Value) {
+                _currentMana.Value = _maxMana.Value;
+            }
+
+            Debug.Log($"[PlayerStats] MaxMana set to {value}");
         }
 
         // ═══════════════════════════════════════════════════════

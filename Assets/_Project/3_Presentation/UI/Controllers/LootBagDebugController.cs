@@ -85,16 +85,48 @@ namespace Genesis.Presentation {
                 // Create item row
                 var itemRow = new VisualElement();
                 itemRow.style.flexDirection = FlexDirection.Row;
-                itemRow.style.justifyContent = Justify.SpaceBetween;
+                itemRow.style.alignItems = Align.Center;
                 itemRow.style.marginBottom = 5;
                 itemRow.style.paddingTop = 5;
                 itemRow.style.paddingBottom = 5;
                 itemRow.style.paddingLeft = 8;
                 itemRow.style.paddingRight = 8;
-                itemRow.style.backgroundColor = new Color(0.15f, 0.15f, 0.15f, 0.8f);
+                itemRow.style.backgroundColor = new Color(0.15f, 0.15f, 0.15f, 0.9f);
+
+                // Item icon
+                var iconContainer = new VisualElement();
+                iconContainer.style.width = 45;
+                iconContainer.style.height = 45;
+                iconContainer.style.marginRight = 12;
+                iconContainer.style.backgroundColor = new Color(0.1f, 0.1f, 0.1f, 0.95f);
+                iconContainer.style.borderLeftWidth = 2;
+                iconContainer.style.borderRightWidth = 2;
+                iconContainer.style.borderTopWidth = 2;
+                iconContainer.style.borderBottomWidth = 2;
+                iconContainer.style.borderLeftColor = GetRarityColor(slot.Rarity);
+                iconContainer.style.borderRightColor = GetRarityColor(slot.Rarity);
+                iconContainer.style.borderTopColor = GetRarityColor(slot.Rarity);
+                iconContainer.style.borderBottomColor = GetRarityColor(slot.Rarity);
+
+                // Set icon sprite
+                if (itemData.Icon != null) {
+                    iconContainer.style.backgroundImage = new StyleBackground(itemData.Icon);
+                    iconContainer.style.unityBackgroundScaleMode = ScaleMode.ScaleToFit;
+                }
+
+                // Right-click to take
+                iconContainer.RegisterCallback<MouseDownEvent>(evt => {
+                    if (evt.button == 1) { // Right-click
+                        OnTakeItemClicked(index);
+                        evt.StopPropagation();
+                    }
+                });
+
+                itemRow.Add(iconContainer);
 
                 // Item info
                 var infoContainer = new VisualElement();
+                infoContainer.style.flexGrow = 1;
                 infoContainer.style.flexDirection = FlexDirection.Column;
 
                 var nameLabel = new Label(itemData.ItemName);
@@ -102,24 +134,13 @@ namespace Genesis.Presentation {
                 nameLabel.style.fontSize = 14;
                 nameLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
 
-                var quantityLabel = new Label($"Cantidad: {slot.Quantity}");
-                quantityLabel.style.color = Color.gray;
+                var quantityLabel = new Label($"x{slot.Quantity} • Right-click to loot");
+                quantityLabel.style.color = new Color(0.7f, 0.7f, 0.7f);
                 quantityLabel.style.fontSize = 11;
 
                 infoContainer.Add(nameLabel);
                 infoContainer.Add(quantityLabel);
                 itemRow.Add(infoContainer);
-
-                // Take button
-                var takeButton = new Button(() => OnTakeItemClicked(index));
-                takeButton.text = "TAKE";
-                takeButton.style.width = 70;
-                takeButton.style.height = 35;
-                takeButton.style.backgroundColor = new Color(0.2f, 0.6f, 0.2f);
-                takeButton.style.color = Color.white;
-                takeButton.style.fontSize = 12;
-                takeButton.style.unityFontStyleAndWeight = FontStyle.Bold;
-                itemRow.Add(takeButton);
 
                 _lootList.Add(itemRow);
             }

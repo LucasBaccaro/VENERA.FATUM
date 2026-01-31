@@ -15,10 +15,11 @@ MonoBehaviour:
   ItemID: 1001
   ItemName: Potion_Health_Red
   Description: Restaura 100 HP
-  Icon: {fileID: 21300000, guid: 69874e58012c849cc92accb5ee8d1928, type: 3}
+  Icon: {fileID: 21300000, guid: 340c5eef108d148bd82d1bacc5fdac5b, type: 3}
   Type: 0
   IsStackable: 1
   MaxStackSize: 99
+  IsProtected: 0
   ConsumableType: 0
   RestoreAmount: 100
   Cooldown: 3

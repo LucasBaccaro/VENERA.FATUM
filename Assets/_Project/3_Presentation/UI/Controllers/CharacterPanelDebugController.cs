@@ -134,7 +134,7 @@ namespace Genesis.Presentation {
             // Create slot container
             var slotContainer = new VisualElement();
             slotContainer.style.flexDirection = FlexDirection.Row;
-            slotContainer.style.justifyContent = Justify.SpaceBetween;
+            slotContainer.style.alignItems = Align.Center;
             slotContainer.style.marginBottom = 5;
             slotContainer.style.paddingTop = 5;
             slotContainer.style.paddingBottom = 5;
@@ -142,8 +142,50 @@ namespace Genesis.Presentation {
             slotContainer.style.paddingRight = 8;
             slotContainer.style.backgroundColor = new Color(0.15f, 0.15f, 0.15f, 0.8f);
 
+            // Item icon
+            var iconContainer = new VisualElement();
+            iconContainer.style.width = 40;
+            iconContainer.style.height = 40;
+            iconContainer.style.marginRight = 10;
+            iconContainer.style.backgroundColor = new Color(0.1f, 0.1f, 0.1f, 0.9f);
+            iconContainer.style.borderLeftWidth = 2;
+            iconContainer.style.borderRightWidth = 2;
+            iconContainer.style.borderTopWidth = 2;
+            iconContainer.style.borderBottomWidth = 2;
+
+            if (itemSlot.IsEmpty) {
+                // Empty slot - gray border
+                iconContainer.style.borderLeftColor = new Color(0.3f, 0.3f, 0.3f);
+                iconContainer.style.borderRightColor = new Color(0.3f, 0.3f, 0.3f);
+                iconContainer.style.borderTopColor = new Color(0.3f, 0.3f, 0.3f);
+                iconContainer.style.borderBottomColor = new Color(0.3f, 0.3f, 0.3f);
+            } else {
+                // Equipped item - rarity border
+                iconContainer.style.borderLeftColor = GetRarityColor(itemSlot.Rarity);
+                iconContainer.style.borderRightColor = GetRarityColor(itemSlot.Rarity);
+                iconContainer.style.borderTopColor = GetRarityColor(itemSlot.Rarity);
+                iconContainer.style.borderBottomColor = GetRarityColor(itemSlot.Rarity);
+
+                var itemData = ItemDatabase.Instance.GetItem(itemSlot.ItemID);
+                if (itemData != null && itemData.Icon != null) {
+                    iconContainer.style.backgroundImage = new StyleBackground(itemData.Icon);
+                    iconContainer.style.unityBackgroundScaleMode = ScaleMode.ScaleToFit;
+                }
+
+                // Right-click to unequip
+                iconContainer.RegisterCallback<MouseDownEvent>(evt => {
+                    if (evt.button == 1) { // Right-click
+                        UnequipSlot(slot);
+                        evt.StopPropagation();
+                    }
+                });
+            }
+
+            slotContainer.Add(iconContainer);
+
             // Slot info container
             var infoContainer = new VisualElement();
+            infoContainer.style.flexGrow = 1;
             infoContainer.style.flexDirection = FlexDirection.Column;
 
             // Slot label
@@ -192,24 +234,16 @@ namespace Genesis.Presentation {
                             infoContainer.Add(statsLabel);
                         }
                     }
+
+                    // Action hint
+                    var hintLabel = new Label("Right-click to unequip");
+                    hintLabel.style.fontSize = 9;
+                    hintLabel.style.color = new Color(0.6f, 0.6f, 0.6f);
+                    infoContainer.Add(hintLabel);
                 }
             }
 
             slotContainer.Add(infoContainer);
-
-            // Unequip button (if slot is not empty)
-            if (!itemSlot.IsEmpty) {
-                var unequipButton = new Button(() => UnequipSlot(slot));
-                unequipButton.text = "Unequip";
-                unequipButton.style.width = 70;
-                unequipButton.style.height = 35;
-                unequipButton.style.backgroundColor = new Color(0.6f, 0.3f, 0.3f);
-                unequipButton.style.color = Color.white;
-                unequipButton.style.fontSize = 11;
-                unequipButton.style.unityFontStyleAndWeight = FontStyle.Bold;
-                slotContainer.Add(unequipButton);
-            }
-
             _equipmentList.Add(slotContainer);
         }
 

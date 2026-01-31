@@ -168,7 +168,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584317087915776858
+  _initializedTimestamp: -8584317068442445408
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -548,15 +548,15 @@ MonoBehaviour:
   _healthPotionID: 1001
   _manaPotionID: 1002
   _potionQuantity: 5
-  _headEquipmentID: 2001
+  _headEquipmentID: 2005
   _chestEquipmentID: 2002
-  _legsEquipmentID: 2003
-  _feetEquipmentID: 2004
-  _handsEquipmentID: 2005
-  _beltEquipmentID: 2006
+  _legsEquipmentID: 2006
+  _feetEquipmentID: 2003
+  _handsEquipmentID: 2004
+  _beltEquipmentID: 2001
   _grantDelay: 0.5
   _starterTier: 0
-  _starterRarity: 0
+  _starterRarity: 3
 --- !u!1 &8233073365634962066
 GameObject:
   m_ObjectHideFlags: 0

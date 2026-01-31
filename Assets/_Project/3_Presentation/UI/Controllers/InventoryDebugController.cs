@@ -146,53 +146,73 @@ namespace Genesis.Presentation {
                 // Create item row
                 var itemRow = new VisualElement();
                 itemRow.style.flexDirection = FlexDirection.Row;
-                itemRow.style.justifyContent = Justify.SpaceBetween;
-                itemRow.style.marginBottom = 3;
-                itemRow.style.paddingTop = 3;
-                itemRow.style.paddingBottom = 3;
+                itemRow.style.alignItems = Align.Center;
+                itemRow.style.marginBottom = 5;
+                itemRow.style.paddingTop = 5;
+                itemRow.style.paddingBottom = 5;
                 itemRow.style.paddingLeft = 5;
                 itemRow.style.paddingRight = 5;
-                itemRow.style.backgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.5f);
+                itemRow.style.backgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.8f);
 
-                // Item name and quantity
-                string itemText = $"{itemData.ItemName} x{slot.Quantity}";
+                // Item icon
+                var iconContainer = new VisualElement();
+                iconContainer.style.width = 40;
+                iconContainer.style.height = 40;
+                iconContainer.style.marginRight = 10;
+                iconContainer.style.backgroundColor = new Color(0.1f, 0.1f, 0.1f, 0.9f);
+                iconContainer.style.borderLeftWidth = 2;
+                iconContainer.style.borderRightWidth = 2;
+                iconContainer.style.borderTopWidth = 2;
+                iconContainer.style.borderBottomWidth = 2;
+                iconContainer.style.borderLeftColor = GetRarityColor(slot.Rarity);
+                iconContainer.style.borderRightColor = GetRarityColor(slot.Rarity);
+                iconContainer.style.borderTopColor = GetRarityColor(slot.Rarity);
+                iconContainer.style.borderBottomColor = GetRarityColor(slot.Rarity);
+
+                // Set icon sprite
+                if (itemData.Icon != null) {
+                    iconContainer.style.backgroundImage = new StyleBackground(itemData.Icon);
+                    iconContainer.style.unityBackgroundScaleMode = ScaleMode.ScaleToFit;
+                }
+
+                // Right-click interaction
+                iconContainer.RegisterCallback<MouseDownEvent>(evt => {
+                    if (evt.button == 1) { // Right-click
+                        if (itemData.Type == ItemType.Consumable) {
+                            UseItem(slotIndex);
+                        } else if (itemData.Type == ItemType.Equipment) {
+                            EquipItem(slotIndex);
+                        }
+                        evt.StopPropagation();
+                    }
+                });
+
+                itemRow.Add(iconContainer);
+
+                // Item info container
+                var infoContainer = new VisualElement();
+                infoContainer.style.flexGrow = 1;
+                infoContainer.style.flexDirection = FlexDirection.Column;
+
+                // Item name
+                string itemText = itemData.ItemName;
                 if (itemData.IsProtected) {
                     itemText += " [PROTECTED]";
                 }
                 var nameLabel = new Label(itemText);
                 nameLabel.style.color = GetRarityColor(slot.Rarity);
                 nameLabel.style.fontSize = 12;
-                itemRow.Add(nameLabel);
+                nameLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
+                infoContainer.Add(nameLabel);
 
-                // Button container
-                var buttonContainer = new VisualElement();
-                buttonContainer.style.flexDirection = FlexDirection.Row;
-                buttonContainer.style.alignItems = Align.Center;
+                // Quantity and action hint
+                string actionHint = itemData.Type == ItemType.Consumable ? "Right-click to use" : "Right-click to equip";
+                var quantityLabel = new Label($"x{slot.Quantity} • {actionHint}");
+                quantityLabel.style.color = new Color(0.7f, 0.7f, 0.7f);
+                quantityLabel.style.fontSize = 10;
+                infoContainer.Add(quantityLabel);
 
-                // Use button (for consumables)
-                if (itemData.Type == ItemType.Consumable) {
-                    var useButton = new Button(() => UseItem(slotIndex));
-                    useButton.text = "Usar";
-                    useButton.style.width = 50;
-                    useButton.style.height = 20;
-                    useButton.style.backgroundColor = new Color(0.3f, 0.6f, 0.3f);
-                    useButton.style.color = Color.white;
-                    useButton.style.marginRight = 3;
-                    buttonContainer.Add(useButton);
-                }
-
-                // Equip button (for equipment)
-                if (itemData.Type == ItemType.Equipment) {
-                    var equipButton = new Button(() => EquipItem(slotIndex));
-                    equipButton.text = "Equipar";
-                    equipButton.style.width = 60;
-                    equipButton.style.height = 20;
-                    equipButton.style.backgroundColor = new Color(0.3f, 0.5f, 0.7f);
-                    equipButton.style.color = Color.white;
-                    buttonContainer.Add(equipButton);
-                }
-
-                itemRow.Add(buttonContainer);
+                itemRow.Add(infoContainer);
                 _inventoryList.Add(itemRow);
             }
 

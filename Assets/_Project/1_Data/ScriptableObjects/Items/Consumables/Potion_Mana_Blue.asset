@@ -15,7 +15,7 @@ MonoBehaviour:
   ItemID: 1002
   ItemName: Potion_Mana_Blue
   Description: Restaura 100 Mana
-  Icon: {fileID: 21300000, guid: 6fa2b881ce1d3420493f4c11c5dc0ea0, type: 3}
+  Icon: {fileID: 21300000, guid: cb4a834587bb34637aea78650f9b2448, type: 3}
   Type: 0
   IsStackable: 1
   MaxStackSize: 99

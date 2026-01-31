@@ -3,6 +3,7 @@
     "rootNamespace": "Genesis.Core",
     "references": [
         "FishNet.Runtime",
+        "GameKit.Dependencies",
         "Unity.InputSystem"
     ],
     "includePlatforms": [],

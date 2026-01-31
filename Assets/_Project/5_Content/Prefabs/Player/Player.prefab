@@ -26,6 +26,7 @@ GameObject:
   - component: {fileID: -6388155961090861808}
   - component: {fileID: -5246818816157547704}
   - component: {fileID: 1173444517612567798}
+  - component: {fileID: 3488668010120455320}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -446,6 +447,25 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 5015743577735707121}
   _networkObjectCache: {fileID: 0}
+--- !u!114 &3488668010120455320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3168934939399175360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4181856795c9c4e459370f31de733eb5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Core::Genesis.Core.Networking.NetworkDistanceCulling
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 5015743577735707121}
+  _networkObjectCache: {fileID: 0}
+  profile: {fileID: 11400000, guid: 0a3f20ab4e39b429d9e4d1aaa301edc3, type: 2}
+  useCustomDistance: 0
+  customDistance: 100
+  _isConfigured: 0
 --- !u!1 &8233073365634962066
 GameObject:
   m_ObjectHideFlags: 0

@@ -18,7 +18,7 @@ MonoBehaviour:
   Description: Cannot move but can cast abilities.
   Type: 2
   IsBuff: 1
-  Duration: 2
+  Duration: 1
   IsStackable: 0
   MaxStacks: 1
   PercentageValue: 0

@@ -23,6 +23,9 @@ GameObject:
   - component: {fileID: -6674976540633462443}
   - component: {fileID: 46509935400827827}
   - component: {fileID: 7206823507675245977}
+  - component: {fileID: -6388155961090861808}
+  - component: {fileID: -5246818816157547704}
+  - component: {fileID: 1173444517612567798}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -156,6 +159,7 @@ MonoBehaviour:
   - {fileID: -2699330521129833483}
   - {fileID: -6674976540633462443}
   - {fileID: 46509935400827827}
+  - {fileID: 7206823507675245977}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -166,7 +170,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584321319682970158
+  _initializedTimestamp: -8584317790891115718
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -182,7 +186,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 14
+  <PrefabId>k__BackingField: 16
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 10407916748453484099
   SceneId: 0
@@ -252,8 +256,6 @@ MonoBehaviour:
   _componentIndexCache: 2
   _addedNetworkObject: {fileID: 5015743577735707121}
   _networkObjectCache: {fileID: 5015743577735707121}
-  maxHealth: 10000
-  maxMana: 10000
   manaRegenPerSecond: 5
 --- !u!114 &-500167922849418954
 MonoBehaviour:
@@ -389,9 +391,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31443f54490d42842ab120c9006046bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.PlayerClassManager
-  _componentIndexCache: 255
+  _componentIndexCache: 8
   _addedNetworkObject: {fileID: 5015743577735707121}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 5015743577735707121}
   availableClasses:
   - {fileID: 11400000, guid: 9e9abdf2df0e73e4c9fb2443b0557a64, type: 2}
   - {fileID: 11400000, guid: 474f6be5ea3210f4c8c9768ec0d208d9, type: 2}
@@ -399,6 +401,51 @@ MonoBehaviour:
   combat: {fileID: -2699330521129833483}
   motor: {fileID: 902623049883095979}
   visualRoot: {fileID: 1353411857516159048}
+--- !u!114 &-6388155961090861808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3168934939399175360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b4773f346f904e52aad731da50e1399, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.World.PlayerChunkTracker
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 5015743577735707121}
+  _networkObjectCache: {fileID: 0}
+--- !u!114 &-5246818816157547704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3168934939399175360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f40a505eaab6d4a6eb1ab36b7a2a8700, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.World.PlayerState
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 5015743577735707121}
+  _networkObjectCache: {fileID: 0}
+--- !u!114 &1173444517612567798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3168934939399175360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf081042e5cf347a0978b89d75e6bfd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.World.PlayerSpawnHandler
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 5015743577735707121}
+  _networkObjectCache: {fileID: 0}
 --- !u!1 &8233073365634962066
 GameObject:
   m_ObjectHideFlags: 0

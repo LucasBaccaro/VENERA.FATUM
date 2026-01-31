@@ -8,6 +8,33 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Project/4_Bootstrap/Bootstrap.unity
     guid: 09632c80e00cc4a96a2e7f52caa0554d
+  - enabled: 1
+    path: Assets/_Project/5_Content/Scenes/Chunks/Chunk_0_0.unity
+    guid: b933e7dbdcd1844f98b64e8f39d66eb6
+  - enabled: 1
+    path: Assets/_Project/5_Content/Scenes/Chunks/Chunk_0_1.unity
+    guid: 56059bbfd6a10408298075c0dd06d624
+  - enabled: 1
+    path: Assets/_Project/5_Content/Scenes/Chunks/Chunk_0_2.unity
+    guid: a2f0e0686602f4e81a4283e5ed2c6fc6
+  - enabled: 1
+    path: Assets/_Project/5_Content/Scenes/Chunks/Chunk_1_0.unity
+    guid: 08e2ec5fa650b40ae8ceadd003182ea9
+  - enabled: 1
+    path: Assets/_Project/5_Content/Scenes/Chunks/Chunk_1_1.unity
+    guid: bfcd4d4c4baeb49c98445bc3fece7b96
+  - enabled: 1
+    path: Assets/_Project/5_Content/Scenes/Chunks/Chunk_1_2.unity
+    guid: e91d4592f89c040319699d194de6d85a
+  - enabled: 1
+    path: Assets/_Project/5_Content/Scenes/Chunks/Chunk_2_0.unity
+    guid: cb9fb98e67d1f43dfa4283088455e201
+  - enabled: 1
+    path: Assets/_Project/5_Content/Scenes/Chunks/Chunk_2_1.unity
+    guid: 6ff11b3d4199d41b29fa8b26867a36fa
+  - enabled: 1
+    path: Assets/_Project/5_Content/Scenes/Chunks/Chunk_2_2.unity
+    guid: ee27597cc90eb4011ab3337b2260c82d
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

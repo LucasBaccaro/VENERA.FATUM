@@ -4,6 +4,7 @@ using FishNet.Object.Synchronizing;
 using Genesis.Core;
 using Genesis.Simulation.Combat; // Necesario para IDamageable
 using Genesis.Data;
+using Genesis.Simulation.World;
 
 namespace Genesis.Simulation {
 
@@ -103,6 +104,12 @@ namespace Genesis.Simulation {
         [Server]
         public void TakeDamage(float damage, NetworkObject attacker) {
             if (_isDead) return;
+
+            // ═══ SAFE ZONE VALIDATION ═══
+            if (!CombatValidator.CanApplyDamage(base.NetworkObject, attacker, out string reason)) {
+                Debug.Log($"[PlayerStats] Damage blocked: {reason}");
+                return;
+            }
 
             // ═══ STATUS EFFECTS CHECK ═══
             if (_statusSystem != null) {

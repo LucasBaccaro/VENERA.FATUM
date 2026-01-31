@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7924c9f0be1a246d0b3966b057d0410a, type: 3}
+  m_Name: WorldDatabase
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.WorldDatabase
+  chunks:
+  - {fileID: 11400000, guid: f5c0b17dbfd9543188fefb679962b551, type: 2}
+  - {fileID: 11400000, guid: a217f1276651a4ba2bd509e088f1393c, type: 2}
+  - {fileID: 11400000, guid: ef3143e97fa694901b05c5c61fc23c41, type: 2}
+  - {fileID: 11400000, guid: e080f6efc7c764cdeb4850ba9efdfca2, type: 2}
+  - {fileID: 11400000, guid: 98f3fff20ec92452195a7e4dabbbd6f6, type: 2}
+  - {fileID: 11400000, guid: 6ba120261f9a048b0818bd60dafcbfd0, type: 2}
+  - {fileID: 11400000, guid: aee7183426ad94d4196b74eb31744842, type: 2}
+  - {fileID: 11400000, guid: 0a15d73e066e14721b32583acd31d356, type: 2}
+  - {fileID: 11400000, guid: fc4bc4bac9d574f24877ce75c511ae1b, type: 2}

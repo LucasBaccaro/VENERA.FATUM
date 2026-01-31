@@ -4,6 +4,7 @@ using FishNet.Managing;
 using FishNet.Connection;
 using FishNet.Transporting;
 using System.Collections;
+using Genesis.Core;
 
 namespace Genesis.Core.Networking {
 
@@ -84,14 +85,30 @@ namespace Genesis.Core.Networking {
                 return;
             }
 
-            Vector3 pos = (spawnPoints != null && spawnPoints.Length > 0) ? spawnPoints[0].position : Vector3.zero;
-            
+            // Get spawn position from provider (if registered), otherwise use spawnPoints
+            Vector3 pos = GetSpawnPosition();
+
             GameObject player = Instantiate(playerPrefab, pos, Quaternion.identity);
-            
+
             // FishNet Spawn
             _networkManager.ServerManager.Spawn(player, conn);
-            
-            Debug.Log($"[SpawnManager] 🟢 SPAWN COMMAND SENT for Client {conn.ClientId}");
+
+            Debug.Log($"[SpawnManager] 🟢 SPAWN COMMAND SENT for Client {conn.ClientId} at {pos}");
+        }
+
+        private Vector3 GetSpawnPosition() {
+            // Try to get spawn position provider from ServiceLocator (allows Simulation layer to provide positions)
+            var positionProvider = ServiceLocator.Instance.Get<ISpawnPositionProvider>();
+            if (positionProvider != null) {
+                return positionProvider.GetSpawnPosition();
+            }
+
+            // Fallback to legacy spawnPoints
+            if (spawnPoints != null && spawnPoints.Length > 0) {
+                return spawnPoints[Random.Range(0, spawnPoints.Length)].position;
+            }
+
+            return Vector3.zero;
         }
     }
 }

@@ -2,6 +2,7 @@ using UnityEngine;
 using FishNet.Object;
 using Genesis.Data;
 using Genesis.Core;
+using Genesis.Simulation.World;
 
 namespace Genesis.Simulation.Combat {
 
@@ -106,6 +107,14 @@ namespace Genesis.Simulation.Combat {
 
                     return; // NO despawnear, el proyectil sigue volando
                 }
+            }
+
+            // ═══ SAFE ZONE VALIDATION (before damage) ═══
+            if (!CombatValidator.CanApplyDamage(targetNetObj, _owner, out string reason)) {
+                Debug.Log($"[ProjectileController] Projectile hit blocked: {reason}");
+                SpawnImpactVFX(hit.point, hit.normal); // Still show impact
+                Despawn();
+                return;
             }
 
             // ═══ CASO 4: Daño Normal ═══

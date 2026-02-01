@@ -1,0 +1,40 @@
+.micro-menu-container {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    flex-direction: row;
+    align-items: flex-end;
+}
+
+.micro-menu-button {
+    width: 32px;
+    height: 32px;
+    margin-left: 5px;
+    background-color: rgba(0,0,0,0);
+    border-width: 0;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.micro-menu-button:hover {
+    scale: 1.1;
+}
+
+.micro-menu-button:active {
+    scale: 0.95;
+}
+
+.btn-bag {
+    background-image: resource("Panels/UI-Micromenu-Bag");
+}
+
+.btn-char {
+    background-image: resource("Panels/UI-Micromenu-Char");
+}
+
+.btn-map {
+    background-image: resource("Panels/UI-Micromenu-Map");
+}
+
+.btn-setup {
+    background-image: resource("Panels/UI-Micromenu-Setup");
+}

@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/MicroMenu.uss" />
+    <ui:VisualElement name="MicroMenuContainer" class="micro-menu-container">
+        <ui:Button name="BtnBag" class="micro-menu-button btn-bag" />
+        <ui:Button name="BtnChar" class="micro-menu-button btn-char" />
+        <ui:Button name="BtnMap" class="micro-menu-button btn-map" />
+        <ui:Button name="BtnSetup" class="micro-menu-button btn-setup" />
+    </ui:VisualElement>
+</ui:UXML>

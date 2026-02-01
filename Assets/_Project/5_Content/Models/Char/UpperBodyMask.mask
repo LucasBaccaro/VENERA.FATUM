@@ -1,0 +1,239 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: UpperBodyMask
+  m_Mask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: Char_Base_Rig
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/Hip_Holder.L
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/Hip_Holder.L/Hip_Holder.L_end
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/Hip_Holder.R
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/Hip_Holder.R/Hip_Holder.R_end
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/L_FK_Hip
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/L_FK_Hip/L_FK_Knee
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/L_FK_Hip/L_FK_Knee/L_FK_Ankle
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/L_FK_Hip/L_FK_Knee/L_FK_Ankle/L_FK_Ankle_end
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/L_IK_Hip
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/L_IK_Hip/L_IK_Knee
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/L_IK_Hip/L_IK_Knee/L_IK_Knee_end
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/L_Leg
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/L_Leg/L_Knee
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/L_Leg/L_Knee/L_Ankle
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/L_Leg/L_Knee/L_Ankle/L_Foot
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/L_Leg/L_Knee/L_Ankle/L_Foot/L_Foot_end
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/Leg_IK/FK_Switch.L
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/Leg_IK/FK_Switch.L/Leg_IK/FK_Switch.L_end
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/Leg_IK/FK_Switch.R
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/Leg_IK/FK_Switch.R/Leg_IK/FK_Switch.R_end
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/R_FK_Hip
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/R_FK_Hip/R_FK_Knee
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/R_FK_Hip/R_FK_Knee/R_FK_Ankle
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/R_FK_Hip/R_FK_Knee/R_FK_Ankle/R_FK_Ankle_end
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/R_IK_Hip
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/R_IK_Hip/R_IK_Knee
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/R_IK_Hip/R_IK_Knee/R_IK_Knee_end
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/R_Leg
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/R_Leg/R_Knee
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/R_Leg/R_Knee/R_Ankle
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/R_Leg/R_Knee/R_Ankle/R_Foot
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/R_Leg/R_Knee/R_Ankle/R_Foot/R_Foot_end
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/Spine1
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/Arm_IK/FK_Switch.L
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/Arm_IK/FK_Switch.L/Arm_IK/FK_Switch.L_end
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/Arm_IK/FK_Switch.R
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/Arm_IK/FK_Switch.R/Arm_IK/FK_Switch.R_end
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar/L_FK_Shoulder
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar/L_FK_Shoulder/L_FK_Elbow
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar/L_FK_Shoulder/L_FK_Elbow/L_FK_Wrist
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar/L_FK_Shoulder/L_FK_Elbow/L_FK_Wrist/L_FK_Wrist_end
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar/L_IK_Shoulder
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar/L_IK_Shoulder/L_IK_Elbow
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar/L_IK_Shoulder/L_IK_Elbow/L_IK_Elbow_end
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar/L_Shoulder
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar/L_Shoulder/L_Elbow
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar/L_Shoulder/L_Elbow/L_Shield_Holder
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar/L_Shoulder/L_Elbow/L_Shield_Holder/L_Shield_Holder_end
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar/L_Shoulder/L_Elbow/L_Wrist
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar/L_Shoulder/L_Elbow/L_Wrist/L_Hand_Holder
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar/L_Shoulder/L_Elbow/L_Wrist/L_Hand_Holder/L_Hand_Holder_end
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar/L_Shoulder/L_Elbow/L_Wrist/L_Index1
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar/L_Shoulder/L_Elbow/L_Wrist/L_Index1/L_Index2
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar/L_Shoulder/L_Elbow/L_Wrist/L_Index1/L_Index2/L_Index3
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar/L_Shoulder/L_Elbow/L_Wrist/L_Index1/L_Index2/L_Index3/L_Index3_end
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar/L_Shoulder/L_Elbow/L_Wrist/L_Thumb1
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar/L_Shoulder/L_Elbow/L_Wrist/L_Thumb1/L_Thumb2
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar/L_Shoulder/L_Elbow/L_Wrist/L_Thumb1/L_Thumb2/L_Thumb3
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/L_Collar/L_Shoulder/L_Elbow/L_Wrist/L_Thumb1/L_Thumb2/L_Thumb3/L_Thumb3_end
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/Neck
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/Neck/Head
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/Neck/Head/Head_end
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/R_Collar
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/R_Collar/R_FK_Shoulder
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/R_Collar/R_FK_Shoulder/R_FK_Elbow
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/R_Collar/R_FK_Shoulder/R_FK_Elbow/R_FK_Wrist
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/R_Collar/R_FK_Shoulder/R_FK_Elbow/R_FK_Wrist/R_FK_Wrist_end
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/R_Collar/R_IK_Shoulder
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/R_Collar/R_IK_Shoulder/R_IK_Elbow
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/R_Collar/R_IK_Shoulder/R_IK_Elbow/R_IK_Elbow_end
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/R_Collar/R_Shoulder
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/R_Collar/R_Shoulder/R_Elbow
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/R_Collar/R_Shoulder/R_Elbow/R_Wrist
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/R_Collar/R_Shoulder/R_Elbow/R_Wrist/R_Hand_Holder
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/R_Collar/R_Shoulder/R_Elbow/R_Wrist/R_Hand_Holder/R_Hand_Holder_end
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/R_Collar/R_Shoulder/R_Elbow/R_Wrist/R_Index1
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/R_Collar/R_Shoulder/R_Elbow/R_Wrist/R_Index1/R_Index2
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/R_Collar/R_Shoulder/R_Elbow/R_Wrist/R_Index1/R_Index2/R_Index3
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/R_Collar/R_Shoulder/R_Elbow/R_Wrist/R_Index1/R_Index2/R_Index3/R_Index3_end
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/R_Collar/R_Shoulder/R_Elbow/R_Wrist/R_Thumb1
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/R_Collar/R_Shoulder/R_Elbow/R_Wrist/R_Thumb1/R_Thumb2
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/R_Collar/R_Shoulder/R_Elbow/R_Wrist/R_Thumb1/R_Thumb2/R_Thumb3
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/Hip/Spine1/Spine2/Chest/R_Collar/R_Shoulder/R_Elbow/R_Wrist/R_Thumb1/R_Thumb2/R_Thumb3/R_Thumb3_end
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/L_Arm_PoleTarget
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/L_Arm_PoleTarget/L_Arm_PoleTarget_end
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/L_IK_Feet
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/L_IK_Feet/L_IK_Ankle
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/L_IK_Feet/L_IK_Ankle/L_IK_Ankle_end
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/L_IK_Hand
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/L_IK_Hand/L_IK_Wrist
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/L_IK_Hand/L_IK_Wrist/L_IK_Wrist_end
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/L_Leg_PoleTarget
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/L_Leg_PoleTarget/L_Leg_PoleTarget_end
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/R_Arm_PoleTarget
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/R_Arm_PoleTarget/R_Arm_PoleTarget_end
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/R_IK_Feet
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/R_IK_Feet/R_IK_Ankle
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/R_IK_Feet/R_IK_Ankle/R_IK_Ankle_end
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/R_IK_Hand
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/R_IK_Hand/R_IK_Wrist
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/R_IK_Hand/R_IK_Wrist/R_IK_Wrist_end
+    m_Weight: 1
+  - m_Path: Char_Base_Rig/R_Leg_PoleTarget
+    m_Weight: 0
+  - m_Path: Char_Base_Rig/R_Leg_PoleTarget/R_Leg_PoleTarget_end
+    m_Weight: 0
+  - m_Path: Chest
+    m_Weight: 1
+  - m_Path: Feet
+    m_Weight: 0
+  - m_Path: Hands
+    m_Weight: 1
+  - m_Path: Head
+    m_Weight: 1
+  - m_Path: Pants
+    m_Weight: 0

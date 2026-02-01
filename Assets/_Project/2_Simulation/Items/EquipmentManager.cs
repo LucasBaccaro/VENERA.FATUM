@@ -14,6 +14,7 @@ namespace Genesis.Simulation {
     public class EquipmentManager : NetworkBehaviour {
         [Header("References")]
         [SerializeField] private PlayerStats _playerStats;
+        private PlayerClassManager _classManager;
 
         [Header("Network State - Equipment Slots")]
         private readonly SyncVar<ItemSlot> _headSlot = new SyncVar<ItemSlot>();
@@ -35,20 +36,25 @@ namespace Genesis.Simulation {
         public float SpellPowerBonus => _spellPowerBonus;
 
         private void Awake() {
-            // Subscribe to equipment slot changes
-            _headSlot.OnChange += OnEquipmentChanged;
-            _shouldersSlot.OnChange += OnEquipmentChanged;
-            _chestSlot.OnChange += OnEquipmentChanged;
-            _pantsSlot.OnChange += OnEquipmentChanged;
-            _feetSlot.OnChange += OnEquipmentChanged;
-            _handsSlot.OnChange += OnEquipmentChanged;
-            _beltSlot.OnChange += OnEquipmentChanged;
-            _weaponSlot.OnChange += OnEquipmentChanged;
-            _offHandSlot.OnChange += OnEquipmentChanged;
+            // Subscribe to equipment slot changes with specific slot info
+            _headSlot.OnChange += (oldVal, newVal, asServer) => OnEquipmentChanged(EquipmentSlot.Head, oldVal, newVal, asServer);
+            _shouldersSlot.OnChange += (oldVal, newVal, asServer) => OnEquipmentChanged(EquipmentSlot.Shoulders, oldVal, newVal, asServer);
+            _chestSlot.OnChange += (oldVal, newVal, asServer) => OnEquipmentChanged(EquipmentSlot.Chest, oldVal, newVal, asServer);
+            _pantsSlot.OnChange += (oldVal, newVal, asServer) => OnEquipmentChanged(EquipmentSlot.Pants, oldVal, newVal, asServer);
+            _feetSlot.OnChange += (oldVal, newVal, asServer) => OnEquipmentChanged(EquipmentSlot.Feet, oldVal, newVal, asServer);
+            _handsSlot.OnChange += (oldVal, newVal, asServer) => OnEquipmentChanged(EquipmentSlot.Hands, oldVal, newVal, asServer);
+            _beltSlot.OnChange += (oldVal, newVal, asServer) => OnEquipmentChanged(EquipmentSlot.Belt, oldVal, newVal, asServer);
+            _weaponSlot.OnChange += (oldVal, newVal, asServer) => OnEquipmentChanged(EquipmentSlot.Weapon, oldVal, newVal, asServer);
+            _offHandSlot.OnChange += (oldVal, newVal, asServer) => OnEquipmentChanged(EquipmentSlot.OffHand, oldVal, newVal, asServer);
 
             // Auto-find PlayerStats if not assigned
             if (_playerStats == null) {
                 _playerStats = GetComponent<PlayerStats>();
+            }
+
+            // Auto-find PlayerClassManager
+            if (_classManager == null) {
+                _classManager = GetComponent<PlayerClassManager>();
             }
         }
 
@@ -71,20 +77,21 @@ namespace Genesis.Simulation {
 
         /// <summary>
         /// Event triggered when any equipment slot changes (called on all clients)
+        /// Passes the slot that changed.
         /// </summary>
-        public System.Action OnEquipmentChangedSync;
+        public System.Action<EquipmentSlot> OnEquipmentChangedSync;
 
         /// <summary>
         /// Callback when equipment changes (synced to clients)
         /// </summary>
-        private void OnEquipmentChanged(ItemSlot oldSlot, ItemSlot newSlot, bool asServer) {
+        private void OnEquipmentChanged(EquipmentSlot slot, ItemSlot oldSlot, ItemSlot newSlot, bool asServer) {
             // Recalculate stats on server
             if (asServer) {
                 RecalculateStats();
             }
 
             // Trigger local visual update for all clients (Proxies and Owner)
-            OnEquipmentChangedSync?.Invoke();
+            OnEquipmentChangedSync?.Invoke(slot);
 
             // Trigger global event for owner-only UI modules (Inventory, Character Panel, etc.)
             if (IsOwner) {
@@ -125,6 +132,17 @@ namespace Genesis.Simulation {
                 Debug.LogWarning($"[EquipmentManager] Item {equipmentData.ItemName} cannot be equipped to {slot} slot (requires {equipmentData.Slot})!");
                 return false;
             }
+
+            // Validate Class Restriction
+            if (!string.IsNullOrEmpty(equipmentData.RequiredClass) && _classManager != null) {
+                string currentClass = _classManager.GetCurrentClassName();
+                if (equipmentData.RequiredClass != currentClass) {
+                    Debug.LogWarning($"[EquipmentManager] Item {equipmentData.ItemName} requires class {equipmentData.RequiredClass} but player is {currentClass}");
+                    TargetShowError(base.Owner, "This item is not for your class");
+                    return false;
+                }
+            }
+
 
             // Create item slot
             ItemSlot newSlot = new ItemSlot(itemId, 1, tier, rarity);
@@ -316,6 +334,49 @@ namespace Genesis.Simulation {
             Debug.Log($"[EquipmentManager] Stats recalculated: MaxHP={totalMaxHealth}, MaxMana={totalMaxMana}, SpellPower={totalSpellPower * 100f}%");
         }
 
+        /// <summary>
+        /// Re-validate all equipped items against the current class.
+        /// Unequip invalid items to inventory.
+        /// </summary>
+        [Server]
+        public void ValidateEquipmentForClass(string className) {
+            PlayerInventory inventory = GetComponent<PlayerInventory>();
+            if (inventory == null) return;
+
+             void CheckSlot(EquipmentSlot slot, ItemSlot itemSlot) {
+                if (itemSlot.IsEmpty) return;
+
+                EquipmentItemData data = ItemDatabase.Instance.GetEquipment(itemSlot.ItemID);
+                if (data == null) return;
+
+                if (!string.IsNullOrEmpty(data.RequiredClass) && data.RequiredClass != className) {
+                    Debug.Log($"[EquipmentManager] Auto-unequipping {data.ItemName} (Requires {data.RequiredClass}). New class is {className}.");
+                    
+                    if (inventory.HasSpace(itemSlot.ItemID, 1)) {
+                        ItemSlot unequipped = UnequipSlot(slot);
+                        inventory.AddItem(unequipped.ItemID, 1, unequipped.Tier, unequipped.Rarity);
+                    } else {
+                        // Inventory full - Drop to ground? For now just warning.
+                         Debug.LogWarning($"[EquipmentManager] Inventory full! Could not auto-unequip {data.ItemName}. Item remains equipped but invalid.");
+                         // Alternative: Force unequip and drop world item (Phase 10)
+                    }
+                }
+            }
+
+            CheckSlot(EquipmentSlot.Head, _headSlot.Value);
+            CheckSlot(EquipmentSlot.Shoulders, _shouldersSlot.Value);
+            CheckSlot(EquipmentSlot.Chest, _chestSlot.Value);
+            CheckSlot(EquipmentSlot.Pants, _pantsSlot.Value);
+            CheckSlot(EquipmentSlot.Feet, _feetSlot.Value);
+            CheckSlot(EquipmentSlot.Hands, _handsSlot.Value);
+            CheckSlot(EquipmentSlot.Belt, _beltSlot.Value);
+            CheckSlot(EquipmentSlot.Weapon, _weaponSlot.Value);
+            CheckSlot(EquipmentSlot.OffHand, _offHandSlot.Value);
+            
+            // Recalculate stats after potential changes
+            RecalculateStats();
+        }
+
         #endregion
 
         #region Public Utility Methods (Client-Safe)
@@ -430,5 +491,9 @@ namespace Genesis.Simulation {
         }
 
         #endregion
+        [TargetRpc]
+        private void TargetShowError(FishNet.Connection.NetworkConnection conn, string message) {
+            EventBus.Trigger("OnCombatError", message);
+        }
     }
 }

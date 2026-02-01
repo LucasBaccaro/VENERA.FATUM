@@ -64,10 +64,11 @@ namespace Genesis.Simulation {
                 combat.UpdateAbilitiesFromClass(data);
             }
 
-            // 3. Notificar EquipmentManager para recalcular stats (Phase 9)
+            // 3. Notificar EquipmentManager para recalcular stats y validar equipo
             var equipmentManager = GetComponent<Genesis.Simulation.EquipmentManager>();
             if (equipmentManager != null) {
                 equipmentManager.UpdateBaseStats(data.MaxHealth, data.MaxMana);
+                equipmentManager.ValidateEquipmentForClass(data.ClassName); // AUTO-UNEQUIP INVALID ITEMS
             }
         }
 
@@ -139,6 +140,12 @@ namespace Genesis.Simulation {
                 if (result != null) return result;
             }
             return null;
+        }
+        public string GetCurrentClassName() {
+            if (_currentClassIndex.Value >= 0 && _currentClassIndex.Value < availableClasses.Count) {
+                return availableClasses[_currentClassIndex.Value].ClassName;
+            }
+            return "";
         }
     }
 }

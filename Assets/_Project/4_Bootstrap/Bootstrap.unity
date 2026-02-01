@@ -557,6 +557,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.UI.AbilityBarDebugController
   uiDocument: {fileID: 476662284}
   playerCombat: {fileID: 0}
+  _equipmentManager: {fileID: 0}
 --- !u!1 &522643604
 GameObject:
   m_ObjectHideFlags: 0

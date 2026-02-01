@@ -11,6 +11,9 @@ namespace Genesis.Items {
         [Tooltip("Which slot this equipment occupies")]
         public EquipmentSlot Slot;
 
+        [Tooltip("Required Class Name (empty for any)")]
+        public string RequiredClass;
+
         [Header("Stat Modifiers (Per Rarity)")]
         [Tooltip("Stats for rarity Common (white)")]
         public List<StatModifier> CommonStats = new List<StatModifier>();

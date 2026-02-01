@@ -1,12 +1,10 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/AbilityBarDebugStyle.uss"/>
 
     <!-- Root Container - Hidden by default, toggle with F3 -->
     <ui:VisualElement name="AbilityDebugOverlay" class="debug-overlay">
 
-        <!-- ═══════════════════════════════════════════════════════
-             1. ABILITY BAR - Centro inferior (posición típica de habilidades)
-             ═══════════════════════════════════════════════════════ -->
+        <!-- 1. ABILITY BAR -->
         <ui:VisualElement name="AbilityBarWrapper" class="ability-bar-wrapper">
             <ui:VisualElement name="AbilityBarContainer" class="ability-bar-container">
 
@@ -67,9 +65,7 @@
             </ui:VisualElement>
         </ui:VisualElement>
 
-        <!-- ═══════════════════════════════════════════════════════
-             3. BOTTOM LEFT - Detail Panel + Event Log
-             ═══════════════════════════════════════════════════════ -->
+        <!-- 3. BOTTOM LEFT - Detail Panel + Event Log -->
         <ui:VisualElement name="BottomLeftWrapper" class="bottom-left-wrapper">
 
             <!-- Detail Panel - Last ability cast -->
@@ -92,7 +88,7 @@
 
         </ui:VisualElement>
 
-        <!-- Toggle hint - Esquina inferior derecha -->
+        <!-- Toggle hint -->
         <ui:Label text="[F3] Toggle Debug UI" class="toggle-hint"/>
 
     </ui:VisualElement>

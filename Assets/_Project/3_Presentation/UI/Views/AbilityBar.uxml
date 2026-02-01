@@ -1,71 +1,62 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/AbilityBarStyle.uss"/>
-
-    <!-- Ability Bar Container with background image - positioned at bottom center -->
-    <ui:VisualElement name="AbilityBarWrapper" class="ability-bar-wrapper">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/AbilityBarStyle.uss?fileID=7433441132597879392&amp;guid=eed2c79cf1c7b47d7af3e2e0237aab00&amp;type=3#AbilityBarStyle"/>
+    <ui:VisualElement name="AbilityBarWrapper" class="ability-bar-wrapper" style="width: 438px; height: 95px;">
         <ui:VisualElement name="AbilityBarContainer" class="ability-bar-container">
-
-            <!-- Ability Slot 1 -->
             <ui:VisualElement name="AbilitySlot1" class="ability-slot">
                 <ui:VisualElement name="AbilitySlotBg1" class="ability-slot-bg"/>
-                <ui:VisualElement name="AbilityIcon1" class="ability-icon"/>
+                <ui:VisualElement name="AbilityIcon1" class="ability-icon" style="width: 58px; height: 58px;"/>
                 <ui:VisualElement name="CooldownOverlay1" class="cooldown-overlay"/>
+                <ui:VisualElement name="GCDOverlay1" class="gcd-overlay"/>
                 <ui:Label text="0.0" name="CooldownText1" class="cooldown-text"/>
                 <ui:Label text="1" name="KeybindLabel1" class="keybind-label"/>
                 <ui:VisualElement name="StateIndicator1" class="state-indicator"/>
             </ui:VisualElement>
-
-            <!-- Ability Slot 2 -->
             <ui:VisualElement name="AbilitySlot2" class="ability-slot">
                 <ui:VisualElement name="AbilitySlotBg2" class="ability-slot-bg"/>
-                <ui:VisualElement name="AbilityIcon2" class="ability-icon"/>
+                <ui:VisualElement name="AbilityIcon2" class="ability-icon" style="width: 58px; height: 58px;"/>
                 <ui:VisualElement name="CooldownOverlay2" class="cooldown-overlay"/>
+                <ui:VisualElement name="GCDOverlay2" class="gcd-overlay"/>
                 <ui:Label text="0.0" name="CooldownText2" class="cooldown-text"/>
                 <ui:Label text="2" name="KeybindLabel2" class="keybind-label"/>
                 <ui:VisualElement name="StateIndicator2" class="state-indicator"/>
             </ui:VisualElement>
-
-            <!-- Ability Slot 3 -->
             <ui:VisualElement name="AbilitySlot3" class="ability-slot">
                 <ui:VisualElement name="AbilitySlotBg3" class="ability-slot-bg"/>
-                <ui:VisualElement name="AbilityIcon3" class="ability-icon"/>
+                <ui:VisualElement name="AbilityIcon3" class="ability-icon" style="width: 58px; height: 58px;"/>
                 <ui:VisualElement name="CooldownOverlay3" class="cooldown-overlay"/>
+                <ui:VisualElement name="GCDOverlay3" class="gcd-overlay"/>
                 <ui:Label text="0.0" name="CooldownText3" class="cooldown-text"/>
                 <ui:Label text="3" name="KeybindLabel3" class="keybind-label"/>
                 <ui:VisualElement name="StateIndicator3" class="state-indicator"/>
             </ui:VisualElement>
-
-            <!-- Ability Slot 4 -->
             <ui:VisualElement name="AbilitySlot4" class="ability-slot">
                 <ui:VisualElement name="AbilitySlotBg4" class="ability-slot-bg"/>
-                <ui:VisualElement name="AbilityIcon4" class="ability-icon"/>
+                <ui:VisualElement name="AbilityIcon4" class="ability-icon" style="width: 58px; height: 58px;"/>
                 <ui:VisualElement name="CooldownOverlay4" class="cooldown-overlay"/>
+                <ui:VisualElement name="GCDOverlay4" class="gcd-overlay"/>
                 <ui:Label text="0.0" name="CooldownText4" class="cooldown-text"/>
                 <ui:Label text="4" name="KeybindLabel4" class="keybind-label"/>
                 <ui:VisualElement name="StateIndicator4" class="state-indicator"/>
             </ui:VisualElement>
-
-            <!-- Ability Slot 5 -->
             <ui:VisualElement name="AbilitySlot5" class="ability-slot">
                 <ui:VisualElement name="AbilitySlotBg5" class="ability-slot-bg"/>
-                <ui:VisualElement name="AbilityIcon5" class="ability-icon"/>
+                <ui:VisualElement name="AbilityIcon5" class="ability-icon" style="width: 58px; height: 58px;"/>
                 <ui:VisualElement name="CooldownOverlay5" class="cooldown-overlay"/>
+                <ui:VisualElement name="GCDOverlay5" class="gcd-overlay"/>
                 <ui:Label text="0.0" name="CooldownText5" class="cooldown-text"/>
                 <ui:Label text="5" name="KeybindLabel5" class="keybind-label"/>
                 <ui:VisualElement name="StateIndicator5" class="state-indicator"/>
             </ui:VisualElement>
-
-            <!-- Ability Slot 6 -->
             <ui:VisualElement name="AbilitySlot6" class="ability-slot">
                 <ui:VisualElement name="AbilitySlotBg6" class="ability-slot-bg"/>
-                <ui:VisualElement name="AbilityIcon6" class="ability-icon"/>
+                <ui:VisualElement name="AbilityIcon6" class="ability-icon" style="width: 58px; height: 58px;"/>
                 <ui:VisualElement name="CooldownOverlay6" class="cooldown-overlay"/>
+                <ui:VisualElement name="GCDOverlay6" class="gcd-overlay"/>
                 <ui:Label text="0.0" name="CooldownText6" class="cooldown-text"/>
                 <ui:Label text="6" name="KeybindLabel6" class="keybind-label"/>
                 <ui:VisualElement name="StateIndicator6" class="state-indicator"/>
             </ui:VisualElement>
-
         </ui:VisualElement>
+        <ui:VisualElement name="AbilityBarFrame" class="ability-bar-frame"/>
     </ui:VisualElement>
 </ui:UXML>
-

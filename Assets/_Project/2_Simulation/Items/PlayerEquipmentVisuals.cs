@@ -55,6 +55,15 @@ namespace Genesis.Simulation
                 Debug.LogWarning($"[PlayerEquipmentVisuals] EquipmentManager not found on {gameObject.name} or its parents. Visuals will not work.");
                 return;
             }
+
+            // --- FIX ANIMATOR FREEZE ---
+            // Cuando equipamos 9 piezas, ocultamos todo el cuerpo base. 
+            // Si el Animator está en modo "Cull", pensará que no hay nada visible y se congelará.
+            Animator anim = GetComponentInParent<Animator>();
+            if (anim != null)
+            {
+                anim.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+            }
             
             // Suscribirse a cambios de equipamiento de este manager específicamente
             equipmentManager.OnEquipmentChangedSync += OnEquipmentChanged;
@@ -80,10 +89,18 @@ namespace Genesis.Simulation
             _equippedVisuals.Clear();
         }
         
-        private void OnEquipmentChanged()
+        private void OnEquipmentChanged(EquipmentSlot slot)
         {
-            // Refrescar toda la visualización
-            RefreshAllEquipment();
+            // Resetear partes ocultas antes de refrescar (necesitamos recalcular todas porque 
+            // múltiples items pueden ocultar la misma parte)
+            _hiddenParts = BodyPartFlags.None;
+
+            // Refrescar solo el slot que cambió
+            RefreshSlotSpecific(slot);
+            
+            // Recalcular visibilidad de body parts basada en los demás items equipados
+            RecalculateHiddenParts();
+            UpdateBodyPartsVisibility();
         }
         
         /// <summary>
@@ -97,18 +114,58 @@ namespace Genesis.Simulation
             _hiddenParts = BodyPartFlags.None;
             
             // Procesar cada slot (solo si el transform de anclaje está asignado)
-            RefreshSlot(EquipmentSlot.Head, equipmentManager.GetEquipmentSlot(EquipmentSlot.Head), headSlotTransform);
-            RefreshSlot(EquipmentSlot.Shoulders, equipmentManager.GetEquipmentSlot(EquipmentSlot.Shoulders), shouldersSlotTransform);
-            RefreshSlot(EquipmentSlot.Chest, equipmentManager.GetEquipmentSlot(EquipmentSlot.Chest), chestSlotTransform);
-            RefreshSlot(EquipmentSlot.Hands, equipmentManager.GetEquipmentSlot(EquipmentSlot.Hands), handsSlotTransform);
-            RefreshSlot(EquipmentSlot.Belt, equipmentManager.GetEquipmentSlot(EquipmentSlot.Belt), beltSlotTransform);
-            RefreshSlot(EquipmentSlot.Pants, equipmentManager.GetEquipmentSlot(EquipmentSlot.Pants), pantsSlotTransform);
-            RefreshSlot(EquipmentSlot.Feet, equipmentManager.GetEquipmentSlot(EquipmentSlot.Feet), feetSlotTransform);
-            RefreshSlot(EquipmentSlot.Weapon, equipmentManager.GetEquipmentSlot(EquipmentSlot.Weapon), weaponSlotTransform);
-            RefreshSlot(EquipmentSlot.OffHand, equipmentManager.GetEquipmentSlot(EquipmentSlot.OffHand), offhandSlotTransform);
+            RefreshSlotSpecific(EquipmentSlot.Head);
+            RefreshSlotSpecific(EquipmentSlot.Shoulders);
+            RefreshSlotSpecific(EquipmentSlot.Chest);
+            RefreshSlotSpecific(EquipmentSlot.Hands);
+            RefreshSlotSpecific(EquipmentSlot.Belt);
+            RefreshSlotSpecific(EquipmentSlot.Pants);
+            RefreshSlotSpecific(EquipmentSlot.Feet);
+            RefreshSlotSpecific(EquipmentSlot.Weapon);
+            RefreshSlotSpecific(EquipmentSlot.OffHand);
             
-            // Actualizar visibilidad de body parts
+            RecalculateHiddenParts();
             UpdateBodyPartsVisibility();
+        }
+
+        private void RefreshSlotSpecific(EquipmentSlot slot)
+        {
+            Transform point = GetAttachmentPoint(slot);
+            ItemSlot itemSlot = equipmentManager.GetEquipmentSlot(slot);
+            RefreshSlot(slot, itemSlot, point);
+        }
+
+        private Transform GetAttachmentPoint(EquipmentSlot slot)
+        {
+            switch (slot)
+            {
+                case EquipmentSlot.Head: return headSlotTransform;
+                case EquipmentSlot.Shoulders: return shouldersSlotTransform;
+                case EquipmentSlot.Chest: return chestSlotTransform;
+                case EquipmentSlot.Hands: return handsSlotTransform;
+                case EquipmentSlot.Belt: return beltSlotTransform;
+                case EquipmentSlot.Pants: return pantsSlotTransform;
+                case EquipmentSlot.Feet: return feetSlotTransform;
+                case EquipmentSlot.Weapon: return weaponSlotTransform;
+                case EquipmentSlot.OffHand: return offhandSlotTransform;
+                default: return null;
+            }
+        }
+
+        private void RecalculateHiddenParts()
+        {
+            _hiddenParts = BodyPartFlags.None;
+            foreach (var slot in System.Enum.GetValues(typeof(EquipmentSlot)))
+            {
+                EquipmentSlot eSlot = (EquipmentSlot)slot;
+                ItemSlot itemSlot = equipmentManager.GetEquipmentSlot(eSlot);
+                if (!itemSlot.IsEmpty)
+                {
+                    var itemData = ItemDatabase.Instance.GetEquipment(itemSlot.ItemID);
+                    if (itemData != null && itemData.VisualData != null)
+                        _hiddenParts |= itemData.VisualData.HiddenBodyParts;
+                }
+            }
         }
         
         private void RefreshSlot(EquipmentSlot slot, ItemSlot itemSlot, Transform attachmentPoint)
@@ -129,9 +186,6 @@ namespace Genesis.Simulation
             
             // Equipar visual
             EquipVisual(slot, itemData.VisualData, attachmentPoint, itemSlot.Rarity);
-            
-            // Acumular partes del cuerpo a ocultar
-            _hiddenParts |= itemData.VisualData.HiddenBodyParts;
         }
         
         private void EquipVisual(EquipmentSlot slot, EquipmentVisualData visualData, Transform attachmentPoint, ItemRarity rarity)
@@ -150,6 +204,11 @@ namespace Genesis.Simulation
             
             if (visualInstance == null) return;
             
+            // --- SAFETY: Desactivar animadores anidados ---
+            // Si el prefab del item tiene su propio Animator, puede romper la animación del jugador.
+            Animator guestAnimator = visualInstance.GetComponentInChildren<Animator>();
+            if (guestAnimator != null) guestAnimator.enabled = false;
+
             // Attachear al punto de anclaje
             visualInstance.transform.SetParent(attachmentPoint);
             
@@ -158,22 +217,27 @@ namespace Genesis.Simulation
             visualInstance.transform.localPosition = pos;
             visualInstance.transform.localRotation = rot;
             visualInstance.transform.localScale = scale;
-
+ 
             // --- ATTACHMENT / RE-SKINNING LOGIC ---
             SkinnedMeshRenderer equipSMR = visualInstance.GetComponentInChildren<SkinnedMeshRenderer>();
             
             // Si el slot es de los que se "socketan" (Armas/OffHand), no transferimos huesos.
-            // Simplemente se quedan como hijos del attachmentPoint (que debería ser un hijo del hueso de la mano).
             bool isSocketedSlot = (slot == EquipmentSlot.Weapon || slot == EquipmentSlot.OffHand);
             
-            if (equipSMR != null && !isSocketedSlot)
+            if (equipSMR != null)
             {
-                // Si el item es ropa skinneada (pecheras, etc.), debe compartir la armature del personaje.
-                SkinnedMeshRenderer referenceSMR = chestBase != null ? chestBase : headBase;
-                if (referenceSMR != null)
+                // Forzar que se actualice aunque esté fuera de cámara para evitar glitches visuales
+                equipSMR.updateWhenOffscreen = true;
+
+                if (!isSocketedSlot)
                 {
-                    equipSMR.bones = referenceSMR.bones;
-                    equipSMR.rootBone = referenceSMR.rootBone;
+                    // Si el item es ropa skinneada (pecheras, etc.), debe compartir la armature del personaje.
+                    SkinnedMeshRenderer referenceSMR = chestBase != null ? chestBase : headBase;
+                    if (referenceSMR != null)
+                    {
+                        equipSMR.bones = referenceSMR.bones;
+                        equipSMR.rootBone = referenceSMR.rootBone;
+                    }
                 }
             }
             

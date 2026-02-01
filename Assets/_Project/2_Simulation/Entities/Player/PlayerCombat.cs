@@ -6,6 +6,7 @@ using Genesis.Data;
 using Genesis.Simulation.Combat;
 using Genesis.Core;
 using System.Collections.Generic;
+using Genesis.Items;
 
 namespace Genesis.Simulation {
 
@@ -21,8 +22,12 @@ namespace Genesis.Simulation {
         [SerializeField] private Animator animator;
         [SerializeField] private AbilityIndicatorSystem indicatorSystem;
         [SerializeField] private Transform castVFXSpawnPoint;
+        [SerializeField] private string upperBodyLayerName = "UpperBody"; // Layer para Avatar Mask
+        private int _upperBodyLayerIndex = -1; // Cache del index
         private StatusEffectSystem _statusEffects;
         private CharacterController _cc;
+        private EquipmentManager _equipmentManager;
+        public EquipmentManager EquipmentManager => _equipmentManager;
 
         [Header("Loadout")]
         public List<AbilityData> abilitySlots = new List<AbilityData>();
@@ -75,6 +80,13 @@ namespace Genesis.Simulation {
         void Awake() {
             _statusEffects = GetComponent<StatusEffectSystem>();
             _cc = GetComponent<CharacterController>();
+            _equipmentManager = GetComponent<EquipmentManager>();
+            if (animator != null) {
+                _upperBodyLayerIndex = animator.GetLayerIndex(upperBodyLayerName);
+                if (_upperBodyLayerIndex == -1) {
+                    Debug.LogWarning($"[PlayerCombat] Animator Layer '{upperBodyLayerName}' not found. Avatar Mask features won't work.");
+                }
+            }
         }
 
         // ═══════════════════════════════════════════════════════
@@ -395,6 +407,15 @@ namespace Genesis.Simulation {
             if (stats.CurrentMana < ability.ManaCost) {
                 Debug.LogWarning("[PlayerCombat] Insufficient mana");
                 return false;
+            }
+
+            // ═══ WEAPON REQUIREMENT CHECK ═══
+            if (_equipmentManager != null) {
+                if (_equipmentManager.IsSlotEmpty(EquipmentSlot.Weapon)) {
+                     Debug.LogWarning("[PlayerCombat] Cannot cast without weapon");
+                     EventBus.Trigger("OnCombatError", "You need a weapon to cast spells and abilities");
+                     return false;
+                }
             }
 
             return true;
@@ -1044,9 +1065,23 @@ namespace Genesis.Simulation {
 
             string trigger = isStart ? ability.StartCastAnimationTrigger : ability.AnimationTrigger;
             
+            // Clean up any residual triggers before setting the new one
+            if (!string.IsNullOrEmpty(ability.StartCastAnimationTrigger))
+                animator.ResetTrigger(ability.StartCastAnimationTrigger);
+            if (!string.IsNullOrEmpty(ability.AnimationTrigger))
+                animator.ResetTrigger(ability.AnimationTrigger);
+
             if (!string.IsNullOrEmpty(trigger)) {
                 animator.SetTrigger(trigger);
                 Debug.Log($"[PlayerCombat] RpcPlayAnimation: {trigger} (Starting: {isStart})");
+
+                // UPDATE LAYER WEIGHT
+                if (isStart) {
+                    UpdateAnimatorLayerWeight(ability.UseAvatarMask);
+                } else {
+                    // Al terminar, reseteamos el peso a 0 (asumimos que Idle es full body o base layer)
+                    UpdateAnimatorLayerWeight(false);
+                }
             }
         }
 
@@ -1067,6 +1102,9 @@ namespace Genesis.Simulation {
             
             if (!string.IsNullOrEmpty(ability.AnimationTrigger))
                 animator.ResetTrigger(ability.AnimationTrigger);
+
+            // RESET LAYER WEIGHT
+            UpdateAnimatorLayerWeight(false);
 
             Debug.Log($"[PlayerCombat] RpcResetAbilityTriggers for {ability.Name}");
         }
@@ -1131,6 +1169,9 @@ namespace Genesis.Simulation {
                     animator.ResetTrigger(_pendingAbility.StartCastAnimationTrigger);
                 if (!string.IsNullOrEmpty(_pendingAbility.AnimationTrigger))
                     animator.ResetTrigger(_pendingAbility.AnimationTrigger);
+                
+                // RESET LAYER WEIGHT
+                UpdateAnimatorLayerWeight(false);
             }
 
             Debug.LogWarning($"[PlayerCombat] Cast failed: {reason}");
@@ -1393,8 +1434,30 @@ namespace Genesis.Simulation {
         public void UpdateVisualReferences(Animator newAnimator, Transform newSpawnPoint) {
             animator = newAnimator;
             castVFXSpawnPoint = newSpawnPoint; // Asignar siempre para limpiar si es null
+            
+            // Re-cache layer index
+            if (animator != null) {
+                _upperBodyLayerIndex = animator.GetLayerIndex(upperBodyLayerName);
+            }
+
             Debug.Log($"[PlayerCombat] Visual references rebound: Animator={(animator != null)}, SpawnPoint={(castVFXSpawnPoint != null)}");
         }
+
+        /// <summary>
+        /// Updates the weight of the Upper Body layer (Avatar Mask).
+        /// enable = true -> Weight 1 (Mask Active)
+        /// enable = false -> Weight 0 (Full Body Base)
+        /// </summary>
+        private void UpdateAnimatorLayerWeight(bool enable) {
+            if (animator == null || _upperBodyLayerIndex == -1) return;
+
+            float targetWeight = enable ? 1.0f : 0.0f;
+            animator.SetLayerWeight(_upperBodyLayerIndex, targetWeight);
+            
+            Debug.Log($"[PlayerCombat] Set Animator Layer {_upperBodyLayerIndex} ({upperBodyLayerName}) weight to {targetWeight}");
+        }
+
+
 
         // ═══════════════════════════════════════════════════════
         // SPELL POWER INTEGRATION (Phase 9 - Item System)

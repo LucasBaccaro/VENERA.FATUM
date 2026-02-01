@@ -26,6 +26,7 @@ namespace Genesis.Presentation.UI {
         private VisualElement[] _abilitySlots = new VisualElement[6];
         private VisualElement[] _abilityIcons = new VisualElement[6];
         private VisualElement[] _cooldownOverlays = new VisualElement[6];
+        private VisualElement[] _gcdOverlays = new VisualElement[6];
         private Label[] _cooldownTexts = new Label[6];
         private VisualElement[] _stateIndicators = new VisualElement[6];
 
@@ -38,6 +39,7 @@ namespace Genesis.Presentation.UI {
             EventBus.Subscribe<int, string>("OnAbilityCast", OnAbilityCast);
             EventBus.Subscribe<int, float>("OnAbilityCooldownStart", OnAbilityCooldownStart);
             EventBus.Subscribe("OnLoadoutChanged", UpdateAllSlots);
+            EventBus.Subscribe("OnEquipmentChanged", UpdateAllSlots);
         }
 
         void OnDisable() {
@@ -45,6 +47,7 @@ namespace Genesis.Presentation.UI {
             EventBus.Unsubscribe<int, string>("OnAbilityCast", OnAbilityCast);
             EventBus.Unsubscribe<int, float>("OnAbilityCooldownStart", OnAbilityCooldownStart);
             EventBus.Unsubscribe("OnLoadoutChanged", UpdateAllSlots);
+            EventBus.Unsubscribe("OnEquipmentChanged", UpdateAllSlots);
         }
 
         void Start() {
@@ -80,6 +83,7 @@ namespace Genesis.Presentation.UI {
                 _abilitySlots[i] = _root.Q<VisualElement>($"AbilitySlot{slotNum}");
                 _abilityIcons[i] = _root.Q<VisualElement>($"AbilityIcon{slotNum}");
                 _cooldownOverlays[i] = _root.Q<VisualElement>($"CooldownOverlay{slotNum}");
+                _gcdOverlays[i] = _root.Q<VisualElement>($"GCDOverlay{slotNum}");
                 _cooldownTexts[i] = _root.Q<Label>($"CooldownText{slotNum}");
                 _stateIndicators[i] = _root.Q<VisualElement>($"StateIndicator{slotNum}");
 
@@ -150,17 +154,39 @@ namespace Genesis.Presentation.UI {
                     AbilityData ability = playerCombat.abilitySlots[i];
                     if (ability != null && ability.Icon != null) {
                         // Set icon as background image
-                        _abilityIcons[i].style.backgroundImage = new StyleBackground(ability.Icon);
+                        if (_abilityIcons[i] != null) {
+                            _abilityIcons[i].style.backgroundImage = new StyleBackground(ability.Icon);
+                        }
                         Debug.Log($"[AbilityBarController] [{gameObject.name}] Slot {i}: Set icon for {ability.Name}");
-                    } else {
+                    } else if (_abilityIcons[i] != null) {
                         // Clear icon
                         _abilityIcons[i].style.backgroundImage = StyleKeyword.Null;
+                        _abilityIcons[i].RemoveFromClassList("ability-icon-disabled");
                         Debug.Log($"[AbilityBarController] [{gameObject.name}] Slot {i}: Ability or Icon is null");
                     }
-                } else {
+
+                    // Check weapon requirement
+                    if (_abilityIcons[i] != null) {
+                        UpdateWeaponRequirement(i, ability);
+                    }
+                } else if (_abilityIcons[i] != null) {
                     // Empty slot
                     _abilityIcons[i].style.backgroundImage = StyleKeyword.Null;
+                    _abilityIcons[i].RemoveFromClassList("ability-icon-disabled");
                 }
+            }
+        }
+
+        private void UpdateWeaponRequirement(int slotIndex, AbilityData ability) {
+            if (playerCombat == null || playerCombat.EquipmentManager == null || _abilityIcons[slotIndex] == null) return;
+
+            // Simple check: All abilities currently require a weapon
+            bool hasWeapon = !playerCombat.EquipmentManager.IsSlotEmpty(Genesis.Items.EquipmentSlot.Weapon);
+
+            if (!hasWeapon) {
+                _abilityIcons[slotIndex].AddToClassList("ability-icon-disabled");
+            } else {
+                _abilityIcons[slotIndex].RemoveFromClassList("ability-icon-disabled");
             }
         }
 
@@ -178,27 +204,42 @@ namespace Genesis.Presentation.UI {
 
                         if (cdRemaining > 0) {
                             // Show cooldown overlay and text
-                            _cooldownOverlays[i].style.display = DisplayStyle.Flex;
-                            _cooldownTexts[i].style.display = DisplayStyle.Flex;
-                            _cooldownTexts[i].text = cdRemaining.ToString("F1");
+                            if (_cooldownOverlays[i] != null) _cooldownOverlays[i].style.display = DisplayStyle.Flex;
+                            if (_cooldownTexts[i] != null) {
+                                _cooldownTexts[i].style.display = DisplayStyle.Flex;
+                                _cooldownTexts[i].text = cdRemaining.ToString("F1");
+                            }
 
                             // Update state indicator to cooldown color
                             _stateIndicators[i].RemoveFromClassList("state-idle");
                             _stateIndicators[i].AddToClassList("state-cooldown");
                         } else {
                             // Hide cooldown overlay and text
-                            _cooldownOverlays[i].style.display = DisplayStyle.None;
-                            _cooldownTexts[i].style.display = DisplayStyle.None;
+                            if (_cooldownOverlays[i] != null) _cooldownOverlays[i].style.display = DisplayStyle.None;
+                            if (_cooldownTexts[i] != null) _cooldownTexts[i].style.display = DisplayStyle.None;
 
                             // Update state indicator to idle color
-                            _stateIndicators[i].RemoveFromClassList("state-cooldown");
-                            _stateIndicators[i].AddToClassList("state-idle");
+                            if (_stateIndicators[i] != null) {
+                                _stateIndicators[i].RemoveFromClassList("state-cooldown");
+                                _stateIndicators[i].AddToClassList("state-idle");
+                            }
+                        }
+
+                        // Update GCD Overlay
+                        if (_gcdOverlays[i] != null) {
+                            float gcdRemaining = playerCombat.GetGCDRemaining();
+                            if (gcdRemaining > 0) {
+                                _gcdOverlays[i].style.display = DisplayStyle.Flex;
+                            } else {
+                                _gcdOverlays[i].style.display = DisplayStyle.None;
+                            }
                         }
                     }
                 } else {
                     // Empty slot - hide overlays
-                    _cooldownOverlays[i].style.display = DisplayStyle.None;
-                    _cooldownTexts[i].style.display = DisplayStyle.None;
+                    if (_cooldownOverlays[i] != null) _cooldownOverlays[i].style.display = DisplayStyle.None;
+                    if (_gcdOverlays[i] != null) _gcdOverlays[i].style.display = DisplayStyle.None;
+                    if (_cooldownTexts[i] != null) _cooldownTexts[i].style.display = DisplayStyle.None;
                 }
             }
         }

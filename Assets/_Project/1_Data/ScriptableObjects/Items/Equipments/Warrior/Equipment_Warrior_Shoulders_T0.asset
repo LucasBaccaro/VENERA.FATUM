@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e6d408abddf64a98b1424beff5f85bd, type: 3}
+  m_Name: Equipment_Warrior_Shoulders_T0
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Items.EquipmentItemData
+  ItemID: 3007
+  ItemName: Hombreras del Caballero
+  Description: 
+  Icon: {fileID: 21300000, guid: a9cc3ea463c71694a97cdb1ce661bf98, type: 3}
+  Type: 1
+  IsStackable: 0
+  MaxStackSize: 1
+  IsProtected: 0
+  Slot: 1
+  RequiredClass: Warrior
+  CommonStats:
+  - Type: 0
+    Value: 50
+  UncommonStats:
+  - Type: 0
+    Value: 100
+  RareStats: []
+  EpicStats: []
+  VisualData:
+    VisualPrefab: {fileID: 1481748111200353123, guid: e57e5813e15e76049aa55cd8a268575d, type: 3}
+    HiddenBodyParts: 2
+    RarityConfig: {fileID: 11400000, guid: 53fe72cf309eb4b449ccb7e87e87fb96, type: 2}

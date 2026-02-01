@@ -202,7 +202,7 @@ namespace Genesis.Presentation.UI {
                         Debug.Log($"[InventoryController] Consumed item at slot {index}");
                     } else if (itemData.Type == ItemType.Equipment && _equipmentManager != null) {
                         _equipmentManager.CmdEquipFromInventory(index);
-                        Debug.Log($"[InventoryController] Equipped item from slot {index}");
+                        Debug.Log($"[InventoryController] Requesting equip from slot {index}...");
                     }
                 }
                 evt.StopPropagation();

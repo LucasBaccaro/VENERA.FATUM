@@ -47,4 +47,5 @@ MonoBehaviour:
   CastSound: {fileID: 0}
   ImpactSound: {fileID: 0}
   StartCastAnimationTrigger: Torbellino
-  AnimationTrigger: EndCast
+  AnimationTrigger: EndTorbellino
+  UseAvatarMask: 0

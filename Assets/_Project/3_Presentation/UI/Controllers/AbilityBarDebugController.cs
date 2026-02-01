@@ -19,6 +19,7 @@ namespace Genesis.Presentation.UI {
 
         [Header("Player Combat Reference")]
         [SerializeField] private Genesis.Simulation.PlayerCombat playerCombat;
+        [SerializeField] private Genesis.Simulation.EquipmentManager _equipmentManager;
 
         [Header("HUD Reference (for Cast/GCD bars)")]
         private HUDController _hudController;
@@ -64,6 +65,9 @@ namespace Genesis.Presentation.UI {
             EventBus.Subscribe<int, string>("OnAbilityFailed", OnAbilityFailed);
             EventBus.Subscribe<float, string>("OnCastProgress", OnCastProgress);
             EventBus.Subscribe("OnLoadoutChanged", UpdateAllSlots);
+            
+            // Subscribe to Equipment change event
+            EventBus.Subscribe("OnEquipmentChanged", OnEquipmentChanged);
         }
 
         void OnDisable() {
@@ -74,6 +78,12 @@ namespace Genesis.Presentation.UI {
             EventBus.Unsubscribe<int, string>("OnAbilityFailed", OnAbilityFailed);
             EventBus.Unsubscribe<float, string>("OnCastProgress", OnCastProgress);
             EventBus.Unsubscribe("OnLoadoutChanged", UpdateAllSlots);
+            
+            EventBus.Unsubscribe("OnEquipmentChanged", OnEquipmentChanged);
+        }
+
+        private void OnEquipmentChanged() {
+            UpdateAllSlots();
         }
 
         void Start() {
@@ -265,20 +275,33 @@ namespace Genesis.Presentation.UI {
         /// </summary>
         private void UpdateAllSlots() {
             if (playerCombat == null || playerCombat.abilitySlots == null) return;
+            
+            // Auto-find EquipmentManager if missing
+            if (_equipmentManager == null && playerCombat != null) {
+                _equipmentManager = playerCombat.GetComponent<Genesis.Simulation.EquipmentManager>();
+            }
+
+            // Check weapon status
+            bool hasWeapon = _equipmentManager != null && !_equipmentManager.IsSlotEmpty(Genesis.Items.EquipmentSlot.Weapon);
+            Color iconTint = hasWeapon ? Color.white : new Color(0.3f, 0.3f, 0.3f, 1f); // Dark tint if no weapon
 
             for (int i = 0; i < 6; i++) {
                 if (i < playerCombat.abilitySlots.Count) {
                     AbilityData ability = playerCombat.abilitySlots[i];
                     if (ability != null && ability.Icon != null) {
                         // Set icon as background image
-                        _abilityIcons[i].style.backgroundImage = new StyleBackground(ability.Icon);
-                    } else {
+                        if (_abilityIcons[i] != null) _abilityIcons[i].style.backgroundImage = new StyleBackground(ability.Icon);
+                        // Apply tint
+                        if (_abilityIcons[i] != null) _abilityIcons[i].style.unityBackgroundImageTintColor = new StyleColor(iconTint);
+                    } else if (_abilityIcons[i] != null) {
                         // Clear icon
                         _abilityIcons[i].style.backgroundImage = StyleKeyword.Null;
+                        _abilityIcons[i].style.unityBackgroundImageTintColor = StyleKeyword.Null;
                     }
-                } else {
+                } else if (_abilityIcons[i] != null) {
                     // Empty slot
                     _abilityIcons[i].style.backgroundImage = StyleKeyword.Null;
+                    _abilityIcons[i].style.unityBackgroundImageTintColor = StyleKeyword.Null;
                 }
             }
         }
@@ -310,14 +333,16 @@ namespace Genesis.Presentation.UI {
                             _cooldownTexts[i].style.display = DisplayStyle.None;
 
                             // Update state indicator to idle color
-                            _stateIndicators[i].RemoveFromClassList("state-cooldown");
-                            _stateIndicators[i].AddToClassList("state-idle");
+                            if (_stateIndicators[i] != null) {
+                                _stateIndicators[i].RemoveFromClassList("state-cooldown");
+                                _stateIndicators[i].AddToClassList("state-idle");
+                            }
                         }
                     }
                 } else {
                     // Empty slot - hide overlays
-                    _cooldownOverlays[i].style.display = DisplayStyle.None;
-                    _cooldownTexts[i].style.display = DisplayStyle.None;
+                    if (_cooldownOverlays[i] != null) _cooldownOverlays[i].style.display = DisplayStyle.None;
+                    if (_cooldownTexts[i] != null) _cooldownTexts[i].style.display = DisplayStyle.None;
                 }
             }
         }

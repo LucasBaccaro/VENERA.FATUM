@@ -21,7 +21,7 @@ MonoBehaviour:
   Cooldown: 2
   GCD: 1
   CastType: 1
-  CastTime: 5
+  CastTime: 2
   CanMoveWhileCasting: 1
   ChannelTickRate: 0.1
   ChannelHitAllTargets: 1
@@ -38,7 +38,6 @@ MonoBehaviour:
   ApplyToTarget: []
   ApplyToSelf:
   - {fileID: 11400000, guid: 3ffb66a20dacc47a49ec593c4fd8c676, type: 2}
-  - {fileID: 11400000, guid: 14e29dfe74b4f9e43b80aa91858c80f9, type: 2}
   ProjectilePrefab: {fileID: 0}
   ProjectileSpeed: 0
   IndicatorMaterial: {fileID: 0}
@@ -49,3 +48,4 @@ MonoBehaviour:
   ImpactSound: {fileID: 0}
   StartCastAnimationTrigger: Reflect
   AnimationTrigger: EndCast
+  UseAvatarMask: 1

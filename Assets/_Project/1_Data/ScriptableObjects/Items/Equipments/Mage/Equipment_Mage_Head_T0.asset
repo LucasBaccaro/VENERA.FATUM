@@ -21,6 +21,7 @@ MonoBehaviour:
   MaxStackSize: 1
   IsProtected: 0
   Slot: 0
+  RequiredClass: Mage
   CommonStats:
   - Type: 0
     Value: 50

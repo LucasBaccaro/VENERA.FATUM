@@ -55,7 +55,7 @@ namespace Genesis.Presentation.UI {
             var player = FindLocalPlayer();
             if (player == null) return;
 
-            var allLootBags = FindObjectsOfType<LootBag>();
+            var allLootBags = Object.FindObjectsByType<LootBag>(FindObjectsSortMode.None);
             LootBag nearest = null;
             float minDistance = float.MaxValue;
 
@@ -213,7 +213,7 @@ namespace Genesis.Presentation.UI {
         }
 
         private FishNet.Object.NetworkObject FindLocalPlayer() {
-            var allPlayers = FindObjectsOfType<PlayerInventory>();
+            var allPlayers = Object.FindObjectsByType<PlayerInventory>(FindObjectsSortMode.None);
             foreach (var inventory in allPlayers) {
                 if (inventory.IsOwner) return inventory.NetworkObject;
             }

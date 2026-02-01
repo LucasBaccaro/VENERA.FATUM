@@ -61,7 +61,7 @@ namespace Genesis.Presentation {
             const int maxAttempts = 10;
 
             while (_equipmentManager == null && attempts < maxAttempts) {
-                var allEquipmentManagers = FindObjectsOfType<EquipmentManager>();
+                var allEquipmentManagers = Object.FindObjectsByType<EquipmentManager>(FindObjectsSortMode.None);
                 foreach (var manager in allEquipmentManagers) {
                     if (manager.IsOwner) {
                         _equipmentManager = manager;
@@ -173,7 +173,9 @@ namespace Genesis.Presentation {
                 var itemData = ItemDatabase.Instance.GetItem(itemSlot.ItemID);
                 if (itemData != null && itemData.Icon != null) {
                     iconContainer.style.backgroundImage = new StyleBackground(itemData.Icon);
+#pragma warning disable CS0618
                     iconContainer.style.unityBackgroundScaleMode = ScaleMode.ScaleToFit;
+#pragma warning restore CS0618
                 }
 
                 // Right-click to unequip

@@ -109,9 +109,19 @@ namespace Genesis.Presentation.UI {
         // ═══════════════════════════════════════════════════════
 
         private void InitializeUI() {
+            if (uiDocument == null) return;
+            
             _root = uiDocument.rootVisualElement;
+            if (_root == null) {
+                Debug.LogWarning($"[HUDController] [{gameObject.name}] UI Document has no root element. Check if VisualTreeAsset is assigned.");
+                return;
+            }
 
-            // Stats
+            // Verify PanelSettings
+            if (uiDocument.panelSettings == null) {
+                Debug.LogError($"[HUDController] [{gameObject.name}] UI Document has no PanelSettings assigned! This can cause NullReferenceException during reload.");
+            }
+
             // Stats (Stylized)
             _healthBarMask = _root.Q<VisualElement>("HealthBar_Mask");
             _manaBarMask = _root.Q<VisualElement>("ManaBar_Mask");
@@ -125,7 +135,8 @@ namespace Genesis.Presentation.UI {
             _classIcon = _root.Q<VisualElement>("ClassIcon");
             _portraitIcon = _root.Q<VisualElement>("PortraitIcon");
 
-            // Cast & GCD
+            // Cast & GCD (Check if they exist before assignment)
+            // They seem to have been moved or removed in the recent refactor
             _castBar = _root.Q<ProgressBar>("CastBar");
             _gcdBar = _root.Q<ProgressBar>("GCDBar");
             _castText = _root.Q<Label>("CastText");
@@ -147,6 +158,8 @@ namespace Genesis.Presentation.UI {
             SetMana(100f, 100f);
             SetCastProgress(0f, "");
             SetGCDProgress(0f);
+
+            Debug.Log($"[HUDController] [{gameObject.name}] UI Initialized successfully.");
         }
 
         // ═══════════════════════════════════════════════════════

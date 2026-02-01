@@ -246,6 +246,12 @@ namespace Genesis.Simulation
             
             // Cachear
             _equippedVisuals[slot] = visualInstance;
+
+            // --- DYNAMIC VFX SPAWN POINT BINDING ---
+            if (slot == EquipmentSlot.Weapon)
+            {
+                UpdatePlayerCombatVFXPoint(visualInstance);
+            }
         }
         
         private void ApplyRarityVisual(GameObject visualInstance, EquipmentVisualData visualData, ItemRarity rarity)
@@ -278,7 +284,43 @@ namespace Genesis.Simulation
                     EquipmentVisualPool.Instance.ReturnToPool(visual);
                 
                 _equippedVisuals.Remove(slot);
+
+                // --- RESET VFX SPAWN POINT ---
+                if (slot == EquipmentSlot.Weapon)
+                {
+                    UpdatePlayerCombatVFXPoint(null);
+                }
             }
+        }
+
+        private void UpdatePlayerCombatVFXPoint(GameObject weaponInstance)
+        {
+            PlayerCombat combat = GetComponentInParent<PlayerCombat>();
+            if (combat == null) return;
+
+            Transform spawnPoint = null;
+            if (weaponInstance != null)
+            {
+                // Buscar el punto por nombre dentro del prefab instanciado
+                spawnPoint = weaponInstance.transform.Find("CastVFXPoint");
+                
+                // Fallback: si no existe el punto específico, usar el root del arma (o el transform de anclaje)
+                if (spawnPoint == null)
+                {
+                    spawnPoint = weaponInstance.transform;
+                    Debug.Log($"[PlayerEquipmentVisuals] 'CastVFXPoint' not found in weapon. Using weapon root as fallback.");
+                }
+            }
+            else
+            {
+                // Si se remueve el arma y no hay punto de respaldo asignado, 
+                // pasamos null para que PlayerCombat lo maneje (o use la mano)
+                spawnPoint = weaponSlotTransform; 
+                Debug.Log($"[PlayerEquipmentVisuals] Weapon removed. Resetting VFX spawn point to weapon slot.");
+            }
+
+            // Actualizar la referencia en PlayerCombat sin cambiar el Animator (pasamos null)
+            combat.UpdateVisualReferences(null, spawnPoint);
         }
         
         private void UpdateBodyPartsVisibility()

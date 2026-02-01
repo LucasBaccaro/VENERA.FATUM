@@ -121,7 +121,14 @@ namespace Genesis.Presentation.UI {
         // ═══════════════════════════════════════════════════════
 
         private void InitializeUI() {
+            if (uiDocument == null) return;
+
             _root = uiDocument.rootVisualElement;
+            if (_root == null) {
+                Debug.LogWarning($"[AbilityBarDebugController] [{gameObject.name}] UI Document has no root element. Check if VisualTreeAsset is assigned.");
+                return;
+            }
+
             _overlay = _root.Q<VisualElement>("AbilityDebugOverlay");
 
             // Query all ability slots
@@ -147,7 +154,7 @@ namespace Genesis.Presentation.UI {
             _eventLog = _root.Q<ScrollView>("EventLog");
 
             // Find HUDController in the scene (for Cast/GCD bars)
-            _hudController = FindObjectOfType<HUDController>();
+            _hudController = Object.FindFirstObjectByType<HUDController>();
             if (_hudController == null) {
                 Debug.LogWarning("[AbilityBarDebugController] HUDController not found! Cast/GCD bars won't update.");
             }
@@ -157,7 +164,7 @@ namespace Genesis.Presentation.UI {
                 _overlay.style.display = DisplayStyle.None;
             }
 
-            Debug.Log("[AbilityBarDebugController] UI Initialized. Press F3 to toggle.");
+            Debug.Log($"[AbilityBarDebugController] [{gameObject.name}] UI Initialized successfully. Press F3 to toggle.");
         }
 
         // ═══════════════════════════════════════════════════════

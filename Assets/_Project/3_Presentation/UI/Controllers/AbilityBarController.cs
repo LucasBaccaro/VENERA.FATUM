@@ -75,7 +75,13 @@ namespace Genesis.Presentation.UI {
         // ═══════════════════════════════════════════════════════
 
         private void InitializeUI() {
+            if (uiDocument == null) return;
+
             _root = uiDocument.rootVisualElement;
+            if (_root == null) {
+                Debug.LogWarning($"[AbilityBarController] [{gameObject.name}] UI Document has no root element. Check if VisualTreeAsset is assigned.");
+                return;
+            }
 
             // Query all ability slots
             for (int i = 0; i < 6; i++) {
@@ -93,7 +99,7 @@ namespace Genesis.Presentation.UI {
                 }
             }
 
-            Debug.Log($"[AbilityBarController] [{gameObject.name}] UI Initialized.");
+            Debug.Log($"[AbilityBarController] [{gameObject.name}] UI Initialized successfully.");
 
             // Initial update if playerCombat is already set
             if (playerCombat != null) {

@@ -53,6 +53,10 @@ namespace Genesis.Presentation.UI {
         private void InitializeUI() {
             if (_uiDocument == null) return;
             var root = _uiDocument.rootVisualElement;
+            if (root == null) {
+                Debug.LogWarning($"[InventoryController] [{gameObject.name}] UI Document has no root element. Check if VisualTreeAsset is assigned.");
+                return;
+            }
 
             _window = root.Q<VisualElement>("InventoryWindow");
             _grid = root.Q<VisualElement>("InventoryGrid");
@@ -85,7 +89,7 @@ namespace Genesis.Presentation.UI {
             // Set initial visibility
             ToggleVisibility(_startVisible);
             
-            Debug.Log($"[InventoryController] Initialized with {_slots.Count} slots.");
+            Debug.Log($"[InventoryController] [{gameObject.name}] Initialized successfully with {_slots.Count} slots.");
         }
 
         private void Update() {
@@ -111,7 +115,7 @@ namespace Genesis.Presentation.UI {
         }
 
         private void FindPlayer() {
-            var allPlayers = FindObjectsOfType<PlayerInventory>();
+            var allPlayers = Object.FindObjectsByType<PlayerInventory>(FindObjectsSortMode.None);
             foreach (var inventory in allPlayers) {
                 if (inventory.IsOwner) {
                     SetPlayerInventory(inventory);

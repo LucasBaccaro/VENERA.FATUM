@@ -19,7 +19,10 @@ namespace Genesis.Presentation.UI {
             }
 
             var root = _uiDocument.rootVisualElement;
-            if (root == null) return;
+            if (root == null) {
+                Debug.LogWarning($"[MicroMenuController] [{gameObject.name}] UI Document has no root element. Check if VisualTreeAsset is assigned.");
+                return;
+            }
 
             _btnBag = root.Q<Button>("BtnBag");
             _btnChar = root.Q<Button>("BtnChar");
@@ -30,6 +33,8 @@ namespace Genesis.Presentation.UI {
             if (_btnChar != null) _btnChar.clicked += () => OnCharClicked();
             if (_btnMap != null) _btnMap.clicked += () => OnMapClicked();
             if (_btnSetup != null) _btnSetup.clicked += () => OnSetupClicked();
+
+            Debug.Log($"[MicroMenuController] [{gameObject.name}] UI Initialized successfully.");
         }
 
         private void OnBagClicked() {

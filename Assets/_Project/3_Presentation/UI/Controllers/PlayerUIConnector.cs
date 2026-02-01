@@ -25,9 +25,9 @@ namespace Genesis.Presentation.UI {
             PlayerStats stats = GetComponent<PlayerStats>();
 
             // Buscar los controladores de UI en la escena
-            HUDController hudController = FindObjectOfType<HUDController>();
-            AbilityBarDebugController debugController = FindObjectOfType<AbilityBarDebugController>();
-            AbilityBarController abilityBarController = FindObjectOfType<AbilityBarController>();
+            HUDController hudController = Object.FindFirstObjectByType<HUDController>();
+            AbilityBarDebugController debugController = Object.FindFirstObjectByType<AbilityBarDebugController>();
+            AbilityBarController abilityBarController = Object.FindFirstObjectByType<AbilityBarController>();
 
             // Conectar HUD principal (si existe)
             if (hudController != null && stats != null) {

@@ -1432,7 +1432,9 @@ namespace Genesis.Simulation {
         }
 
         public void UpdateVisualReferences(Animator newAnimator, Transform newSpawnPoint) {
-            animator = newAnimator;
+            // Solo actualizar el animator si se provee uno válido (evita limpiar la ref al cambiar armas)
+            if (newAnimator != null) animator = newAnimator;
+            
             castVFXSpawnPoint = newSpawnPoint; // Asignar siempre para limpiar si es null
             
             // Re-cache layer index

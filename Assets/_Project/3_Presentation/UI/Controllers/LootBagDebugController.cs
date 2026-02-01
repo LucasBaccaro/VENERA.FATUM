@@ -111,7 +111,9 @@ namespace Genesis.Presentation {
                 // Set icon sprite
                 if (itemData.Icon != null) {
                     iconContainer.style.backgroundImage = new StyleBackground(itemData.Icon);
+#pragma warning disable CS0618
                     iconContainer.style.unityBackgroundScaleMode = ScaleMode.ScaleToFit;
+#pragma warning restore CS0618
                 }
 
                 // Right-click to take
@@ -207,7 +209,7 @@ namespace Genesis.Presentation {
         }
 
         private FishNet.Object.NetworkObject FindLocalPlayer() {
-            var allPlayers = FindObjectsOfType<PlayerInventory>();
+            var allPlayers = Object.FindObjectsByType<PlayerInventory>(FindObjectsSortMode.None);
             foreach (var player in allPlayers) {
                 if (player.IsOwner) {
                     return player.NetworkObject;
@@ -237,7 +239,7 @@ namespace Genesis.Presentation {
             var player = FindLocalPlayer();
             if (player == null) return;
 
-            var allLootBags = FindObjectsOfType<LootBag>();
+            var allLootBags = Object.FindObjectsByType<LootBag>(FindObjectsSortMode.None);
             LootBag nearest = null;
             float minDistance = float.MaxValue;
 

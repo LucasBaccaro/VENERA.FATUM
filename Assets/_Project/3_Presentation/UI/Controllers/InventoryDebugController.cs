@@ -51,7 +51,7 @@ namespace Genesis.Presentation {
             const int maxAttempts = 10;
 
             while (_playerInventory == null && attempts < maxAttempts) {
-                var allInventories = FindObjectsOfType<PlayerInventory>();
+                var allInventories = Object.FindObjectsByType<PlayerInventory>(FindObjectsSortMode.None);
                 foreach (var inventory in allInventories) {
                     if (inventory.IsOwner) {
                         _playerInventory = inventory;
@@ -172,7 +172,9 @@ namespace Genesis.Presentation {
                 // Set icon sprite
                 if (itemData.Icon != null) {
                     iconContainer.style.backgroundImage = new StyleBackground(itemData.Icon);
+#pragma warning disable CS0618
                     iconContainer.style.unityBackgroundScaleMode = ScaleMode.ScaleToFit;
+#pragma warning restore CS0618
                 }
 
                 // Right-click interaction

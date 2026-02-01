@@ -323,6 +323,7 @@ MonoBehaviour:
   animator: {fileID: 0}
   indicatorSystem: {fileID: -1511099638696177002}
   castVFXSpawnPoint: {fileID: 0}
+  upperBodyLayerName: UpperBody
   abilitySlots:
   - {fileID: 0}
   - {fileID: 0}

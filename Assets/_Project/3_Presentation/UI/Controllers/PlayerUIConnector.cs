@@ -27,6 +27,7 @@ namespace Genesis.Presentation.UI {
             // Buscar los controladores de UI en la escena
             HUDController hudController = FindObjectOfType<HUDController>();
             AbilityBarDebugController debugController = FindObjectOfType<AbilityBarDebugController>();
+            AbilityBarController abilityBarController = FindObjectOfType<AbilityBarController>();
 
             // Conectar HUD principal (si existe)
             if (hudController != null && stats != null) {
@@ -46,6 +47,16 @@ namespace Genesis.Presentation.UI {
                 }
                 if (combat == null) {
                     Debug.LogWarning("[PlayerUIConnector] ⚠️ No se encontró PlayerCombat");
+                }
+            }
+
+            // Conectar Ability Bar permanente (si existe)
+            if (abilityBarController != null && combat != null) {
+                abilityBarController.SetPlayerCombat(combat);
+                Debug.Log("[PlayerUIConnector] ✅ Ability Bar conectado");
+            } else {
+                if (abilityBarController == null) {
+                    Debug.LogWarning("[PlayerUIConnector] ⚠️ No se encontró AbilityBarController");
                 }
             }
         }

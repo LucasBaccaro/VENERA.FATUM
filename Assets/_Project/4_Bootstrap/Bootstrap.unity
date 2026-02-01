@@ -276,7 +276,8 @@ GameObject:
   m_Component:
   - component: {fileID: 289927436}
   - component: {fileID: 289927438}
-  - component: {fileID: 289927437}
+  - component: {fileID: 289927439}
+  - component: {fileID: 289927440}
   m_Layer: 0
   m_Name: CharacterPanelUI
   m_TagString: Untagged
@@ -299,19 +300,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 364127482}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &289927437
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 289927435}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fddf938d8fefd45cbb2cc55ddc35eca5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.CharacterPanelDebugController
-  _uiDocument: {fileID: 289927438}
 --- !u!114 &289927438
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -335,6 +323,33 @@ MonoBehaviour:
   m_PivotReferenceSize: 0
   m_Pivot: 0
   m_WorldSpaceCollider: {fileID: 0}
+--- !u!114 &289927439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 289927435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 727a814c006aa4fa8a7ad51faf524c85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.UI.CharacterPanelController
+  _uiDocument: {fileID: 289927438}
+  _toggleKey: 17
+--- !u!114 &289927440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 289927435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fddf938d8fefd45cbb2cc55ddc35eca5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.CharacterPanelDebugController
+  _uiDocument: {fileID: 289927438}
 --- !u!1 &364127481
 GameObject:
   m_ObjectHideFlags: 0
@@ -370,6 +385,7 @@ Transform:
   - {fileID: 1002123118}
   - {fileID: 2115584355}
   - {fileID: 289927436}
+  - {fileID: 1104037609}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &391986282
@@ -940,6 +956,76 @@ MonoBehaviour:
   m_PivotReferenceSize: 0
   m_Pivot: 0
   m_WorldSpaceCollider: {fileID: 0}
+--- !u!1 &1104037608
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1104037609}
+  - component: {fileID: 1104037611}
+  - component: {fileID: 1104037610}
+  m_Layer: 0
+  m_Name: AbilityBarUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1104037609
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1104037608}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 364127482}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1104037610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1104037608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce738ea7b3b3a4b7a9a1c584efd8a239, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.UI.AbilityBarController
+  uiDocument: {fileID: 1104037611}
+  playerCombat: {fileID: 0}
+--- !u!114 &1104037611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1104037608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: 85ba5e24a45154443a3044fa702fd310, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: 56b644b3a362f41d4aaaeca401a4db40, type: 3}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
 --- !u!1 &1257423556
 GameObject:
   m_ObjectHideFlags: 0
@@ -1356,71 +1442,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.LootBagDebugController
   _uiDocument: {fileID: 2115584357}
---- !u!1001 &7744532515434491923
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1518507829531864150, guid: 9d1e389be81094476aac15ceb9610e09, type: 3}
-      propertyPath: m_Name
-      value: LootBag
-      objectReference: {fileID: 0}
-    - target: {fileID: 6201230521766880598, guid: 9d1e389be81094476aac15ceb9610e09, type: 3}
-      propertyPath: SceneId
-      value: 2681896943
-      objectReference: {fileID: 0}
-    - target: {fileID: 6201230521766880598, guid: 9d1e389be81094476aac15ceb9610e09, type: 3}
-      propertyPath: WasActiveDuringEdit
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7817841769985804255, guid: 9d1e389be81094476aac15ceb9610e09, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7817841769985804255, guid: 9d1e389be81094476aac15ceb9610e09, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7817841769985804255, guid: 9d1e389be81094476aac15ceb9610e09, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7817841769985804255, guid: 9d1e389be81094476aac15ceb9610e09, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7817841769985804255, guid: 9d1e389be81094476aac15ceb9610e09, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7817841769985804255, guid: 9d1e389be81094476aac15ceb9610e09, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7817841769985804255, guid: 9d1e389be81094476aac15ceb9610e09, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7817841769985804255, guid: 9d1e389be81094476aac15ceb9610e09, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7817841769985804255, guid: 9d1e389be81094476aac15ceb9610e09, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7817841769985804255, guid: 9d1e389be81094476aac15ceb9610e09, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 9d1e389be81094476aac15ceb9610e09, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1429,4 +1450,3 @@ SceneRoots:
   - {fileID: 364127482}
   - {fileID: 234889431}
   - {fileID: 665111258}
-  - {fileID: 7744532515434491923}

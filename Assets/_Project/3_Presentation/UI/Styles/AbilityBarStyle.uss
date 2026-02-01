@@ -1,0 +1,138 @@
+/* ═══════════════════════════════════════════════════════
+   GENESIS - Permanent Ability Bar HUD Styles
+   ═══════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════
+   ABILITY BAR - Bottom center position
+   ═══════════════════════════════════════════════════════ */
+
+.ability-bar-wrapper {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    translate: -50% 0;
+    /* Background image for the ability bar */
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/Panels/UI-AbilityBar.png');
+    -unity-background-scale-mode: stretch-to-fill;
+    padding: 15px 20px;
+    pointer-events: none; /* Allow click-through on the background */
+}
+
+.ability-bar-container {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ═══════════════════════════════════════════════════════
+   ABILITY SLOTS
+   ═══════════════════════════════════════════════════════ */
+
+.ability-slot {
+    width: 64px;
+    height: 64px;
+    margin: 0 8px;
+    position: relative;
+    pointer-events: auto; /* Enable pointer events on slots */
+}
+
+/* Slot background image (UI-Base_Slot.png) */
+.ability-slot-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/Panels/UI-Base_Slot.png');
+    -unity-background-scale-mode: stretch-to-fill;
+    pointer-events: none;
+}
+
+/* Ability icon - sits on top of slot background, slightly smaller to fit the frame */
+.ability-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50px;
+    height: 50px;
+    translate: -50% -50%;
+    -unity-background-scale-mode: scale-to-fit;
+    -unity-background-image-tint-color: white;
+    pointer-events: none;
+    z-index: 10;
+    transition-property: scale;
+    transition-duration: 0.15s;
+}
+
+.ability-slot:hover .ability-icon {
+    scale: 1.2;
+}
+
+.ability-slot:hover .ability-icon {
+    scale: 1.15;
+}
+
+/* Cooldown overlay - dark overlay when ability is on cooldown */
+.cooldown-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: none; /* Hidden by default, shown when on cooldown */
+    pointer-events: none;
+}
+
+/* Cooldown text - countdown timer */
+.cooldown-text {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    color: white;
+    font-size: 18px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    display: none; /* Hidden by default, shown when on cooldown */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 1);
+    pointer-events: none;
+}
+
+/* Keybind label - shows which key to press */
+.keybind-label {
+    position: absolute;
+    bottom: 3px;
+    right: 5px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 12px;
+    -unity-font-style: bold;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 2px 6px;
+    border-radius: 3px;
+    pointer-events: none;
+}
+
+/* State indicator - hidden as per user request */
+.state-indicator {
+    display: none;
+}
+
+/* ═══════════════════════════════════════════════════════
+   STATE-SPECIFIC COLORS (Applied via code)
+   ═══════════════════════════════════════════════════════ */
+
+/* Idle/Ready - Green */
+.state-idle {
+    background-color: rgb(100, 255, 100);
+}
+
+/* Cooldown - Gray */
+.state-cooldown {
+    background-color: rgb(150, 150, 150);
+}
+
+/* Casting - Red */
+.state-casting {
+    background-color: rgb(255, 100, 100);
+}
+
+/* Out of Mana - Blue */
+.state-oom {
+    background-color: rgb(100, 150, 255);
+}

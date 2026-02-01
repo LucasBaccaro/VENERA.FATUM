@@ -1,0 +1,136 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/InventoryStyle.uss?fileID=7433441132597879392&amp;guid=9a272a952cdaf4f6ab8990caebdfb024&amp;type=3#InventoryStyle"/>
+    <ui:VisualElement name="InventoryWindow" class="inventory-window" style="top: 25px; right: -12px;">
+        <ui:Label text="Inventario" class="window-title" style="margin-bottom: 15px; padding-bottom: -24px; margin-top: -42px;"/>
+        <ui:Button name="CloseButton" text="×" class="close-button" style="padding-right: 5px; margin-right: 0; width: 20px; right: 71px; padding-left: 6px;"/>
+        <ui:ScrollView name="InventoryScroll" class="item-scroll" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden">
+            <ui:VisualElement name="InventoryGrid" class="item-grid" style="margin-left: 5px; margin-top: 26px;">
+                <ui:VisualElement name="InventorySlot0" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon0" class="item-icon"/>
+                    <ui:Label name="Qty0" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot1" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon1" class="item-icon"/>
+                    <ui:Label name="Qty1" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot2" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon2" class="item-icon"/>
+                    <ui:Label name="Qty2" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot3" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon3" class="item-icon"/>
+                    <ui:Label name="Qty3" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot4" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon4" class="item-icon"/>
+                    <ui:Label name="Qty4" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot5" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon5" class="item-icon"/>
+                    <ui:Label name="Qty5" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot6" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon6" class="item-icon"/>
+                    <ui:Label name="Qty6" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot7" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon7" class="item-icon"/>
+                    <ui:Label name="Qty7" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot8" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon8" class="item-icon"/>
+                    <ui:Label name="Qty8" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot9" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon9" class="item-icon"/>
+                    <ui:Label name="Qty9" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot10" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon10" class="item-icon"/>
+                    <ui:Label name="Qty10" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot11" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon11" class="item-icon"/>
+                    <ui:Label name="Qty11" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot12" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon12" class="item-icon"/>
+                    <ui:Label name="Qty12" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot13" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon13" class="item-icon"/>
+                    <ui:Label name="Qty13" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot14" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon14" class="item-icon"/>
+                    <ui:Label name="Qty14" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot15" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon15" class="item-icon"/>
+                    <ui:Label name="Qty15" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot16" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon16" class="item-icon"/>
+                    <ui:Label name="Qty16" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot17" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon17" class="item-icon"/>
+                    <ui:Label name="Qty17" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot18" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon18" class="item-icon"/>
+                    <ui:Label name="Qty18" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot19" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon19" class="item-icon"/>
+                    <ui:Label name="Qty19" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot20" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon20" class="item-icon"/>
+                    <ui:Label name="Qty20" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot21" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon21" class="item-icon"/>
+                    <ui:Label name="Qty21" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot22" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon22" class="item-icon"/>
+                    <ui:Label name="Qty22" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot23" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon23" class="item-icon"/>
+                    <ui:Label name="Qty23" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="InventorySlot24" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon24" class="item-icon"/>
+                    <ui:Label name="Qty24" class="item-quantity"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:ScrollView>
+    </ui:VisualElement>
+</ui:UXML>

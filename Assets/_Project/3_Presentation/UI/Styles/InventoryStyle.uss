@@ -1,0 +1,156 @@
+/* ═══════════════════════════════════════════════════════
+   GENESIS - Inventory & Loot UI Styles
+   ═══════════════════════════════════════════════════════ */
+
+/* Window Containers */
+.inventory-window {
+    position: absolute;
+    right: 50px;
+    top: 100px;
+    width: 420px;
+    height: 600px;
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/Panels/UI-Inventory.png');
+    -unity-background-scale-mode: stretch-to-fill;
+    padding: 60px 25px 30px 25px;
+}
+
+.loot-window {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    width: 450px;
+    height: 550px;
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/Panels/UI-GPW-Loot.png');
+    -unity-background-scale-mode: stretch-to-fill;
+    padding: 70px 30px 40px 30px;
+}
+
+/* Titles */
+.window-title {
+    font-size: 20px;
+    color: #e0bc7f;
+    -unity-font-style: bold;
+    -unity-text-align: upper-center;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Grid Layout */
+.item-grid {
+    start: 14px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+}
+
+/* ScrollView adjustments to prevent breaking the grid */
+.item-scroll {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+/* Force hide scrollers very aggressively */
+.item-scroll Scroller,
+.item-scroll #unity-vertical-scroller,
+.item-scroll #unity-horizontal-scroller,
+.item-scroll #unity-slider {
+    display: none;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    visibility: hidden;
+    position: absolute;
+}
+
+/* Item Slot */
+.item-slot {
+    width: 64px;
+    height: 64px;
+    margin: 4px;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+}
+
+.item-slot-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/Panels/UI-Base_Slot.png');
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+/* Item Icon - Same centering logic as Ability Bar */
+.item-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50px;
+    height: 50px;
+    translate: -50% -50%;
+    -unity-background-scale-mode: scale-to-fit;
+    pointer-events: none;
+    transition-property: scale;
+    transition-duration: 0.1s;
+}
+
+.item-slot:hover .item-icon {
+    scale: 1.15;
+}
+
+/* Quantity Label */
+.item-quantity {
+    position: absolute;
+    bottom: 4px;
+    right: 6px;
+    color: white;
+    font-size: 12px;
+    -unity-font-style: bold;
+    text-shadow: 1px 1px 1px black;
+    pointer-events: none;
+}
+
+/* Rarity Borders (Subtle overlay) */
+.rarity-common { -unity-background-image-tint-color: white; }
+.rarity-uncommon { -unity-background-image-tint-color: #1eff00; }
+.rarity-rare { -unity-background-image-tint-color: #0070dd; }
+.rarity-epic { -unity-background-image-tint-color: #a335ee; }
+.rarity-legendary { -unity-background-image-tint-color: #ff8000; }
+
+/* Buttons */
+.take-all-button {
+    margin-top: 15px;
+    height: 40px;
+    background-color: rgba(60, 45, 20, 0.8);
+    border-color: #e0bc7f;
+    border-width: 1px;
+    color: #e0bc7f;
+    font-size: 14px;
+    -unity-font-style: bold;
+    transition-property: background-color;
+    transition-duration: 0.1s;
+}
+
+.take-all-button:hover {
+    background-color: rgba(90, 70, 30, 0.9);
+}
+
+.close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 30px;
+    height: 30px;
+    background-color: transparent;
+    border-width: 0;
+    color: #e0bc7f;
+    font-size: 18px;
+    -unity-font-style: bold;
+}
+
+.close-button:hover {
+    color: white;
+}

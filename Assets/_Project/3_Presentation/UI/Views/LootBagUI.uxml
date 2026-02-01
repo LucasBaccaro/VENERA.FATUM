@@ -1,0 +1,72 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/InventoryStyle.uss?fileID=7433441132597879392&amp;guid=9a272a952cdaf4f6ab8990caebdfb024&amp;type=3#InventoryStyle"/>
+    <ui:VisualElement name="LootBagWindow" class="loot-window">
+        <ui:Label name="LootTitle" text="Botín de Caído" class="window-title" style="padding-top: 2px;"/>
+        <ui:Button name="CloseButton" text="×" class="close-button" style="top: 68px; right: 65px;"/>
+        <ui:ScrollView name="LootScroll" class="item-scroll" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden">
+            <ui:VisualElement name="LootGrid" class="item-grid" style="justify-content: flex-start; align-items: stretch; align-content: flex-start; padding-left: 24px;">
+                <ui:VisualElement name="LootSlot0" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon0" class="item-icon"/>
+                    <ui:Label name="Qty0" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="LootSlot1" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon1" class="item-icon"/>
+                    <ui:Label name="Qty1" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="LootSlot2" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon2" class="item-icon"/>
+                    <ui:Label name="Qty2" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="LootSlot3" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon3" class="item-icon"/>
+                    <ui:Label name="Qty3" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="LootSlot4" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon4" class="item-icon"/>
+                    <ui:Label name="Qty4" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="LootSlot5" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon5" class="item-icon"/>
+                    <ui:Label name="Qty5" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="LootSlot6" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon6" class="item-icon"/>
+                    <ui:Label name="Qty6" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="LootSlot7" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon7" class="item-icon"/>
+                    <ui:Label name="Qty7" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="LootSlot8" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon8" class="item-icon"/>
+                    <ui:Label name="Qty8" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="LootSlot9" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon9" class="item-icon"/>
+                    <ui:Label name="Qty9" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="LootSlot10" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon10" class="item-icon"/>
+                    <ui:Label name="Qty10" class="item-quantity"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="LootSlot11" class="item-slot">
+                    <ui:VisualElement class="item-slot-bg"/>
+                    <ui:VisualElement name="Icon11" class="item-icon"/>
+                    <ui:Label name="Qty11" class="item-quantity"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:ScrollView>
+        <ui:Button name="TakeAllButton" text="LOOTEAR TODO" class="take-all-button" style="padding-top: 11px; padding-left: 26px; margin-left: 73px; margin-right: 53px; margin-top: 119px;"/>
+    </ui:VisualElement>
+</ui:UXML>

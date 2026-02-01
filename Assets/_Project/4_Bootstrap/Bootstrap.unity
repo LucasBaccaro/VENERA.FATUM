@@ -897,7 +897,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1002123118}
   - component: {fileID: 1002123120}
-  - component: {fileID: 1002123119}
+  - component: {fileID: 1002123121}
   m_Layer: 0
   m_Name: InventoryUI
   m_TagString: Untagged
@@ -920,19 +920,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 364127482}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1002123119
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1002123117}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e5bb91ff94b6b48a3b97f7bd8167e296, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.InventoryDebugController
-  _uiDocument: {fileID: 1002123120}
 --- !u!114 &1002123120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -947,7 +934,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
   m_PanelSettings: {fileID: 11400000, guid: 85ba5e24a45154443a3044fa702fd310, type: 2}
   m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: a5159c37a1ec74d29b084fa0c407a4fb, type: 3}
+  sourceAsset: {fileID: 9197481963319205126, guid: 5472c60fda5d44ddf99fa970c48e1432, type: 3}
   m_SortingOrder: 0
   m_Position: 0
   m_WorldSpaceSizeMode: 1
@@ -956,6 +943,20 @@ MonoBehaviour:
   m_PivotReferenceSize: 0
   m_Pivot: 0
   m_WorldSpaceCollider: {fileID: 0}
+--- !u!114 &1002123121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002123117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e203ff5f667147ceaadab9d81bb710c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.UI.InventoryController
+  _uiDocument: {fileID: 1002123120}
+  _startVisible: 0
 --- !u!1 &1104037608
 GameObject:
   m_ObjectHideFlags: 0
@@ -1420,7 +1421,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
   m_PanelSettings: {fileID: 11400000, guid: 85ba5e24a45154443a3044fa702fd310, type: 2}
   m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: cfc2cff41b17f42d1812c676f56841a1, type: 3}
+  sourceAsset: {fileID: 9197481963319205126, guid: 6165b6297142c45b1a6f2314b4ec1cc9, type: 3}
   m_SortingOrder: 0
   m_Position: 0
   m_WorldSpaceSizeMode: 1
@@ -1438,9 +1439,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2115584354}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152461983909442d68ddedcb94372890, type: 3}
+  m_Script: {fileID: 11500000, guid: 5f257001f82434f8786486c3893d6794, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.LootBagDebugController
+  m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.UI.LootBagController
   _uiDocument: {fileID: 2115584357}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

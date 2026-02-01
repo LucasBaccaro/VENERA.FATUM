@@ -3,6 +3,7 @@ using FishNet.Object;
 using UnityEngine.InputSystem;
 using Genesis.Core;
 using Genesis.Simulation.Combat;
+using Genesis.Items;
 
 namespace Genesis.Simulation {
 
@@ -26,6 +27,7 @@ namespace Genesis.Simulation {
         private Vector3 _lastPosition;
         private float _lastAnimSpeed;
         private StatusEffectSystem _statusEffects;
+        private EquipmentManager _equipmentManager;
 
         // ═══════════════════════════════════════════════════════
         // INITIALIZATION
@@ -35,6 +37,7 @@ namespace Genesis.Simulation {
             _cc = GetComponent<CharacterController>();
             if (animator == null) animator = GetComponentInChildren<Animator>();
             _statusEffects = GetComponent<StatusEffectSystem>();
+            _equipmentManager = GetComponent<EquipmentManager>();
         }
 
         public override void OnStartClient() {
@@ -237,6 +240,12 @@ namespace Genesis.Simulation {
             }
 
             animator.SetFloat("Speed", currentSpeed);
+
+            // ═══ WEAPON STATE ANIMATION ═══
+            if (_equipmentManager != null) {
+                bool hasWeapon = !_equipmentManager.IsSlotEmpty(EquipmentSlot.Weapon);
+                animator.SetBool("HasWeapon", hasWeapon);
+            }
         }
     }
 }

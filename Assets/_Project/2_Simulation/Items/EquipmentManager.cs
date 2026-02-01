@@ -17,11 +17,14 @@ namespace Genesis.Simulation {
 
         [Header("Network State - Equipment Slots")]
         private readonly SyncVar<ItemSlot> _headSlot = new SyncVar<ItemSlot>();
+        private readonly SyncVar<ItemSlot> _shouldersSlot = new SyncVar<ItemSlot>();
         private readonly SyncVar<ItemSlot> _chestSlot = new SyncVar<ItemSlot>();
-        private readonly SyncVar<ItemSlot> _legsSlot = new SyncVar<ItemSlot>();
+        private readonly SyncVar<ItemSlot> _pantsSlot = new SyncVar<ItemSlot>();
         private readonly SyncVar<ItemSlot> _feetSlot = new SyncVar<ItemSlot>();
         private readonly SyncVar<ItemSlot> _handsSlot = new SyncVar<ItemSlot>();
         private readonly SyncVar<ItemSlot> _beltSlot = new SyncVar<ItemSlot>();
+        private readonly SyncVar<ItemSlot> _weaponSlot = new SyncVar<ItemSlot>();
+        private readonly SyncVar<ItemSlot> _offHandSlot = new SyncVar<ItemSlot>();
 
         // Cached base stats from class
         private float _baseMaxHealth = 100f;
@@ -34,11 +37,14 @@ namespace Genesis.Simulation {
         private void Awake() {
             // Subscribe to equipment slot changes
             _headSlot.OnChange += OnEquipmentChanged;
+            _shouldersSlot.OnChange += OnEquipmentChanged;
             _chestSlot.OnChange += OnEquipmentChanged;
-            _legsSlot.OnChange += OnEquipmentChanged;
+            _pantsSlot.OnChange += OnEquipmentChanged;
             _feetSlot.OnChange += OnEquipmentChanged;
             _handsSlot.OnChange += OnEquipmentChanged;
             _beltSlot.OnChange += OnEquipmentChanged;
+            _weaponSlot.OnChange += OnEquipmentChanged;
+            _offHandSlot.OnChange += OnEquipmentChanged;
 
             // Auto-find PlayerStats if not assigned
             if (_playerStats == null) {
@@ -51,14 +57,22 @@ namespace Genesis.Simulation {
 
             // Initialize empty equipment slots
             _headSlot.Value = ItemSlot.Empty;
+            _shouldersSlot.Value = ItemSlot.Empty;
             _chestSlot.Value = ItemSlot.Empty;
-            _legsSlot.Value = ItemSlot.Empty;
+            _pantsSlot.Value = ItemSlot.Empty;
             _feetSlot.Value = ItemSlot.Empty;
             _handsSlot.Value = ItemSlot.Empty;
             _beltSlot.Value = ItemSlot.Empty;
+            _weaponSlot.Value = ItemSlot.Empty;
+            _offHandSlot.Value = ItemSlot.Empty;
 
             Debug.Log("[EquipmentManager] Initialized equipment slots.");
         }
+
+        /// <summary>
+        /// Event triggered when any equipment slot changes (called on all clients)
+        /// </summary>
+        public System.Action OnEquipmentChangedSync;
 
         /// <summary>
         /// Callback when equipment changes (synced to clients)
@@ -69,7 +83,10 @@ namespace Genesis.Simulation {
                 RecalculateStats();
             }
 
-            // Trigger UI update on owner client
+            // Trigger local visual update for all clients (Proxies and Owner)
+            OnEquipmentChangedSync?.Invoke();
+
+            // Trigger global event for owner-only UI modules (Inventory, Character Panel, etc.)
             if (IsOwner) {
                 EventBus.Trigger("OnEquipmentChanged");
             }
@@ -117,11 +134,14 @@ namespace Genesis.Simulation {
                 case EquipmentSlot.Head:
                     _headSlot.Value = newSlot;
                     break;
+                case EquipmentSlot.Shoulders:
+                    _shouldersSlot.Value = newSlot;
+                    break;
                 case EquipmentSlot.Chest:
                     _chestSlot.Value = newSlot;
                     break;
-                case EquipmentSlot.Legs:
-                    _legsSlot.Value = newSlot;
+                case EquipmentSlot.Pants:
+                    _pantsSlot.Value = newSlot;
                     break;
                 case EquipmentSlot.Feet:
                     _feetSlot.Value = newSlot;
@@ -131,6 +151,12 @@ namespace Genesis.Simulation {
                     break;
                 case EquipmentSlot.Belt:
                     _beltSlot.Value = newSlot;
+                    break;
+                case EquipmentSlot.Weapon:
+                    _weaponSlot.Value = newSlot;
+                    break;
+                case EquipmentSlot.OffHand:
+                    _offHandSlot.Value = newSlot;
                     break;
             }
 
@@ -150,13 +176,17 @@ namespace Genesis.Simulation {
                     unequippedItem = _headSlot.Value;
                     _headSlot.Value = ItemSlot.Empty;
                     break;
+                case EquipmentSlot.Shoulders:
+                    unequippedItem = _shouldersSlot.Value;
+                    _shouldersSlot.Value = ItemSlot.Empty;
+                    break;
                 case EquipmentSlot.Chest:
                     unequippedItem = _chestSlot.Value;
                     _chestSlot.Value = ItemSlot.Empty;
                     break;
-                case EquipmentSlot.Legs:
-                    unequippedItem = _legsSlot.Value;
-                    _legsSlot.Value = ItemSlot.Empty;
+                case EquipmentSlot.Pants:
+                    unequippedItem = _pantsSlot.Value;
+                    _pantsSlot.Value = ItemSlot.Empty;
                     break;
                 case EquipmentSlot.Feet:
                     unequippedItem = _feetSlot.Value;
@@ -169,6 +199,14 @@ namespace Genesis.Simulation {
                 case EquipmentSlot.Belt:
                     unequippedItem = _beltSlot.Value;
                     _beltSlot.Value = ItemSlot.Empty;
+                    break;
+                case EquipmentSlot.Weapon:
+                    unequippedItem = _weaponSlot.Value;
+                    _weaponSlot.Value = ItemSlot.Empty;
+                    break;
+                case EquipmentSlot.OffHand:
+                    unequippedItem = _offHandSlot.Value;
+                    _offHandSlot.Value = ItemSlot.Empty;
                     break;
             }
 
@@ -185,11 +223,14 @@ namespace Genesis.Simulation {
         [Server]
         public void ClearAllEquipment() {
             _headSlot.Value = ItemSlot.Empty;
+            _shouldersSlot.Value = ItemSlot.Empty;
             _chestSlot.Value = ItemSlot.Empty;
-            _legsSlot.Value = ItemSlot.Empty;
+            _pantsSlot.Value = ItemSlot.Empty;
             _feetSlot.Value = ItemSlot.Empty;
             _handsSlot.Value = ItemSlot.Empty;
             _beltSlot.Value = ItemSlot.Empty;
+            _weaponSlot.Value = ItemSlot.Empty;
+            _offHandSlot.Value = ItemSlot.Empty;
 
             Debug.Log("[EquipmentManager] Cleared all equipment.");
         }
@@ -202,11 +243,14 @@ namespace Genesis.Simulation {
             List<ItemSlot> items = new List<ItemSlot>();
 
             if (!_headSlot.Value.IsEmpty) items.Add(_headSlot.Value);
+            if (!_shouldersSlot.Value.IsEmpty) items.Add(_shouldersSlot.Value);
             if (!_chestSlot.Value.IsEmpty) items.Add(_chestSlot.Value);
-            if (!_legsSlot.Value.IsEmpty) items.Add(_legsSlot.Value);
+            if (!_pantsSlot.Value.IsEmpty) items.Add(_pantsSlot.Value);
             if (!_feetSlot.Value.IsEmpty) items.Add(_feetSlot.Value);
             if (!_handsSlot.Value.IsEmpty) items.Add(_handsSlot.Value);
             if (!_beltSlot.Value.IsEmpty) items.Add(_beltSlot.Value);
+            if (!_weaponSlot.Value.IsEmpty) items.Add(_weaponSlot.Value);
+            if (!_offHandSlot.Value.IsEmpty) items.Add(_offHandSlot.Value);
 
             return items;
         }
@@ -255,11 +299,14 @@ namespace Genesis.Simulation {
 
             // Process all equipment slots
             ProcessSlot(_headSlot.Value);
+            ProcessSlot(_shouldersSlot.Value);
             ProcessSlot(_chestSlot.Value);
-            ProcessSlot(_legsSlot.Value);
+            ProcessSlot(_pantsSlot.Value);
             ProcessSlot(_feetSlot.Value);
             ProcessSlot(_handsSlot.Value);
             ProcessSlot(_beltSlot.Value);
+            ProcessSlot(_weaponSlot.Value);
+            ProcessSlot(_offHandSlot.Value);
 
             // Update PlayerStats
             _playerStats.SetMaxHealth(totalMaxHealth);
@@ -279,11 +326,14 @@ namespace Genesis.Simulation {
         public ItemSlot GetEquipmentSlot(EquipmentSlot slot) {
             switch (slot) {
                 case EquipmentSlot.Head: return _headSlot.Value;
+                case EquipmentSlot.Shoulders: return _shouldersSlot.Value;
                 case EquipmentSlot.Chest: return _chestSlot.Value;
-                case EquipmentSlot.Legs: return _legsSlot.Value;
+                case EquipmentSlot.Pants: return _pantsSlot.Value;
                 case EquipmentSlot.Feet: return _feetSlot.Value;
                 case EquipmentSlot.Hands: return _handsSlot.Value;
                 case EquipmentSlot.Belt: return _beltSlot.Value;
+                case EquipmentSlot.Weapon: return _weaponSlot.Value;
+                case EquipmentSlot.OffHand: return _offHandSlot.Value;
                 default: return ItemSlot.Empty;
             }
         }

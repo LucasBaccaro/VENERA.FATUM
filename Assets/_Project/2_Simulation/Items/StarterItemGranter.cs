@@ -26,8 +26,11 @@ namespace Genesis.Simulation {
         [Tooltip("Chest equipment ID")]
         [SerializeField] private int _chestEquipmentID = 2002;
 
-        [Tooltip("Legs equipment ID")]
-        [SerializeField] private int _legsEquipmentID = 2003;
+        [Tooltip("Shoulders equipment ID")]
+        [SerializeField] private int _shouldersEquipmentID = 2007;
+
+        [Tooltip("Pants equipment ID")]
+        [SerializeField] private int _pantsEquipmentID = 2003;
 
         [Tooltip("Feet equipment ID")]
         [SerializeField] private int _feetEquipmentID = 2004;
@@ -37,6 +40,12 @@ namespace Genesis.Simulation {
 
         [Tooltip("Belt equipment ID")]
         [SerializeField] private int _beltEquipmentID = 2006;
+
+        [Tooltip("Weapon equipment ID")]
+        [SerializeField] private int _weaponEquipmentID = 2008;
+
+        [Tooltip("OffHand equipment ID")]
+        [SerializeField] private int _offHandEquipmentID = 0;
 
         [Header("Settings")]
         [Tooltip("Delay before granting items (to ensure components are initialized)")]
@@ -81,13 +90,20 @@ namespace Genesis.Simulation {
             AddPotion(_healthPotionID, _potionQuantity);
             AddPotion(_manaPotionID, _potionQuantity);
 
-            // Equip starter gear
-            EquipItem(_headEquipmentID, EquipmentSlot.Head);
-            EquipItem(_chestEquipmentID, EquipmentSlot.Chest);
-            EquipItem(_legsEquipmentID, EquipmentSlot.Legs);
-            EquipItem(_feetEquipmentID, EquipmentSlot.Feet);
-            EquipItem(_handsEquipmentID, EquipmentSlot.Hands);
-            EquipItem(_beltEquipmentID, EquipmentSlot.Belt);
+            // Add Mage T0 set to inventory (unequipped)
+            _playerInventory.AddItem(_beltEquipmentID, 1, _starterTier, _starterRarity);
+            _playerInventory.AddItem(_chestEquipmentID, 1, _starterTier, _starterRarity);
+            _playerInventory.AddItem(_shouldersEquipmentID, 1, _starterTier, _starterRarity);
+            _playerInventory.AddItem(_feetEquipmentID, 1, _starterTier, _starterRarity);
+            _playerInventory.AddItem(_handsEquipmentID, 1, _starterTier, _starterRarity);
+            _playerInventory.AddItem(_headEquipmentID, 1, _starterTier, _starterRarity);
+            _playerInventory.AddItem(_pantsEquipmentID, 1, _starterTier, _starterRarity);
+
+            if (_weaponEquipmentID > 0)
+                _playerInventory.AddItem(_weaponEquipmentID, 1, _starterTier, _starterRarity);
+            
+            if (_offHandEquipmentID > 0)
+                _playerInventory.AddItem(_offHandEquipmentID, 1, _starterTier, _starterRarity);
 
             Debug.Log($"[StarterItemGranter] Finished granting starter items to {gameObject.name}");
         }

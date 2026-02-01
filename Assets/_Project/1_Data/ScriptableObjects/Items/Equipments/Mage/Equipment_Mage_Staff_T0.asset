@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e6d408abddf64a98b1424beff5f85bd, type: 3}
+  m_Name: Equipment_Mage_Staff_T0
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Items.EquipmentItemData
+  ItemID: 2008
+  ItemName: "Bast\xF3n del Aprendiz"
+  Description: 
+  Icon: {fileID: 21300000, guid: fbd42a26b53cce34f9f454d3e959215b, type: 3}
+  Type: 1
+  IsStackable: 0
+  MaxStackSize: 1
+  IsProtected: 0
+  Slot: 7
+  CommonStats:
+  - Type: 0
+    Value: 50
+  UncommonStats:
+  - Type: 0
+    Value: 100
+  RareStats: []
+  EpicStats: []
+  VisualData:
+    VisualPrefab: {fileID: 3916429459238741166, guid: 974a86e63f527694bb49ac2d4c3cdba4, type: 3}
+    HiddenBodyParts: 0
+    RarityConfig: {fileID: 11400000, guid: 53fe72cf309eb4b449ccb7e87e87fb96, type: 2}

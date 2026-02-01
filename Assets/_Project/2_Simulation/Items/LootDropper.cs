@@ -172,11 +172,14 @@ namespace Genesis.Simulation {
             if (_equipmentManager != null) {
                 EquipmentSlot[] allSlots = {
                     EquipmentSlot.Head,
+                    EquipmentSlot.Shoulders,
                     EquipmentSlot.Chest,
-                    EquipmentSlot.Legs,
+                    EquipmentSlot.Pants,
                     EquipmentSlot.Feet,
                     EquipmentSlot.Hands,
-                    EquipmentSlot.Belt
+                    EquipmentSlot.Belt,
+                    EquipmentSlot.Weapon,
+                    EquipmentSlot.OffHand
                 };
 
                 foreach (var slot in allSlots) {

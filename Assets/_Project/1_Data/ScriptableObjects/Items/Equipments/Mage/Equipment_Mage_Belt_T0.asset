@@ -20,7 +20,7 @@ MonoBehaviour:
   IsStackable: 0
   MaxStackSize: 1
   IsProtected: 0
-  Slot: 5
+  Slot: 6
   CommonStats:
   - Type: 0
     Value: 50
@@ -29,4 +29,7 @@ MonoBehaviour:
     Value: 100
   RareStats: []
   EpicStats: []
-  EquipmentMesh: {fileID: 0}
+  VisualData:
+    VisualPrefab: {fileID: 3974695491030681778, guid: 3692dcddd7ed91f4ba1c51365ea96e10, type: 3}
+    HiddenBodyParts: 32
+    RarityConfig: {fileID: 11400000, guid: 53fe72cf309eb4b449ccb7e87e87fb96, type: 2}

@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <ui:VisualElement name="CharacterPanelWindow" style="position: absolute; left: 50px; top: 50px; width: 450px; background-color: rgba(0, 0, 0, 0.85); border-left-width: 2px; border-right-width: 2px; border-top-width: 2px; border-bottom-width: 2px; border-left-color: rgb(100, 100, 100); border-right-color: rgb(100, 100, 100); border-top-color: rgb(100, 100, 100); border-bottom-color: rgb(100, 100, 100); padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px;">
+    <ui:VisualElement name="CharacterPanelWindow" style="position: absolute; left: 50px; top: 50px; width: 550px; background-color: rgba(0, 0, 0, 0.85); border-left-width: 2px; border-right-width: 2px; border-top-width: 2px; border-bottom-width: 2px; border-left-color: rgb(100, 100, 100); border-right-color: rgb(100, 100, 100); border-top-color: rgb(100, 100, 100); border-bottom-color: rgb(100, 100, 100); padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px;">
 
         <!-- Header -->
         <ui:Label text="CHARACTER PANEL (C)" style="font-size: 16px; color: rgb(255, 200, 50); -unity-font-style: bold; margin-bottom: 10px; -unity-text-align: upper-center;"/>
@@ -14,7 +14,7 @@
 
         <!-- Equipment Section -->
         <ui:Label text="EQUIPMENT" style="font-size: 13px; color: rgb(200, 200, 200); -unity-font-style: bold; margin-bottom: 5px;"/>
-        <ui:VisualElement name="EquipmentList" style="flex-grow: 1; margin-bottom: 10px;">
+        <ui:VisualElement name="EquipmentList" style="flex-grow: 1; margin-bottom: 10px; flex-direction: row; flex-wrap: wrap; justify-content: space-between;">
             <!-- Equipment slots will be added dynamically here -->
         </ui:VisualElement>
 

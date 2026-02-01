@@ -18,7 +18,7 @@ MonoBehaviour:
   MaxMana: 150
   ManaRegenPerSecond: 5
   AnimatorController: {fileID: 9100000, guid: 3f7530d14d0e52048b328bd18b21bd0f, type: 2}
-  ModelPrefab: {fileID: 5210444326678646037, guid: 4be2dd1630fdc1b4dbe36e2a1ed4787e, type: 3}
+  ModelPrefab: {fileID: 7399925181102640803, guid: b9c957b0d29d19440b71cac36578091d, type: 3}
   InitialAbilities:
   - {fileID: 11400000, guid: a038d18b4badf468ab8f330e270f5d96, type: 2}
   - {fileID: 11400000, guid: 67583c2d9b11d4093b6ee596bfad9007, type: 2}

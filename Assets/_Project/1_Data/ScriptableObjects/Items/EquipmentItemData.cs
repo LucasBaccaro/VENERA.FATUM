@@ -24,9 +24,9 @@ namespace Genesis.Items {
         [Tooltip("Stats for rarity Epic (purple)")]
         public List<StatModifier> EpicStats = new List<StatModifier>();
 
-        [Header("Visuals (Future)")]
-        [Tooltip("3D mesh to equip (future feature)")]
-        public GameObject EquipmentMesh;
+        [Header("Visual Configuration")]
+        [Tooltip("Visual data for this equipment piece")]
+        public EquipmentVisualData VisualData;
 
         /// <summary>
         /// Get stat modifiers for a specific rarity

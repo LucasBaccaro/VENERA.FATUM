@@ -16,11 +16,14 @@ namespace Genesis.Items {
     /// </summary>
     public enum EquipmentSlot {
         Head,
+        Shoulders,
         Chest,
-        Legs,
+        Pants,
         Feet,
         Hands,
-        Belt
+        Belt,
+        Weapon,
+        OffHand
     }
 
     /// <summary>

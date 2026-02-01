@@ -119,11 +119,14 @@ namespace Genesis.Presentation {
 
             // Create equipment slots (in order)
             CreateEquipmentSlot(EquipmentSlot.Head, "Head");
+            CreateEquipmentSlot(EquipmentSlot.Shoulders, "Shoulders");
             CreateEquipmentSlot(EquipmentSlot.Chest, "Chest");
-            CreateEquipmentSlot(EquipmentSlot.Legs, "Legs");
+            CreateEquipmentSlot(EquipmentSlot.Pants, "Pants");
             CreateEquipmentSlot(EquipmentSlot.Feet, "Feet");
             CreateEquipmentSlot(EquipmentSlot.Hands, "Hands");
             CreateEquipmentSlot(EquipmentSlot.Belt, "Belt");
+            CreateEquipmentSlot(EquipmentSlot.Weapon, "Weapon");
+            CreateEquipmentSlot(EquipmentSlot.OffHand, "OffHand");
 
             Debug.Log("[CharacterPanelDebugController] Character panel refreshed");
         }
@@ -133,6 +136,7 @@ namespace Genesis.Presentation {
 
             // Create slot container
             var slotContainer = new VisualElement();
+            slotContainer.style.width = Length.Percent(48);
             slotContainer.style.flexDirection = FlexDirection.Row;
             slotContainer.style.alignItems = Align.Center;
             slotContainer.style.marginBottom = 5;

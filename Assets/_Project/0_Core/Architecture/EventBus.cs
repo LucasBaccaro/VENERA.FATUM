@@ -9,7 +9,6 @@ namespace Genesis.Core {
     /// Evita dependencias directas entre componentes dispares.
     /// </summary>
     public static class EventBus {
-
         private static readonly Dictionary<string, Delegate> _eventTable = new Dictionary<string, Delegate>();
 
         // ═══════════════════════════════════════════════════════
@@ -125,6 +124,64 @@ namespace Genesis.Core {
             if (_eventTable.TryGetValue(eventName, out Delegate d)) {
                 Action<T1, T2, T3> callback = d as Action<T1, T2, T3>;
                 callback?.Invoke(arg1, arg2, arg3);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // SUBSCRIPTION (4 Parámetros)
+        // ═══════════════════════════════════════════════════════
+
+        public static void Subscribe<T1, T2, T3, T4>(string eventName, Action<T1, T2, T3, T4> handler) {
+            if (!_eventTable.ContainsKey(eventName)) {
+                _eventTable[eventName] = null;
+            }
+
+            _eventTable[eventName] = (Action<T1, T2, T3, T4>)_eventTable[eventName] + handler;
+        }
+
+        public static void Unsubscribe<T1, T2, T3, T4>(string eventName, Action<T1, T2, T3, T4> handler) {
+            if (_eventTable.ContainsKey(eventName)) {
+                _eventTable[eventName] = (Action<T1, T2, T3, T4>)_eventTable[eventName] - handler;
+
+                if (_eventTable[eventName] == null) {
+                    _eventTable.Remove(eventName);
+                }
+            }
+        }
+
+        public static void Trigger<T1, T2, T3, T4>(string eventName, T1 arg1, T2 arg2, T3 arg3, T4 arg4) {
+            if (_eventTable.TryGetValue(eventName, out Delegate d)) {
+                Action<T1, T2, T3, T4> callback = d as Action<T1, T2, T3, T4>;
+                callback?.Invoke(arg1, arg2, arg3, arg4);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // SUBSCRIPTION (5 Parámetros)
+        // ═══════════════════════════════════════════════════════
+
+        public static void Subscribe<T1, T2, T3, T4, T5>(string eventName, Action<T1, T2, T3, T4, T5> handler) {
+            if (!_eventTable.ContainsKey(eventName)) {
+                _eventTable[eventName] = null;
+            }
+
+            _eventTable[eventName] = (Action<T1, T2, T3, T4, T5>)_eventTable[eventName] + handler;
+        }
+
+        public static void Unsubscribe<T1, T2, T3, T4, T5>(string eventName, Action<T1, T2, T3, T4, T5> handler) {
+            if (_eventTable.ContainsKey(eventName)) {
+                _eventTable[eventName] = (Action<T1, T2, T3, T4, T5>)_eventTable[eventName] - handler;
+
+                if (_eventTable[eventName] == null) {
+                    _eventTable.Remove(eventName);
+                }
+            }
+        }
+
+        public static void Trigger<T1, T2, T3, T4, T5>(string eventName, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5) {
+            if (_eventTable.TryGetValue(eventName, out Delegate d)) {
+                Action<T1, T2, T3, T4, T5> callback = d as Action<T1, T2, T3, T4, T5>;
+                callback?.Invoke(arg1, arg2, arg3, arg4, arg5);
             }
         }
 

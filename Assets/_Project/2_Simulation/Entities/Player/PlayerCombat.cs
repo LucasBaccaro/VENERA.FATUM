@@ -110,7 +110,7 @@ namespace Genesis.Simulation {
                     break;
 
                 case CombatState.Channeling:
-                    HandleChannelingInput();
+                    HandleChannelingUpdate();
                     break;
             }
         }
@@ -152,12 +152,42 @@ namespace Genesis.Simulation {
         /// Input handling para habilidades channeled
         /// Actualiza la dirección del rayo con el mouse y ejecuta ticks de daño
         /// </summary>
-        private void HandleChannelingInput() {
+        private void HandleChannelingUpdate() {
             if (_pendingAbility == null) {
                 StopChanneling();
                 return;
             }
 
+            // --- Lógica de Input ---
+            HandleChannelingInput();
+
+            // Si el channeling terminó durante el input (ej: por movimiento o tiempo), salir
+            if (_pendingAbility == null) return;
+
+            // --- Lógica de UI ---
+            float elapsed = Time.time - _channelStartTime;
+            float progress = Mathf.Clamp01(elapsed / _channelMaxDuration);
+            float progressPercent = progress * 100f;
+            float remaining = Mathf.Max(0, _channelMaxDuration - elapsed);
+
+            // Trigger event for UI con información de channeling
+            EventBus.Trigger<Genesis.Data.CastUpdateData>("OnCastUpdate", new Genesis.Data.CastUpdateData {
+                Percent = progressPercent,
+                AbilityName = _pendingAbility.Name,
+                RemainingTime = remaining,
+                Duration = _channelMaxDuration,
+                IsChanneling = true,
+                TickRate = _channelTickRate,
+                Category = _pendingAbility.Category
+            });
+
+            // Update legacy event for debug compat
+            EventBus.Trigger<float, string>("OnCastProgress", progressPercent, _pendingAbility.Name);
+        }
+
+        private void HandleChannelingInput() {
+            if (_pendingAbility == null) return;
+            
             // Verificar duración máxima (si existe)
             if (_channelMaxDuration > 0 && Time.time - _channelStartTime >= _channelMaxDuration) {
                 StopChanneling();
@@ -259,8 +289,18 @@ namespace Genesis.Simulation {
             float elapsed = Time.time - _castStartTime;
             float progress = Mathf.Clamp01(elapsed / _castDuration);
             float progressPercent = progress * 100f;
+            float remaining = Mathf.Max(0, _castDuration - elapsed);
 
             // Trigger event for UI
+            EventBus.Trigger<Genesis.Data.CastUpdateData>("OnCastUpdate", new Genesis.Data.CastUpdateData {
+                Percent = progressPercent,
+                AbilityName = _castingAbilityName,
+                RemainingTime = remaining,
+                Duration = _castDuration,
+                IsChanneling = false,
+                TickRate = 0,
+                Category = _pendingAbility != null ? _pendingAbility.Category : Genesis.Data.AbilityCategory.Magical
+            });
             EventBus.Trigger<float, string>("OnCastProgress", progressPercent, _castingAbilityName);
 
             // Check for movement interruption (if can't move while casting)
@@ -321,7 +361,8 @@ namespace Genesis.Simulation {
             // Clear cast tracking
             _castDuration = 0f;
             _castingAbilityName = "";
-            EventBus.Trigger<float, string>("OnCastProgress", 0f, ""); // Clear cast bar
+            EventBus.Trigger<CastUpdateData>("OnCastUpdate", CastUpdateData.Empty); // Clear cast bar
+            EventBus.Trigger<float, string>("OnCastProgress", 0f, ""); // Clear cast bar (legacy)
 
             // Destruir Cast VFX
             DestroyCastVFX();
@@ -683,6 +724,8 @@ namespace Genesis.Simulation {
             }
 
             _pendingAbility = null;
+            EventBus.Trigger<Genesis.Data.CastUpdateData>("OnCastUpdate", Genesis.Data.CastUpdateData.Empty); // Clear cast bar
+            EventBus.Trigger<float, string>("OnCastProgress", 0f, ""); // Clear cast bar (legacy)
 
             Debug.Log("[PlayerCombat] Stopped Channeling");
         }
@@ -917,7 +960,8 @@ namespace Genesis.Simulation {
             // Clear cast tracking
             _castDuration = 0f;
             _castingAbilityName = "";
-            EventBus.Trigger<float, string>("OnCastProgress", 0f, ""); // Clear cast bar
+            EventBus.Trigger<CastUpdateData>("OnCastUpdate", CastUpdateData.Empty); // Clear cast bar
+            EventBus.Trigger<float, string>("OnCastProgress", 0f, ""); // Clear cast bar (legacy)
 
             _pendingAbility = null;
 
@@ -1135,7 +1179,8 @@ namespace Genesis.Simulation {
                 _castDuration = 0f;
                 _castingAbilityName = "";
                 _pendingAbility = null;
-                EventBus.Trigger<float, string>("OnCastProgress", 0f, ""); // Clear cast bar
+                EventBus.Trigger<Genesis.Data.CastUpdateData>("OnCastUpdate", Genesis.Data.CastUpdateData.Empty); // Clear cast bar
+                EventBus.Trigger<float, string>("OnCastProgress", 0f, ""); // Clear cast bar (legacy)
 
                 // Aplicar Cooldowns
                 if (ability != null) {
@@ -1175,12 +1220,13 @@ namespace Genesis.Simulation {
             }
 
             Debug.LogWarning($"[PlayerCombat] Cast failed: {reason}");
-
+ 
             // Clear cast tracking
             _castDuration = 0f;
             _castingAbilityName = "";
-            EventBus.Trigger<float, string>("OnCastProgress", 0f, ""); // Clear cast bar
-
+            EventBus.Trigger<CastUpdateData>("OnCastUpdate", CastUpdateData.Empty); // Clear cast bar
+            EventBus.Trigger<float, string>("OnCastProgress", 0f, ""); // Clear cast bar (legacy)
+ 
             // Destruir Cast VFX
             DestroyCastVFX();
 

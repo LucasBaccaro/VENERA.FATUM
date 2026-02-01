@@ -18,13 +18,18 @@ namespace Genesis.Presentation.UI {
 
         // Referencias a elementos UI
         private VisualElement _root;
-        private Label _gcdText;
         private Label _notificationLabel;
 
         // Cast & GCD bars
-        private ProgressBar _castBar;
+        private VisualElement _castGroup;
+        private VisualElement _castBarMask;
+        private VisualElement _castBarFill;
+        private Label _castAbilityLabel;
+        private Label _castTimerLabel;
+        private VisualElement _castTickIndicator;
+        private VisualElement _castTickContainer;
         private ProgressBar _gcdBar;
-        private Label _castText;
+        private Label _gcdText;
 
         [Header("Stylized Profile")]
         private Label _levelLabel;
@@ -64,11 +69,11 @@ namespace Genesis.Presentation.UI {
             EventBus.Subscribe<NetworkObject>("OnTargetChanged", OnTargetChanged);
             EventBus.Subscribe("OnTargetCleared", OnTargetCleared);
 
-            // Class
-            EventBus.Subscribe<string, Sprite>("OnClassChanged", OnClassChanged);
-
             // Errors
             EventBus.Subscribe<string>("OnCombatError", OnCombatError);
+
+            // Cast Updates
+            EventBus.Subscribe<Genesis.Data.CastUpdateData>("OnCastUpdate", OnCastUpdate);
         }
 
         void OnDisable() {
@@ -80,11 +85,11 @@ namespace Genesis.Presentation.UI {
             EventBus.Unsubscribe<NetworkObject>("OnTargetChanged", OnTargetChanged);
             EventBus.Unsubscribe("OnTargetCleared", OnTargetCleared);
 
-            // Class
-            EventBus.Unsubscribe<string, Sprite>("OnClassChanged", OnClassChanged);
-
             // Errors
             EventBus.Unsubscribe<string>("OnCombatError", OnCombatError);
+
+            // Cast Updates
+            EventBus.Unsubscribe<Genesis.Data.CastUpdateData>("OnCastUpdate", OnCastUpdate);
         }
 
         void Update() {
@@ -137,9 +142,16 @@ namespace Genesis.Presentation.UI {
 
             // Cast & GCD (Check if they exist before assignment)
             // They seem to have been moved or removed in the recent refactor
-            _castBar = _root.Q<ProgressBar>("CastBar");
+            // Cast & GCD
+            _castGroup = _root.Q<VisualElement>("CastGroup");
+            _castBarMask = _root.Q<VisualElement>("CastBar_Fill_Mask");
+            _castBarFill = _root.Q<VisualElement>("CastBar_Fill");
+            _castAbilityLabel = _root.Q<Label>("CastAbilityLabel");
+            _castTimerLabel = _root.Q<Label>("CastTimerLabel");
+            _castTickIndicator = _root.Q<VisualElement>("CastBar_TickRate");
+            _castTickContainer = _root.Q<VisualElement>("CastBar_TickContainer");
+
             _gcdBar = _root.Q<ProgressBar>("GCDBar");
-            _castText = _root.Q<Label>("CastText");
             _gcdText = _root.Q<Label>("GCDText");
             _notificationLabel = _root.Q<Label>("NotificationLabel");
 
@@ -325,14 +337,97 @@ namespace Genesis.Presentation.UI {
         /// Actualiza la barra de casteo (0-100%)
         /// </summary>
         public void SetCastProgress(float percent, string abilityName) {
-            if (_castBar != null) {
-                _castBar.value = percent;
-                _castBar.title = percent > 0 ? $"{percent:F0}%" : "";
-            }
+            if (_castGroup == null) return;
 
-            if (_castText != null) {
-                _castText.text = !string.IsNullOrEmpty(abilityName) ? $"Casting: {abilityName}" : "";
+            if (percent > 0) {
+                _castGroup.style.display = DisplayStyle.Flex;
+                
+                if (_castBarMask != null) {
+                    _castBarMask.style.width = new Length(percent, LengthUnit.Percent);
+                }
+
+                if (_castAbilityLabel != null) {
+                    _castAbilityLabel.text = abilityName;
+                }
+
+                // El tiempo restante se calcula en base al percent y la duración total. 
+                // Pero como HUDController solo recibe percent y name, necesitaremos 
+                // o pasar el tiempo restante o calcularlo si tenemos la referencia.
+                // Por ahora, mostraremos el porcentaje como fallback si no hay timer específico.
+                // Sin embargo, el usuario pidió tiempo restante.
+            } else {
+                _castGroup.style.display = DisplayStyle.None;
             }
+        }
+
+        /// <summary>
+        /// Sobrecarga para manejar tiempo restante e indicadores de channeling.
+        /// </summary>
+        public void UpdateCastBar(Genesis.Data.CastUpdateData data) {
+            if (_castGroup == null) return;
+
+            if (data.Percent > 0) {
+                _castGroup.style.display = DisplayStyle.Flex;
+                
+                if (_castBarMask != null) {
+                    _castBarMask.style.width = new Length(data.Percent, LengthUnit.Percent);
+                }
+
+                if (_castAbilityLabel != null) {
+                    _castAbilityLabel.text = data.AbilityName;
+                }
+
+                if (_castTimerLabel != null) {
+                    _castTimerLabel.text = data.RemainingTime > 0 ? $"{data.RemainingTime:F1}s" : "";
+                }
+
+                if (_castBarFill != null) {
+                    _castBarFill.style.unityBackgroundImageTintColor = GetCategoryColor(data.Category);
+                }
+
+                // --- GESTIÓN DE TICKS ---
+                if (_castTickContainer != null) {
+                    _castTickContainer.Clear();
+
+                    if (data.IsChanneling && data.TickRate > 0 && data.Duration > 0) {
+                        // Calcular cuántos ticks hay
+                        int tickCount = Mathf.FloorToInt(data.Duration / data.TickRate);
+                        
+                        // Generar marcas intermitentes
+                        for (int i = 1; i < tickCount; i++) {
+                            float tickTime = i * data.TickRate;
+                            float tickPercent = (tickTime / data.Duration) * 100f;
+
+                            VisualElement tick = new VisualElement();
+                            tick.AddToClassList("cast-bar-tick");
+                            tick.style.display = DisplayStyle.Flex;
+                            tick.style.position = Position.Absolute;
+                            tick.style.left = new Length(tickPercent, LengthUnit.Percent);
+                            
+                            _castTickContainer.Add(tick);
+                        }
+                    }
+                }
+            } else {
+                _castGroup.style.display = DisplayStyle.None;
+            }
+        }
+
+        private Color GetCategoryColor(Genesis.Data.AbilityCategory category) {
+            switch (category) {
+                case Genesis.Data.AbilityCategory.Magical:
+                    return new Color(0.4f, 0.6f, 1f, 1f); // Azul brillante / Celeste
+                case Genesis.Data.AbilityCategory.Physical:
+                    return new Color(1f, 0.3f, 0.3f, 1f); // Rojo / Naranja
+                case Genesis.Data.AbilityCategory.Utility:
+                    return new Color(0.5f, 1f, 0.5f, 1f); // Verde
+                default:
+                    return Color.white;
+            }
+        }
+
+        private void OnCastUpdate(Genesis.Data.CastUpdateData data) {
+            UpdateCastBar(data);
         }
 
         /// <summary>

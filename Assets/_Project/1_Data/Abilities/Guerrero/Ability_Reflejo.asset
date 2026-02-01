@@ -21,7 +21,7 @@ MonoBehaviour:
   Cooldown: 2
   GCD: 1
   CastType: 1
-  CastTime: 2
+  CastTime: 0.8
   CanMoveWhileCasting: 1
   ChannelTickRate: 0.1
   ChannelHitAllTargets: 1
@@ -34,7 +34,7 @@ MonoBehaviour:
   Category: 2
   BaseDamage: 0
   BaseHeal: 0
-  ApplyEffectsInstant: 1
+  ApplyEffectsInstant: 0
   ApplyToTarget: []
   ApplyToSelf:
   - {fileID: 11400000, guid: 3ffb66a20dacc47a49ec593c4fd8c676, type: 2}
@@ -47,5 +47,5 @@ MonoBehaviour:
   CastSound: {fileID: 0}
   ImpactSound: {fileID: 0}
   StartCastAnimationTrigger: Reflect
-  AnimationTrigger: EndCast
+  AnimationTrigger: 
   UseAvatarMask: 1

@@ -21,7 +21,7 @@ MonoBehaviour:
   Cooldown: 2
   GCD: 1
   CastType: 3
-  CastTime: 0
+  CastTime: 0.2
   CanMoveWhileCasting: 1
   ChannelTickRate: 0.1
   ChannelHitAllTargets: 1
@@ -47,3 +47,4 @@ MonoBehaviour:
   ImpactSound: {fileID: 0}
   StartCastAnimationTrigger: Charge
   AnimationTrigger: 
+  UseAvatarMask: 0

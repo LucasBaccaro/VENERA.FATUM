@@ -18,17 +18,26 @@ namespace Genesis.Presentation.UI {
 
         // Referencias a elementos UI
         private VisualElement _root;
-        private ProgressBar _healthBar;
-        private ProgressBar _manaBar;
-        private Label _healthText;
-        private Label _manaText;
+        private Label _gcdText;
+        private Label _notificationLabel;
 
         // Cast & GCD bars
         private ProgressBar _castBar;
         private ProgressBar _gcdBar;
         private Label _castText;
-        private Label _gcdText;
-        private Label _notificationLabel;
+
+        [Header("Stylized Profile")]
+        private Label _levelLabel;
+        private Label _playerNameLabel;
+        private VisualElement _classIcon;
+        private VisualElement _portraitIcon;
+
+        [Header("Stylized Bars")]
+        private VisualElement _healthBarMask;
+        private VisualElement _manaBarMask;
+        private VisualElement _expBarMask;
+        private Label _healthTextStylized;
+        private Label _manaTextStylized;
 
         // Targeting UI (Fase 3)
         private VisualElement _targetFrame;
@@ -103,10 +112,18 @@ namespace Genesis.Presentation.UI {
             _root = uiDocument.rootVisualElement;
 
             // Stats
-            _healthBar = _root.Q<ProgressBar>("HealthBar");
-            _manaBar = _root.Q<ProgressBar>("ManaBar");
-            _healthText = _root.Q<Label>("HealthText");
-            _manaText = _root.Q<Label>("ManaText");
+            // Stats (Stylized)
+            _healthBarMask = _root.Q<VisualElement>("HealthBar_Mask");
+            _manaBarMask = _root.Q<VisualElement>("ManaBar_Mask");
+            _expBarMask = _root.Q<VisualElement>("ExpBar_Mask");
+            _healthTextStylized = _root.Q<Label>("HealthText_Stylized");
+            _manaTextStylized = _root.Q<Label>("ManaText_Stylized");
+
+            // Profile (Stylized)
+            _levelLabel = _root.Q<Label>("LevelLabel");
+            _playerNameLabel = _root.Q<Label>("PlayerName");
+            _classIcon = _root.Q<VisualElement>("ClassIcon");
+            _portraitIcon = _root.Q<VisualElement>("PortraitIcon");
 
             // Cast & GCD
             _castBar = _root.Q<ProgressBar>("CastBar");
@@ -204,7 +221,9 @@ namespace Genesis.Presentation.UI {
         }
 
         private void OnClassChanged(string className, Sprite classIcon) {
-            // TODO: Implementar visualización de clase en HUD si se requiere
+            if (_classIcon != null && classIcon != null) {
+                _classIcon.style.backgroundImage = new StyleBackground(classIcon);
+            }
             Debug.Log($"[HUD] Class UI Update: {className}");
         }
 
@@ -234,24 +253,46 @@ namespace Genesis.Presentation.UI {
         // ═══════════════════════════════════════════════════════
 
         private void SetHealth(float current, float max) {
-            if (_healthBar != null) {
-                _healthBar.value = (current / max) * 100f;
-                _healthBar.title = $"{current:F0} / {max:F0}";
+            if (_healthBarMask != null) {
+                float percent = Mathf.Clamp((current / max) * 100f, 0, 100);
+                _healthBarMask.style.width = new Length(percent, LengthUnit.Percent);
             }
 
-            if (_healthText != null) {
-                _healthText.text = $"HP: {current:F0} / {max:F0}";
+            if (_healthTextStylized != null) {
+                _healthTextStylized.text = $"{current:F0} / {max:F0}";
             }
         }
 
         private void SetMana(float current, float max) {
-            if (_manaBar != null) {
-                _manaBar.value = (current / max) * 100f;
-                _manaBar.title = $"{current:F0} / {max:F0}";
+            if (_manaBarMask != null) {
+                float percent = Mathf.Clamp((current / max) * 100f, 0, 100);
+                _manaBarMask.style.width = new Length(percent, LengthUnit.Percent);
             }
 
-            if (_manaText != null) {
-                _manaText.text = $"MP: {current:F0} / {max:F0}";
+            if (_manaTextStylized != null) {
+                _manaTextStylized.text = $"{current:F0} / {max:F0}";
+            }
+        }
+
+        /// <summary>
+        /// Actualiza la barra de experiencia (0-100%)
+        /// </summary>
+        public void SetExperience(float percent) {
+            if (_expBarMask != null) {
+                float clampedPercent = Mathf.Clamp(percent, 0, 100);
+                _expBarMask.style.width = new Length(clampedPercent, LengthUnit.Percent);
+            }
+        }
+
+        public void SetLevel(int level) {
+            if (_levelLabel != null) {
+                _levelLabel.text = level.ToString();
+            }
+        }
+
+        public void SetPlayerName(string playerName) {
+            if (_playerNameLabel != null) {
+                _playerNameLabel.text = playerName;
             }
         }
 

@@ -162,3 +162,164 @@ Label {
     display: none;
     position: absolute;
 }
+
+
+/* ═══════════════════════════════════════════════════════
+   STYLIZED PLAYER HUD (REFINED)
+   ═══════════════════════════════════════════════════════ */
+
+/* Clear default Unity progress bar backgrounds */
+.stylized-progress-bar .unity-progress-bar__background,
+.stylized-progress-bar .unity-progress-bar__progress,
+.stylized-progress-bar .unity-progress-bar__container {
+    background-color: transparent;
+    border-width: 0;
+}
+
+.player-hud-wrapper {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 600px;
+    height: 180px;
+    pointer-events: none; /* Allow click-through */
+}
+
+.player-hud-base {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD/UI-PlayerHUD_Base.png');
+    -unity-background-scale-mode: stretch-to-fill;
+    pointer-events: none; /* Allow click-through */
+}
+
+/* Internal Elements (Absolute to Base) */
+
+.portrait-container {
+    position: absolute;
+    left: 17px;
+    top: 17px;
+    width: 110px;
+    height: 110px;
+    overflow: hidden;
+    border-radius: 55px;
+}
+
+.portrait-icon {
+    width: 100%;
+    height: 100%;
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.level-container {
+    position: absolute;
+    left: 0px;
+    bottom: 25px;
+    width: 65px;
+    height: 65px;
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD/UI-PlayerHUD-LVL-Container.png');
+    -unity-background-scale-mode: scale-to-fit;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.level-label {
+    color: white;
+    font-size: 24px;
+    -unity-font-style: bold;
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: black;
+}
+
+.class-container {
+    position: absolute;
+    right: 48px;
+    top: 1px;
+    width: 65px;
+    height: 65px;
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD/UI-PlayerHUD-CLASS.png');
+    -unity-background-scale-mode: scale-to-fit;
+    justify-content: center;
+    align-items: center;
+}
+
+.class-icon {
+    width: 70%;
+    height: 70%;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.player-name-label {
+    position: absolute;
+    left: 180px;
+    top: 38px;
+    font-size: 24px;
+    -unity-font-style: bold;
+    color: rgb(40, 40, 40);
+    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.4);
+}
+
+/* ═══════════════════════════════════════════════════════
+   MASKED BAR SYSTEM
+   ═══════════════════════════════════════════════════════ */
+
+.bar-container-absolute {
+    position: absolute;
+    overflow: visible;
+}
+
+/* Individual Bar Mask (The one we animate width on) */
+.bar-mask {
+    position: absolute;
+    height: 100%;
+    width: 100%; /* Controlled by code */
+    overflow: hidden;
+    border-radius: 4px;
+}
+
+/* Fixed Fill Image (Doesn't scale) */
+.bar-fill-fixed {
+    position: absolute;
+    width: 345px; /* Reference width of the bars */
+    height: 100%;
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.hp-fill { background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD/UI-PlayerHUD-HP_Bar.png'); }
+.mp-fill { background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD/UI-PlayerHUD-Mana_Bar.png'); }
+.exp-fill { background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD/UI-PlayerHUD-Exp_Bar.png'); }
+
+.bar-highlight {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD/UI-PlayerHUD-ManaHP_Highlight.png');
+    -unity-background-scale-mode: stretch-to-fill;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.exp-highlight {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD/UI-PlayerHUD-EXPHighlight.png');
+    -unity-background-scale-mode: stretch-to-fill;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.stylized-bar-text {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -unity-text-align: middle-center;
+    font-size: 14px;
+    -unity-font-style: bold;
+    color: white;
+    text-shadow: 1px 1px 2px black;
+    z-index: 10;
+}
+

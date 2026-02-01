@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Class_Warrior
   m_EditorClassIdentifier: Genesis.Data::Genesis.Data.ClassData
   ClassName: Warrior
-  ClassIcon: {fileID: 0}
+  ClassIcon: {fileID: 21300000, guid: aeade9ee40f43e24a80d1653d30ae4ae, type: 3}
   MaxHealth: 400
   MaxMana: 100
   ManaRegenPerSecond: 3

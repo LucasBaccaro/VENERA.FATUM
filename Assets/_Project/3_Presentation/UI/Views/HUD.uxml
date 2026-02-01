@@ -1,32 +1,44 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/MainStyle.uss?fileID=7433441132597879392&amp;guid=cf8f1d6e307ab41bb9434dc2ec321cee&amp;type=3#MainStyle"/>
-    <ui:VisualElement name="HUD" style="flex-grow: 1; width: 100%; height: 100%; position: absolute;">
-        <ui:VisualElement name="StatsContainer" style="position: absolute; left: 20px; top: 20px; width: 300px; display: flex;">
-            <ui:VisualElement name="HealthContainer" style="margin-bottom: 10px;">
-                <ui:Label text="Health" name="HealthLabel" style="font-size: 14px; color: white; -unity-font-style: bold; margin-bottom: 5px;"/>
-                <ui:ProgressBar value="100" name="HealthBar" high-value="100" style="height: 25px;"/>
-                <ui:Label text="HP: 100 / 100" name="HealthText" style="font-size: 12px; color: white; margin-top: 3px;"/>
-            </ui:VisualElement>
-            <ui:VisualElement name="ManaContainer" style="margin-bottom: 10px;">
-                <ui:Label text="Mana" name="ManaLabel" style="font-size: 14px; color: white; -unity-font-style: bold; margin-bottom: 5px;"/>
-                <ui:ProgressBar value="100" name="ManaBar" high-value="100" style="height: 25px;"/>
-                <ui:Label text="MP: 100 / 100" name="ManaText" style="font-size: 12px; color: white; margin-top: 3px;"/>
-            </ui:VisualElement>
-            <ui:VisualElement name="CastContainer" style="margin-bottom: 10px;">
-                <ui:Label text="Casting" name="CastLabel" style="font-size: 14px; color: white; -unity-font-style: bold; margin-bottom: 5px;"/>
-                <ui:ProgressBar value="0" name="CastBar" high-value="100" style="height: 20px;"/>
-                <ui:Label text="" name="CastText" style="font-size: 11px; color: white; margin-top: 3px;"/>
-            </ui:VisualElement>
-            <ui:VisualElement name="GCDContainer">
-                <ui:Label text="Global Cooldown" name="GCDLabel" style="font-size: 14px; color: white; -unity-font-style: bold; margin-bottom: 5px;"/>
-                <ui:ProgressBar value="0" name="GCDBar" high-value="100" style="height: 20px;"/>
-                <ui:Label text="" name="GCDText" style="font-size: 11px; color: white; margin-top: 3px;"/>
+    <ui:VisualElement name="HUD" picking-mode="Ignore" style="flex-grow: 1; width: 100%; height: 100%; position: absolute;">
+        <ui:VisualElement name="PlayerHUD" picking-mode="Ignore" class="player-hud-wrapper" style="width: 100%; height: 100%; align-items: stretch;">
+            <ui:VisualElement name="HUD_Base" picking-mode="Ignore" class="player-hud-base" style="width: 387px; height: 138px;">
+                <ui:VisualElement name="PortraitContainer" class="portrait-container">
+                    <ui:VisualElement name="PortraitIcon" class="portrait-icon" style="background-image: url(&quot;project://database/Assets/_Project/5_Content/Resources/Icons/Abilities/Mago/Bola de Fuego.png&quot;); opacity: 0;"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="LevelContainer" class="level-container" style="bottom: -15px; left: 6px; height: 56px; width: 58px;">
+                    <ui:Label text="99" name="LevelLabel" class="level-label"/>
+                </ui:VisualElement>
+                <ui:Label text="POROTINS" name="PlayerName" class="player-name-label" style="top: 17px; left: 136px; width: 170px; font-size: 30px;"/>
+                <ui:VisualElement name="ClassContainer" class="class-container" style="background-color: rgba(0, 0, 0, 0); top: 13px; right: 12px; height: 49px; width: 51px;">
+                    <ui:VisualElement name="ClassIcon" class="class-icon" style="width: 100%; height: 100%; opacity: 1; display: flex;"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="HealthGroup" class="bar-container-absolute" style="top: 60px; left: 89px; width: 359px; height: 34px;">
+                    <ui:VisualElement name="HealthBar_Mask" class="bar-mask" style="width: 199px; left: 46px; height: 34px; top: 1px;">
+                        <ui:VisualElement name="HealthBar_Fill" class="bar-fill-fixed hp-fill" style="width: 201px; height: 22px; top: 6px; left: -1px;"/>
+                    </ui:VisualElement>
+                    <ui:Label text="100 / 100" name="HealthText_Stylized" class="stylized-bar-text" style="width: 200px; left: 46px; top: 4px; height: 19px;"/>
+                    <ui:VisualElement name="HP_Highlight" class="bar-highlight" style="width: 177px; left: 64px; height: 16px; top: 10px;"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="ManaGroup" class="bar-container-absolute" style="top: 93px; left: 131px; width: 198px; height: 22px;">
+                    <ui:VisualElement name="ManaBar_Mask" class="bar-mask" style="width: 224px;">
+                        <ui:VisualElement name="ManaBar_Fill" class="bar-fill-fixed mp-fill" style="width: 206px; height: 22px; top: 0;"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="MP_Highlight" class="bar-highlight" style="width: 194px; height: 18px; top: 2px; left: 8px;"/>
+                    <ui:Label text="50 / 50" name="ManaText_Stylized" class="stylized-bar-text" style="top: -3px; left: -4px;"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="ExpGroup" class="bar-container-absolute" style="top: 119px; left: 104px; width: 192px; height: 12px;">
+                    <ui:VisualElement name="ExpBar_Mask" class="bar-mask" style="width: 333px; height: 15px; top: -3px;">
+                        <ui:VisualElement name="ExpBar_Fill" class="bar-fill-fixed exp-fill" style="width: 211px; height: 13px; top: 2px; left: 0; overflow: hidden;"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="EXP_Highlight" class="exp-highlight" style="top: 0; left: 15px; height: 11px;"/>
+                </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="NotificationContainer" style="position: absolute; top: 25%; left: 0; width: 100%; height: 50px; align-items: center; justify-content: center; display: flex; pointer-events: none;">
             <ui:Label text="Error Message" name="NotificationLabel" style="font-size: 24px; color: rgb(255, 69, 69); -unity-font-style: bold; -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(0, 0, 0); opacity: 0; transition-property: opacity; transition-duration: 0.3s;"/>
         </ui:VisualElement>
-        <ui:VisualElement name="TargetFrame" class="target-frame-container" style="position: absolute; top: 15px; left: 50%; width: 280px; translate: -50% 0; height: 94px;">
+        <ui:VisualElement name="TargetFrame" class="target-frame-container" style="position: absolute; top: 15px; left: 50%; width: 280px; translate: -50% 0; height: 94px; display: flex;">
             <ui:Label text="Target Name" name="TargetName" class="target-name-label"/>
             <ui:VisualElement name="TargetHeader" class="target-header"/>
             <ui:VisualElement name="TargetBody" class="target-body">

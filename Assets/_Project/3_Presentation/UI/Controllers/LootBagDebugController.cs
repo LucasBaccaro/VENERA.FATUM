@@ -17,7 +17,7 @@ namespace Genesis.Presentation {
         private Button _takeAllButton;
         private Button _closeButton;
 
-        private LootBag _currentLootBag;
+        private ILootSource _currentLootSource;
 
         private void Awake() {
             if (_uiDocument == null) {
@@ -26,11 +26,11 @@ namespace Genesis.Presentation {
         }
 
         private void OnEnable() {
-            EventBus.Subscribe<LootBag>("OnLootBagOpened", OnLootBagOpened);
+            EventBus.Subscribe<ILootSource>("OnLootOpened", OnLootOpened);
         }
 
         private void OnDisable() {
-            EventBus.Unsubscribe<LootBag>("OnLootBagOpened", OnLootBagOpened);
+            EventBus.Unsubscribe<ILootSource>("OnLootOpened", OnLootOpened);
         }
 
         private void Start() {
@@ -53,26 +53,26 @@ namespace Genesis.Presentation {
             _closeButton.clicked += OnCloseClicked;
         }
 
-        private void OnLootBagOpened(LootBag lootBag) {
-            _currentLootBag = lootBag;
+        private void OnLootOpened(ILootSource lootSource) {
+            _currentLootSource = lootSource;
             ShowLootBag();
         }
 
         private void ShowLootBag() {
-            if (_currentLootBag == null) return;
+            if (_currentLootSource == null) return;
 
             _lootBagWindow.style.display = DisplayStyle.Flex;
-            _lootTitle.text = $"LOOT: {_currentLootBag.OwnerName}";
+            _lootTitle.text = $"LOOT: {_currentLootSource.LootName}";
 
             RefreshLoot();
         }
 
         private void RefreshLoot() {
-            if (_lootList == null || _currentLootBag == null) return;
+            if (_lootList == null || _currentLootSource == null) return;
 
             _lootList.Clear();
 
-            var items = _currentLootBag.LootItems;
+            var items = _currentLootSource.LootItems;
             for (int i = 0; i < items.Count; i++) {
                 var slot = items[i];
                 if (slot.IsEmpty) continue;
@@ -162,12 +162,12 @@ namespace Genesis.Presentation {
         }
 
         private void OnTakeItemClicked(int index) {
-            if (_currentLootBag == null) return;
+            if (_currentLootSource == null) return;
 
             var player = FindLocalPlayer();
             if (player == null) return;
 
-            _currentLootBag.CmdTakeItem(index, player);
+            _currentLootSource.CmdTakeItem(index, player);
             Debug.Log($"[LootBagDebugController] Tomado item index {index}");
 
             // Refresh loot UI after a small delay
@@ -178,12 +178,12 @@ namespace Genesis.Presentation {
         }
 
         private void OnTakeAllClicked() {
-            if (_currentLootBag == null) return;
+            if (_currentLootSource == null) return;
 
             var player = FindLocalPlayer();
             if (player == null) return;
 
-            _currentLootBag.CmdTakeAll(player);
+            _currentLootSource.CmdTakeAll(player);
             Debug.Log("[LootBagDebugController] Tomando todos los items");
 
             // Force refresh player inventory UI
@@ -205,7 +205,7 @@ namespace Genesis.Presentation {
 
         private void OnCloseClicked() {
             _lootBagWindow.style.display = DisplayStyle.None;
-            _currentLootBag = null;
+            _currentLootSource = null;
         }
 
         private FishNet.Object.NetworkObject FindLocalPlayer() {
@@ -231,28 +231,33 @@ namespace Genesis.Presentation {
         private void Update() {
             // Press 'E' to open nearest loot bag (debug)
             if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame) {
-                TryOpenNearestLootBag();
+                TryOpenNearestLootSource();
             }
         }
 
-        private void TryOpenNearestLootBag() {
+        private void TryOpenNearestLootSource() {
             var player = FindLocalPlayer();
             if (player == null) return;
 
-            var allLootBags = Object.FindObjectsByType<LootBag>(FindObjectsSortMode.None);
-            LootBag nearest = null;
+            // Debug controller will check all Interactables that implement ILootSource
+            var allInteractables = Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
+            
+            ILootSource nearest = null;
             float minDistance = float.MaxValue;
 
-            foreach (var bag in allLootBags) {
-                float distance = Vector3.Distance(player.transform.position, bag.transform.position);
-                if (distance < 3f && distance < minDistance) {
-                    nearest = bag;
-                    minDistance = distance;
+            foreach (var obj in allInteractables) {
+                if (obj is ILootSource lootSource && obj is IInteractable interactable) {
+                    float distance = Vector3.Distance(player.transform.position, obj.transform.position);
+                    // Standard interact range 3m
+                    if (distance < 3f && distance < minDistance) {
+                        nearest = lootSource;
+                        minDistance = distance;
+                    }
                 }
             }
 
             if (nearest != null) {
-                OnLootBagOpened(nearest);
+                OnLootOpened(nearest);
             }
         }
     }

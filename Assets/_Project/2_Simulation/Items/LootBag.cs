@@ -13,7 +13,7 @@ namespace Genesis.Simulation {
     /// Public loot (anyone can take items)
     /// Auto-despawns after 5 minutes or when empty
     /// </summary>
-    public class LootBag : NetworkBehaviour, IInteractable {
+    public class LootBag : NetworkBehaviour, IInteractable, ILootSource {
         [Header("Configuration")]
         [Tooltip("Time in seconds before auto-despawn")]
         [SerializeField] private float _despawnTime = 300f; // 5 minutes
@@ -28,8 +28,9 @@ namespace Genesis.Simulation {
         private float _spawnTime;
         private bool _isInitialized = false;
 
+        // ILootSource Implementation
         public IReadOnlyList<ItemSlot> LootItems => _lootItems;
-        public string OwnerName => _ownerName.Value;
+        public string LootName => $"{_ownerName.Value}'s Bag";
 
         private void Awake() {
             // Subscribe to loot changes
@@ -194,7 +195,7 @@ namespace Genesis.Simulation {
 
         #endregion
 
-        #region ServerRpc (Client → Server Commands)
+        #region ILootSource Implementation (ServerRpc)
 
         /// <summary>
         /// Client requests to take item
@@ -211,6 +212,18 @@ namespace Genesis.Simulation {
         public void CmdTakeAll(NetworkObject player) {
             TakeAll(player);
         }
+        
+        /// <summary>
+        /// Client requests to interact
+        /// </summary>
+        [ServerRpc(RequireOwnership = false)]
+        public void CmdTryInteract(NetworkObject player) {
+            Interact(player);
+        }
+        
+        public bool CanLoot(NetworkObject player) {
+            return true; // Anyone can loot bags
+        }
 
         #endregion
 
@@ -222,6 +235,7 @@ namespace Genesis.Simulation {
             Debug.Log($"[LootBag] {player.name} is interacting with loot bag");
 
             // Trigger client UI to open loot window
+            // We pass 'this' which implements ILootSource, but TargetRpc needs specific handling or we use EventBus on client
             if (player.Owner.IsValid) {
                 TargetOpenLootUI(player.Owner);
             }
@@ -246,7 +260,8 @@ namespace Genesis.Simulation {
         [TargetRpc]
         private void TargetOpenLootUI(FishNet.Connection.NetworkConnection conn) {
             Debug.Log("[LootBag] Opening loot UI on client");
-            EventBus.Trigger("OnLootBagOpened", this);
+            // Pass 'this' as ILootSource. EventBus needs to handle ILootSource or we cast
+            EventBus.Trigger("OnLootOpened", (ILootSource)this);
         }
 
         #endregion

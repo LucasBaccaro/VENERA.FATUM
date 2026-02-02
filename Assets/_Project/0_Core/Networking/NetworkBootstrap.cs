@@ -31,14 +31,49 @@ namespace Genesis.Core.Networking {
             // Registrar en ServiceLocator
             ServiceLocator.Instance.Register(networkManager);
 
-            // Auto-start para testing
+            // Leer argumentos de línea de comando
+            string[] args = System.Environment.GetCommandLineArgs();
+            bool isServerMode = System.Array.Exists(args, arg => arg.ToLower() == "-server");
+            bool isClientMode = System.Array.Exists(args, arg => arg.ToLower() == "-client");
+
+            // Buscar override de dirección del servidor: -address=IP
+            string serverAddress = null;
+            foreach (string arg in args) {
+                if (arg.ToLower().StartsWith("-address=")) {
+                    serverAddress = arg.Substring(9); // Extraer IP después de "-address="
+                    break;
+                }
+            }
+
 #if UNITY_EDITOR
+            // En Editor: Host mode para desarrollo
+            // Si se inicia el servidor Y el cliente (modo Host), conectar cliente a localhost
+            if (autoStartServer && autoStartClient) {
+                // Override client address a localhost para modo Host
+                networkManager.TransportManager.Transport.SetClientAddress("127.0.0.1");
+                Debug.Log("[NetworkBootstrap] Host mode - Client connecting to localhost");
+            }
+
             if (autoStartServer) {
                 StartServer();
             }
-            
-            // Si también queremos cliente (Host mode), lo iniciamos después del servidor
+
             if (autoStartClient) {
+                StartClient();
+            }
+#else
+            // En Build: detectar modo y configurar address
+            if (isServerMode) {
+                Debug.Log("[NetworkBootstrap] Starting as DEDICATED SERVER");
+                StartServer();
+            } else {
+                // Modo cliente: usar address override si existe
+                if (!string.IsNullOrEmpty(serverAddress)) {
+                    networkManager.TransportManager.Transport.SetClientAddress(serverAddress);
+                    Debug.Log($"[NetworkBootstrap] Client address set to: {serverAddress}");
+                }
+
+                Debug.Log("[NetworkBootstrap] Starting as CLIENT");
                 StartClient();
             }
 #endif

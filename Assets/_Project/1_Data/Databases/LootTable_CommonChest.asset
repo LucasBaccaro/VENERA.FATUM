@@ -18,25 +18,25 @@ MonoBehaviour:
     MinQuantity: 1
     MaxQuantity: 0
     Tier: 0
-    Rarity: 0
+    Rarity: 1
   - Item: {fileID: 11400000, guid: b203178a8b034481aa98fd2739236b8e, type: 2}
     DropChance: 1
     MinQuantity: 1
     MaxQuantity: 0
     Tier: 0
-    Rarity: 0
+    Rarity: 1
   - Item: {fileID: 11400000, guid: 3b8f59bb35a6f4969b5d065c2834b8ff, type: 2}
     DropChance: 1
     MinQuantity: 1
     MaxQuantity: 0
     Tier: 0
-    Rarity: 0
+    Rarity: 1
   - Item: {fileID: 11400000, guid: 92f4fc99f36c74a4ea7cab5e9211c6c6, type: 2}
     DropChance: 1
     MinQuantity: 1
     MaxQuantity: 0
     Tier: 0
-    Rarity: 0
+    Rarity: 1
   - Item: {fileID: 11400000, guid: f41afcc5f2cf04710acd87817d5aa21d, type: 2}
     DropChance: 1
     MinQuantity: 1
@@ -48,10 +48,34 @@ MonoBehaviour:
     MinQuantity: 1
     MaxQuantity: 0
     Tier: 0
-    Rarity: 0
+    Rarity: 1
+  - Item: {fileID: 11400000, guid: b55343c81502c4b3aad56a3d91fdbcc6, type: 2}
+    DropChance: 1
+    MinQuantity: 100
+    MaxQuantity: 0
+    Tier: 0
+    Rarity: 1
+  - Item: {fileID: 11400000, guid: b55343c81502c4b3aad56a3d91fdbcc6, type: 2}
+    DropChance: 1
+    MinQuantity: 100
+    MaxQuantity: 0
+    Tier: 0
+    Rarity: 1
+  - Item: {fileID: 11400000, guid: 753f5e14724394e9b8a74daf5338ff37, type: 2}
+    DropChance: 100
+    MinQuantity: 100
+    MaxQuantity: 0
+    Tier: 0
+    Rarity: 1
+  - Item: {fileID: 11400000, guid: 753f5e14724394e9b8a74daf5338ff37, type: 2}
+    DropChance: 100
+    MinQuantity: 100
+    MaxQuantity: 0
+    Tier: 0
+    Rarity: 1
   - Item: {fileID: 11400000, guid: ef380957f8ae24061baf980a447ca493, type: 2}
     DropChance: 1
     MinQuantity: 1
     MaxQuantity: 0
     Tier: 0
-    Rarity: 0
+    Rarity: 1

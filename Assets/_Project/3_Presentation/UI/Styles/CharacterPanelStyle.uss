@@ -1,0 +1,169 @@
+/* ═══════════════════════════════════════════════════════
+   GENESIS - Character Panel Styles
+   ═══════════════════════════════════════════════════════ */
+
+.character-panel-window {
+    position: absolute;
+    width: 410px; /* 820 / 2 */
+    height: 310px; /* 620 / 2 */
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/Panels/UI-GPW-CharacterPanel.png');
+    -unity-background-scale-mode: stretch-to-fill;
+    right: 20px;
+    bottom: 20px;
+    overflow: hidden;
+}
+
+/* Page Containers */
+.page-container {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+}
+
+.left-page {
+    left: 0;
+    padding: 30px 15px;
+}
+
+.right-page {
+    right: 0;
+    padding: 30px 22px;
+}
+
+/* Equipment Slots Layout */
+.equipment-layout {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* Base Equipment Slot */
+.char-item-slot {
+    width: 44px; /* 88 / 2 */
+    height: 44px; /* 88 / 2 */
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+}
+
+.char-item-slot-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/Panels/UI-Base_Slot.png');
+    -unity-background-scale-mode: stretch-to-fill;
+    display: none; /* Hidden by default if empty */
+}
+
+.char-item-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 41px; /* 83 / 2 */
+    height: 41px; 
+    translate: -50% -50%;
+    -unity-background-scale-mode: scale-to-fit;
+    pointer-events: none;
+    transition-property: scale;
+    transition-duration: 0.1s;
+}
+
+.char-item-slot:hover .char-item-icon {
+    scale: 1.1;
+}
+
+/* Slot Positions (Halved from manual refined by user) */
+#HeadSlot { top: -10px; left: 65px; }
+
+#ShouldersSlot { top: 40px; left: 14px; }
+#ChestSlot { top: 40px; left: 65px; }
+#HandsSlot { top: 40px; left: 117px; }
+
+#LegsSlot { top: 91px; left: 14px; }
+#BeltSlot { top: 91px; left: 65px; }
+#BootsSlot { top: 91px; left: 116px; }
+
+#Ring1Slot { top: 152px; left: 50px; }
+#Ring2Slot { top: 152px; left: 89px; }
+
+#MainHandSlot { top: 195px; left: 41px; }
+#OffHandSlot { top: 195px; left: 92px; }
+
+/* Stats Page Styles */
+.stats-title {
+    font-size: 14px;
+    color: #5d4037;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    margin-bottom: 15px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(93, 64, 55, 0.3);
+    padding-bottom: 5px;
+}
+
+.stat-row {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    padding: 2px 5px;
+}
+
+.stat-label {
+    font-size: 10px;
+    color: #5d4037;
+    -unity-font-style: bold;
+}
+
+.stat-value {
+    font-size: 10px;
+    color: #2e7d32;
+    -unity-font-style: bold;
+}
+
+/* Rarity Effects - Matching Inventory Style */
+.rarity-common { -unity-background-image-tint-color: #ffffff; }
+.rarity-uncommon { -unity-background-image-tint-color: #1eff00; }
+.rarity-rare { -unity-background-image-tint-color: #0070dd; }
+.rarity-epic { -unity-background-image-tint-color: #a335ee; }
+.rarity-legendary { -unity-background-image-tint-color: #ff8000; }
+
+.slot-highlight {
+    /* No visual elements here to avoid unwanted borders */
+}
+
+.char-item-slot:hover {
+    background-color: transparent;
+}
+
+/* Item Stats Styles */
+.item-stats-container {
+    flex-grow: 1;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top-width: 1px;
+    border-top-color: rgba(93, 64, 55, 0.2);
+}
+
+.item-stats-container #unity-vertical-scroller,
+.item-stats-container #unity-horizontal-scroller {
+    width: 0;
+    height: 0;
+    display: none;
+    visibility: hidden;
+}
+
+.item-stat-entry {
+    margin-bottom: 4px;
+}
+
+.item-stat-name {
+    font-size: 10px;
+    color: #5d4037;
+    -unity-font-style: bold;
+}
+
+.item-stat-values {
+    font-size: 9px;
+    color: #2e7d32;
+    padding-left: 5px;
+}

@@ -1,10 +1,10 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/InventoryStyle.uss?fileID=7433441132597879392&amp;guid=9a272a952cdaf4f6ab8990caebdfb024&amp;type=3#InventoryStyle"/>
     <ui:VisualElement name="LootBagWindow" class="loot-window">
-        <ui:Label name="LootTitle" text="Botín de Caído" class="window-title" style="padding-top: 2px;"/>
-        <ui:Button name="CloseButton" text="×" class="close-button" style="top: 68px; right: 65px;"/>
-        <ui:ScrollView name="LootScroll" class="item-scroll" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden">
-            <ui:VisualElement name="LootGrid" class="item-grid" style="justify-content: flex-start; align-items: stretch; align-content: flex-start; padding-left: 24px;">
+        <ui:Label name="LootTitle" text="Botín de Caído" class="window-title" style="top: -6px;"/>
+        <ui:Button name="CloseButton" text="" class="close-button" style="top: 30px; right: 24px;"/>
+        <ui:ScrollView name="LootScroll" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden" class="item-scroll">
+            <ui:VisualElement name="LootGrid" class="item-grid" style="left: 13px;">
                 <ui:VisualElement name="LootSlot0" class="item-slot">
                     <ui:VisualElement class="item-slot-bg"/>
                     <ui:VisualElement name="Icon0" class="item-icon"/>
@@ -67,6 +67,6 @@
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:ScrollView>
-        <ui:Button name="TakeAllButton" text="LOOTEAR TODO" class="take-all-button" style="padding-top: 11px; padding-left: 26px; margin-left: 73px; margin-right: 53px; margin-top: 119px;"/>
+        <ui:Button name="TakeAllButton" text="LOOTEAR TODO" class="take-all-button" style="left: 5px; top: -40px;"/>
     </ui:VisualElement>
 </ui:UXML>

@@ -314,7 +314,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
   m_PanelSettings: {fileID: 11400000, guid: 85ba5e24a45154443a3044fa702fd310, type: 2}
   m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: 0e04419b81d8446b8bc118735c48539e, type: 3}
+  sourceAsset: {fileID: 9197481963319205126, guid: 3c2a9ab652b9045e09723cc36daf1d9b, type: 3}
   m_SortingOrder: 0
   m_Position: 0
   m_WorldSpaceSizeMode: 1
@@ -344,9 +344,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 289927435}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fddf938d8fefd45cbb2cc55ddc35eca5, type: 3}
+  m_Script: {fileID: 11500000, guid: ba30bf5a0b54045fe97ecad677a50016, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.CharacterPanelDebugController
+  m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.CharacterPanelController
   _uiDocument: {fileID: 289927438}
 --- !u!1 &364127481
 GameObject:
@@ -1228,11 +1228,11 @@ MonoBehaviour:
   _reuseAddress: 0
   _unreliableMtu: 1023
   _ipv4BindAddress: 
-  _enableIpv6: 1
+  _enableIpv6: 0
   _ipv6BindAddress: 
   _port: 7770
   _maximumClients: 4095
-  _clientAddress: localhost
+  _clientAddress: 10.223.136.35
 --- !u!1 &1610443399 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 113477001199239666, guid: d1ecca06559984643ac2d2e95c4684cd, type: 3}

@@ -1,0 +1,63 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/CharacterPanelStyle.uss?fileID=7433441132597879392&amp;guid=12b6a8f6a708649cda18a6349fbad696&amp;type=3#CharacterPanelStyle"/>
+    <ui:VisualElement name="CharacterPanelWindow" class="character-panel-window" style="top: 376px;">
+        <ui:VisualElement name="LeftPage" class="page-container left-page" style="pointer-events: none;">
+            <ui:VisualElement name="EquipmentLayout" class="equipment-layout" style="pointer-events: none;">
+                <ui:VisualElement name="HeadSlot" class="char-item-slot" style="pointer-events: auto;">
+                    <ui:VisualElement class="char-item-slot-bg"/>
+                    <ui:VisualElement class="char-item-icon"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="ShouldersSlot" class="char-item-slot" style="pointer-events: auto;">
+                    <ui:VisualElement class="char-item-slot-bg"/>
+                    <ui:VisualElement class="char-item-icon"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="ChestSlot" class="char-item-slot" style="pointer-events: auto;">
+                    <ui:VisualElement class="char-item-slot-bg"/>
+                    <ui:VisualElement class="char-item-icon"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="HandsSlot" class="char-item-slot" style="pointer-events: auto;">
+                    <ui:VisualElement class="char-item-slot-bg"/>
+                    <ui:VisualElement class="char-item-icon"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="LegsSlot" class="char-item-slot" style="pointer-events: auto;">
+                    <ui:VisualElement class="char-item-slot-bg"/>
+                    <ui:VisualElement class="char-item-icon"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="BeltSlot" class="char-item-slot" style="pointer-events: auto;">
+                    <ui:VisualElement class="char-item-slot-bg"/>
+                    <ui:VisualElement class="char-item-icon"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="BootsSlot" class="char-item-slot" style="pointer-events: auto;">
+                    <ui:VisualElement class="char-item-slot-bg"/>
+                    <ui:VisualElement class="char-item-icon"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="MainHandSlot" class="char-item-slot" style="pointer-events: auto;">
+                    <ui:VisualElement class="char-item-slot-bg"/>
+                    <ui:VisualElement class="char-item-icon"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="OffHandSlot" class="char-item-slot" style="pointer-events: auto;">
+                    <ui:VisualElement class="char-item-slot-bg"/>
+                    <ui:VisualElement class="char-item-icon"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="RightPage" class="page-container right-page">
+            <ui:Label text="Character Stats" class="stats-title"/>
+            <ui:VisualElement class="stat-row">
+                <ui:Label text="Max Health" class="stat-label"/>
+                <ui:Label name="MaxHealthLabel" text="100" class="stat-value"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="stat-row">
+                <ui:Label text="Max Mana" class="stat-label"/>
+                <ui:Label name="MaxManaLabel" text="100" class="stat-value"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="stat-row">
+                <ui:Label text="Spell Power" class="stat-label"/>
+                <ui:Label name="SpellPowerLabel" text="+0%" class="stat-value"/>
+            </ui:VisualElement>
+            <ui:ScrollView name="ItemStatsScroll" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden" class="item-stats-container">
+                <ui:VisualElement name="ItemStatsList"/>
+            </ui:ScrollView>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

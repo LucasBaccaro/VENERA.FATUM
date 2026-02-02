@@ -5,13 +5,13 @@
 /* Window Containers */
 .inventory-window {
     position: absolute;
-    right: 50px;
-    top: 100px;
-    width: 420px;
-    height: 600px;
+    right: 20px;
+    top: 50px;
+    width: 210px; /* 420 / 2 */
+    height: 300px; /* 600 / 2 */
     background-image: url('project://database/Assets/_Project/5_Content/Resources/Panels/UI-Inventory.png');
     -unity-background-scale-mode: stretch-to-fill;
-    padding: 60px 25px 30px 25px;
+    padding: 30px 12px 15px 12px;
 }
 
 .loot-window {
@@ -19,27 +19,27 @@
     left: 50%;
     top: 50%;
     translate: -50% -50%;
-    width: 450px;
-    height: 550px;
+    width: 225px; /* 450 / 2 */
+    height: 275px; /* 550 / 2 */
     background-image: url('project://database/Assets/_Project/5_Content/Resources/Panels/UI-GPW-Loot.png');
     -unity-background-scale-mode: stretch-to-fill;
-    padding: 70px 30px 40px 30px;
+    padding: 35px 15px 20px 15px; /* Halved padding */
 }
 
 /* Titles */
 .window-title {
-    font-size: 20px;
+    font-size: 10px; /* 20 / 2 */
     color: #e0bc7f;
     -unity-font-style: bold;
     -unity-text-align: upper-center;
-    margin-bottom: 20px;
-    letter-spacing: 2px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
 }
 
 /* Grid Layout */
 .item-grid {
-    start: 14px;
+    start: 7px; /* 14 / 2 */
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: flex-start;
@@ -67,9 +67,9 @@
 
 /* Item Slot */
 .item-slot {
-    width: 64px;
-    height: 64px;
-    margin: 4px;
+    width: 32px; /* 64 / 2 */
+    height: 32px; /* 64 / 2 */
+    margin: 2px; /* 4 / 2 */
     position: relative;
     justify-content: center;
     align-items: center;
@@ -88,8 +88,8 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 50px;
-    height: 50px;
+    width: 25px; /* 50 / 2 */
+    height: 25px; /* 50 / 2 */
     translate: -50% -50%;
     -unity-background-scale-mode: scale-to-fit;
     pointer-events: none;
@@ -104,10 +104,10 @@
 /* Quantity Label */
 .item-quantity {
     position: absolute;
-    bottom: 4px;
-    right: 6px;
+    bottom: 2px;
+    right: 3px;
     color: white;
-    font-size: 12px;
+    font-size: 8px; /* 12 / 2 - or adjusted to be readable */
     -unity-font-style: bold;
     text-shadow: 1px 1px 1px black;
     pointer-events: none;
@@ -122,13 +122,13 @@
 
 /* Buttons */
 .take-all-button {
-    margin-top: 15px;
-    height: 40px;
+    margin-top: 8px;
+    height: 20px;
     background-color: rgba(60, 45, 20, 0.8);
     border-color: #e0bc7f;
     border-width: 1px;
     color: #e0bc7f;
-    font-size: 14px;
+    font-size: 8px;
     -unity-font-style: bold;
     transition-property: background-color;
     transition-duration: 0.1s;
@@ -140,14 +140,14 @@
 
 .close-button {
     position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 30px;
-    height: 30px;
+    top: 10px;
+    right: 10px;
+    width: 15px;
+    height: 15px;
     background-color: transparent;
     border-width: 0;
     color: #e0bc7f;
-    font-size: 18px;
+    font-size: 10px;
     -unity-font-style: bold;
 }
 

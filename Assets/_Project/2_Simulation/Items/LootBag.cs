@@ -1,5 +1,6 @@
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Genesis.Items;
@@ -20,6 +21,11 @@ namespace Genesis.Simulation {
 
         [Tooltip("Interact radius")]
         [SerializeField] private float _interactRadius = 3f;
+        
+        [Header("Opening Settings")]
+        [SerializeField] private float _openingTime = 1.5f;
+        [SerializeField] private string _openingText = "Looting";
+        [SerializeField] private float _maxOpeningDistance = 5f;
 
         [Header("Network State")]
         private readonly SyncList<ItemSlot> _lootItems = new SyncList<ItemSlot>();
@@ -232,10 +238,23 @@ namespace Genesis.Simulation {
         public void Interact(NetworkObject player) {
             if (!base.IsServer) return;
 
-            Debug.Log($"[LootBag] {player.name} is interacting with loot bag");
+            Debug.Log($"[LootBag] {player.name} is starting to loot bag");
 
-            // Trigger client UI to open loot window
-            // We pass 'this' which implements ILootSource, but TargetRpc needs specific handling or we use EventBus on client
+            // Start opening process with cast bar
+            TargetStartOpening(player.Owner, _openingTime, _openingText);
+        }
+        
+        [ServerRpc(RequireOwnership = false)]
+        public void CmdFinishOpening(NetworkObject player) {
+            // Check distance
+            float distance = Vector3.Distance(transform.position, player.transform.position);
+            if (distance > _maxOpeningDistance) {
+                Debug.Log($"[LootBag] Player {player.name} too far to open loot bag");
+                TargetCancelOpening(player.Owner, "Too far from loot bag");
+                return;
+            }
+            
+            // Open UI
             if (player.Owner.IsValid) {
                 TargetOpenLootUI(player.Owner);
             }
@@ -253,6 +272,63 @@ namespace Genesis.Simulation {
         #endregion
 
         #region TargetRpc
+
+        [TargetRpc]
+        private void TargetStartOpening(FishNet.Connection.NetworkConnection conn, float duration, string text) {
+            StartCoroutine(OpeningCoroutine(duration, text));
+        }
+        
+        [TargetRpc]
+        private void TargetCancelOpening(FishNet.Connection.NetworkConnection conn, string reason) {
+            StopAllCoroutines();
+            EventBus.Trigger<CastUpdateData>("OnCastUpdate", CastUpdateData.Empty);
+            EventBus.Trigger("OnCombatError", reason);
+        }
+        
+        private IEnumerator OpeningCoroutine(float duration, string text) {
+            float elapsed = 0f;
+            Vector3 startPosition = transform.position;
+            
+            // Get local player reference
+            NetworkObject player = null;
+            if (FishNet.InstanceFinder.ClientManager != null && FishNet.InstanceFinder.ClientManager.Connection != null) {
+                player = FishNet.InstanceFinder.ClientManager.Connection.FirstObject;
+            }
+            
+            while (elapsed < duration) {
+                elapsed += Time.deltaTime;
+                float percent = Mathf.Clamp01(elapsed / duration);
+                
+                // Check distance
+                if (player != null) {
+                    float distance = Vector3.Distance(startPosition, player.transform.position);
+                    if (distance > _maxOpeningDistance) {
+                        EventBus.Trigger<CastUpdateData>("OnCastUpdate", CastUpdateData.Empty);
+                        EventBus.Trigger("OnCombatError", "Moved too far from loot bag");
+                        yield break;
+                    }
+                }
+                
+                // Update cast bar
+                EventBus.Trigger<CastUpdateData>("OnCastUpdate", new CastUpdateData {
+                    Percent = percent,
+                    AbilityName = text,
+                    RemainingTime = duration - elapsed,
+                    Duration = duration,
+                    IsChanneling = false,
+                    TickRate = 0,
+                    Category = AbilityCategory.Magical
+                });
+                
+                yield return null;
+            }
+            
+            // Clear cast bar
+            EventBus.Trigger<CastUpdateData>("OnCastUpdate", CastUpdateData.Empty);
+            
+            // Tell server we finished
+            CmdFinishOpening(player);
+        }
 
         /// <summary>
         /// Tell specific client to open loot UI

@@ -285,7 +285,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: FishNet.Runtime::FishNet.Object.NetworkObject
   <IsNested>k__BackingField: 0
-  WasActiveDuringEdit: 1
+  WasActiveDuringEdit: 0
   WasActiveDuringEdit_Set1: 1
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
@@ -346,8 +346,8 @@ MonoBehaviour:
   _interactRadius: 3
   _animator: {fileID: 4160791259836930682}
   _goldVisual: {fileID: 4585307022586870515}
-  _openTrigger: Open
-  _closeTrigger: Close
+  _openTrigger: Opened
+  _closeTrigger: Closed
 --- !u!65 &622666541671019124
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -17,5 +17,5 @@ MonoBehaviour:
   SceneName: Chunk_0_0
   IsStartingChunk: 1
   SpawnPositions:
-  - {x: 128.3072, y: 4.46568, z: 91.52}
+  - {x: 134.7, y: 4.64, z: 118.9}
   BiomeType: Beach

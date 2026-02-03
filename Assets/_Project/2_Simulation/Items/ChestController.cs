@@ -4,6 +4,7 @@ using FishNet.Object.Synchronizing;
 using Genesis.Core;
 using Genesis.Data;
 using Genesis.Items;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Genesis.Simulation {
@@ -19,6 +20,11 @@ namespace Genesis.Simulation {
         [SerializeField] private string _chestName = "Treasure Chest";
         [SerializeField] private LootTable _lootTable;
         [SerializeField] private float _interactRadius = 3f;
+        
+        [Header("Opening Settings")]
+        [SerializeField] private float _openingTime = 2f;
+        [SerializeField] private string _openingText = "Opening Chest";
+        [SerializeField] private float _maxOpeningDistance = 5f;
 
         [Header("Visuals")]
         [SerializeField] private Animator _animator;
@@ -75,20 +81,37 @@ namespace Genesis.Simulation {
             if (!base.IsServer) return;
 
             if (_state.Value == ChestState.Closed) {
-                // Open and Generate Loot
-                Debug.Log($"[Chest] Opening chest for {player.name}");
-                GenerateLoot();
-                _state.Value = ChestState.Opened;
-                _looterName.Value = player.name; // Track who opened it? Or just last interactor
-
-                // Allow time for animation before showing UI? 
-                // For now, instant.
+                // Start opening process with cast bar
+                Debug.Log($"[Chest] Starting opening process for {player.name}");
+                TargetStartOpening(player.Owner, _openingTime, _openingText);
             }
             
             if (_state.Value == ChestState.Opened) {
                 // Open UI
                 TargetOpenLootUI(player.Owner);
             }
+        }
+        
+        [ServerRpc(RequireOwnership = false)]
+        public void CmdFinishOpening(NetworkObject player) {
+            if (_state.Value != ChestState.Closed) return;
+            
+            // Check distance
+            float distance = Vector3.Distance(transform.position, player.transform.position);
+            if (distance > _maxOpeningDistance) {
+                Debug.Log($"[Chest] Player {player.name} too far to open chest");
+                TargetCancelOpening(player.Owner, "Too far from chest");
+                return;
+            }
+            
+            // Open and Generate Loot
+            Debug.Log($"[Chest] Opening chest for {player.name}");
+            GenerateLoot();
+            _state.Value = ChestState.Opened;
+            _looterName.Value = player.name;
+            
+            // Open UI immediately after opening
+            TargetOpenLootUI(player.Owner);
         }
 
         public bool CanInteract(NetworkObject player) {
@@ -184,6 +207,63 @@ namespace Genesis.Simulation {
         #endregion
 
         #region Client
+
+        [TargetRpc]
+        private void TargetStartOpening(FishNet.Connection.NetworkConnection conn, float duration, string text) {
+            StartCoroutine(OpeningCoroutine(duration, text));
+        }
+        
+        [TargetRpc]
+        private void TargetCancelOpening(FishNet.Connection.NetworkConnection conn, string reason) {
+            StopAllCoroutines();
+            EventBus.Trigger<CastUpdateData>("OnCastUpdate", CastUpdateData.Empty);
+            EventBus.Trigger("OnCombatError", reason);
+        }
+        
+        private IEnumerator OpeningCoroutine(float duration, string text) {
+            float elapsed = 0f;
+            Vector3 startPosition = transform.position;
+            
+            // Get local player reference
+            NetworkObject player = null;
+            if (FishNet.InstanceFinder.ClientManager != null && FishNet.InstanceFinder.ClientManager.Connection != null) {
+                player = FishNet.InstanceFinder.ClientManager.Connection.FirstObject;
+            }
+            
+            while (elapsed < duration) {
+                elapsed += Time.deltaTime;
+                float percent = Mathf.Clamp01(elapsed / duration);
+                
+                // Check distance
+                if (player != null) {
+                    float distance = Vector3.Distance(startPosition, player.transform.position);
+                    if (distance > _maxOpeningDistance) {
+                        EventBus.Trigger<CastUpdateData>("OnCastUpdate", CastUpdateData.Empty);
+                        EventBus.Trigger("OnCombatError", "Moved too far from chest");
+                        yield break;
+                    }
+                }
+                
+                // Update cast bar
+                EventBus.Trigger<CastUpdateData>("OnCastUpdate", new CastUpdateData {
+                    Percent = percent,
+                    AbilityName = text,
+                    RemainingTime = duration - elapsed,
+                    Duration = duration,
+                    IsChanneling = false,
+                    TickRate = 0,
+                    Category = AbilityCategory.Magical
+                });
+                
+                yield return null;
+            }
+            
+            // Clear cast bar
+            EventBus.Trigger<CastUpdateData>("OnCastUpdate", CastUpdateData.Empty);
+            
+            // Tell server we finished
+            CmdFinishOpening(player);
+        }
 
         [TargetRpc]
         private void TargetOpenLootUI(FishNet.Connection.NetworkConnection conn) {

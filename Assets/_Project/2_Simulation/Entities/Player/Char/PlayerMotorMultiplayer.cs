@@ -28,6 +28,7 @@ namespace Genesis.Simulation {
         private float _lastAnimSpeed;
         private StatusEffectSystem _statusEffects;
         private EquipmentManager _equipmentManager;
+        private bool _isDashing;
 
         // ═══════════════════════════════════════════════════════
         // INITIALIZATION
@@ -52,6 +53,11 @@ namespace Genesis.Simulation {
                 } else if (Camera.main != null) {
                     cameraTransform = Camera.main.transform;
                 }
+
+                // Asignar target al sistema de fade de objetos (OccluderFader)
+                if (OccluderFader.Instance != null) {
+                    OccluderFader.Instance.SetTarget(transform);
+                }
             }
 
             _lastPosition = transform.position;
@@ -69,8 +75,22 @@ namespace Genesis.Simulation {
 
             // 2. MOVIMIENTO (Solo Owner)
             if (base.IsOwner) {
-                HandleMovement();
+                if (!_isDashing) {
+                    HandleMovement();
+                } else {
+                    // Durante el dash solo aplicamos gravedad para no quedarnos flotando
+                    ApplyGravityOnly();
+                }
             }
+        }
+
+        private void ApplyGravityOnly() {
+            if (_cc.isGrounded) {
+                _velocity.y = -5f; // Fuerza de "stick" para mantenerse pegado al suelo
+            } else {
+                _velocity.y += gravity * Time.deltaTime;
+            }
+            _cc.Move(Vector3.up * _velocity.y * Time.deltaTime);
         }
 
         // ═══════════════════════════════════════════════════════
@@ -85,35 +105,28 @@ namespace Genesis.Simulation {
             Vector3 startPos = transform.position;
             float elapsed = 0f;
 
-            // Desactivar temporalmente el control manual si es necesario
-            // _isDashing = true; 
+            _isDashing = true;
 
             while (elapsed < duration) {
-                // Mover CC hacia el target
-                // Nota: Usamos Move para respetar colisiones con paredes durante el dash
-                Vector3 currentPos = Vector3.Lerp(startPos, target, elapsed / duration);
-                Vector3 direction = (target - startPos).normalized;
-                float distanceFrame = Vector3.Distance(transform.position, target) * (Time.deltaTime / (duration - elapsed));
-                
-                // Opción A: Teleport suave (ignora paredes)
-                // transform.position = currentPos;
-                
-                // Opción B: Move físico (choca con paredes)
-                // _cc.Move(direction * (Vector3.Distance(startPos, target) / duration) * Time.deltaTime);
-                
-                // Opción C: Lerp directo con desactivación de CC (Smooth Teleport)
-                _cc.enabled = false;
-                transform.position = currentPos;
-                _cc.enabled = true;
-
                 elapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsed / duration);
+                
+                // Calculamos la posición deseada en este frame
+                Vector3 desiredPos = Vector3.Lerp(startPos, target, t);
+                
+                // Calculamos el desplazamiento necesario desde la posición ACTUAL
+                // Esto permite que el CC choque con paredes y deje de avanzar
+                Vector3 movement = desiredPos - transform.position;
+                
+                // IMPORTANTE: Permitir el movimiento en Y para que el dash siga la altura
+                // calculada por el NavMesh en el DashLogic (ramp support)
+
+                _cc.Move(movement);
+
                 yield return null;
             }
 
-            // Asegurar posición final
-            _cc.enabled = false;
-            transform.position = target;
-            _cc.enabled = true;
+            _isDashing = false;
         }
 
         // ═══════════════════════════════════════════════════════
@@ -181,11 +194,15 @@ namespace Genesis.Simulation {
             // Movimiento Horizontal
             Vector3 velocityXZ = moveDir * targetSpeed;
             
-            // Gravedad (Vertical)
-            if (_cc.isGrounded && _velocity.y < 0) {
-                _velocity.y = -2f; // Mantener pegado al suelo
+            // Gravedad y Grounding
+            if (_cc.isGrounded) {
+                // Si estamos en el suelo, aplicamos una fuerza constante hacia abajo (-5f)
+                // Esto ayuda a que el CC no pierda el contacto en rampas descendentes.
+                _velocity.y = -5f; 
+            } else {
+                // En el aire, aplicamos gravedad acumulativa
+                _velocity.y += gravity * Time.deltaTime;
             }
-            _velocity.y += gravity * Time.deltaTime;
 
             // Aplicar Movimiento
             Vector3 finalMove = velocityXZ + Vector3.up * _velocity.y;

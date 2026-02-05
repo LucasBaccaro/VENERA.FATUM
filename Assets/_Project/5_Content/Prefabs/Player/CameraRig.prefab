@@ -41,7 +41,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2804071342997912818}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 01d4f32c42daaba42b83bf60c17c3ed3, type: 3}
   m_Name: 
@@ -51,9 +51,12 @@ MonoBehaviour:
   occluderFadeMaterial: {fileID: 2100000, guid: 1e216beaa8f5a5346b0965e54da0599d, type: 2}
   occluderMask:
     serializedVersion: 2
-    m_Bits: 256
-  sphereRadius: 0.25
-  extraDistance: 0.2
+    m_Bits: 32768
+  targetWindowRadius: 0.3
+  targetVerticalOffset: 0.5
+  useHierarchicalGrouping: 1
+  fadeSpeed: 5
+  showDebugRay: 1
 --- !u!114 &5251850820353442655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,7 +74,7 @@ MonoBehaviour:
   cam: {fileID: 7288236233722664233}
   followOffset: {x: 0, y: 0, z: 0}
   followSmooth: 12
-  yawSpeed: 20
+  yawSpeed: 320
   dynamicPitch: 1
   farPitch: 40
   nearPitch: 15
@@ -93,7 +96,7 @@ GameObject:
   - component: {fileID: 3835126195364647847}
   m_Layer: 0
   m_Name: Camera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

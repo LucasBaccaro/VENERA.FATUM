@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7076565319570934298}
   - component: {fileID: 5715247499138192967}
-  - component: {fileID: 1727199783770110194}
   - component: {fileID: 902623049883095979}
   - component: {fileID: 5015743577735707121}
   - component: {fileID: 2434602104015450095}
@@ -73,32 +72,12 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 3
   m_Height: 1.8
-  m_Radius: 0.35
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
+  m_Radius: 0.5
+  m_SlopeLimit: 60
+  m_StepOffset: 0.5
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &1727199783770110194
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3168934939399175360}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93bf3503cef76444c83c89b4c0c88a7e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GroundVisualSmoother
-  visualRoot: {fileID: 1353411857516159048}
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 128
-  rayHeight: 1.5
-  rayDistance: 1
-  heightSmooth: 10.8
-  maxOffset: 0.02
 --- !u!114 &902623049883095979
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -168,7 +147,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584316772527915839
+  _initializedTimestamp: -8584313507639751105
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -184,7 +163,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 17
+  <PrefabId>k__BackingField: 18
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 10407916748453484099
   SceneId: 0

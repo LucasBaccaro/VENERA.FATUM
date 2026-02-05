@@ -1254,13 +1254,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: CameraRig
       objectReference: {fileID: 0}
-    - target: {fileID: 3302142697858957488, guid: b69f335e28e4745a58dd5089cd8294f0, type: 3}
-      propertyPath: m_TagString
-      value: MainCamera
+    - target: {fileID: 8558517894753772696, guid: b69f335e28e4745a58dd5089cd8294f0, type: 3}
+      propertyPath: fadeSpeed
+      value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 5251850820353442655, guid: b69f335e28e4745a58dd5089cd8294f0, type: 3}
-      propertyPath: yawSpeed
-      value: 320
+    - target: {fileID: 8558517894753772696, guid: b69f335e28e4745a58dd5089cd8294f0, type: 3}
+      propertyPath: targetWindowRadius
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 8906210483557050486, guid: b69f335e28e4745a58dd5089cd8294f0, type: 3}
       propertyPath: m_LocalPosition.x

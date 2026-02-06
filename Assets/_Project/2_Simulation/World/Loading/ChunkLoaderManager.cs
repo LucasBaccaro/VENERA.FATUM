@@ -101,6 +101,15 @@ namespace Genesis.Simulation.World
             if (asyncLoad.isDone)
             {
                 _loadedChunks.Add(coord);
+                
+                // Set the loaded scene as active to ensure lighting settings (baked data, ambient, etc.) are applied
+                Scene loadedScene = SceneManager.GetSceneByName(sceneName);
+                if (loadedScene.IsValid() && loadedScene.isLoaded)
+                {
+                    SceneManager.SetActiveScene(loadedScene);
+                    Debug.Log($"[ChunkLoader] Set active scene to: {sceneName}");
+                }
+
                 EventBus.Trigger(WorldStreamingEvents.CHUNK_LOAD_COMPLETED, coord);
                 Debug.Log($"[ChunkLoader] Loaded chunk {coord} - Scene: {sceneName} ({(_isServer ? "Server" : "Client")})");
             }

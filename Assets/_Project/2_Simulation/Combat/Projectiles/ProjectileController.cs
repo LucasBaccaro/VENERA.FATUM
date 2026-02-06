@@ -59,7 +59,7 @@ namespace Genesis.Simulation.Combat {
 
             // Detección de Colisión (SphereCast)
             // LayerMask: Enemy (6) + Environment (8) + Player (3)
-            int mask = LayerMask.GetMask("Enemy", "Environment", "Player");
+            int mask = LayerMask.GetMask("Enemy", "Environment", "Player", "Colliders");
 
             // Origen ajustado para evitar colisionar con uno mismo si nace muy cerca
             Vector3 origin = transform.position + direction * 0.1f;
@@ -76,8 +76,9 @@ namespace Genesis.Simulation.Combat {
 
         [Server]
         private void HandleImpact(RaycastHit hit) {
-            // ═══ CASO 1: Impacto con Environment (pared/suelo) ═══
-            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Environment")) {
+            // ═══ CASO 1: Impacto con Environment o Colliders (pared/obstáculo) ═══
+            int hitLayer = hit.collider.gameObject.layer;
+            if (hitLayer == LayerMask.NameToLayer("Environment") || hitLayer == LayerMask.NameToLayer("Colliders")) {
                 SpawnImpactVFX(hit.point, hit.normal);
                 Despawn();
                 return;

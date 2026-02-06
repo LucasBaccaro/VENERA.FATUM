@@ -14,7 +14,7 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
-  m_Fog: 1
+  m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.01
@@ -93,7 +93,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 20201, guid: 0000000000000000f000000000000000, type: 0}
+  m_LightingDataAsset: {fileID: 0}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -561,6 +561,10 @@ PrefabInstance:
     - target: {fileID: 778038601191961253, guid: 926b5fd63c878214e9b4811444b59174, type: 3}
       propertyPath: m_Name
       value: LOOKS
+      objectReference: {fileID: 0}
+    - target: {fileID: 778038601191961253, guid: 926b5fd63c878214e9b4811444b59174, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4362774461142063742, guid: 926b5fd63c878214e9b4811444b59174, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1253,14 +1257,6 @@ PrefabInstance:
     - target: {fileID: 2804071342997912818, guid: b69f335e28e4745a58dd5089cd8294f0, type: 3}
       propertyPath: m_Name
       value: CameraRig
-      objectReference: {fileID: 0}
-    - target: {fileID: 8558517894753772696, guid: b69f335e28e4745a58dd5089cd8294f0, type: 3}
-      propertyPath: fadeSpeed
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8558517894753772696, guid: b69f335e28e4745a58dd5089cd8294f0, type: 3}
-      propertyPath: targetWindowRadius
-      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 8906210483557050486, guid: b69f335e28e4745a58dd5089cd8294f0, type: 3}
       propertyPath: m_LocalPosition.x

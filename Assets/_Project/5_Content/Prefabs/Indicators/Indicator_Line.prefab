@@ -250,7 +250,7 @@ MonoBehaviour:
   invalidColor: {r: 1, g: 0, b: 0, a: 0.3}
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 6472
+    m_Bits: 72008
   validationInterval: 0.05
   groundMask:
     serializedVersion: 2

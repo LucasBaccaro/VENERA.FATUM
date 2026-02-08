@@ -76,7 +76,7 @@ Material:
     - _MinAlpha: 0.15
     - _NoiseScale: 1.69
     - _NoiseStrength: -0.07
-    - _QueueControl: 0
+    - _QueueControl: 1
     - _QueueOffset: 0
     - _ScreenAspect: 2
     - _WindowAlpha: 0.1

@@ -27,6 +27,7 @@ public class OccluderFader : MonoBehaviour
 
     [Header("Debug")]
     public bool showDebugRay = true;
+    public bool showDetectionBox = false;
 
     private class FadeState
     {
@@ -99,6 +100,15 @@ public class OccluderFader : MonoBehaviour
     private readonly List<Renderer> environmentRenderers = new();
     private readonly Dictionary<Renderer, Transform> rendererToRoot = new();
     private readonly Vector3[] _cornerCache = new Vector3[8];
+    private readonly Vector3[] _pointsCache = new Vector3[20];
+    private int _pointsCount = 0;
+    private readonly HashSet<Transform> _occludedRootsCache = new();
+    private static readonly int[,] BoundingBoxEdges = new[,]
+    {
+        {0,1}, {1,3}, {3,2}, {2,0}, // Min Z face
+        {4,5}, {5,7}, {7,6}, {6,4}, // Max Z face
+        {0,4}, {1,5}, {2,6}, {3,7}  // Vertical edges
+    };
     
     private Camera _cam;
     private MaterialPropertyBlock _propBlock;
@@ -164,10 +174,10 @@ public class OccluderFader : MonoBehaviour
             if (cameraTransform == null) return;
         }
 
-        if (environmentRenderers.Count == 0 && Time.time > _nextRefreshTime)
+        if (Time.time > _nextRefreshTime)
         {
             RefreshRenderers();
-            _nextRefreshTime = Time.time + 5f;
+            _nextRefreshTime = Time.time + 3f; // Refresh every 3 seconds to catch dynamic objects
         }
 
         Vector3 camPos = cameraTransform.position;
@@ -183,9 +193,9 @@ public class OccluderFader : MonoBehaviour
         Shader.SetGlobalFloat(PlayerYID, playerPos.y);
         Shader.SetGlobalFloat(ScreenAspectID, aspect);
 
-        // 2) DETECCIÓN DE OCLUSIÓN (Ajustada por Aspect Ratio)
-        HashSet<Transform> occludedRoots = new HashSet<Transform>();
-        float camToPlayerDist = Vector3.Distance(camPos, playerPos);
+        // 2) DETECCIÓN DE OCLUSIÓN
+        _occludedRootsCache.Clear();
+        float playerDepth = playerViewportPos.z;
 
         // Punto de referencia del jugador en espacio corregido (X escalado por aspect)
         Vector2 playerRef = new Vector2(playerViewportPos.x * aspect, playerViewportPos.y);
@@ -197,7 +207,7 @@ public class OccluderFader : MonoBehaviour
             Bounds b = r.bounds;
             if (b.Contains(camPos))
             {
-                occludedRoots.Add(useHierarchicalGrouping && rendererToRoot.TryGetValue(r, out var rootInside) ? rootInside : r.transform);
+                _occludedRootsCache.Add(useHierarchicalGrouping && rendererToRoot.TryGetValue(r, out var rootInside) ? rootInside : r.transform);
                 continue;
             }
 
@@ -206,28 +216,61 @@ public class OccluderFader : MonoBehaviour
             float minZ = float.MaxValue;
             bool anyFront = false;
 
+            // Pre-calculate world positions and check sides of camera near plane
+            Plane nearPlane = new Plane(_cam.transform.forward, _cam.transform.position + _cam.transform.forward * 0.05f);
+            
+            _pointsCount = 0;
+
             for (int i = 0; i < 8; i++)
             {
-                Vector3 v = _cam.WorldToViewportPoint(_cornerCache[i]);
-                if (v.z > 0)
+                Vector3 worldPt = _cornerCache[i];
+                if (nearPlane.GetSide(worldPt))
                 {
+                    _pointsCache[_pointsCount++] = _cam.WorldToViewportPoint(worldPt);
                     anyFront = true;
-                    // Aplicamos el aspecto a las coordenadas X para la comparación circular
-                    float correctedX = v.x * aspect;
-                    minX = Mathf.Min(minX, correctedX); maxX = Mathf.Max(maxX, correctedX);
-                    minY = Mathf.Min(minY, v.y); maxY = Mathf.Max(maxY, v.y);
-                    minZ = Mathf.Min(minZ, v.z);
                 }
             }
 
-            if (anyFront && minZ < camToPlayerDist)
+            // Edge clipping against the near plane in WORLD SPACE (Proper for Perspective)
+            for (int i = 0; i < 12; i++)
+            {
+                Vector3 pA = _cornerCache[BoundingBoxEdges[i, 0]];
+                Vector3 pB = _cornerCache[BoundingBoxEdges[i, 1]];
+
+                if (nearPlane.GetSide(pA) != nearPlane.GetSide(pB))
+                {
+                    Ray ray = new Ray(pA, pB - pA);
+                    if (nearPlane.Raycast(ray, out float enter))
+                    {
+                        Vector3 worldIntersect = ray.GetPoint(enter);
+                        _pointsCache[_pointsCount++] = _cam.WorldToViewportPoint(worldIntersect);
+                        anyFront = true;
+                    }
+                }
+            }
+
+            for (int i = 0; i < _pointsCount; i++)
+            {
+                Vector3 v = _pointsCache[i];
+                float correctedX = v.x * aspect;
+                minX = Mathf.Min(minX, correctedX); maxX = Mathf.Max(maxX, correctedX);
+                minY = Mathf.Min(minY, v.y); maxY = Mathf.Max(maxY, v.y);
+                minZ = Mathf.Min(minZ, v.z);
+            }
+
+            if (showDetectionBox && anyFront)
+            {
+                DrawDebugBox(minX, maxX, minY, maxY, aspect);
+            }
+
+            if (anyFront && minZ < playerDepth)
             {
                 // Ahora comparamos en un espacio donde el círculo es realmente un círculo
                 float margin = targetWindowRadius;
                 if (playerRef.x >= (minX - margin) && playerRef.x <= (maxX + margin) &&
                     playerRef.y >= (minY - margin) && playerRef.y <= (maxY + margin))
                 {
-                    occludedRoots.Add(useHierarchicalGrouping && rendererToRoot.TryGetValue(r, out var root) ? root : r.transform);
+                    _occludedRootsCache.Add(useHierarchicalGrouping && rendererToRoot.TryGetValue(r, out var root) ? root : r.transform);
                 }
             }
         }
@@ -237,10 +280,10 @@ public class OccluderFader : MonoBehaviour
 
         foreach (var r in environmentRenderers)
         {
-            if (r == null) continue;
+            if (r == null || !r.enabled || !r.gameObject.activeInHierarchy) continue;
             Transform root = useHierarchicalGrouping && rendererToRoot.TryGetValue(r, out var rRoot) ? rRoot : r.transform;
 
-            if (occludedRoots.Contains(root))
+            if (_occludedRootsCache.Contains(root))
             {
                 if (!activeFades.TryGetValue(r, out FadeState state))
                 {
@@ -261,6 +304,12 @@ public class OccluderFader : MonoBehaviour
         {
             Renderer r = kvp.Key;
             FadeState state = kvp.Value;
+
+            if (r == null) 
+            {
+                toRemove.Add(r);
+                continue;
+            }
 
             state.currentProgress = Mathf.MoveTowards(state.currentProgress, state.isTargeted ? 1f : 0f, fadeSpeed * Time.deltaTime);
 
@@ -309,5 +358,20 @@ public class OccluderFader : MonoBehaviour
         if (cameraTransform != null) _cam = cameraTransform.GetComponent<Camera>();
         if (_cam == null) _cam = Camera.main;
         if (_cam != null && cameraTransform == null) cameraTransform = _cam.transform;
+    }
+
+    private void DrawDebugBox(float minX, float maxX, float minY, float maxY, float aspect)
+    {
+        // Convert screen space back to world wires for visualization in scene view
+        float z = 1.0f; // Near distance for debug
+        Vector3 bl = _cam.ViewportToWorldPoint(new Vector3(minX / aspect, minY, z));
+        Vector3 tl = _cam.ViewportToWorldPoint(new Vector3(minX / aspect, maxY, z));
+        Vector3 tr = _cam.ViewportToWorldPoint(new Vector3(maxX / aspect, maxY, z));
+        Vector3 br = _cam.ViewportToWorldPoint(new Vector3(maxX / aspect, minY, z));
+
+        Debug.DrawLine(bl, tl, Color.green);
+        Debug.DrawLine(tl, tr, Color.green);
+        Debug.DrawLine(tr, br, Color.green);
+        Debug.DrawLine(br, bl, Color.green);
     }
 }

@@ -11,6 +11,7 @@ public class OccluderFader : MonoBehaviour
     public Material occluderFadeMaterial;
 
     [Header("Detection Settings")]
+    public float heightCutOffset = 0.5f;
     public LayerMask occluderMask;
     [Tooltip("Radius of the circular hole in the shader (relative to screen height).")]
     public float targetWindowRadius = 0.2f;
@@ -115,6 +116,7 @@ public class OccluderFader : MonoBehaviour
     
     private static readonly int PlayerScreenPosID = Shader.PropertyToID("_PlayerScreenPos");
     private static readonly int PlayerYID = Shader.PropertyToID("_PlayerY");
+    private static readonly int HeightCutOffsetID = Shader.PropertyToID("_HeightCutOffset");
     private static readonly int WindowRadiusID = Shader.PropertyToID("_WindowRadius");
     private static readonly int BaseMapID = Shader.PropertyToID("_BaseMap");
     private static readonly int SpecularID = Shader.PropertyToID("_Specular");
@@ -182,6 +184,8 @@ public class OccluderFader : MonoBehaviour
 
         Vector3 camPos = cameraTransform.position;
         Vector3 playerPos = target.position + Vector3.up * targetVerticalOffset;
+        Ray viewRay = new Ray(camPos, (playerPos - camPos).normalized);
+        float distToPlayer = Vector3.Distance(camPos, playerPos);
 
         if (showDebugRay) Debug.DrawLine(camPos, playerPos, Color.red);
 
@@ -191,6 +195,7 @@ public class OccluderFader : MonoBehaviour
         
         Shader.SetGlobalVector(PlayerScreenPosID, new Vector4(playerViewportPos.x, playerViewportPos.y, 0, 0));
         Shader.SetGlobalFloat(PlayerYID, playerPos.y);
+        Shader.SetGlobalFloat(HeightCutOffsetID, heightCutOffset);
         Shader.SetGlobalFloat(ScreenAspectID, aspect);
 
         // 2) DETECCIÓN DE OCLUSIÓN
@@ -206,6 +211,7 @@ public class OccluderFader : MonoBehaviour
 
             Bounds b = r.bounds;
             if (b.Contains(camPos))
+
             {
                 _occludedRootsCache.Add(useHierarchicalGrouping && rendererToRoot.TryGetValue(r, out var rootInside) ? rootInside : r.transform);
                 continue;
@@ -265,12 +271,17 @@ public class OccluderFader : MonoBehaviour
 
             if (anyFront && minZ < playerDepth)
             {
-                // Ahora comparamos en un espacio donde el círculo es realmente un círculo
-                float margin = targetWindowRadius;
-                if (playerRef.x >= (minX - margin) && playerRef.x <= (maxX + margin) &&
-                    playerRef.y >= (minY - margin) && playerRef.y <= (maxY + margin))
+                // Strict 3D Line-of-sight Check: Only fade if the 3D ray to player actually hits this object
+                // This prevents false positives from objects that are near the line of sight but not blocking it.
+                if (r.bounds.IntersectRay(viewRay, out float hitDist) && hitDist <= distToPlayer + 0.5f)
                 {
-                    _occludedRootsCache.Add(useHierarchicalGrouping && rendererToRoot.TryGetValue(r, out var root) ? root : r.transform);
+                    // Ahora comparamos en un espacio donde el círculo es realmente un círculo
+                    float margin = targetWindowRadius;
+                    if (playerRef.x >= (minX - margin) && playerRef.x <= (maxX + margin) &&
+                        playerRef.y >= (minY - margin) && playerRef.y <= (maxY + margin))
+                    {
+                        _occludedRootsCache.Add(useHierarchicalGrouping && rendererToRoot.TryGetValue(r, out var root) ? root : r.transform);
+                    }
                 }
             }
         }

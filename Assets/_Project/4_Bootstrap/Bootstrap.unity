@@ -1258,6 +1258,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: CameraRig
       objectReference: {fileID: 0}
+    - target: {fileID: 8558517894753772696, guid: b69f335e28e4745a58dd5089cd8294f0, type: 3}
+      propertyPath: heightCutOffset
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8558517894753772696, guid: b69f335e28e4745a58dd5089cd8294f0, type: 3}
+      propertyPath: targetWindowRadius
+      value: 0.005
+      objectReference: {fileID: 0}
     - target: {fileID: 8906210483557050486, guid: b69f335e28e4745a58dd5089cd8294f0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

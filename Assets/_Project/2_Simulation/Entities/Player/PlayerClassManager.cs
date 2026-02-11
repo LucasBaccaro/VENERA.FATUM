@@ -68,7 +68,13 @@ namespace Genesis.Simulation {
             var equipmentManager = GetComponent<Genesis.Simulation.EquipmentManager>();
             if (equipmentManager != null) {
                 equipmentManager.UpdateBaseStats(data.MaxHealth, data.MaxMana);
-                equipmentManager.ValidateEquipmentForClass(data.ClassName); // AUTO-UNEQUIP INVALID ITEMS
+                equipmentManager.ValidateEquipmentForClass(data.ClassName);
+            }
+
+            // 4. Notificar PlayerAttributes para recalcular derived stats
+            var attributes = GetComponent<Genesis.Simulation.PlayerAttributes>();
+            if (attributes != null) {
+                attributes.RecalculateDerivedStats();
             }
         }
 

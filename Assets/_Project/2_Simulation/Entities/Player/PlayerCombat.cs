@@ -1512,28 +1512,11 @@ namespace Genesis.Simulation {
         // ═══════════════════════════════════════════════════════
 
         /// <summary>
-        /// Calculate final damage including equipment bonuses (SpellPower).
-        /// Formula: Damage = BaseDamage * (1 + SpellPowerBonus)
-        ///
-        /// Example:
-        /// - BaseDamage: 100
-        /// - SpellPowerBonus: 0.25 (25%)
-        /// - Final Damage: 100 * (1 + 0.25) = 125
+        /// [DEPRECATED] Use CombatCalculator.CalculateDamage() instead.
+        /// Kept for backwards compatibility only.
         /// </summary>
+        [System.Obsolete("Use CombatCalculator.CalculateDamage() instead")]
         public float CalculateFinalDamage(float baseDamage) {
-            var equipmentManager = GetComponent<Genesis.Simulation.EquipmentManager>();
-
-            if (equipmentManager != null) {
-                float spellPowerBonus = equipmentManager.SpellPowerBonus;
-                float finalDamage = baseDamage * (1f + spellPowerBonus);
-
-                if (spellPowerBonus > 0f) {
-                    Debug.Log($"[PlayerCombat] Damage calculated: {baseDamage} * (1 + {spellPowerBonus}) = {finalDamage}");
-                }
-
-                return finalDamage;
-            }
-
             return baseDamage;
         }
     }

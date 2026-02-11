@@ -29,6 +29,9 @@ namespace Genesis.Presentation.Feedback {
                 case "shield": color = GetColorForShield(); break;
                 case "critical": color = GetColorForCritical(); break;
                 case "mana": color = GetColorForMana(); break;
+                case "overpower": color = GetColorForOverpower(); break;
+                case "evade": color = GetColorForEvade(); break;
+                case "critheal": color = GetColorForCritHeal(); break;
             }
             Spawn(data.position, data.text, color, data.isCritical);
         }
@@ -65,5 +68,8 @@ namespace Genesis.Presentation.Feedback {
         public Color GetColorForShield() => config != null ? config.shieldColor : Color.cyan;
         public Color GetColorForCritical() => config != null ? config.criticalColor : Color.yellow;
         public Color GetColorForMana() => config != null ? config.manaColor : Color.blue;
+        public Color GetColorForOverpower() => new Color(1f, 0.5f, 0f); // Orange
+        public Color GetColorForEvade() => new Color(0.6f, 0.6f, 0.6f); // Grey
+        public Color GetColorForCritHeal() => new Color(0.4f, 1f, 0.4f); // Bright green
     }
 }

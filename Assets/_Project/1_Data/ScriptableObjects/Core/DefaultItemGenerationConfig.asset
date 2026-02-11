@@ -1,0 +1,101 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 935056966aa9742648b3e340000bf030, type: 3}
+  m_Name: DefaultItemGenerationConfig
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.ItemGenerationConfig
+  ClassMappings:
+  - ClassName: Warrior
+    PrimaryAttribute: 2
+    SecondaryAttribute: 6
+    ExcludedSubStats: 0d000000
+  - ClassName: Mage
+    PrimaryAttribute: 4
+    SecondaryAttribute: 5
+    ExcludedSubStats: 0a00000009000000
+  SubStatPool: 0700000008000000090000000a0000000b0000000c0000000d0000000e000000
+  CombatSubStatPool: 0700000008000000090000000a000000
+  RarityTiers:
+  - ArmorPrimary:
+      Min: 2
+      Max: 3
+    ArmorSecondary:
+      Min: 1
+      Max: 2
+    ComplementPrimary:
+      Min: 1
+      Max: 2
+    ComplementSecondary:
+      Min: 1
+      Max: 2
+    WeaponPrimary:
+      Min: 3
+      Max: 5
+    WeaponSecondary:
+      Min: 1
+      Max: 2
+    NumSubStats: 1
+    SubStatPercent:
+      Min: 0.01
+      Max: 0.02
+    SubStatFlat:
+      Min: 1
+      Max: 3
+  - ArmorPrimary:
+      Min: 4
+      Max: 6
+    ArmorSecondary:
+      Min: 2
+      Max: 4
+    ComplementPrimary:
+      Min: 3
+      Max: 4
+    ComplementSecondary:
+      Min: 2
+      Max: 3
+    WeaponPrimary:
+      Min: 5
+      Max: 8
+    WeaponSecondary:
+      Min: 2
+      Max: 4
+    NumSubStats: 2
+    SubStatPercent:
+      Min: 0.02
+      Max: 0.04
+    SubStatFlat:
+      Min: 3
+      Max: 5
+  - ArmorPrimary:
+      Min: 7
+      Max: 10
+    ArmorSecondary:
+      Min: 4
+      Max: 6
+    ComplementPrimary:
+      Min: 5
+      Max: 7
+    ComplementSecondary:
+      Min: 3
+      Max: 5
+    WeaponPrimary:
+      Min: 8
+      Max: 12
+    WeaponSecondary:
+      Min: 4
+      Max: 6
+    NumSubStats: 3
+    SubStatPercent:
+      Min: 0.04
+      Max: 0.06
+    SubStatFlat:
+      Min: 5
+      Max: 8

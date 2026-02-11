@@ -1,6 +1,7 @@
 using UnityEngine;
 using FishNet.Object;
 using Genesis.Data;
+using Genesis.Simulation;
 using System.Collections;
 
 namespace Genesis.Simulation.Combat {
@@ -85,6 +86,10 @@ namespace Genesis.Simulation.Combat {
                 Object.Destroy(vfx, data.ImpactVFXDuration);
             }
 
+            // Get config for combat calculations
+            PlayerAttributes casterAttrs = caster != null ? caster.GetComponent<PlayerAttributes>() : null;
+            AttributeConfig config = casterAttrs != null ? casterAttrs.Config : null;
+
             // Detectar todos los targets en radio
             LayerMask mask = GetLayerMask();
             Collider[] hits = Physics.OverlapSphere(targetPoint, data.Radius, mask);
@@ -100,7 +105,17 @@ namespace Genesis.Simulation.Combat {
 
                     // Aplicar DAMAGE
                     if (data.BaseDamage > 0 && affectsEnemies) {
-                        if (hit.TryGetComponent(out IDamageable damageable)) {
+                        if (hit.TryGetComponent(out PlayerStats targetStats)) {
+                            CombatResult result = CombatCalculator.CalculateDamage(caster, netObj, data.BaseDamage, data.Category, config);
+                            if (result.ResultType != DamageResultType.Evaded) {
+                                targetStats.TakeDamage(result.FinalDamage, caster, result.ResultType);
+                                if (result.LifeStealAmount > 0f) {
+                                    PlayerStats casterStats = caster.GetComponent<PlayerStats>();
+                                    casterStats?.Heal(result.LifeStealAmount);
+                                }
+                                damageCount++;
+                            }
+                        } else if (hit.TryGetComponent(out IDamageable damageable)) {
                             damageable.TakeDamage(data.BaseDamage, caster);
                             damageCount++;
                         }
@@ -109,7 +124,8 @@ namespace Genesis.Simulation.Combat {
                     // Aplicar HEAL
                     if (data.BaseHeal > 0 && affectsAllies) {
                         if (hit.TryGetComponent(out PlayerStats stats)) {
-                            stats.RestoreHealth(data.BaseHeal);
+                            CombatResult healResult = CombatCalculator.CalculateHeal(caster, data.BaseHeal, config);
+                            stats.RestoreHealth(healResult.FinalDamage);
                             healCount++;
                         }
                     }

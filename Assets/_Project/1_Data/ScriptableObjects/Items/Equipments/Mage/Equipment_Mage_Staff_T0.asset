@@ -19,17 +19,37 @@ MonoBehaviour:
   Type: 1
   IsStackable: 0
   MaxStackSize: 1
-  IsProtected: 0
+  IsProtected: 1
   Slot: 7
   RequiredClass: Mage
   CommonStats:
   - Type: 0
     Value: 50
   UncommonStats:
-  - Type: 0
-    Value: 100
-  RareStats: []
-  EpicStats: []
+  - Type: 4
+    Value: 3
+  - Type: 5
+    Value: 2
+  - Type: 8
+    Value: 0.015354593
+  RareStats:
+  - Type: 4
+    Value: 6
+  - Type: 5
+    Value: 2
+  - Type: 8
+    Value: 0.031343345
+  - Type: 7
+    Value: 0.036096558
+  EpicStats:
+  - Type: 4
+    Value: 12
+  - Type: 5
+    Value: 5
+  - Type: 7
+    Value: 0.059534546
+  - Type: 8
+    Value: 0.045972515
   VisualData:
     VisualPrefab: {fileID: 3916429459238741166, guid: 974a86e63f527694bb49ac2d4c3cdba4, type: 3}
     HiddenBodyParts: 0

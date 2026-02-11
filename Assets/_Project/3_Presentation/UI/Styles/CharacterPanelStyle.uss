@@ -13,6 +13,36 @@
     overflow: hidden;
 }
 
+/* ScrollView for right page stats */
+.stats-scroll-view {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+}
+
+.stats-scroll-view #unity-content-container {
+    padding-right: 4px;
+}
+
+.stats-scroll-view #unity-vertical-scroller {
+    width: 4px;
+    border-radius: 2px;
+}
+
+.stats-scroll-view #unity-vertical-scroller #unity-tracker {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+}
+
+.stats-scroll-view #unity-vertical-scroller #unity-dragger {
+    background-color: rgba(93, 64, 55, 0.5);
+    border-radius: 2px;
+}
+
+.stats-scroll-view #unity-horizontal-scroller {
+    display: none;
+}
+
 /* Page Containers */
 .page-container {
     position: absolute;
@@ -60,7 +90,7 @@
     top: 50%;
     left: 50%;
     width: 41px; /* 83 / 2 */
-    height: 41px; 
+    height: 41px;
     translate: -50% -50%;
     -unity-background-scale-mode: scale-to-fit;
     pointer-events: none;
@@ -91,33 +121,77 @@
 
 /* Stats Page Styles */
 .stats-title {
-    font-size: 14px;
+    font-size: 11px;
     color: #5d4037;
     -unity-font-style: bold;
     -unity-text-align: middle-center;
-    margin-bottom: 15px;
+    margin-bottom: 2px;
+    margin-top: 2px;
     border-bottom-width: 1px;
     border-bottom-color: rgba(93, 64, 55, 0.3);
-    padding-bottom: 5px;
+    padding-bottom: 2px;
 }
 
 .stat-row {
     flex-direction: row;
     justify-content: space-between;
-    margin-bottom: 8px;
-    padding: 2px 5px;
+    align-items: center;
+    margin-bottom: 1px;
+    padding: 1px 5px;
 }
 
 .stat-label {
-    font-size: 10px;
+    font-size: 9px;
     color: #5d4037;
     -unity-font-style: bold;
 }
 
 .stat-value {
-    font-size: 10px;
+    font-size: 9px;
     color: #2e7d32;
     -unity-font-style: bold;
+}
+
+/* Attribute title row with unspent points */
+.attr-title-row {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 2px;
+}
+
+.unspent-points-label {
+    font-size: 8px;
+    color: #b8860b;
+    -unity-font-style: bold;
+    margin-right: 4px;
+}
+
+/* Attribute + button */
+.char-attr-plus-btn {
+    width: 16px;
+    height: 14px;
+    font-size: 10px;
+    color: #b8860b;
+    background-color: rgba(184, 134, 11, 0.12);
+    border-width: 1px;
+    border-color: rgba(184, 134, 11, 0.35);
+    border-radius: 2px;
+    -unity-text-align: middle-center;
+    -unity-font-style: bold;
+    padding: 0;
+    margin: 0;
+    margin-left: 4px;
+}
+
+.char-attr-plus-btn:hover {
+    background-color: rgba(184, 134, 11, 0.3);
+    border-color: rgba(184, 134, 11, 0.7);
+}
+
+.char-attr-plus-btn:disabled {
+    color: rgba(93, 64, 55, 0.3);
+    background-color: transparent;
+    border-color: rgba(93, 64, 55, 0.15);
 }
 
 /* Rarity Effects - Matching Inventory Style */
@@ -138,8 +212,8 @@
 /* Item Stats Styles */
 .item-stats-container {
     flex-grow: 1;
-    margin-top: 8px;
-    padding-top: 8px;
+    margin-top: 4px;
+    padding-top: 4px;
     border-top-width: 1px;
     border-top-color: rgba(93, 64, 55, 0.2);
 }
@@ -153,17 +227,17 @@
 }
 
 .item-stat-entry {
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 
 .item-stat-name {
-    font-size: 10px;
+    font-size: 9px;
     color: #5d4037;
     -unity-font-style: bold;
 }
 
 .item-stat-values {
-    font-size: 9px;
+    font-size: 8px;
     color: #2e7d32;
     padding-left: 5px;
 }

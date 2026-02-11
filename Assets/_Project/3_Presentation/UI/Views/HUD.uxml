@@ -7,7 +7,7 @@
                     <ui:VisualElement name="PortraitIcon" class="portrait-icon" style="background-image: url(&quot;project://database/Assets/_Project/5_Content/Resources/Icons/Abilities/Mago/Bola de Fuego.png&quot;); opacity: 0;"/>
                 </ui:VisualElement>
                 <ui:VisualElement name="LevelContainer" class="level-container" style="bottom: -15px; left: 6px; height: 56px; width: 58px;">
-                    <ui:Label text="99" name="LevelLabel" class="level-label"/>
+                    <ui:Label text="1" name="LevelLabel" class="level-label"/>
                 </ui:VisualElement>
                 <ui:Label text="POROTINS" name="PlayerName" class="player-name-label" style="top: 17px; left: 136px; width: 170px; font-size: 30px;"/>
                 <ui:VisualElement name="ClassContainer" class="class-container" style="background-color: rgba(0, 0, 0, 0); top: 13px; right: 12px; height: 49px; width: 51px;">

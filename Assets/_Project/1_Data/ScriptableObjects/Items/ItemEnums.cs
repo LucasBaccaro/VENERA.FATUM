@@ -23,7 +23,9 @@ namespace Genesis.Items {
         Hands,
         Belt,
         Weapon,
-        OffHand
+        OffHand,
+        Ring1,
+        Ring2
     }
 
     /// <summary>
@@ -63,8 +65,22 @@ namespace Genesis.Items {
     public enum StatType {
         MaxHealth,     // Increases maximum HP (flat)
         MaxMana,       // Increases maximum Mana (flat)
-        SpellPower     // Increases ability damage (% bonus, e.g. 0.25 = +25%)
-        // Future: CooldownReduction, MoveSpeed, Armor, CritChance, etc.
+        // Primary Attributes
+        Strength,
+        Agility,
+        Intelligence,
+        Wisdom,
+        Constitution,
+        // Combat Sub-stats
+        Haste,
+        LifeSteal,
+        Penetration,
+        Block,
+        // World Sub-stats
+        LootLuck,
+        Lockpicking,
+        Perception,
+        MoveSpeed
     }
 
     /// <summary>
@@ -88,8 +104,32 @@ namespace Genesis.Items {
                     return $"{prefix}{Value} Max HP";
                 case StatType.MaxMana:
                     return $"{prefix}{Value} Max Mana";
-                case StatType.SpellPower:
-                    return $"{prefix}{Value * 100f}% Spell Power";
+                case StatType.Strength:
+                    return $"{prefix}{Value} Strength";
+                case StatType.Agility:
+                    return $"{prefix}{Value} Agility";
+                case StatType.Intelligence:
+                    return $"{prefix}{Value} Intelligence";
+                case StatType.Wisdom:
+                    return $"{prefix}{Value} Wisdom";
+                case StatType.Constitution:
+                    return $"{prefix}{Value} Constitution";
+                case StatType.Haste:
+                    return $"{prefix}{Value * 100f:F0}% Haste";
+                case StatType.LifeSteal:
+                    return $"{prefix}{Value * 100f:F0}% Life Steal";
+                case StatType.Penetration:
+                    return $"{prefix}{Value * 100f:F0}% Penetration";
+                case StatType.Block:
+                    return $"{prefix}{Value} Block";
+                case StatType.LootLuck:
+                    return $"{prefix}{Value * 100f:F0}% Loot Luck";
+                case StatType.Lockpicking:
+                    return $"{prefix}{Value} Lockpicking";
+                case StatType.Perception:
+                    return $"{prefix}{Value} Perception";
+                case StatType.MoveSpeed:
+                    return $"{prefix}{Value * 100f:F0}% Move Speed";
                 default:
                     return $"{prefix}{Value} {Type}";
             }

@@ -32,6 +32,19 @@ namespace Genesis.Presentation.UI {
             // Conectar HUD principal (si existe)
             if (hudController != null && stats != null) {
                 hudController.SetPlayerStats(stats);
+
+                // Set initial level & XP from PlayerAttributes
+                PlayerAttributes attributes = GetComponent<PlayerAttributes>();
+                if (attributes != null) {
+                    hudController.SetLevel(attributes.Level);
+                    if (attributes.XPToNextLevel > 0) {
+                        float xpPercent = Mathf.Clamp01(attributes.CurrentXP / attributes.XPToNextLevel) * 100f;
+                        hudController.SetExperience(xpPercent);
+                    } else {
+                        hudController.SetExperience(0f);
+                    }
+                }
+
                 Debug.Log("[PlayerUIConnector] ✅ HUD conectado");
             } else {
                 Debug.LogWarning("[PlayerUIConnector] ⚠️ No se encontró HUDController o PlayerStats");

@@ -64,7 +64,11 @@ namespace Genesis.Presentation.UI {
             // Stats
             EventBus.Subscribe<float, float>("OnHealthChanged", OnHealthChanged);
             EventBus.Subscribe<float, float>("OnManaChanged", OnManaChanged);
-            
+
+            // Level & XP
+            EventBus.Subscribe<int>("OnLevelChanged", OnLevelChanged);
+            EventBus.Subscribe<float, float>("OnXPChanged", OnXPChanged);
+
             // Targeting
             EventBus.Subscribe<NetworkObject>("OnTargetChanged", OnTargetChanged);
             EventBus.Subscribe("OnTargetCleared", OnTargetCleared);
@@ -80,7 +84,11 @@ namespace Genesis.Presentation.UI {
             // Stats
             EventBus.Unsubscribe<float, float>("OnHealthChanged", OnHealthChanged);
             EventBus.Unsubscribe<float, float>("OnManaChanged", OnManaChanged);
-            
+
+            // Level & XP
+            EventBus.Unsubscribe<int>("OnLevelChanged", OnLevelChanged);
+            EventBus.Unsubscribe<float, float>("OnXPChanged", OnXPChanged);
+
             // Targeting
             EventBus.Unsubscribe<NetworkObject>("OnTargetChanged", OnTargetChanged);
             EventBus.Unsubscribe("OnTargetCleared", OnTargetCleared);
@@ -168,6 +176,8 @@ namespace Genesis.Presentation.UI {
             // Valores iniciales
             SetHealth(100f, 100f);
             SetMana(100f, 100f);
+            SetExperience(0f);
+            SetLevel(1);
             SetCastProgress(0f, "");
             SetGCDProgress(0f);
 
@@ -184,6 +194,17 @@ namespace Genesis.Presentation.UI {
 
         private void OnManaChanged(float current, float max) {
             SetMana(current, max);
+        }
+
+        private void OnLevelChanged(int newLevel) {
+            SetLevel(newLevel);
+        }
+
+        private void OnXPChanged(float currentXP, float xpToNext) {
+            if (xpToNext > 0) {
+                float percent = Mathf.Clamp01(currentXP / xpToNext) * 100f;
+                SetExperience(percent);
+            }
         }
 
         private void OnTargetChanged(NetworkObject target) {

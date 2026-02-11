@@ -1,6 +1,7 @@
 using UnityEngine;
 using FishNet.Object;
 using Genesis.Data;
+using Genesis.Simulation;
 
 namespace Genesis.Simulation.Combat {
 
@@ -23,6 +24,10 @@ namespace Genesis.Simulation.Combat {
             // NOTE: CastVFX se spawna en PlayerCombat durante el casting
             // Aquí solo spawneamos el ImpactVFX por target
 
+            // Get config for combat calculations
+            PlayerAttributes casterAttrs = caster != null ? caster.GetComponent<PlayerAttributes>() : null;
+            AttributeConfig config = casterAttrs != null ? casterAttrs.Config : null;
+
             // Detectar todos los enemigos en esfera (luego filtrar por ángulo)
             Collider[] hits = Physics.OverlapSphere(casterPos, data.Range, LayerMask.GetMask("Enemy", "Player"));
 
@@ -43,14 +48,23 @@ namespace Genesis.Simulation.Combat {
                         // Opcional: Line of Sight check
                         if (requiresLineOfSight) {
                             if (Physics.Linecast(casterPos, hit.transform.position, out RaycastHit losHit, LayerMask.GetMask("Environment"))) {
-                                // Obstruido por pared
                                 continue;
                             }
                         }
 
                         // Aplicar DAMAGE
                         if (data.BaseDamage > 0) {
-                            if (hit.TryGetComponent(out IDamageable damageable)) {
+                            if (hit.TryGetComponent(out PlayerStats targetStats)) {
+                                CombatResult result = CombatCalculator.CalculateDamage(caster, netObj, data.BaseDamage, data.Category, config);
+                                if (result.ResultType != DamageResultType.Evaded) {
+                                    targetStats.TakeDamage(result.FinalDamage, caster, result.ResultType);
+                                    if (result.LifeStealAmount > 0f) {
+                                        PlayerStats casterStats = caster.GetComponent<PlayerStats>();
+                                        casterStats?.Heal(result.LifeStealAmount);
+                                    }
+                                    hitCount++;
+                                }
+                            } else if (hit.TryGetComponent(out IDamageable damageable)) {
                                 damageable.TakeDamage(data.BaseDamage, caster);
                                 hitCount++;
                             }

@@ -6,6 +6,7 @@ using Genesis.Items;
 using Genesis.Data;
 using Genesis.Core;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace Genesis.Presentation {
     public class CharacterPanelController : MonoBehaviour {
@@ -15,13 +16,25 @@ namespace Genesis.Presentation {
         [Header("References")]
         private EquipmentManager _equipmentManager;
         private PlayerStats _playerStats;
+        private PlayerAttributes _playerAttributes;
 
         private VisualElement _characterPanelWindow;
         private Label _maxHealthLabel;
         private Label _maxManaLabel;
-        private Label _spellPowerLabel;
         private VisualElement _itemStatsList;
-        
+
+        // Attribute labels
+        private Label _levelLabel;
+        private Label _unspentPointsLabel;
+        private Label _strLabel, _agiLabel, _intLabel, _wisLabel, _conLabel;
+        private Button _strBtn, _agiBtn, _intBtn, _wisBtn, _conBtn;
+        // Derived stat labels
+        private Label _physDmgLabel, _magDmgLabel, _critLabel, _spellCritLabel;
+        private Label _healPowerLabel, _evasionLabel, _overpowerLabel;
+        // Sub-stat labels
+        private Label _hasteLabel, _lifeStealLabel, _penetrationLabel, _blockLabel;
+        private Label _moveSpeedLabel;
+
         private Dictionary<EquipmentSlot, VisualElement> _slotElements = new Dictionary<EquipmentSlot, VisualElement>();
         private bool _isVisible = false;
 
@@ -33,10 +46,18 @@ namespace Genesis.Presentation {
 
         private void OnEnable() {
             EventBus.Subscribe("OnEquipmentChanged", OnEquipmentChanged);
+            EventBus.Subscribe("OnAttributesChanged", OnStatsChanged);
+            EventBus.Subscribe("OnDerivedStatsChanged", OnStatsChanged);
+            EventBus.Subscribe<int>("OnUnspentPointsChanged", OnPointsChanged);
+            EventBus.Subscribe<int>("OnLevelChanged", OnLevelChanged);
         }
 
         private void OnDisable() {
             EventBus.Unsubscribe("OnEquipmentChanged", OnEquipmentChanged);
+            EventBus.Unsubscribe("OnAttributesChanged", OnStatsChanged);
+            EventBus.Unsubscribe("OnDerivedStatsChanged", OnStatsChanged);
+            EventBus.Unsubscribe<int>("OnUnspentPointsChanged", OnPointsChanged);
+            EventBus.Unsubscribe<int>("OnLevelChanged", OnLevelChanged);
         }
 
         private void Start() {
@@ -49,7 +70,6 @@ namespace Genesis.Presentation {
             _characterPanelWindow = root.Q<VisualElement>("CharacterPanelWindow");
             _maxHealthLabel = root.Q<Label>("MaxHealthLabel");
             _maxManaLabel = root.Q<Label>("MaxManaLabel");
-            _spellPowerLabel = root.Q<Label>("SpellPowerLabel");
             _itemStatsList = root.Q<VisualElement>("ItemStatsList");
 
             // Register slots
@@ -57,11 +77,50 @@ namespace Genesis.Presentation {
             _slotElements[EquipmentSlot.Shoulders] = root.Q<VisualElement>("ShouldersSlot");
             _slotElements[EquipmentSlot.Chest] = root.Q<VisualElement>("ChestSlot");
             _slotElements[EquipmentSlot.Hands] = root.Q<VisualElement>("HandsSlot");
-            _slotElements[EquipmentSlot.Pants] = root.Q<VisualElement>("LegsSlot"); // Renamed in UI for clarity
+            _slotElements[EquipmentSlot.Pants] = root.Q<VisualElement>("LegsSlot");
             _slotElements[EquipmentSlot.Belt] = root.Q<VisualElement>("BeltSlot");
-            _slotElements[EquipmentSlot.Feet] = root.Q<VisualElement>("BootsSlot"); // Renamed in UI for clarity
-            _slotElements[EquipmentSlot.Weapon] = root.Q<VisualElement>("MainHandSlot"); // Renamed in UI for clarity
+            _slotElements[EquipmentSlot.Feet] = root.Q<VisualElement>("BootsSlot");
+            _slotElements[EquipmentSlot.Weapon] = root.Q<VisualElement>("MainHandSlot");
             _slotElements[EquipmentSlot.OffHand] = root.Q<VisualElement>("OffHandSlot");
+            _slotElements[EquipmentSlot.Ring1] = root.Q<VisualElement>("Ring1Slot");
+            _slotElements[EquipmentSlot.Ring2] = root.Q<VisualElement>("Ring2Slot");
+
+            // Attribute labels
+            _levelLabel = root.Q<Label>("LevelLabel");
+            _unspentPointsLabel = root.Q<Label>("UnspentPointsLabel");
+            _strLabel = root.Q<Label>("StrLabel");
+            _agiLabel = root.Q<Label>("AgiLabel");
+            _intLabel = root.Q<Label>("IntLabel");
+            _wisLabel = root.Q<Label>("WisLabel");
+            _conLabel = root.Q<Label>("ConLabel");
+
+            // Attribute + buttons
+            _strBtn = root.Q<Button>("StrPlusBtn");
+            _agiBtn = root.Q<Button>("AgiPlusBtn");
+            _intBtn = root.Q<Button>("IntPlusBtn");
+            _wisBtn = root.Q<Button>("WisPlusBtn");
+            _conBtn = root.Q<Button>("ConPlusBtn");
+
+            _strBtn?.RegisterCallback<ClickEvent>(e => AllocatePoint(0));
+            _agiBtn?.RegisterCallback<ClickEvent>(e => AllocatePoint(1));
+            _intBtn?.RegisterCallback<ClickEvent>(e => AllocatePoint(2));
+            _wisBtn?.RegisterCallback<ClickEvent>(e => AllocatePoint(3));
+            _conBtn?.RegisterCallback<ClickEvent>(e => AllocatePoint(4));
+
+            // Derived stats
+            _physDmgLabel = root.Q<Label>("PhysDmgLabel");
+            _magDmgLabel = root.Q<Label>("MagDmgLabel");
+            _critLabel = root.Q<Label>("CritLabel");
+            _spellCritLabel = root.Q<Label>("SpellCritLabel");
+            _healPowerLabel = root.Q<Label>("HealPowerLabel");
+            _evasionLabel = root.Q<Label>("EvasionLabel");
+            _overpowerLabel = root.Q<Label>("OverpowerLabel");
+            // Sub-stats
+            _hasteLabel = root.Q<Label>("HasteLabel");
+            _lifeStealLabel = root.Q<Label>("LifeStealLabel");
+            _penetrationLabel = root.Q<Label>("PenetrationLabel");
+            _blockLabel = root.Q<Label>("BlockLabel");
+            _moveSpeedLabel = root.Q<Label>("MoveSpeedLabel");
 
             // Hide initially
             _characterPanelWindow.style.display = DisplayStyle.None;
@@ -70,7 +129,7 @@ namespace Genesis.Presentation {
             StartCoroutine(FindPlayerComponentsCoroutine());
         }
 
-        private System.Collections.IEnumerator FindPlayerComponentsCoroutine() {
+        private IEnumerator FindPlayerComponentsCoroutine() {
             int attempts = 0;
             const int maxAttempts = 10;
 
@@ -80,6 +139,7 @@ namespace Genesis.Presentation {
                     if (manager.IsOwner) {
                         _equipmentManager = manager;
                         _playerStats = manager.GetComponent<PlayerStats>();
+                        _playerAttributes = manager.GetComponent<PlayerAttributes>();
                         Debug.Log($"[CharacterPanelController] Found owner EquipmentManager on attempt {attempts + 1}");
                         RefreshCharacterPanel();
                         yield break;
@@ -108,7 +168,24 @@ namespace Genesis.Presentation {
             }
         }
 
+        private void AllocatePoint(int attrIndex) {
+            if (_playerAttributes == null || _playerAttributes.UnspentPoints <= 0) return;
+            _playerAttributes.CmdAllocatePoint(attrIndex);
+        }
+
         private void OnEquipmentChanged() {
+            RefreshCharacterPanel();
+        }
+
+        private void OnStatsChanged() {
+            RefreshCharacterPanel();
+        }
+
+        private void OnPointsChanged(int newPoints) {
+            RefreshCharacterPanel();
+        }
+
+        private void OnLevelChanged(int newLevel) {
             RefreshCharacterPanel();
         }
 
@@ -117,10 +194,49 @@ namespace Genesis.Presentation {
                 return;
             }
 
-            // Update stats
+            // Update base stats
             if (_maxHealthLabel != null) _maxHealthLabel.text = $"{_playerStats.MaxHealth:F0}";
             if (_maxManaLabel != null) _maxManaLabel.text = $"{_playerStats.MaxMana:F0}";
-            if (_spellPowerLabel != null) _spellPowerLabel.text = $"+{(_equipmentManager.SpellPowerBonus * 100f):F0}%";
+
+            // Update attributes if available
+            if (_playerAttributes != null) {
+                if (_levelLabel != null) _levelLabel.text = $"{_playerAttributes.Level}";
+                if (_strLabel != null) _strLabel.text = $"{_playerAttributes.Strength}";
+                if (_agiLabel != null) _agiLabel.text = $"{_playerAttributes.Agility}";
+                if (_intLabel != null) _intLabel.text = $"{_playerAttributes.Intelligence}";
+                if (_wisLabel != null) _wisLabel.text = $"{_playerAttributes.Wisdom}";
+                if (_conLabel != null) _conLabel.text = $"{_playerAttributes.Constitution}";
+
+                // Unspent points
+                int pts = _playerAttributes.UnspentPoints;
+                if (_unspentPointsLabel != null) {
+                    _unspentPointsLabel.text = pts > 0 ? $"{pts} pts" : "";
+                }
+
+                // Enable/disable + buttons
+                bool hasPoints = pts > 0;
+                _strBtn?.SetEnabled(hasPoints);
+                _agiBtn?.SetEnabled(hasPoints);
+                _intBtn?.SetEnabled(hasPoints);
+                _wisBtn?.SetEnabled(hasPoints);
+                _conBtn?.SetEnabled(hasPoints);
+
+                // Derived stats
+                if (_physDmgLabel != null) _physDmgLabel.text = $"+{_playerAttributes.PhysicalDamageBonus * 100f:F1}%";
+                if (_magDmgLabel != null) _magDmgLabel.text = $"+{_playerAttributes.MagicDamageBonus * 100f:F1}%";
+                if (_critLabel != null) _critLabel.text = $"{_playerAttributes.CritChance * 100f:F1}%";
+                if (_spellCritLabel != null) _spellCritLabel.text = $"{_playerAttributes.SpellCritChance * 100f:F1}%";
+                if (_healPowerLabel != null) _healPowerLabel.text = $"+{_playerAttributes.HealingPowerBonus * 100f:F1}%";
+                if (_evasionLabel != null) _evasionLabel.text = $"{_playerAttributes.EvasionChance * 100f:F1}%";
+                if (_overpowerLabel != null) _overpowerLabel.text = $"{_playerAttributes.OverpowerChance * 100f:F1}%";
+
+                // Sub-stats
+                if (_hasteLabel != null) _hasteLabel.text = $"+{_playerAttributes.Haste * 100f:F1}%";
+                if (_lifeStealLabel != null) _lifeStealLabel.text = $"{_playerAttributes.LifeSteal * 100f:F1}%";
+                if (_penetrationLabel != null) _penetrationLabel.text = $"{_playerAttributes.Penetration * 100f:F1}%";
+                if (_blockLabel != null) _blockLabel.text = $"{_playerAttributes.BlockValue:F0}";
+                if (_moveSpeedLabel != null) _moveSpeedLabel.text = $"+{_playerAttributes.MoveSpeed * 100f:F1}%";
+            }
 
             // Update Equipment Slots
             foreach (var kvp in _slotElements) {
@@ -193,7 +309,7 @@ namespace Genesis.Presentation {
             if (itemSlot.IsEmpty) {
                 if (iconElement != null) iconElement.style.backgroundImage = null;
                 if (bgElement != null) {
-                    bgElement.style.display = DisplayStyle.None; // Hide when empty
+                    bgElement.style.display = DisplayStyle.None;
                     bgElement.ClearClassList();
                     bgElement.AddToClassList("char-item-slot-bg");
                 }
@@ -204,21 +320,18 @@ namespace Genesis.Presentation {
                     iconElement.style.backgroundImage = new StyleBackground(itemData.Icon);
                 }
 
-                // Show and manage rarity classes on BG element
                 if (bgElement != null) {
-                    bgElement.style.display = DisplayStyle.Flex; // Show when equipped
+                    bgElement.style.display = DisplayStyle.Flex;
                     bgElement.ClearClassList();
                     bgElement.AddToClassList("char-item-slot-bg");
                     bgElement.AddToClassList(GetRarityClassName(itemSlot.Rarity));
                 }
-                
+
                 slotElement.AddToClassList("slot-highlight");
 
-                // Register actions
                 slotElement.UnregisterCallback<MouseDownEvent>(OnSlotClicked);
                 slotElement.RegisterCallback<MouseDownEvent>(e => OnSlotClicked(e, slot));
 
-                // Register hover for stats
                 slotElement.UnregisterCallback<MouseEnterEvent>(OnMouseEnterSlot);
                 slotElement.RegisterCallback<MouseEnterEvent>(e => ShowItemBonuses(slot));
 
@@ -227,22 +340,16 @@ namespace Genesis.Presentation {
             }
         }
 
-        private void OnMouseEnterSlot(MouseEnterEvent e) {
-            // Placeholder if we need event-specific logic, but using lambda for simplicity above
-        }
-
-        private void OnMouseLeaveSlot(MouseLeaveEvent e) {
-            // Placeholder
-        }
+        private void OnMouseEnterSlot(MouseEnterEvent e) { }
+        private void OnMouseLeaveSlot(MouseLeaveEvent e) { }
 
         private void OnSlotClicked(MouseDownEvent evt, EquipmentSlot slot) {
-            if (evt.button == 1) { // Right-click
+            if (evt.button == 1) {
                 UnequipSlot(slot);
                 evt.StopPropagation();
             }
         }
 
-        // Overload for Unregister
         private void OnSlotClicked(MouseDownEvent evt) { }
 
         private void UnequipSlot(EquipmentSlot slot) {

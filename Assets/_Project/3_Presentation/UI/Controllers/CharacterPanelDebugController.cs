@@ -18,7 +18,6 @@ namespace Genesis.Presentation {
         private VisualElement _characterPanelWindow;
         private Label _maxHealthLabel;
         private Label _maxManaLabel;
-        private Label _spellPowerLabel;
         private VisualElement _equipmentList;
         private bool _isVisible = false;
 
@@ -46,7 +45,6 @@ namespace Genesis.Presentation {
             _characterPanelWindow = root.Q<VisualElement>("CharacterPanelWindow");
             _maxHealthLabel = root.Q<Label>("MaxHealthLabel");
             _maxManaLabel = root.Q<Label>("MaxManaLabel");
-            _spellPowerLabel = root.Q<Label>("SpellPowerLabel");
             _equipmentList = root.Q<VisualElement>("EquipmentList");
 
             // Hide initially
@@ -112,7 +110,6 @@ namespace Genesis.Presentation {
             // Update stats
             _maxHealthLabel.text = $"Max Health: {_playerStats.MaxHealth:F0}";
             _maxManaLabel.text = $"Max Mana: {_playerStats.MaxMana:F0}";
-            _spellPowerLabel.text = $"Spell Power: +{(_equipmentManager.SpellPowerBonus * 100f):F0}%";
 
             // Clear equipment list
             _equipmentList.Clear();
@@ -127,6 +124,8 @@ namespace Genesis.Presentation {
             CreateEquipmentSlot(EquipmentSlot.Belt, "Belt");
             CreateEquipmentSlot(EquipmentSlot.Weapon, "Weapon");
             CreateEquipmentSlot(EquipmentSlot.OffHand, "OffHand");
+            CreateEquipmentSlot(EquipmentSlot.Ring1, "Ring 1");
+            CreateEquipmentSlot(EquipmentSlot.Ring2, "Ring 2");
 
             Debug.Log("[CharacterPanelDebugController] Character panel refreshed");
         }
@@ -226,11 +225,7 @@ namespace Genesis.Presentation {
                         if (stats != null && stats.Count > 0) {
                             var statsText = "";
                             foreach (var stat in stats) {
-                                if (stat.Type == StatType.SpellPower) {
-                                    statsText += $"+{stat.Value * 100f:F0}% {stat.Type}, ";
-                                } else {
-                                    statsText += $"+{stat.Value:F0} {stat.Type}, ";
-                                }
+                                statsText += stat.ToString() + ", ";
                             }
                             statsText = statsText.TrimEnd(',', ' ');
 

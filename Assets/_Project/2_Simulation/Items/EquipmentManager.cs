@@ -15,6 +15,7 @@ namespace Genesis.Simulation {
         [Header("References")]
         [SerializeField] private PlayerStats _playerStats;
         private PlayerClassManager _classManager;
+        private PlayerAttributes _playerAttributes;
 
         [Header("Network State - Equipment Slots")]
         private readonly SyncVar<ItemSlot> _headSlot = new SyncVar<ItemSlot>();
@@ -26,14 +27,12 @@ namespace Genesis.Simulation {
         private readonly SyncVar<ItemSlot> _beltSlot = new SyncVar<ItemSlot>();
         private readonly SyncVar<ItemSlot> _weaponSlot = new SyncVar<ItemSlot>();
         private readonly SyncVar<ItemSlot> _offHandSlot = new SyncVar<ItemSlot>();
+        private readonly SyncVar<ItemSlot> _ring1Slot = new SyncVar<ItemSlot>();
+        private readonly SyncVar<ItemSlot> _ring2Slot = new SyncVar<ItemSlot>();
 
         // Cached base stats from class
         private float _baseMaxHealth = 100f;
         private float _baseMaxMana = 100f;
-
-        // Current total spell power bonus
-        private float _spellPowerBonus = 0f;
-        public float SpellPowerBonus => _spellPowerBonus;
 
         private void Awake() {
             // Subscribe to equipment slot changes with specific slot info
@@ -46,16 +45,17 @@ namespace Genesis.Simulation {
             _beltSlot.OnChange += (oldVal, newVal, asServer) => OnEquipmentChanged(EquipmentSlot.Belt, oldVal, newVal, asServer);
             _weaponSlot.OnChange += (oldVal, newVal, asServer) => OnEquipmentChanged(EquipmentSlot.Weapon, oldVal, newVal, asServer);
             _offHandSlot.OnChange += (oldVal, newVal, asServer) => OnEquipmentChanged(EquipmentSlot.OffHand, oldVal, newVal, asServer);
+            _ring1Slot.OnChange += (oldVal, newVal, asServer) => OnEquipmentChanged(EquipmentSlot.Ring1, oldVal, newVal, asServer);
+            _ring2Slot.OnChange += (oldVal, newVal, asServer) => OnEquipmentChanged(EquipmentSlot.Ring2, oldVal, newVal, asServer);
 
-            // Auto-find PlayerStats if not assigned
+            // Auto-find components
             if (_playerStats == null) {
                 _playerStats = GetComponent<PlayerStats>();
             }
-
-            // Auto-find PlayerClassManager
             if (_classManager == null) {
                 _classManager = GetComponent<PlayerClassManager>();
             }
+            _playerAttributes = GetComponent<PlayerAttributes>();
         }
 
         public override void OnStartServer() {
@@ -71,6 +71,8 @@ namespace Genesis.Simulation {
             _beltSlot.Value = ItemSlot.Empty;
             _weaponSlot.Value = ItemSlot.Empty;
             _offHandSlot.Value = ItemSlot.Empty;
+            _ring1Slot.Value = ItemSlot.Empty;
+            _ring2Slot.Value = ItemSlot.Empty;
 
             Debug.Log("[EquipmentManager] Initialized equipment slots.");
         }
@@ -176,6 +178,12 @@ namespace Genesis.Simulation {
                 case EquipmentSlot.OffHand:
                     _offHandSlot.Value = newSlot;
                     break;
+                case EquipmentSlot.Ring1:
+                    _ring1Slot.Value = newSlot;
+                    break;
+                case EquipmentSlot.Ring2:
+                    _ring2Slot.Value = newSlot;
+                    break;
             }
 
             Debug.Log($"[EquipmentManager] Equipped {equipmentData.ItemName} ({rarity}) to {slot} slot.");
@@ -226,6 +234,14 @@ namespace Genesis.Simulation {
                     unequippedItem = _offHandSlot.Value;
                     _offHandSlot.Value = ItemSlot.Empty;
                     break;
+                case EquipmentSlot.Ring1:
+                    unequippedItem = _ring1Slot.Value;
+                    _ring1Slot.Value = ItemSlot.Empty;
+                    break;
+                case EquipmentSlot.Ring2:
+                    unequippedItem = _ring2Slot.Value;
+                    _ring2Slot.Value = ItemSlot.Empty;
+                    break;
             }
 
             if (!unequippedItem.IsEmpty) {
@@ -249,6 +265,8 @@ namespace Genesis.Simulation {
             _beltSlot.Value = ItemSlot.Empty;
             _weaponSlot.Value = ItemSlot.Empty;
             _offHandSlot.Value = ItemSlot.Empty;
+            _ring1Slot.Value = ItemSlot.Empty;
+            _ring2Slot.Value = ItemSlot.Empty;
 
             Debug.Log("[EquipmentManager] Cleared all equipment.");
         }
@@ -269,6 +287,8 @@ namespace Genesis.Simulation {
             if (!_beltSlot.Value.IsEmpty) items.Add(_beltSlot.Value);
             if (!_weaponSlot.Value.IsEmpty) items.Add(_weaponSlot.Value);
             if (!_offHandSlot.Value.IsEmpty) items.Add(_offHandSlot.Value);
+            if (!_ring1Slot.Value.IsEmpty) items.Add(_ring1Slot.Value);
+            if (!_ring2Slot.Value.IsEmpty) items.Add(_ring2Slot.Value);
 
             return items;
         }
@@ -286,7 +306,11 @@ namespace Genesis.Simulation {
             // Start with base stats
             float totalMaxHealth = _baseMaxHealth;
             float totalMaxMana = _baseMaxMana;
-            float totalSpellPower = 0f;
+
+            // Attribute bonuses from equipment
+            int equipStr = 0, equipAgi = 0, equipInt = 0, equipWis = 0, equipCon = 0;
+            float equipHaste = 0f, equipLifeSteal = 0f, equipPenetration = 0f, equipBlock = 0f;
+            float equipLootLuck = 0f, equipLockpicking = 0f, equipPerception = 0f, equipMoveSpeed = 0f;
 
             // Helper function to process equipment slot
             void ProcessSlot(ItemSlot slot) {
@@ -295,27 +319,31 @@ namespace Genesis.Simulation {
                 EquipmentItemData equipmentData = ItemDatabase.Instance.GetEquipment(slot.ItemID);
                 if (equipmentData == null) return;
 
-                // Get stat modifiers for this item's rarity
                 List<StatModifier> stats = equipmentData.GetStatsForRarity(slot.Rarity);
                 if (stats == null) return;
 
-                // Apply each stat modifier
                 foreach (var stat in stats) {
                     switch (stat.Type) {
-                        case StatType.MaxHealth:
-                            totalMaxHealth += stat.Value;
-                            break;
-                        case StatType.MaxMana:
-                            totalMaxMana += stat.Value;
-                            break;
-                        case StatType.SpellPower:
-                            totalSpellPower += stat.Value;
-                            break;
+                        case StatType.MaxHealth: totalMaxHealth += stat.Value; break;
+                        case StatType.MaxMana: totalMaxMana += stat.Value; break;
+                        case StatType.Strength: equipStr += (int)stat.Value; break;
+                        case StatType.Agility: equipAgi += (int)stat.Value; break;
+                        case StatType.Intelligence: equipInt += (int)stat.Value; break;
+                        case StatType.Wisdom: equipWis += (int)stat.Value; break;
+                        case StatType.Constitution: equipCon += (int)stat.Value; break;
+                        case StatType.Haste: equipHaste += stat.Value; break;
+                        case StatType.LifeSteal: equipLifeSteal += stat.Value; break;
+                        case StatType.Penetration: equipPenetration += stat.Value; break;
+                        case StatType.Block: equipBlock += stat.Value; break;
+                        case StatType.LootLuck: equipLootLuck += stat.Value; break;
+                        case StatType.Lockpicking: equipLockpicking += stat.Value; break;
+                        case StatType.Perception: equipPerception += stat.Value; break;
+                        case StatType.MoveSpeed: equipMoveSpeed += stat.Value; break;
                     }
                 }
             }
 
-            // Process all equipment slots
+            // Process all 11 equipment slots
             ProcessSlot(_headSlot.Value);
             ProcessSlot(_shouldersSlot.Value);
             ProcessSlot(_chestSlot.Value);
@@ -325,13 +353,28 @@ namespace Genesis.Simulation {
             ProcessSlot(_beltSlot.Value);
             ProcessSlot(_weaponSlot.Value);
             ProcessSlot(_offHandSlot.Value);
+            ProcessSlot(_ring1Slot.Value);
+            ProcessSlot(_ring2Slot.Value);
+
+            // Add CON bonus to max health if PlayerAttributes exists
+            if (_playerAttributes != null) {
+                totalMaxHealth += (_playerAttributes.BaseConstitution + equipCon) *
+                    (_playerAttributes.Config != null ? _playerAttributes.Config.HealthPerPoint : 5f);
+            }
 
             // Update PlayerStats
             _playerStats.SetMaxHealth(totalMaxHealth);
             _playerStats.SetMaxMana(totalMaxMana);
-            _spellPowerBonus = totalSpellPower;
 
-            Debug.Log($"[EquipmentManager] Stats recalculated: MaxHP={totalMaxHealth}, MaxMana={totalMaxMana}, SpellPower={totalSpellPower * 100f}%");
+            // Update PlayerAttributes with equipment bonuses
+            if (_playerAttributes != null) {
+                _playerAttributes.SetEquipmentBonuses(
+                    equipStr, equipAgi, equipInt, equipWis, equipCon,
+                    equipHaste, equipLifeSteal, equipPenetration, equipBlock,
+                    equipLootLuck, equipLockpicking, equipPerception, equipMoveSpeed);
+            }
+
+            Debug.Log($"[EquipmentManager] Stats recalculated: MaxHP={totalMaxHealth}, MaxMana={totalMaxMana}");
         }
 
         /// <summary>
@@ -372,7 +415,9 @@ namespace Genesis.Simulation {
             CheckSlot(EquipmentSlot.Belt, _beltSlot.Value);
             CheckSlot(EquipmentSlot.Weapon, _weaponSlot.Value);
             CheckSlot(EquipmentSlot.OffHand, _offHandSlot.Value);
-            
+            CheckSlot(EquipmentSlot.Ring1, _ring1Slot.Value);
+            CheckSlot(EquipmentSlot.Ring2, _ring2Slot.Value);
+
             // Recalculate stats after potential changes
             RecalculateStats();
         }
@@ -395,6 +440,8 @@ namespace Genesis.Simulation {
                 case EquipmentSlot.Belt: return _beltSlot.Value;
                 case EquipmentSlot.Weapon: return _weaponSlot.Value;
                 case EquipmentSlot.OffHand: return _offHandSlot.Value;
+                case EquipmentSlot.Ring1: return _ring1Slot.Value;
+                case EquipmentSlot.Ring2: return _ring2Slot.Value;
                 default: return ItemSlot.Empty;
             }
         }

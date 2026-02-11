@@ -3,6 +3,7 @@ using FishNet.Object;
 using Genesis.Data;
 using Genesis.Core;
 using Genesis.Simulation.World;
+using Genesis.Simulation;
 
 namespace Genesis.Simulation.Combat {
 
@@ -16,16 +17,18 @@ namespace Genesis.Simulation.Combat {
         private float _spawnTime;
         private bool _initialized;
         private StatusEffectData[] _effectsToApply;
+        private AbilityCategory _category = AbilityCategory.Magical;
 
         [Header("Visuals")]
         [SerializeField] private GameObject impactVfxPrefab;
 
-        public void Initialize(NetworkObject owner, float damage, Vector3 velocity, float radius, StatusEffectData[] effects = null) {
+        public void Initialize(NetworkObject owner, float damage, Vector3 velocity, float radius, StatusEffectData[] effects = null, AbilityCategory category = AbilityCategory.Magical) {
             _owner = owner;
             _damage = damage;
             _velocity = velocity;
             _radius = radius;
             _effectsToApply = effects;
+            _category = category;
             _spawnTime = Time.time;
             _initialized = true;
 
@@ -118,8 +121,20 @@ namespace Genesis.Simulation.Combat {
                 return;
             }
 
-            // ═══ CASO 4: Daño Normal ═══
-            if (targetNetObj.TryGetComponent(out IDamageable damageable)) {
+            // ═══ CASO 4: Daño con CombatCalculator ═══
+            PlayerAttributes ownerAttrs = _owner != null ? _owner.GetComponent<PlayerAttributes>() : null;
+            AttributeConfig config = ownerAttrs != null ? ownerAttrs.Config : null;
+
+            if (targetNetObj.TryGetComponent(out PlayerStats targetPlayerStats)) {
+                CombatResult result = CombatCalculator.CalculateDamage(_owner, targetNetObj, _damage, _category, config);
+                if (result.ResultType != DamageResultType.Evaded) {
+                    targetPlayerStats.TakeDamage(result.FinalDamage, _owner, result.ResultType);
+                    if (result.LifeStealAmount > 0f) {
+                        PlayerStats ownerStats = _owner != null ? _owner.GetComponent<PlayerStats>() : null;
+                        ownerStats?.Heal(result.LifeStealAmount);
+                    }
+                }
+            } else if (targetNetObj.TryGetComponent(out IDamageable damageable)) {
                 damageable.TakeDamage(_damage, _owner);
             }
 

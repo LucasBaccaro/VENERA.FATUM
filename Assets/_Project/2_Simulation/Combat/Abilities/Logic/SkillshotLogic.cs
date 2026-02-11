@@ -40,7 +40,7 @@ namespace Genesis.Simulation.Combat {
 
             // Configurar ProjectileController
             if (instance.TryGetComponent(out ProjectileController controller)) {
-                controller.Initialize(caster, data.BaseDamage, direction * data.ProjectileSpeed, data.Radius);
+                controller.Initialize(caster, data.BaseDamage, direction * data.ProjectileSpeed, data.Radius, null, data.Category);
             } else {
                 Debug.LogError($"[SkillshotLogic] ProjectilePrefab missing ProjectileController component!");
                 Destroy(instance);

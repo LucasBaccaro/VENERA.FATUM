@@ -2,6 +2,7 @@ using UnityEngine;
 using FishNet.Object;
 using Genesis.Data;
 using Genesis.Simulation;
+using Genesis.Simulation.Combat;
 
 namespace Genesis.Simulation.Combat {
 
@@ -90,19 +91,33 @@ namespace Genesis.Simulation.Combat {
         public static void ApplyEffectsToTarget(NetworkObject caster, NetworkObject target, AbilityData data) {
             if (target == null) return;
 
+            // Get config for combat calculations
+            PlayerAttributes casterAttrs = caster != null ? caster.GetComponent<PlayerAttributes>() : null;
+            AttributeConfig config = casterAttrs != null ? casterAttrs.Config : null;
+
             // DAMAGE
             if (data.BaseDamage > 0) {
-                if (target.TryGetComponent(out IDamageable damageable)) {
+                if (target.TryGetComponent(out PlayerStats targetStats)) {
+                    CombatResult result = CombatCalculator.CalculateDamage(caster, target, data.BaseDamage, data.Category, config);
+                    if (result.ResultType != DamageResultType.Evaded) {
+                        targetStats.TakeDamage(result.FinalDamage, caster, result.ResultType);
+                        if (result.LifeStealAmount > 0f) {
+                            PlayerStats casterStats = caster.GetComponent<PlayerStats>();
+                            casterStats?.Heal(result.LifeStealAmount);
+                        }
+                    }
+                    Debug.Log($"[TargetedLogic] {caster.name} dealt {result.FinalDamage:F0} ({result.ResultType}) to {target.name}");
+                } else if (target.TryGetComponent(out IDamageable damageable)) {
                     damageable.TakeDamage(data.BaseDamage, caster);
-                    Debug.Log($"[TargetedLogic] {caster.name} dealt {data.BaseDamage} damage to {target.name}");
                 }
             }
 
             // HEAL
             if (data.BaseHeal > 0) {
                 if (target.TryGetComponent(out PlayerStats stats)) {
-                    stats.RestoreHealth(data.BaseHeal);
-                    Debug.Log($"[TargetedLogic] {caster.name} healed {target.name} for {data.BaseHeal}");
+                    CombatResult healResult = CombatCalculator.CalculateHeal(caster, data.BaseHeal, config);
+                    stats.RestoreHealth(healResult.FinalDamage);
+                    Debug.Log($"[TargetedLogic] {caster.name} healed {target.name} for {healResult.FinalDamage:F0} ({healResult.ResultType})");
                 }
             }
 
@@ -134,9 +149,21 @@ namespace Genesis.Simulation.Combat {
         private static void ApplyCombatValuesToTarget(NetworkObject caster, NetworkObject target, AbilityData data) {
             if (target == null) return;
 
+            PlayerAttributes casterAttrs = caster != null ? caster.GetComponent<PlayerAttributes>() : null;
+            AttributeConfig config = casterAttrs != null ? casterAttrs.Config : null;
+
             // DAMAGE
             if (data.BaseDamage > 0) {
-                if (target.TryGetComponent(out IDamageable damageable)) {
+                if (target.TryGetComponent(out PlayerStats targetStats)) {
+                    CombatResult result = CombatCalculator.CalculateDamage(caster, target, data.BaseDamage, data.Category, config);
+                    if (result.ResultType != DamageResultType.Evaded) {
+                        targetStats.TakeDamage(result.FinalDamage, caster, result.ResultType);
+                        if (result.LifeStealAmount > 0f) {
+                            PlayerStats casterStats = caster.GetComponent<PlayerStats>();
+                            casterStats?.Heal(result.LifeStealAmount);
+                        }
+                    }
+                } else if (target.TryGetComponent(out IDamageable damageable)) {
                     damageable.TakeDamage(data.BaseDamage, caster);
                 }
             }
@@ -144,7 +171,8 @@ namespace Genesis.Simulation.Combat {
             // HEAL
             if (data.BaseHeal > 0) {
                 if (target.TryGetComponent(out PlayerStats stats)) {
-                    stats.RestoreHealth(data.BaseHeal);
+                    CombatResult healResult = CombatCalculator.CalculateHeal(caster, data.BaseHeal, config);
+                    stats.RestoreHealth(healResult.FinalDamage);
                 }
             }
 

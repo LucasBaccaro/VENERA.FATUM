@@ -30,6 +30,7 @@ GameObject:
   - component: {fileID: -2104996594180317446}
   - component: {fileID: 5683014262376530763}
   - component: {fileID: 6687539303086172723}
+  - component: {fileID: 5586823950512368073}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -137,6 +138,7 @@ MonoBehaviour:
   - {fileID: -2104996594180317446}
   - {fileID: 5683014262376530763}
   - {fileID: 6687539303086172723}
+  - {fileID: 5586823950512368073}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -147,7 +149,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584313507639751105
+  _initializedTimestamp: -8584308318424617748
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -528,10 +530,26 @@ MonoBehaviour:
   _healthPotionID: 1001
   _manaPotionID: 1002
   _potionQuantity: 5
-  _starterEquipmentIDs: b90b0000ba0b0000bb0b0000bc0b0000bd0b0000be0b0000bf0b0000c00b0000c10b0000d8070000
+  _starterEquipmentIDs: b90b0000ba0b0000bb0b0000bc0b0000bd0b0000be0b0000bf0b0000c00b0000c10b0000d1070000d2070000d3070000d4070000d5070000d6070000d7070000d8070000
   _grantDelay: 0.5
   _starterTier: 0
   _starterRarity: 1
+--- !u!114 &5586823950512368073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3168934939399175360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8afae02667cd54bbd8f821dc0ec5878f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.PlayerAttributes
+  _componentIndexCache: 18
+  _addedNetworkObject: {fileID: 5015743577735707121}
+  _networkObjectCache: {fileID: 5015743577735707121}
+  _config: {fileID: 11400000, guid: e40e795390e784577ad87ef50285e9f5, type: 2}
 --- !u!1 &8233073365634962066
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,9 +2,10 @@ using UnityEngine;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using Genesis.Core;
-using Genesis.Simulation.Combat; // Necesario para IDamageable
+using Genesis.Simulation.Combat;
 using Genesis.Data;
 using Genesis.Simulation.World;
+using FishNet.Connection;
 
 namespace Genesis.Simulation {
 
@@ -31,9 +32,11 @@ namespace Genesis.Simulation {
 
         // Referencias
         private StatusEffectSystem _statusSystem;
+        private PlayerAttributes _attributes;
 
         void Awake() {
              _statusSystem = GetComponent<StatusEffectSystem>();
+             _attributes = GetComponent<PlayerAttributes>();
         }
 
         // ═══════════════════════════════════════════════════════
@@ -84,16 +87,22 @@ namespace Genesis.Simulation {
             _currentHealth.Value = _maxHealth.Value;
             _currentMana.Value = _maxMana.Value;
             _isDead = false;
-            
+
+            // Notify attributes to recalculate derived stats
+            if (_attributes != null) {
+                _attributes.RecalculateDerivedStats();
+            }
+
             Debug.Log($"[PlayerStats] Class updated: {data.ClassName}. Stats re-initialized.");
         }
 
         void Update() {
             if (!base.IsServer) return;
 
-            // Regenerar maná pasivamente
+            // Regenerar maná pasivamente (base + WIS bonus)
+            float totalManaRegen = manaRegenPerSecond + (_attributes != null ? _attributes.BonusManaRegen : 0f);
             if (_currentMana.Value < _maxMana.Value) {
-                _currentMana.Value = Mathf.Min(_currentMana.Value + manaRegenPerSecond * Time.deltaTime, _maxMana.Value);
+                _currentMana.Value = Mathf.Min(_currentMana.Value + totalManaRegen * Time.deltaTime, _maxMana.Value);
             }
         }
 
@@ -174,6 +183,82 @@ namespace Genesis.Simulation {
             }
 
             // ═══ PASO 3: Check Death ═══
+            if (_currentHealth.Value <= 0) {
+                Die(attacker);
+            }
+        }
+
+        /// <summary>
+        /// Overload: TakeDamage with DamageResultType for differentiated floating text.
+        /// </summary>
+        [Server]
+        public void TakeDamage(float damage, NetworkObject attacker, DamageResultType resultType) {
+            if (_isDead) return;
+
+            // Safe zone validation
+            if (!CombatValidator.CanApplyDamage(base.NetworkObject, attacker, out string reason)) {
+                Debug.Log($"[PlayerStats] Damage blocked: {reason}");
+                return;
+            }
+
+            // Status effects check
+            if (_statusSystem != null) {
+                if (_statusSystem.HasEffect(EffectType.Invulnerable)) return;
+                if (_statusSystem.HasEffect(EffectType.Reflect)) {
+                    if (attacker != null) {
+                        PlayerStats attackerStats = attacker.GetComponent<PlayerStats>();
+                        if (attackerStats != null) {
+                            StatusEffectSystem attackerSem = attacker.GetComponent<StatusEffectSystem>();
+                            if (attackerSem != null && attackerSem.HasEffect(EffectType.Reflect)) {
+                                Debug.Log("[PlayerStats] Reflect vs Reflect: Damage cancelled.");
+                            } else {
+                                attackerStats.TakeDamage(damage, base.NetworkObject, resultType);
+                            }
+                        }
+                    }
+                    return;
+                }
+            }
+
+            // Shield absorption
+            if (_currentShield.Value > 0) {
+                float shieldAbsorbed = Mathf.Min(damage, _currentShield.Value);
+                _currentShield.Value -= shieldAbsorbed;
+                damage -= shieldAbsorbed;
+
+                if (attacker != null && attacker.Owner.IsValid) {
+                    TargetShowDamageText(attacker.Owner, $"{shieldAbsorbed:F0}", "shield");
+                }
+            }
+
+            if (_currentShield.Value <= 0.01f && _statusSystem != null) {
+                if (_statusSystem.HasEffect(EffectType.Shield)) {
+                    _statusSystem.RemoveEffectsOfType(EffectType.Shield);
+                }
+            }
+
+            if (damage <= 0) return;
+
+            _currentHealth.Value = Mathf.Max(0, _currentHealth.Value - damage);
+
+            // Determine text type based on result
+            string textType = "damage";
+            bool isCritical = false;
+            switch (resultType) {
+                case DamageResultType.Critical:
+                    textType = "critical";
+                    isCritical = true;
+                    break;
+                case DamageResultType.Overpower:
+                    textType = "overpower";
+                    isCritical = true;
+                    break;
+            }
+
+            if (attacker != null && attacker.Owner.IsValid) {
+                TargetShowDamageText(attacker.Owner, $"{damage:F0}", textType, isCritical);
+            }
+
             if (_currentHealth.Value <= 0) {
                 Die(attacker);
             }

@@ -12,6 +12,14 @@ namespace Genesis.Data {
         public float MaxHealth = 100f;
         public float MaxMana = 100f;
         public float ManaRegenPerSecond = 5f;
+        [Tooltip("Base HP regen per second (out of combat)")]
+        public float HealthRegenPerSecond = 2f;
+
+        [Header("Per-Level Growth")]
+        [Tooltip("Flat HP gained per level")]
+        public float HealthPerLevel = 10f;
+        [Tooltip("Flat Mana gained per level")]
+        public float ManaPerLevel = 5f;
 
         [Header("Visuals")]
         public RuntimeAnimatorController AnimatorController;

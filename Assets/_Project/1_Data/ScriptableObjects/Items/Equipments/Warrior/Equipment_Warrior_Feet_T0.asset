@@ -30,8 +30,8 @@ MonoBehaviour:
     Value: 2
   - Type: 6
     Value: 2
-  - Type: 9
-    Value: 0.013438379
+  - Type: 14
+    Value: 5
   RareStats:
   - Type: 2
     Value: 4

@@ -28,6 +28,7 @@ namespace Genesis.Simulation {
         private float _lastAnimSpeed;
         private StatusEffectSystem _statusEffects;
         private EquipmentManager _equipmentManager;
+        private PlayerAttributes _attributes;
         private bool _isDashing;
 
         // ═══════════════════════════════════════════════════════
@@ -39,6 +40,7 @@ namespace Genesis.Simulation {
             if (animator == null) animator = GetComponentInChildren<Animator>();
             _statusEffects = GetComponent<StatusEffectSystem>();
             _equipmentManager = GetComponent<EquipmentManager>();
+            _attributes = GetComponent<PlayerAttributes>();
         }
 
         public override void OnStartClient() {
@@ -181,7 +183,8 @@ namespace Genesis.Simulation {
 
             // Velocidad
             bool isRunning = (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed);
-            float targetSpeed = isRunning ? runSpeed : walkSpeed;
+            float moveSpeedBonus = _attributes != null ? _attributes.MoveSpeed : 0f;
+            float targetSpeed = (isRunning ? runSpeed : walkSpeed) * (1f + moveSpeedBonus);
 
             if (moveDir.sqrMagnitude < 0.01f) targetSpeed = 0f;
 

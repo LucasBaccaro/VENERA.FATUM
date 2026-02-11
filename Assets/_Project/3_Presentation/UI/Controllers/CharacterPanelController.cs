@@ -34,6 +34,8 @@ namespace Genesis.Presentation {
         // Sub-stat labels
         private Label _hasteLabel, _lifeStealLabel, _penetrationLabel, _blockLabel;
         private Label _moveSpeedLabel;
+        // World stat labels
+        private Label _lootLuckLabel, _lockpickingLabel, _perceptionLabel;
 
         private Dictionary<EquipmentSlot, VisualElement> _slotElements = new Dictionary<EquipmentSlot, VisualElement>();
         private bool _isVisible = false;
@@ -121,6 +123,10 @@ namespace Genesis.Presentation {
             _penetrationLabel = root.Q<Label>("PenetrationLabel");
             _blockLabel = root.Q<Label>("BlockLabel");
             _moveSpeedLabel = root.Q<Label>("MoveSpeedLabel");
+            // World stats
+            _lootLuckLabel = root.Q<Label>("LootLuckLabel");
+            _lockpickingLabel = root.Q<Label>("LockpickingLabel");
+            _perceptionLabel = root.Q<Label>("PerceptionLabel");
 
             // Hide initially
             _characterPanelWindow.style.display = DisplayStyle.None;
@@ -236,6 +242,11 @@ namespace Genesis.Presentation {
                 if (_penetrationLabel != null) _penetrationLabel.text = $"{_playerAttributes.Penetration * 100f:F1}%";
                 if (_blockLabel != null) _blockLabel.text = $"{_playerAttributes.BlockValue:F0}";
                 if (_moveSpeedLabel != null) _moveSpeedLabel.text = $"+{_playerAttributes.MoveSpeed * 100f:F1}%";
+
+                // World stats
+                if (_lootLuckLabel != null) _lootLuckLabel.text = $"+{_playerAttributes.LootLuck * 100f:F1}%";
+                if (_lockpickingLabel != null) _lockpickingLabel.text = $"{_playerAttributes.Lockpicking:F0}";
+                if (_perceptionLabel != null) _perceptionLabel.text = $"{_playerAttributes.Perception:F0}";
             }
 
             // Update Equipment Slots

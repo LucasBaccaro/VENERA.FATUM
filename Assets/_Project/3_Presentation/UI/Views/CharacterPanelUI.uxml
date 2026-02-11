@@ -143,6 +143,19 @@
                     <ui:Label text="Move Speed" class="stat-label"/>
                     <ui:Label name="MoveSpeedLabel" text="+0.0%" class="stat-value"/>
                 </ui:VisualElement>
+                <ui:Label text="World Stats" class="stats-title"/>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="Loot Luck" class="stat-label"/>
+                    <ui:Label name="LootLuckLabel" text="+0.0%" class="stat-value"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="Lockpicking" class="stat-label"/>
+                    <ui:Label name="LockpickingLabel" text="0" class="stat-value"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="Perception" class="stat-label"/>
+                    <ui:Label name="PerceptionLabel" text="0" class="stat-value"/>
+                </ui:VisualElement>
                 <ui:ScrollView name="ItemStatsScroll" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden" class="item-stats-container">
                     <ui:VisualElement name="ItemStatsList"/>
                 </ui:ScrollView>

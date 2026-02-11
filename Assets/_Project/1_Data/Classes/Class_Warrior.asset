@@ -17,6 +17,9 @@ MonoBehaviour:
   MaxHealth: 400
   MaxMana: 100
   ManaRegenPerSecond: 3
+  HealthRegenPerSecond: 3
+  HealthPerLevel: 15
+  ManaPerLevel: 3
   AnimatorController: {fileID: 9100000, guid: 88b802e3646bdef4fbcfba2b6832591d, type: 2}
   ModelPrefab: {fileID: 3844365438753311845, guid: 5d597e9580408a045b4c7f258f7f3a84, type: 3}
   InitialAbilities:

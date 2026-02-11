@@ -33,6 +33,8 @@ namespace Genesis.Simulation {
         // Cached base stats from class
         private float _baseMaxHealth = 100f;
         private float _baseMaxMana = 100f;
+        private float _healthPerLevel = 0f;
+        private float _manaPerLevel = 0f;
 
         private void Awake() {
             // Subscribe to equipment slot changes with specific slot info
@@ -107,11 +109,13 @@ namespace Genesis.Simulation {
         /// Update base stats from class (called by PlayerClassManager)
         /// </summary>
         [Server]
-        public void UpdateBaseStats(float baseHealth, float baseMana) {
+        public void UpdateBaseStats(float baseHealth, float baseMana, float healthPerLevel = 0f, float manaPerLevel = 0f) {
             _baseMaxHealth = baseHealth;
             _baseMaxMana = baseMana;
+            _healthPerLevel = healthPerLevel;
+            _manaPerLevel = manaPerLevel;
 
-            Debug.Log($"[EquipmentManager] Updated base stats: HP={baseHealth}, Mana={baseMana}");
+            Debug.Log($"[EquipmentManager] Updated base stats: HP={baseHealth}, Mana={baseMana}, HP/Lvl={healthPerLevel}, Mana/Lvl={manaPerLevel}");
 
             // Recalculate with new base stats
             RecalculateStats();
@@ -303,9 +307,10 @@ namespace Genesis.Simulation {
                 return;
             }
 
-            // Start with base stats
-            float totalMaxHealth = _baseMaxHealth;
-            float totalMaxMana = _baseMaxMana;
+            // Start with base stats + per-level growth
+            int level = _playerAttributes != null ? _playerAttributes.Level : 1;
+            float totalMaxHealth = _baseMaxHealth + (level - 1) * _healthPerLevel;
+            float totalMaxMana = _baseMaxMana + (level - 1) * _manaPerLevel;
 
             // Attribute bonuses from equipment
             int equipStr = 0, equipAgi = 0, equipInt = 0, equipWis = 0, equipCon = 0;
@@ -356,10 +361,12 @@ namespace Genesis.Simulation {
             ProcessSlot(_ring1Slot.Value);
             ProcessSlot(_ring2Slot.Value);
 
-            // Add CON bonus to max health if PlayerAttributes exists
+            // Add CON bonus to max health and WIS bonus to max mana
             if (_playerAttributes != null) {
                 totalMaxHealth += (_playerAttributes.BaseConstitution + equipCon) *
                     (_playerAttributes.Config != null ? _playerAttributes.Config.HealthPerPoint : 5f);
+                totalMaxMana += (_playerAttributes.BaseWisdom + equipWis) *
+                    (_playerAttributes.Config != null ? _playerAttributes.Config.MaxManaPerPoint : 3f);
             }
 
             // Update PlayerStats

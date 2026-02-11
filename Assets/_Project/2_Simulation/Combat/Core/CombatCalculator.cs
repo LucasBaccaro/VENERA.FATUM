@@ -42,7 +42,17 @@ namespace Genesis.Simulation.Combat {
                 }
             }
 
-            // 2. Check Evasion (target AGI)
+            // 2. Block mitigation (target Block - caster Penetration)
+            if (targetAttrs != null && targetAttrs.BlockValue > 0f) {
+                float penetration = casterAttrs != null ? Mathf.Clamp01(casterAttrs.Penetration) : 0f;
+                float effectiveBlock = targetAttrs.BlockValue * (1f - penetration);
+                if (effectiveBlock > 0f) {
+                    float mitigation = effectiveBlock / (effectiveBlock + 100f);
+                    result.FinalDamage *= (1f - mitigation);
+                }
+            }
+
+            // 3. Check Evasion (target AGI)
             if (targetAttrs != null && targetAttrs.EvasionChance > 0f) {
                 float evasionRoll = Random.Range(0f, 1f);
                 if (evasionRoll < targetAttrs.EvasionChance) {

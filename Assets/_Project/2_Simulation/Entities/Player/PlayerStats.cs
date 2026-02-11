@@ -20,6 +20,7 @@ namespace Genesis.Simulation {
         private readonly SyncVar<float> _maxHealth = new SyncVar<float>(800f);
         private readonly SyncVar<float> _maxMana = new SyncVar<float>(800f);
         [SerializeField] private float manaRegenPerSecond = 5f;
+        [SerializeField] private float healthRegenPerSecond = 2f;
 
         [Header("Current Stats (Synced - FishNet v4)")]
         // FishNet v4: Usar SyncVar<T> en lugar de [SyncVar]
@@ -29,6 +30,8 @@ namespace Genesis.Simulation {
 
         // Estado
         private bool _isDead;
+        private float _lastDamageTime;
+        private const float OOC_DELAY = 5f;
 
         // Referencias
         private StatusEffectSystem _statusSystem;
@@ -82,6 +85,7 @@ namespace Genesis.Simulation {
             _maxHealth.Value = data.MaxHealth;
             _maxMana.Value = data.MaxMana;
             manaRegenPerSecond = data.ManaRegenPerSecond;
+            healthRegenPerSecond = data.HealthRegenPerSecond;
 
             // Al cambiar de clase, sanamos al jugador y le damos maná completo
             _currentHealth.Value = _maxHealth.Value;
@@ -103,6 +107,17 @@ namespace Genesis.Simulation {
             float totalManaRegen = manaRegenPerSecond + (_attributes != null ? _attributes.BonusManaRegen : 0f);
             if (_currentMana.Value < _maxMana.Value) {
                 _currentMana.Value = Mathf.Min(_currentMana.Value + totalManaRegen * Time.deltaTime, _maxMana.Value);
+            }
+
+            // Health regen out of combat (base + CON bonus)
+            float totalHealthRegen = healthRegenPerSecond + (_attributes != null ? _attributes.HealthRegenOOC : 0f);
+            if (!_isDead
+                && totalHealthRegen > 0f
+                && Time.time - _lastDamageTime > OOC_DELAY
+                && _currentHealth.Value < _maxHealth.Value) {
+                _currentHealth.Value = Mathf.Min(
+                    _currentHealth.Value + totalHealthRegen * Time.deltaTime,
+                    _maxHealth.Value);
             }
         }
 
@@ -151,6 +166,9 @@ namespace Genesis.Simulation {
                     return; // No recibir daño
                 }
             }
+
+            // Track last damage time for OOC regen
+            _lastDamageTime = Time.time;
 
             // ═══ PASO 1: Absorber con Shield ═══
             if (_currentShield.Value > 0) {
@@ -219,6 +237,9 @@ namespace Genesis.Simulation {
                     return;
                 }
             }
+
+            // Track last damage time for OOC regen
+            _lastDamageTime = Time.time;
 
             // Shield absorption
             if (_currentShield.Value > 0) {
@@ -335,14 +356,18 @@ namespace Genesis.Simulation {
         /// </summary>
         [Server]
         public void SetMaxHealth(float value) {
+            float oldMax = _maxHealth.Value;
             _maxHealth.Value = value;
+
+            // Scale current HP proportionally when max increases
+            if (value > oldMax && oldMax > 0f) {
+                _currentHealth.Value = (_currentHealth.Value / oldMax) * value;
+            }
 
             // Clamp current health if it exceeds new max
             if (_currentHealth.Value > _maxHealth.Value) {
                 _currentHealth.Value = _maxHealth.Value;
             }
-
-            Debug.Log($"[PlayerStats] MaxHealth set to {value}");
         }
 
         /// <summary>
@@ -350,14 +375,18 @@ namespace Genesis.Simulation {
         /// </summary>
         [Server]
         public void SetMaxMana(float value) {
+            float oldMax = _maxMana.Value;
             _maxMana.Value = value;
+
+            // Scale current mana proportionally when max increases
+            if (value > oldMax && oldMax > 0f) {
+                _currentMana.Value = (_currentMana.Value / oldMax) * value;
+            }
 
             // Clamp current mana if it exceeds new max
             if (_currentMana.Value > _maxMana.Value) {
                 _currentMana.Value = _maxMana.Value;
             }
-
-            Debug.Log($"[PlayerStats] MaxMana set to {value}");
         }
 
         // ═══════════════════════════════════════════════════════

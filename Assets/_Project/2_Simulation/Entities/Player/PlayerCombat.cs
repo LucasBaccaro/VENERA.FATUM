@@ -27,6 +27,7 @@ namespace Genesis.Simulation {
         private StatusEffectSystem _statusEffects;
         private CharacterController _cc;
         private EquipmentManager _equipmentManager;
+        private PlayerAttributes _attributes;
         public EquipmentManager EquipmentManager => _equipmentManager;
 
         [Header("Loadout")]
@@ -81,6 +82,7 @@ namespace Genesis.Simulation {
             _statusEffects = GetComponent<StatusEffectSystem>();
             _cc = GetComponent<CharacterController>();
             _equipmentManager = GetComponent<EquipmentManager>();
+            _attributes = GetComponent<PlayerAttributes>();
             if (animator != null) {
                 _upperBodyLayerIndex = animator.GetLayerIndex(upperBodyLayerName);
                 if (_upperBodyLayerIndex == -1) {
@@ -548,8 +550,9 @@ namespace Genesis.Simulation {
             EventBus.Trigger<string>("OnCombatStateChanged", _combatState.ToString());
 
             // Inicializar tracking de cast
+            float hasteFactor = 1f - Mathf.Clamp01(_attributes != null ? _attributes.Haste : 0f);
             _castStartTime = Time.time;
-            _castDuration = ability.CastTime;
+            _castDuration = ability.CastTime * hasteFactor;
             _castingAbilityName = ability.Name;
 
             // Configurar valores de movimiento desde el Logic
@@ -575,7 +578,7 @@ namespace Genesis.Simulation {
 
             // SPAWNER CAST VFX (durante el casting)
             SpawnCastVFX(ability);
-            
+
             // ═══════════════════════════════════════════════════════
             // CLIENT PREDICTION: Aplicar efectos "to Self" instantáneamente
             // ═══════════════════════════════════════════════════════
@@ -587,7 +590,7 @@ namespace Genesis.Simulation {
                     }
                 }
             }
-            
+
             // Si tiene cast time, esperar; si no, ejecutar inmediatamente
             if (ability.CastTime > 0) {
                 _currentCastCoroutine = StartCoroutine(CastTimeCoroutine(ability));
@@ -717,10 +720,11 @@ namespace Genesis.Simulation {
 
             // Aplicar cooldown
             if (_pendingAbility != null) {
+                float stopHasteFactor = 1f - Mathf.Clamp01(_attributes != null ? _attributes.Haste : 0f);
                 _gcdEndTime = Time.time + _pendingAbility.GCD;
-                _cooldowns[_pendingAbility.ID] = Time.time + _pendingAbility.Cooldown;
+                _cooldowns[_pendingAbility.ID] = Time.time + _pendingAbility.Cooldown * stopHasteFactor;
 
-                EventBus.Trigger<int, float>("OnAbilityCooldownStart", _pendingAbility.ID, _pendingAbility.Cooldown);
+                EventBus.Trigger<int, float>("OnAbilityCooldownStart", _pendingAbility.ID, _pendingAbility.Cooldown * stopHasteFactor);
             }
 
             _pendingAbility = null;
@@ -813,9 +817,10 @@ namespace Genesis.Simulation {
             EventBus.Trigger<string>("OnCombatStateChanged", _combatState.ToString());
 
             // Setup channeling timing
+            float channelHasteFactor = 1f - Mathf.Clamp01(_attributes != null ? _attributes.Haste : 0f);
             _channelStartTime = Time.time;
-            _nextChannelTick = Time.time + _pendingAbility.ChannelTickRate;
-            _channelTickRate = _pendingAbility.ChannelTickRate;
+            _channelTickRate = _pendingAbility.ChannelTickRate * channelHasteFactor;
+            _nextChannelTick = Time.time + _channelTickRate;
             _channelMaxDuration = _pendingAbility.ChannelMaxDuration;
 
             // Configurar valores de movimiento desde el Logic
@@ -891,8 +896,9 @@ namespace Genesis.Simulation {
             EventBus.Trigger<string>("OnCombatStateChanged", _combatState.ToString());
 
             // Inicializar tracking de cast
+            float skillshotHasteFactor = 1f - Mathf.Clamp01(_attributes != null ? _attributes.Haste : 0f);
             _castStartTime = Time.time;
-            _castDuration = _pendingAbility.CastTime;
+            _castDuration = _pendingAbility.CastTime * skillshotHasteFactor;
             _castingAbilityName = _pendingAbility.Name;
 
             // ═══════════════════════════════════════════════════════
@@ -1184,10 +1190,11 @@ namespace Genesis.Simulation {
 
                 // Aplicar Cooldowns
                 if (ability != null) {
+                    float cdHasteFactor = 1f - Mathf.Clamp01(_attributes != null ? _attributes.Haste : 0f);
                     _gcdEndTime = Time.time + ability.GCD;
-                    _cooldowns[ability.ID] = Time.time + ability.Cooldown;
+                    _cooldowns[ability.ID] = Time.time + ability.Cooldown * cdHasteFactor;
 
-                    Debug.Log($"[PlayerCombat] {ability.Name} cast successful. CD: {ability.Cooldown}s");
+                    Debug.Log($"[PlayerCombat] {ability.Name} cast successful. CD: {ability.Cooldown * cdHasteFactor:F2}s (haste: {cdHasteFactor:F2})");
 
                     // Trigger EventBus events for UI
                     EventBus.Trigger<int, string>("OnAbilityCast", abilityId, ability.Name);

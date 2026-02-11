@@ -177,6 +177,7 @@ namespace Genesis.Simulation {
             _xpToNextLevel.Value = _config.GetXPForLevel(_level.Value);
 
             RecalculateDerivedStats();
+            NotifyStatsRecalculation();
 
             RpcOnLevelUp(_level.Value);
             EventBus.Trigger("OnLevelUp", _level.Value);
@@ -216,6 +217,7 @@ namespace Genesis.Simulation {
 
             _unspentPoints.Value--;
             RecalculateDerivedStats();
+            NotifyStatsRecalculation();
 
             Debug.Log($"[PlayerAttributes] Allocated point to attr {attrIndex}. Remaining: {_unspentPoints.Value}");
         }
@@ -268,6 +270,18 @@ namespace Genesis.Simulation {
             _lockpicking.Value = _equipLockpicking;
             _perception.Value = _equipPerception;
             _moveSpeed.Value = _equipMoveSpeed;
+        }
+
+        /// <summary>
+        /// Notifies EquipmentManager to recalculate MaxHP/MaxMana (level/attribute changes).
+        /// Separated from RecalculateDerivedStats to avoid circular calls with SetEquipmentBonuses.
+        /// </summary>
+        [Server]
+        private void NotifyStatsRecalculation() {
+            var equipmentManager = GetComponent<EquipmentManager>();
+            if (equipmentManager != null) {
+                equipmentManager.RecalculateStats();
+            }
         }
 
         // ═══════════════════════════════════════════════════════

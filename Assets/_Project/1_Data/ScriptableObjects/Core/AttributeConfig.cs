@@ -32,6 +32,8 @@ namespace Genesis.Data {
         public float HealingPowerPerPoint = 0.005f;
         [Tooltip("Flat mana regen per second per WIS point")]
         public float ManaRegenPerPoint = 0.1f;
+        [Tooltip("Flat max mana bonus per WIS point")]
+        public float MaxManaPerPoint = 3f;
 
         [Header("Constitution Scaling")]
         [Tooltip("Flat HP bonus per CON point")]

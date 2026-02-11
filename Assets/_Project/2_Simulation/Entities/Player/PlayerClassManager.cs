@@ -67,7 +67,7 @@ namespace Genesis.Simulation {
             // 3. Notificar EquipmentManager para recalcular stats y validar equipo
             var equipmentManager = GetComponent<Genesis.Simulation.EquipmentManager>();
             if (equipmentManager != null) {
-                equipmentManager.UpdateBaseStats(data.MaxHealth, data.MaxMana);
+                equipmentManager.UpdateBaseStats(data.MaxHealth, data.MaxMana, data.HealthPerLevel, data.ManaPerLevel);
                 equipmentManager.ValidateEquipmentForClass(data.ClassName);
             }
 

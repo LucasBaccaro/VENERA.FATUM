@@ -15,8 +15,13 @@ MonoBehaviour:
   EnemyTag: renegade_leader
   DisplayName: Renegade Leader
   MaxHealth: 500
-  Damage: 25
-  AttackRange: 2.5
-  AttackCooldown: 1.5
+  MinDamage: 5
+  MaxDamage: 11
+  AttackRange: 12
+  AttackCooldown: 2.5
   DetectionRange: 12
   MoveSpeed: 3
+  IsRanged: 1
+  ProjectilePrefab: {fileID: 29690531400654767, guid: 8f7b9620c51ac0b40aa7a1f6cdb26f0a, type: 3}
+  ProjectileSpeed: 12
+  PreferredDistance: 10

@@ -135,6 +135,7 @@ namespace Genesis.Simulation {
 
             float distToTarget = Vector3.Distance(transform.position, _target.position);
             float attackRange = _data != null ? _data.AttackRange : 2f;
+            bool isRanged = _data != null && _data.IsRanged;
 
             if (distToTarget <= attackRange) {
                 _aiState = AIState.Attack;
@@ -142,9 +143,23 @@ namespace Genesis.Simulation {
                 return;
             }
 
+            // Ranged enemies: if within preferred distance, stop and attack
+            if (isRanged && _data.PreferredDistance > 0f && distToTarget <= _data.PreferredDistance) {
+                _aiState = AIState.Attack;
+                if (_agent != null) _agent.ResetPath();
+                return;
+            }
+
             // Move toward target
             if (_agent != null && _agent.isOnNavMesh) {
-                _agent.SetDestination(_target.position);
+                if (isRanged) {
+                    // Ranged: move to preferred distance, not melee range
+                    Vector3 dirToTarget = (_target.position - transform.position).normalized;
+                    Vector3 desiredPos = _target.position - dirToTarget * _data.PreferredDistance * 0.8f;
+                    _agent.SetDestination(desiredPos);
+                } else {
+                    _agent.SetDestination(_target.position);
+                }
             } else {
                 // Fallback: direct movement
                 Vector3 direction = (_target.position - transform.position).normalized;
@@ -164,10 +179,25 @@ namespace Genesis.Simulation {
 
             float distToTarget = Vector3.Distance(transform.position, _target.position);
             float attackRange = _data != null ? _data.AttackRange : 2f;
+            bool isRanged = _data != null && _data.IsRanged;
 
-            if (distToTarget > attackRange * 1.2f) {
+            // Out of range → chase again
+            float maxRange = isRanged ? _data.PreferredDistance * 1.3f : attackRange * 1.2f;
+            if (distToTarget > maxRange) {
                 _aiState = AIState.Aggro;
                 return;
+            }
+
+            // Ranged: retreat if player gets too close
+            if (isRanged && distToTarget < _data.PreferredDistance * 0.4f) {
+                Vector3 retreatDir = (transform.position - _target.position).normalized;
+                Vector3 retreatPos = transform.position + retreatDir * _data.PreferredDistance * 0.5f;
+                if (_agent != null && _agent.isOnNavMesh) {
+                    _agent.SetDestination(retreatPos);
+                } else {
+                    float speed = _data.MoveSpeed;
+                    transform.position += retreatDir * speed * Time.deltaTime;
+                }
             }
 
             // Face target
@@ -182,13 +212,32 @@ namespace Genesis.Simulation {
                 _lastAttackTime = Time.time;
                 float damage = _data != null ? Random.Range(_data.MinDamage, _data.MaxDamage) : 10f;
 
-                var damageable = _target.GetComponent<IDamageable>();
-                if (damageable != null) {
-                    damageable.TakeDamage(damage, base.NetworkObject);
+                if (_data != null && _data.IsRanged && _data.ProjectilePrefab != null) {
+                    FireProjectile(damage);
+                } else {
+                    var damageable = _target.GetComponent<IDamageable>();
+                    if (damageable != null) {
+                        damageable.TakeDamage(damage, base.NetworkObject);
+                    }
                 }
 
                 RpcPlayAttackAnimation();
             }
+        }
+
+        [Server]
+        private void FireProjectile(float damage) {
+            Vector3 spawnPos = transform.position + Vector3.up * 1.2f + transform.forward * 0.5f;
+            Vector3 direction = (_target.position + Vector3.up * 1f - spawnPos).normalized;
+
+            GameObject projectile = Instantiate(_data.ProjectilePrefab, spawnPos, Quaternion.LookRotation(direction));
+
+            if (projectile.TryGetComponent(out Combat.ProjectileController controller)) {
+                float speed = _data.ProjectileSpeed;
+                controller.Initialize(base.NetworkObject, damage, direction * speed, 0.3f);
+            }
+
+            FishNet.InstanceFinder.ServerManager.Spawn(projectile);
         }
 
         private void ReturnToSpawn() {

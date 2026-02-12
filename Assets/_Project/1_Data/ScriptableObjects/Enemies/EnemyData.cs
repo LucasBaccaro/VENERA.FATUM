@@ -18,5 +18,11 @@ namespace Genesis.Data {
         [Header("AI")]
         public float DetectionRange = 8f;
         public float MoveSpeed = 3f;
+
+        [Header("Ranged Attack")]
+        public bool IsRanged = false;
+        public GameObject ProjectilePrefab;
+        public float ProjectileSpeed = 12f;
+        public float PreferredDistance = 8f;
     }
 }

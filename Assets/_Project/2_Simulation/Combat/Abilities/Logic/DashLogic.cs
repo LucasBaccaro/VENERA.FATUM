@@ -99,24 +99,52 @@ namespace Genesis.Simulation.Combat {
 
             float distance = Vector3.Distance(startPos, endPos);
 
-            // SphereCast a lo largo del trayecto
-            RaycastHit[] hits = Physics.SphereCastAll(startPos, data.Radius, direction, distance, LayerMask.GetMask("Enemy"));
+            PlayerAttributes casterAttrs = caster != null ? caster.GetComponent<PlayerAttributes>() : null;
+            AttributeConfig config = casterAttrs != null ? casterAttrs.Config : null;
+
+            // SphereCast a lo largo del trayecto - include both Enemy and Player layers
+            RaycastHit[] hits = Physics.SphereCastAll(startPos, data.Radius, direction, distance, LayerMask.GetMask("Enemy", "Player"));
 
             foreach (var hit in hits) {
                 if (hit.collider.TryGetComponent(out NetworkObject netObj)) {
                     if (netObj == caster) continue; // No dañarse a sí mismo
 
-                    if (hit.collider.TryGetComponent(out IDamageable damageable)) {
-                        damageable.TakeDamage(data.BaseDamage, caster);
-
-                        // Impact VFX
-                        if (data.ImpactVFX != null) {
-                            GameObject impactVfx = Instantiate(data.ImpactVFX, hit.point, Quaternion.identity);
-                            FishNet.InstanceFinder.ServerManager.Spawn(impactVfx);
-                            Destroy(impactVfx, 1f);
+                    // Aplicar DAMAGE (same pattern as ConeLogic)
+                    if (data.BaseDamage > 0) {
+                        if (hit.collider.TryGetComponent(out PlayerStats targetStats)) {
+                            CombatResult result = CombatCalculator.CalculateDamage(caster, netObj, data.BaseDamage, data.Category, config);
+                            if (result.ResultType != DamageResultType.Evaded) {
+                                targetStats.TakeDamage(result.FinalDamage, caster, result.ResultType);
+                                if (result.LifeStealAmount > 0f) {
+                                    PlayerStats casterStats = caster.GetComponent<PlayerStats>();
+                                    casterStats?.Heal(result.LifeStealAmount);
+                                }
+                            }
+                        } else if (hit.collider.TryGetComponent(out IDamageable damageable)) {
+                            CombatResult result = CombatCalculator.CalculateDamage(caster, netObj, data.BaseDamage, data.Category, config);
+                            damageable.TakeDamage(result.FinalDamage, caster);
+                            if (result.LifeStealAmount > 0f) {
+                                PlayerStats casterStats = caster.GetComponent<PlayerStats>();
+                                casterStats?.Heal(result.LifeStealAmount);
+                            }
                         }
+                    }
 
-                        Debug.Log($"[DashLogic] {caster.name} hit {netObj.name} during dash for {data.BaseDamage} damage");
+                    // Aplicar STATUS EFFECTS
+                    if (data.ApplyToTarget != null && data.ApplyToTarget.Length > 0) {
+                        StatusEffectSystem statusSystem = netObj.GetComponent<StatusEffectSystem>();
+                        if (statusSystem != null) {
+                            foreach (var effectData in data.ApplyToTarget) {
+                                statusSystem.ApplyEffect(effectData);
+                            }
+                        }
+                    }
+
+                    // Impact VFX
+                    if (data.ImpactVFX != null) {
+                        GameObject impactVfx = Instantiate(data.ImpactVFX, hit.point, Quaternion.identity);
+                        FishNet.InstanceFinder.ServerManager.Spawn(impactVfx);
+                        Destroy(impactVfx, data.ImpactVFXDuration);
                     }
                 }
             }

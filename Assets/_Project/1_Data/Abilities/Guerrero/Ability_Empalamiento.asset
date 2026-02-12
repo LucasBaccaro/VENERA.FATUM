@@ -47,5 +47,5 @@ MonoBehaviour:
   ImpactVFXDuration: 2
   CastSound: {fileID: 0}
   ImpactSound: {fileID: 0}
-  StartCastAnimationTrigger: CastInstant
-  AnimationTrigger: EndCast
+  StartCastAnimationTrigger:
+  AnimationTrigger: CastInstant

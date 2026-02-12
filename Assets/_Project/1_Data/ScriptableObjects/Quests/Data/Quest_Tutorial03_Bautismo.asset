@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f860bfb7d54c4fb78a50217edca3d15, type: 3}
+  m_Name: Quest_Tutorial03_Bautismo
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.QuestData
+  QuestID: tutorial_03
+  QuestName: Bautismo
+  Description: Prove your worth by clearing the coastal pests near the shore.
+  RequiredLevel: 1
+  PrerequisiteQuest: {fileID: 11400000, guid: f66b8e300a41840679840110a7f79cb6, type: 2}
+  GiverNpcID: general
+  TurnInNpcID: general
+  DialogueOffer: The coast is crawling with pests. Clear out 5 of them to prove you
+    can handle yourself in a fight.
+  DialogueInProgress: You haven't finished yet. There are still pests on the coast.
+  DialogueComplete: Well done. You've got some fight in you after all.
+  DialogueAfterComplete: The coast is cleaner thanks to you.
+  Objectives:
+  - Type: 1
+    Description: Kill Coastal Pests
+    TargetID: coastal_pest
+    RequiredCount: 5
+  Rewards:
+  - ItemID: 0
+    ItemQuantity: 0
+    Tier: 0
+    Rarity: 0
+    XPType: standard

@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f860bfb7d54c4fb78a50217edca3d15, type: 3}
+  m_Name: Quest_Tutorial04_ElHallazgo
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.QuestData
+  QuestID: tutorial_04
+  QuestName: El Hallazgo
+  Description: Scouts reported a strange relic near the ruins. Find it and bring
+    it back.
+  RequiredLevel: 2
+  PrerequisiteQuest: {fileID: 11400000, guid: a5ce6b90bf093449a85f0994f67f0648, type: 2}
+  GiverNpcID: general
+  TurnInNpcID: general
+  DialogueOffer: Our scouts found traces of an ancient relic near the old ruins. Go
+    find it and bring it back. It could be valuable.
+  DialogueInProgress: Have you found the relic? Check near the old ruins.
+  DialogueComplete: Remarkable. This relic is from the old civilization. Take this
+    ring as a reward for your discovery.
+  DialogueAfterComplete: That relic will be studied by our scholars.
+  Objectives:
+  - Type: 2
+    Description: Find the Ancient Relic
+    TargetID: relic
+    RequiredCount: 1
+  Rewards:
+  - ItemID: 2009
+    ItemQuantity: 1
+    Tier: 0
+    Rarity: 1
+    XPType: standard

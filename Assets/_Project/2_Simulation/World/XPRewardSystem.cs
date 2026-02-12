@@ -2,27 +2,7 @@ using UnityEngine;
 using FishNet.Object;
 using Genesis.Core;
 using Genesis.Data;
-
-namespace Genesis.Simulation.World {
-
-    /// <summary>
-    /// Server-side system that grants XP to players based on game events.
-    /// Listens to EventBus for kills, quests, etc.
-    /// </summary>
-    [CreateAssetMenu(fileName = "XPRewardConfig", menuName = "Genesis/System/XP Reward Config")]
-    public class XPRewardConfig : ScriptableObject {
-        [Header("Kill XP")]
-        public float BaseEnemyKillXP = 50f;
-        public float EliteEnemyKillXP = 150f;
-        public float BossKillXP = 500f;
-        public float PlayerKillXP = 100f;
-
-        [Header("Quest XP")]
-        public float SimpleQuestXP = 200f;
-        public float StandardQuestXP = 500f;
-        public float EpicQuestXP = 1000f;
-    }
-}
+using Genesis.Simulation.World;
 
 namespace Genesis.Simulation {
 
@@ -32,7 +12,7 @@ namespace Genesis.Simulation {
     /// </summary>
     public class XPRewardSystem : MonoBehaviour {
 
-        [SerializeField] private Genesis.Simulation.World.XPRewardConfig _config;
+        [SerializeField] private XPRewardConfig _config;
 
         private void OnEnable() {
             EventBus.Subscribe<NetworkObject, NetworkObject>("OnEnemyKilled", OnEnemyKilled);

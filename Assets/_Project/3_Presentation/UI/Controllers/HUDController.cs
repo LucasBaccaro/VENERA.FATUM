@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Genesis.Core;
 using Genesis.Simulation;
+using Genesis.Simulation.Combat;
 using FishNet.Object; // Necesario para NetworkObject
 
 namespace Genesis.Presentation.UI {
@@ -55,6 +56,7 @@ namespace Genesis.Presentation.UI {
         private PlayerStats _localPlayerStats;
         private NetworkObject _currentTarget;
         private PlayerStats _currentTargetStats;
+        private IDamageable _currentTargetDamageable;
 
         // ═══════════════════════════════════════════════════════
         // INITIALIZATION
@@ -209,23 +211,21 @@ namespace Genesis.Presentation.UI {
 
         private void OnTargetChanged(NetworkObject target) {
             if (_targetFrame == null || target == null) return;
-            
+
             _currentTarget = target;
             _currentTargetStats = target.GetComponent<PlayerStats>();
-            
+            _currentTargetDamageable = target.GetComponent<IDamageable>();
+
             _targetFrame.style.display = DisplayStyle.Flex;
-            
+
             // Determinar nombre
-            if (target.CompareTag("Player")) {
-                _targetNameLabel.text = "Player_Enemy";
-            } else if (target.name.Contains("Dummy")) {
-                // Limpiar el "(Clone)" si existe
-                string cleanName = target.name.Replace("(Clone)", "").Trim();
-                _targetNameLabel.text = cleanName;
-            } else {
-                _targetNameLabel.text = target.name.Replace("(Clone)", "").Trim();
+            string displayName = target.name.Replace("(Clone)", "").Trim();
+            var enemyMob = target.GetComponent<EnemyMob>();
+            if (enemyMob != null) {
+                displayName = enemyMob.DisplayName;
             }
-            
+            _targetNameLabel.text = displayName;
+
             UpdateTargetUI();
             Debug.Log($"[HUD] Target Selected: {_targetNameLabel.text}");
         }
@@ -233,6 +233,7 @@ namespace Genesis.Presentation.UI {
         private void OnTargetCleared() {
             _currentTarget = null;
             _currentTargetStats = null;
+            _currentTargetDamageable = null;
             
             if (_targetFrame != null) {
                 _targetFrame.style.display = DisplayStyle.None;
@@ -244,12 +245,11 @@ namespace Genesis.Presentation.UI {
             if (_currentTarget == null || _targetFrame == null || _targetFrame.style.display == DisplayStyle.None) return;
 
             if (_currentTargetStats != null) {
-                // Actualizar Vida
+                // Player target: full stats
                 float hpPercent = (_currentTargetStats.CurrentHealth / _currentTargetStats.MaxHealth) * 100f;
                 if (_targetHealthBar != null) _targetHealthBar.value = hpPercent;
                 if (_targetHealthText != null) _targetHealthText.text = $"{_currentTargetStats.CurrentHealth:F0} / {_currentTargetStats.MaxHealth:F0}";
 
-                // Actualizar Maná (Solo si tiene maná máximo > 0)
                 if (_currentTargetStats.MaxMana > 0) {
                     if (_targetManaBar != null) {
                         _targetManaBar.style.display = DisplayStyle.Flex;
@@ -258,8 +258,15 @@ namespace Genesis.Presentation.UI {
                 } else {
                     if (_targetManaBar != null) _targetManaBar.style.display = DisplayStyle.None;
                 }
+            } else if (_currentTargetDamageable != null) {
+                // Enemy/NPC target: health via IDamageable
+                float current = _currentTargetDamageable.GetCurrentHealth();
+                float max = _currentTargetDamageable.GetMaxHealth();
+                float hpPercent = max > 0 ? (current / max) * 100f : 0f;
+                if (_targetHealthBar != null) _targetHealthBar.value = hpPercent;
+                if (_targetHealthText != null) _targetHealthText.text = $"{current:F0} / {max:F0}";
+                if (_targetManaBar != null) _targetManaBar.style.display = DisplayStyle.None;
             } else {
-                // Si no tiene PlayerStats (ej: un objeto decorativo targeteable), ocultar barras o mostrar 0
                 if (_targetHealthBar != null) _targetHealthBar.value = 0;
                 if (_targetHealthText != null) _targetHealthText.text = "- / -";
                 if (_targetManaBar != null) _targetManaBar.style.display = DisplayStyle.None;

@@ -31,6 +31,8 @@ GameObject:
   - component: {fileID: 5683014262376530763}
   - component: {fileID: 6687539303086172723}
   - component: {fileID: 5586823950512368073}
+  - component: {fileID: 4975949508799160666}
+  - component: {fileID: 2357473902400772969}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -236,6 +238,7 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 5015743577735707121}
   _networkObjectCache: {fileID: 5015743577735707121}
   manaRegenPerSecond: 5
+  healthRegenPerSecond: 2
 --- !u!114 &-500167922849418954
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -550,6 +553,38 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 5015743577735707121}
   _networkObjectCache: {fileID: 5015743577735707121}
   _config: {fileID: 11400000, guid: e40e795390e784577ad87ef50285e9f5, type: 2}
+--- !u!114 &4975949508799160666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3168934939399175360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71f76a8fe87fd40eb9f646df667c56d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.PlayerQuestManager
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 5015743577735707121}
+  _networkObjectCache: {fileID: 0}
+--- !u!114 &2357473902400772969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3168934939399175360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17bfb7f51674248dab73a5cbd608ba6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.InteractionDetector
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 5015743577735707121}
+  _networkObjectCache: {fileID: 0}
+  _interactionRange: 3
+  _scanInterval: 0.1
 --- !u!1 &8233073365634962066
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 162382321b14b4e2eb843e009128bb35, type: 3}
+  m_Name: Enemy_RenegadeLeader
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.EnemyData
+  EnemyTag: renegade_leader
+  DisplayName: Renegade Leader
+  MaxHealth: 500
+  Damage: 25
+  AttackRange: 2.5
+  AttackCooldown: 1.5
+  DetectionRange: 12
+  MoveSpeed: 3

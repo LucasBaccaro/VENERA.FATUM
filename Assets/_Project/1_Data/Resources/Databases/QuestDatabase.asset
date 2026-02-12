@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 262fb125ec6314d92bc4452e42df3ace, type: 3}
+  m_Name: QuestDatabase
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.QuestDatabase
+  _allQuests:
+  - {fileID: 11400000, guid: e058cdbc51b304dc69281c054f1084fb, type: 2}
+  - {fileID: 11400000, guid: f66b8e300a41840679840110a7f79cb6, type: 2}
+  - {fileID: 11400000, guid: a5ce6b90bf093449a85f0994f67f0648, type: 2}
+  - {fileID: 11400000, guid: 5478e915e1db5468e8d3ab4dd1cb4351, type: 2}
+  - {fileID: 11400000, guid: 1a69c8919835a4169b6b54dc86d683fb, type: 2}
+  - {fileID: 11400000, guid: 7b4104c9d94e84b4db5c1c2622c166f6, type: 2}

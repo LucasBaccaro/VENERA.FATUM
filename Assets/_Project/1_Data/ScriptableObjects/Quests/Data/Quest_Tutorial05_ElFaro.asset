@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f860bfb7d54c4fb78a50217edca3d15, type: 3}
+  m_Name: Quest_Tutorial05_ElFaro
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.QuestData
+  QuestID: tutorial_05
+  QuestName: El Faro
+  Description: Clear the path to the lighthouse by eliminating the marauders.
+  RequiredLevel: 3
+  PrerequisiteQuest: {fileID: 11400000, guid: 5478e915e1db5468e8d3ab4dd1cb4351, type: 2}
+  GiverNpcID: general
+  TurnInNpcID: general
+  DialogueOffer: The path to the lighthouse is blocked by marauders. Clear 8 of them
+    so we can secure the route.
+  DialogueInProgress: The marauders still hold the path. Keep fighting.
+  DialogueComplete: The path is clear. Take these, you've earned better gear.
+  DialogueAfterComplete: The lighthouse road is safe thanks to you.
+  Objectives:
+  - Type: 1
+    Description: Eliminate Path Marauders
+    TargetID: path_enemy
+    RequiredCount: 8
+  Rewards:
+  - ItemID: 2010
+    ItemQuantity: 1
+    Tier: 0
+    Rarity: 0
+    XPType: standard
+  - ItemID: 2011
+    ItemQuantity: 1
+    Tier: 0
+    Rarity: 0
+    XPType:

@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f860bfb7d54c4fb78a50217edca3d15, type: 3}
+  m_Name: Quest_Tutorial01_ElArribo
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.QuestData
+  QuestID: tutorial_01
+  QuestName: El Arribo
+  Description: You have arrived at the coast. Find General Voss at the fort.
+  RequiredLevel: 1
+  PrerequisiteQuest: {fileID: 0}
+  GiverNpcID: captain
+  TurnInNpcID: general
+  DialogueOffer: Welcome to the island, recruit. Head to the fort and report to General
+    Voss. He'll tell you what to do.
+  DialogueInProgress: General Voss is at the fort. Head inland and find him.
+  DialogueComplete: You must be the new recruit. Good, we need all the help we can
+    get.
+  DialogueAfterComplete: Glad you made it. Speak with the General for your next assignment.
+  Objectives:
+  - Type: 0
+    Description: Talk to General Voss
+    TargetID: general
+    RequiredCount: 1
+  Rewards:
+  - ItemID: 0
+    ItemQuantity: 0
+    Tier: 0
+    Rarity: 0
+    XPType: simple

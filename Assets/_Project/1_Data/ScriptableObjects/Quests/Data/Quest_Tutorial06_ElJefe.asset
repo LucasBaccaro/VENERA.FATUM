@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f860bfb7d54c4fb78a50217edca3d15, type: 3}
+  m_Name: Quest_Tutorial06_ElJefe
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.QuestData
+  QuestID: tutorial_06
+  QuestName: El Jefe
+  Description: The Renegade Leader has been spotted at the lighthouse. End his reign.
+  RequiredLevel: 4
+  PrerequisiteQuest: {fileID: 11400000, guid: 1a69c8919835a4169b6b54dc86d683fb, type: 2}
+  GiverNpcID: general
+  TurnInNpcID: general
+  DialogueOffer: The Renegade Leader has taken the lighthouse. He's dangerous, but
+    I believe you can defeat him. End his reign.
+  DialogueInProgress: The Renegade Leader still lives. You'll find him at the lighthouse.
+  DialogueComplete: You did it. The island is safe. Take this weapon, you've earned
+    it champion.
+  DialogueAfterComplete: You've proven yourself a true warrior. The island is in your
+    debt.
+  Objectives:
+  - Type: 1
+    Description: Defeat the Renegade Leader
+    TargetID: renegade_leader
+    RequiredCount: 1
+  Rewards:
+  - ItemID: 2012
+    ItemQuantity: 1
+    Tier: 1
+    Rarity: 1
+    XPType: epic

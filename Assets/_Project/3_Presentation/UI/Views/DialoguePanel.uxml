@@ -1,0 +1,19 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="DialogueRoot" picking-mode="Ignore" style="position: absolute; width: 100%; height: 100%; justify-content: center; align-items: center;">
+        <ui:VisualElement name="DialogueOverlay" style="position: absolute; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: none;"/>
+        <ui:VisualElement name="DialogueWindow" style="width: 500px; background-color: rgba(15, 15, 20, 0.95); border-radius: 8px; border-width: 2px; border-color: rgba(200, 180, 120, 0.5); padding: 20px; display: none;">
+            <ui:Label name="NpcNameLabel" text="NPC Name" style="font-size: 18px; -unity-font-style: bold; color: rgb(255, 220, 100); margin-bottom: 10px; -unity-text-align: upper-center;"/>
+            <ui:VisualElement style="height: 1px; background-color: rgba(255, 255, 255, 0.15); margin-bottom: 12px;"/>
+            <ui:Label name="DialogueText" text="Dialogue text goes here..." style="font-size: 14px; color: rgb(220, 220, 220); white-space: normal; margin-bottom: 16px; min-height: 60px;"/>
+            <ui:VisualElement name="RewardsContainer" style="margin-bottom: 12px; display: none;">
+                <ui:Label text="Rewards:" style="font-size: 12px; color: rgb(180, 180, 180); margin-bottom: 4px; -unity-font-style: bold;"/>
+                <ui:VisualElement name="RewardsList" style="flex-direction: row; flex-wrap: wrap;"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="ButtonContainer" style="flex-direction: row; justify-content: center; margin-top: 8px;">
+                <ui:Button name="AcceptButton" text="Accept" style="width: 120px; height: 35px; margin-right: 10px; background-color: rgb(40, 100, 40); color: white; border-radius: 4px; font-size: 14px; -unity-font-style: bold; border-width: 1px; border-color: rgba(100, 200, 100, 0.4); display: none;"/>
+                <ui:Button name="CompleteButton" text="Complete" style="width: 120px; height: 35px; margin-right: 10px; background-color: rgb(40, 80, 120); color: white; border-radius: 4px; font-size: 14px; -unity-font-style: bold; border-width: 1px; border-color: rgba(100, 150, 220, 0.4); display: none;"/>
+                <ui:Button name="CloseButton" text="Close" style="width: 120px; height: 35px; background-color: rgb(80, 40, 40); color: white; border-radius: 4px; font-size: 14px; -unity-font-style: bold; border-width: 1px; border-color: rgba(200, 100, 100, 0.4);"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

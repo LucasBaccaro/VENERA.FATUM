@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f860bfb7d54c4fb78a50217edca3d15, type: 3}
+  m_Name: Quest_Tutorial02_ElFuerte
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.QuestData
+  QuestID: tutorial_02
+  QuestName: El Fuerte
+  Description: General Voss welcomes you and provides your initial gear.
+  RequiredLevel: 1
+  PrerequisiteQuest: {fileID: 11400000, guid: e058cdbc51b304dc69281c054f1084fb, type: 2}
+  GiverNpcID: general
+  TurnInNpcID: general
+  DialogueOffer: "Welcome to Fort Vanguard. Every soldier needs proper gear. Take
+    this equipment \u2014 you\u2019ll need it for what\u2019s ahead."
+  DialogueInProgress: Equip your gear and prepare for duty.
+  DialogueComplete: Good. You look ready for action.
+  DialogueAfterComplete: Your gear suits you well, soldier.
+  Objectives:
+  - Type: 0
+    Description: Receive your equipment
+    TargetID: general
+    RequiredCount: 1
+  Rewards:
+  - ItemID: 2001
+    ItemQuantity: 1
+    Tier: 0
+    Rarity: 0
+    XPType: standard
+  - ItemID: 2002
+    ItemQuantity: 1
+    Tier: 0
+    Rarity: 0
+    XPType:
+  - ItemID: 2003
+    ItemQuantity: 1
+    Tier: 0
+    Rarity: 0
+    XPType:
+  - ItemID: 2004
+    ItemQuantity: 1
+    Tier: 0
+    Rarity: 0
+    XPType:
+  - ItemID: 2005
+    ItemQuantity: 1
+    Tier: 0
+    Rarity: 0
+    XPType:
+  - ItemID: 2006
+    ItemQuantity: 1
+    Tier: 0
+    Rarity: 0
+    XPType:
+  - ItemID: 2007
+    ItemQuantity: 1
+    Tier: 0
+    Rarity: 0
+    XPType:
+  - ItemID: 2008
+    ItemQuantity: 1
+    Tier: 0
+    Rarity: 0
+    XPType:

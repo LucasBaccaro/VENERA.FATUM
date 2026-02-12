@@ -317,6 +317,12 @@ namespace Genesis.Simulation {
         }
 
         [Server]
+        public void GrantBonusPoints(int points) {
+            _unspentPoints.Value += points;
+            Debug.Log($"[PlayerAttributes] Granted {points} bonus points. Total unspent: {_unspentPoints.Value}");
+        }
+
+        [Server]
         public void ResetAttributes() {
             int totalSpent = _strength.Value + _agility.Value + _intelligence.Value + _wisdom.Value + _constitution.Value;
             _strength.Value = 0;

@@ -62,16 +62,9 @@ namespace Genesis.Simulation {
 
             Debug.Log($"[StarterItemGranter] Granting starter items to {gameObject.name}");
 
-            // Add potions to inventory
+            // Add potions to inventory (equipment now comes from quest "El Fuerte")
             AddPotion(_healthPotionID, _potionQuantity);
             AddPotion(_manaPotionID, _potionQuantity);
-
-            // Add Starter Equipment to inventory (unequipped)
-            foreach (int itemId in _starterEquipmentIDs) {
-                if (itemId > 0) {
-                    _playerInventory.AddItem(itemId, 1, _starterTier, _starterRarity);
-                }
-            }
 
             Debug.Log($"[StarterItemGranter] Finished granting starter items to {gameObject.name}");
         }

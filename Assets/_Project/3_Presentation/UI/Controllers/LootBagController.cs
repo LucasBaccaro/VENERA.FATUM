@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UIElements;
-using UnityEngine.InputSystem;
 using Genesis.Simulation;
 using Genesis.Items;
 using Genesis.Data;
@@ -43,44 +42,6 @@ namespace Genesis.Presentation.UI {
 
         private void Start() {
             InitializeUI();
-        }
-
-        private void Update() {
-            // Press 'E' to open nearest loot bag (matching debug behavior)
-            if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame) {
-                TryOpenNearestLootSource();
-            }
-        }
-
-        private void TryOpenNearestLootSource() {
-            var player = FindLocalPlayer();
-            if (player == null) return;
-
-            // Find all Interactables that are ILootSource
-            // Note: This is a bit expensive, but acceptable for now (similar to original code)
-            var allInteractables = Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
-            
-            ILootSource nearest = null;
-            float minDistance = float.MaxValue;
-
-            foreach (var obj in allInteractables) {
-                if (obj is ILootSource lootSource && obj is IInteractable interactable) {
-                    float distance = Vector3.Distance(player.transform.position, obj.transform.position);
-                    // Interact range 3m
-                    if (distance < 3f && distance < minDistance) {
-                        nearest = lootSource;
-                        minDistance = distance;
-                    }
-                }
-            }
-
-            if (nearest != null) {
-                // Send interaction request to server
-                // The server will then respond (TargetRpc) to open the UI
-                if (nearest is ILootSource source) {
-                    source.CmdTryInteract(player);
-                }
-            }
         }
 
         private void InitializeUI() {

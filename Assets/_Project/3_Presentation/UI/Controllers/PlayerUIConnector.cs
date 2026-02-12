@@ -45,6 +45,12 @@ namespace Genesis.Presentation.UI {
                     }
                 }
 
+                // Set player name from ClassManager
+                PlayerClassManager classManager = GetComponent<PlayerClassManager>();
+                if (classManager != null && !string.IsNullOrEmpty(classManager.PlayerName)) {
+                    hudController.SetPlayerName(classManager.PlayerName);
+                }
+
                 Debug.Log("[PlayerUIConnector] ✅ HUD conectado");
             } else {
                 Debug.LogWarning("[PlayerUIConnector] ⚠️ No se encontró HUDController o PlayerStats");

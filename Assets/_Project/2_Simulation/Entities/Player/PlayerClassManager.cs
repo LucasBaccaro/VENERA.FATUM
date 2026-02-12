@@ -3,6 +3,7 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using Genesis.Data;
 using Genesis.Core;
+using Genesis.Core.Networking;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 
@@ -10,7 +11,7 @@ namespace Genesis.Simulation {
     public class PlayerClassManager : NetworkBehaviour {
         [Header("Classes")]
         [SerializeField] private List<ClassData> availableClasses = new List<ClassData>();
-        
+
         [Header("References")]
         [SerializeField] private PlayerStats stats;
         [SerializeField] private PlayerCombat combat;
@@ -19,10 +20,26 @@ namespace Genesis.Simulation {
 
         // SyncVar para que todos los clientes sepan qué clase tiene el jugador
         private readonly SyncVar<int> _currentClassIndex = new SyncVar<int>(-1);
+        private readonly SyncVar<string> _playerName = new SyncVar<string>("");
+        private readonly SyncVar<bool> _classLocked = new SyncVar<bool>(false);
+
+        public string PlayerName => _playerName.Value;
 
         public override void OnStartNetwork() {
             base.OnStartNetwork();
             _currentClassIndex.OnChange += OnClassChanged;
+            _playerName.OnChange += OnPlayerNameChanged;
+        }
+
+        public override void OnStartClient() {
+            base.OnStartClient();
+            if (!base.IsOwner) return;
+
+            // If login data was set, send it to the server
+            if (LoginData.IsSet) {
+                CmdSetLoginData(LoginData.PlayerName, LoginData.ClassIndex);
+                LoginData.Clear();
+            }
         }
 
         public override void OnStartServer() {
@@ -35,6 +52,7 @@ namespace Genesis.Simulation {
 
         void Update() {
             if (!base.IsOwner) return;
+            if (_classLocked.Value) return;
 
             // Detectar tecla G para rotar entre clases (Usando el nuevo Input System)
             if (Keyboard.current != null && Keyboard.current.gKey.wasPressedThisFrame) {
@@ -43,7 +61,17 @@ namespace Genesis.Simulation {
         }
 
         [ServerRpc]
+        private void CmdSetLoginData(string playerName, int classIndex) {
+            _playerName.Value = playerName;
+            if (classIndex >= 0 && classIndex < availableClasses.Count) {
+                SetClass(classIndex);
+            }
+            _classLocked.Value = true;
+        }
+
+        [ServerRpc]
         private void CmdRequestClassSwitch() {
+            if (_classLocked.Value) return;
             int nextIndex = (_currentClassIndex.Value + 1) % availableClasses.Count;
             SetClass(nextIndex);
         }
@@ -152,6 +180,12 @@ namespace Genesis.Simulation {
                 return availableClasses[_currentClassIndex.Value].ClassName;
             }
             return "";
+        }
+
+        private void OnPlayerNameChanged(string oldName, string newName, bool asServer) {
+            if (base.IsOwner) {
+                EventBus.Trigger("OnPlayerNameChanged", newName);
+            }
         }
     }
 }

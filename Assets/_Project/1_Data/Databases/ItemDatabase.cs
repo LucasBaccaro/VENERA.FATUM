@@ -97,6 +97,19 @@ namespace Genesis.Data {
         }
 
         /// <summary>
+        /// Find equipment by slot and required class
+        /// </summary>
+        public EquipmentItemData FindEquipmentBySlotAndClass(EquipmentSlot slot, string className) {
+            if (_itemDictionary == null || _itemDictionary.Count == 0) BuildDictionary();
+
+            foreach (var kvp in _itemDictionary) {
+                if (kvp.Value is EquipmentItemData eq && eq.Slot == slot && eq.RequiredClass == className)
+                    return eq;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Check if item exists
         /// </summary>
         public bool ItemExists(int itemId) {

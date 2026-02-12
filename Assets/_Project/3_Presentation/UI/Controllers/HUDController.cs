@@ -80,6 +80,9 @@ namespace Genesis.Presentation.UI {
 
             // Cast Updates
             EventBus.Subscribe<Genesis.Data.CastUpdateData>("OnCastUpdate", OnCastUpdate);
+
+            // Player Name
+            EventBus.Subscribe<string>("OnPlayerNameChanged", OnPlayerNameChanged);
         }
 
         void OnDisable() {
@@ -100,6 +103,9 @@ namespace Genesis.Presentation.UI {
 
             // Cast Updates
             EventBus.Unsubscribe<Genesis.Data.CastUpdateData>("OnCastUpdate", OnCastUpdate);
+
+            // Player Name
+            EventBus.Unsubscribe<string>("OnPlayerNameChanged", OnPlayerNameChanged);
         }
 
         void Update() {
@@ -280,6 +286,10 @@ namespace Genesis.Presentation.UI {
                 _classIcon.style.backgroundImage = new StyleBackground(classIcon);
             }
             Debug.Log($"[HUD] Class UI Update: {className}");
+        }
+
+        private void OnPlayerNameChanged(string playerName) {
+            SetPlayerName(playerName);
         }
 
         private void OnCombatError(string message) {

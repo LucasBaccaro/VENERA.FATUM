@@ -100,6 +100,8 @@ namespace Genesis.Presentation.UI {
         }
 
         void Update() {
+            if (LoginController.IsActive) return;
+
             // Toggle visibility with F3
             if (Keyboard.current != null && Keyboard.current.f3Key.wasPressedThisFrame) {
                 ToggleVisibility();

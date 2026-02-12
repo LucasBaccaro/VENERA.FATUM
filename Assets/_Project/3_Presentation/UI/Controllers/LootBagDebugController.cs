@@ -5,6 +5,7 @@ using Genesis.Simulation;
 using Genesis.Items;
 using Genesis.Data;
 using Genesis.Core;
+using Genesis.Presentation.UI;
 
 namespace Genesis.Presentation {
     public class LootBagDebugController : MonoBehaviour {
@@ -230,6 +231,8 @@ namespace Genesis.Presentation {
         }
 
         private void Update() {
+            if (LoginController.IsActive) return;
+
             // Press 'E' to open nearest loot bag (debug)
             if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame) {
                 TryOpenNearestLootSource();

@@ -140,12 +140,14 @@ namespace Genesis.Simulation {
             QuestData data = QuestDatabase.Instance?.GetQuest(questId);
             if (data == null) return;
 
-            // Grant rewards
+            // Grant rewards (resolve class-appropriate items)
             var inventory = GetComponent<PlayerInventory>();
             if (inventory != null) {
+                string playerClass = GetComponent<PlayerClassManager>()?.GetCurrentClassName() ?? "";
                 foreach (var reward in data.Rewards) {
                     if (reward.ItemID > 0) {
-                        inventory.AddItem(reward.ItemID, reward.ItemQuantity, reward.Tier, reward.Rarity);
+                        int resolvedID = ResolveRewardItemID(reward.ItemID, playerClass);
+                        inventory.AddItem(resolvedID, reward.ItemQuantity, reward.Tier, reward.Rarity);
                     }
                 }
             }
@@ -281,6 +283,33 @@ namespace Genesis.Simulation {
                 if (_questLog[i].QuestID == questId) return i;
             }
             return -1;
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // REWARD RESOLUTION
+        // ═══════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Resolves a reward item ID to the class-appropriate equivalent.
+        /// If the original item is equipment for a different class, finds the
+        /// equivalent item (same slot) for the player's class.
+        /// </summary>
+        private int ResolveRewardItemID(int originalID, string playerClass) {
+            if (string.IsNullOrEmpty(playerClass)) return originalID;
+
+            var equipment = ItemDatabase.Instance?.GetEquipment(originalID);
+            if (equipment == null) return originalID; // Not equipment, keep original
+            if (string.IsNullOrEmpty(equipment.RequiredClass)) return originalID; // No class restriction
+            if (equipment.RequiredClass == playerClass) return originalID; // Already matches
+
+            // Find equivalent for player's class
+            var equivalent = ItemDatabase.Instance.FindEquipmentBySlotAndClass(equipment.Slot, playerClass);
+            if (equivalent != null) {
+                Debug.Log($"[PlayerQuestManager] Resolved reward {originalID} ({equipment.RequiredClass}) → {equivalent.ItemID} ({playerClass})");
+                return equivalent.ItemID;
+            }
+
+            return originalID; // Fallback to original
         }
 
         // ═══════════════════════════════════════════════════════

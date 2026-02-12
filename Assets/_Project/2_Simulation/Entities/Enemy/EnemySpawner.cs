@@ -1,12 +1,14 @@
 using UnityEngine;
+using FishNet;
 using FishNet.Object;
+using FishNet.Transporting;
 using System.Collections;
 using System.Collections.Generic;
 using Genesis.Data;
 
 namespace Genesis.Simulation {
 
-    public class EnemySpawner : NetworkBehaviour {
+    public class EnemySpawner : MonoBehaviour {
 
         [Header("Spawn Config")]
         [SerializeField] private GameObject _enemyPrefab;
@@ -20,9 +22,33 @@ namespace Genesis.Simulation {
 
         private List<NetworkObject> _aliveEnemies = new List<NetworkObject>();
         private int _pendingRespawns = 0;
+        private bool _initialized = false;
 
-        public override void OnStartServer() {
-            base.OnStartServer();
+        private void Start() {
+            if (InstanceFinder.NetworkManager == null) return;
+
+            InstanceFinder.NetworkManager.ServerManager.OnServerConnectionState += OnServerConnectionState;
+
+            if (InstanceFinder.ServerManager.Started) {
+                Initialize();
+            }
+        }
+
+        private void OnDestroy() {
+            if (InstanceFinder.NetworkManager != null) {
+                InstanceFinder.NetworkManager.ServerManager.OnServerConnectionState -= OnServerConnectionState;
+            }
+        }
+
+        private void OnServerConnectionState(ServerConnectionStateArgs args) {
+            if (args.ConnectionState == LocalConnectionState.Started) {
+                Initialize();
+            }
+        }
+
+        private void Initialize() {
+            if (_initialized) return;
+            _initialized = true;
             StartCoroutine(InitialSpawn());
         }
 
@@ -36,7 +62,7 @@ namespace Genesis.Simulation {
         }
 
         private void Update() {
-            if (!base.IsServerInitialized) return;
+            if (!_initialized || !InstanceFinder.IsServerStarted) return;
 
             // Cleanup dead references
             _aliveEnemies.RemoveAll(e => e == null || !e.gameObject.activeInHierarchy);

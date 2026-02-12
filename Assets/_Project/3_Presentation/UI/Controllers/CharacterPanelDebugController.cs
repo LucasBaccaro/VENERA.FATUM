@@ -5,6 +5,7 @@ using Genesis.Simulation;
 using Genesis.Items;
 using Genesis.Data;
 using Genesis.Core;
+using Genesis.Presentation.UI;
 
 namespace Genesis.Presentation {
     public class CharacterPanelDebugController : MonoBehaviour {
@@ -82,6 +83,8 @@ namespace Genesis.Presentation {
         }
 
         private void Update() {
+            if (LoginController.IsActive) return;
+
             // Toggle with 'C' key
             if (Keyboard.current != null && Keyboard.current.cKey.wasPressedThisFrame) {
                 ToggleCharacterPanel();

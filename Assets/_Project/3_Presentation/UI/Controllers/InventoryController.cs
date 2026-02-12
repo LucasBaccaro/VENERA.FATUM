@@ -109,6 +109,7 @@ namespace Genesis.Presentation.UI {
 
         private void Update() {
             if (_isPlayerDead) return;
+            if (LoginController.IsActive) return;
 
             // Toggle with 'I' key
             if (Keyboard.current != null && Keyboard.current.iKey.wasPressedThisFrame) {

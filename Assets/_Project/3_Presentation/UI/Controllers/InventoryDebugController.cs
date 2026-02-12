@@ -5,6 +5,7 @@ using Genesis.Simulation;
 using Genesis.Items;
 using Genesis.Data;
 using Genesis.Core;
+using Genesis.Presentation.UI;
 
 namespace Genesis.Presentation {
     public class InventoryDebugController : MonoBehaviour {
@@ -95,6 +96,8 @@ namespace Genesis.Presentation {
         }
 
         private void Update() {
+            if (LoginController.IsActive) return;
+
             // Toggle with 'I' key
             if (Keyboard.current != null && Keyboard.current.iKey.wasPressedThisFrame) {
                 ToggleInventory();

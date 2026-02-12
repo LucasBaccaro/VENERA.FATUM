@@ -555,15 +555,8 @@ namespace Genesis.Simulation {
 
         [TargetRpc]
         private void TargetShowDamageText(FishNet.Connection.NetworkConnection conn, string text, string type, bool isCritical = false) {
-            Debug.Log($"[PlayerStats] TargetShowDamageText received on client: {text} ({type})");
-            // Desacoplado: Usar EventBus con un struct de datos
             var data = new Genesis.Data.FloatingTextData(transform.position + Vector3.up * 1.5f, text, type, isCritical);
             EventBus.Trigger("OnShowFloatingText", data);
-        }
-
-        [ObserversRpc]
-        private void RpcShowDamageText(string text, Color color) {
-            // Obsoleto, migrado a TargetShowDamageText
         }
 
         // ═══════════════════════════════════════════════════════

@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/LoginStyle.uss?fileID=7433441132597879392&amp;guid=87e1aca9f862f466db2947540a79d3f8&amp;type=3#LoginStyle"/>
+    <ui:VisualElement name="LoginOverlay" class="login-overlay">
+        <ui:VisualElement name="LoginPanel" class="login-panel">
+            <ui:Label text="VENERA FATUM" name="GameTitle" class="game-title"/>
+            <ui:Label text="Enter your name" name="NameHint" class="name-hint"/>
+            <ui:TextField name="NameInput" max-length="16" class="name-input"/>
+            <ui:Label text="Choose your class" name="ClassHint" class="class-hint"/>
+            <ui:VisualElement name="ClassButtonRow" class="class-button-row">
+                <ui:Button text="MAGE" name="MageButton" class="class-button class-button--selected"/>
+                <ui:Button text="WARRIOR" name="WarriorButton" class="class-button class-button--unselected"/>
+            </ui:VisualElement>
+            <ui:Button text="ENTER WORLD" name="ConnectButton" class="connect-button"/>
+            <ui:Label text="" name="StatusLabel" class="status-label"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -18,6 +18,9 @@ namespace Genesis.Core.Networking {
         [SerializeField] private bool autoStartServer = false;
         [SerializeField] private bool autoStartClient = false;
 
+        [Header("Login")]
+        [SerializeField] private bool waitForLogin = false;
+
         void Start() {
             if (networkManager == null) {
                 networkManager = InstanceFinder.NetworkManager;
@@ -35,6 +38,12 @@ namespace Genesis.Core.Networking {
             string[] args = System.Environment.GetCommandLineArgs();
             bool isServerMode = System.Array.Exists(args, arg => arg.ToLower() == "-server");
             bool isClientMode = System.Array.Exists(args, arg => arg.ToLower() == "-client");
+
+            // If login is required, skip auto-connect (LoginController will call StartHost/StartClient)
+            if ((waitForLogin || LoginData.LoginRequired) && !isServerMode) {
+                Debug.Log("[NetworkBootstrap] Waiting for login...");
+                return;
+            }
 
             // Buscar override de dirección del servidor: -address=IP
             string serverAddress = null;
@@ -112,7 +121,13 @@ namespace Genesis.Core.Networking {
             }
         }
 
+        public void StartClientLocal() {
+            networkManager.TransportManager.Transport.SetClientAddress("127.0.0.1");
+            StartClient();
+        }
+
         public void StartHost() {
+            networkManager.TransportManager.Transport.SetClientAddress("127.0.0.1");
             StartServer();
             StartClient();
         }

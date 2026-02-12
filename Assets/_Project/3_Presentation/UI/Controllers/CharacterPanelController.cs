@@ -5,6 +5,7 @@ using Genesis.Simulation;
 using Genesis.Items;
 using Genesis.Data;
 using Genesis.Core;
+using Genesis.Presentation.UI;
 using System.Collections.Generic;
 using System.Collections;
 
@@ -174,6 +175,7 @@ namespace Genesis.Presentation {
 
         private void Update() {
             if (_isPlayerDead) return;
+            if (LoginController.IsActive) return;
 
             // Toggle with 'C' key
             if (Keyboard.current != null && Keyboard.current.cKey.wasPressedThisFrame) {

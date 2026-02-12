@@ -46,20 +46,29 @@ namespace Genesis.Core.Networking {
             }
 
 #if UNITY_EDITOR
-            // En Editor: Host mode para desarrollo
-            // Si se inicia el servidor Y el cliente (modo Host), conectar cliente a localhost
-            if (autoStartServer && autoStartClient) {
-                // Override client address a localhost para modo Host
+            // Detectar si es un clon de ParrelSync (checa el archivo .clone en raíz del proyecto)
+            bool isParrelSyncClone = System.IO.File.Exists(
+                System.IO.Path.Combine(Application.dataPath.Replace("/Assets", ""), ".clone"));
+
+            if (isParrelSyncClone) {
+                // Clon de ParrelSync: solo cliente, conectar al host en localhost
                 networkManager.TransportManager.Transport.SetClientAddress("127.0.0.1");
-                Debug.Log("[NetworkBootstrap] Host mode - Client connecting to localhost");
-            }
-
-            if (autoStartServer) {
-                StartServer();
-            }
-
-            if (autoStartClient) {
+                Debug.Log("[NetworkBootstrap] ParrelSync clone detected - starting as CLIENT only");
                 StartClient();
+            } else {
+                // Editor original: Host mode para desarrollo
+                if (autoStartServer && autoStartClient) {
+                    networkManager.TransportManager.Transport.SetClientAddress("127.0.0.1");
+                    Debug.Log("[NetworkBootstrap] Host mode - Client connecting to localhost");
+                }
+
+                if (autoStartServer) {
+                    StartServer();
+                }
+
+                if (autoStartClient) {
+                    StartClient();
+                }
             }
 #else
             // En Build: detectar modo y configurar address

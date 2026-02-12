@@ -32,6 +32,7 @@ namespace Genesis.Presentation.UI {
             if (_uiDocument == null) return;
             var root = _uiDocument.rootVisualElement;
 
+            root.pickingMode = PickingMode.Ignore;
             _promptContainer = root.Q<VisualElement>("InteractionPromptContainer");
             _promptLabel = root.Q<Label>("InteractionPromptLabel");
 

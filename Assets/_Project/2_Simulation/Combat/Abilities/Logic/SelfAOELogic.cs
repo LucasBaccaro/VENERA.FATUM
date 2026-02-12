@@ -79,7 +79,12 @@ namespace Genesis.Simulation.Combat {
                                 hitCount++;
                             }
                         } else if (hit.TryGetComponent(out IDamageable damageable)) {
-                            damageable.TakeDamage(data.BaseDamage, caster);
+                            CombatResult result = CombatCalculator.CalculateDamage(caster, netObj, data.BaseDamage, data.Category, config);
+                            damageable.TakeDamage(result.FinalDamage, caster);
+                            if (result.LifeStealAmount > 0f) {
+                                PlayerStats casterStats = caster.GetComponent<PlayerStats>();
+                                casterStats?.Heal(result.LifeStealAmount);
+                            }
                             hitCount++;
                         }
                     }

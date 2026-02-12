@@ -10,7 +10,8 @@ namespace Genesis.Data {
 
         [Header("Stats")]
         public float MaxHealth = 100f;
-        public float Damage = 10f;
+        public float MinDamage = 5f;
+        public float MaxDamage = 11f;
         public float AttackRange = 2f;
         public float AttackCooldown = 2f;
 

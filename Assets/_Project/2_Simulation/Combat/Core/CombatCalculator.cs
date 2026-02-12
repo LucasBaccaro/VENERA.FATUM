@@ -20,8 +20,12 @@ namespace Genesis.Simulation.Combat {
             AbilityCategory category,
             AttributeConfig config) {
 
+            // Apply damage variance (±%)
+            float variance = config != null ? config.DamageVariance : 0.15f;
+            float variedDamage = baseDamage * Random.Range(1f - variance, 1f + variance);
+
             CombatResult result = new CombatResult {
-                FinalDamage = baseDamage,
+                FinalDamage = variedDamage,
                 ResultType = DamageResultType.Normal,
                 WasCritical = false,
                 WasOverpower = false,

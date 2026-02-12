@@ -39,6 +39,7 @@ namespace Genesis.Presentation {
 
         private Dictionary<EquipmentSlot, VisualElement> _slotElements = new Dictionary<EquipmentSlot, VisualElement>();
         private bool _isVisible = false;
+        private bool _isPlayerDead = false;
 
         private void Awake() {
             if (_uiDocument == null) {
@@ -52,6 +53,8 @@ namespace Genesis.Presentation {
             EventBus.Subscribe("OnDerivedStatsChanged", OnStatsChanged);
             EventBus.Subscribe<int>("OnUnspentPointsChanged", OnPointsChanged);
             EventBus.Subscribe<int>("OnLevelChanged", OnLevelChanged);
+            EventBus.Subscribe("OnLocalPlayerDied", OnPlayerDied);
+            EventBus.Subscribe("OnLocalPlayerRespawned", OnPlayerRespawned);
         }
 
         private void OnDisable() {
@@ -60,6 +63,17 @@ namespace Genesis.Presentation {
             EventBus.Unsubscribe("OnDerivedStatsChanged", OnStatsChanged);
             EventBus.Unsubscribe<int>("OnUnspentPointsChanged", OnPointsChanged);
             EventBus.Unsubscribe<int>("OnLevelChanged", OnLevelChanged);
+            EventBus.Unsubscribe("OnLocalPlayerDied", OnPlayerDied);
+            EventBus.Unsubscribe("OnLocalPlayerRespawned", OnPlayerRespawned);
+        }
+
+        private void OnPlayerDied() {
+            _isPlayerDead = true;
+            if (_isVisible) ToggleCharacterPanel();
+        }
+
+        private void OnPlayerRespawned() {
+            _isPlayerDead = false;
         }
 
         private void Start() {
@@ -69,6 +83,7 @@ namespace Genesis.Presentation {
 
         private void InitializeUI() {
             var root = _uiDocument.rootVisualElement;
+            root.pickingMode = PickingMode.Ignore;
             _characterPanelWindow = root.Q<VisualElement>("CharacterPanelWindow");
             _maxHealthLabel = root.Q<Label>("MaxHealthLabel");
             _maxManaLabel = root.Q<Label>("MaxManaLabel");
@@ -158,6 +173,8 @@ namespace Genesis.Presentation {
         }
 
         private void Update() {
+            if (_isPlayerDead) return;
+
             // Toggle with 'C' key
             if (Keyboard.current != null && Keyboard.current.cKey.wasPressedThisFrame) {
                 ToggleCharacterPanel();

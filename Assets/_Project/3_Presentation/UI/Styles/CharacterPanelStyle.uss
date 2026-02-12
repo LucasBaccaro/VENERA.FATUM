@@ -1,15 +1,16 @@
 /* ═══════════════════════════════════════════════════════
-   GENESIS - Character Panel Styles
+   GENESIS - Character Panel Styles (MMO Scale)
    ═══════════════════════════════════════════════════════ */
 
 .character-panel-window {
     position: absolute;
-    width: 410px; /* 820 / 2 */
-    height: 310px; /* 620 / 2 */
+    width: 620px;
+    height: 550px;
     background-image: url('project://database/Assets/_Project/5_Content/Resources/Panels/UI-GPW-CharacterPanel.png');
     -unity-background-scale-mode: stretch-to-fill;
-    right: 20px;
-    bottom: 20px;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
     overflow: hidden;
 }
 
@@ -18,29 +19,20 @@
     flex-grow: 1;
     width: 100%;
     height: 100%;
+    overflow: hidden;
 }
 
-.stats-scroll-view #unity-content-container {
-    padding-right: 4px;
-}
-
-.stats-scroll-view #unity-vertical-scroller {
-    width: 4px;
-    border-radius: 2px;
-}
-
-.stats-scroll-view #unity-vertical-scroller #unity-tracker {
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 2px;
-}
-
-.stats-scroll-view #unity-vertical-scroller #unity-dragger {
-    background-color: rgba(93, 64, 55, 0.5);
-    border-radius: 2px;
-}
-
-.stats-scroll-view #unity-horizontal-scroller {
+/* Force hide all scrollers */
+.stats-scroll-view Scroller,
+.stats-scroll-view #unity-vertical-scroller,
+.stats-scroll-view #unity-horizontal-scroller,
+.stats-scroll-view #unity-slider {
     display: none;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    visibility: hidden;
+    position: absolute;
 }
 
 /* Page Containers */
@@ -52,12 +44,12 @@
 
 .left-page {
     left: 0;
-    padding: 30px 15px;
+    padding: 35px 15px 20px 30px;
 }
 
 .right-page {
     right: 0;
-    padding: 30px 22px;
+    padding: 35px 25px 20px 20px;
 }
 
 /* Equipment Slots Layout */
@@ -69,8 +61,8 @@
 
 /* Base Equipment Slot */
 .char-item-slot {
-    width: 44px; /* 88 / 2 */
-    height: 44px; /* 88 / 2 */
+    width: 52px;
+    height: 52px;
     position: absolute;
     justify-content: center;
     align-items: center;
@@ -89,8 +81,8 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 41px; /* 83 / 2 */
-    height: 41px;
+    width: 46px;
+    height: 46px;
     translate: -50% -50%;
     -unity-background-scale-mode: scale-to-fit;
     pointer-events: none;
@@ -102,34 +94,34 @@
     scale: 1.1;
 }
 
-/* Slot Positions (Halved from manual refined by user) */
-#HeadSlot { top: -10px; left: 65px; }
+/* Slot Positions - Paper Doll Layout */
+#HeadSlot { top: 10px; left: 105px; }
 
-#ShouldersSlot { top: 40px; left: 14px; }
-#ChestSlot { top: 40px; left: 65px; }
-#HandsSlot { top: 40px; left: 117px; }
+#ShouldersSlot { top: 80px; left: 35px; }
+#ChestSlot { top: 80px; left: 105px; }
+#HandsSlot { top: 80px; left: 175px; }
 
-#LegsSlot { top: 91px; left: 14px; }
-#BeltSlot { top: 91px; left: 65px; }
-#BootsSlot { top: 91px; left: 116px; }
+#LegsSlot { top: 150px; left: 35px; }
+#BeltSlot { top: 150px; left: 105px; }
+#BootsSlot { top: 150px; left: 175px; }
 
-#Ring1Slot { top: 152px; left: 50px; }
-#Ring2Slot { top: 152px; left: 89px; }
+#Ring1Slot { top: 230px; left: 70px; }
+#Ring2Slot { top: 230px; left: 140px; }
 
-#MainHandSlot { top: 195px; left: 41px; }
-#OffHandSlot { top: 195px; left: 92px; }
+#MainHandSlot { top: 305px; left: 60px; }
+#OffHandSlot { top: 305px; left: 148px; }
 
 /* Stats Page Styles */
 .stats-title {
-    font-size: 11px;
+    font-size: 14px;
     color: #5d4037;
     -unity-font-style: bold;
     -unity-text-align: middle-center;
-    margin-bottom: 2px;
-    margin-top: 2px;
+    margin-bottom: 3px;
+    margin-top: 6px;
     border-bottom-width: 1px;
     border-bottom-color: rgba(93, 64, 55, 0.3);
-    padding-bottom: 2px;
+    padding-bottom: 3px;
 }
 
 .stat-row {
@@ -137,17 +129,17 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1px;
-    padding: 1px 5px;
+    padding: 2px 8px;
 }
 
 .stat-label {
-    font-size: 9px;
+    font-size: 12px;
     color: #5d4037;
     -unity-font-style: bold;
 }
 
 .stat-value {
-    font-size: 9px;
+    font-size: 12px;
     color: #2e7d32;
     -unity-font-style: bold;
 }
@@ -156,31 +148,31 @@
 .attr-title-row {
     flex-direction: row;
     align-items: center;
-    margin-top: 2px;
+    margin-top: 4px;
 }
 
 .unspent-points-label {
-    font-size: 8px;
+    font-size: 11px;
     color: #b8860b;
     -unity-font-style: bold;
-    margin-right: 4px;
+    margin-right: 6px;
 }
 
 /* Attribute + button */
 .char-attr-plus-btn {
-    width: 16px;
-    height: 14px;
-    font-size: 10px;
+    width: 22px;
+    height: 20px;
+    font-size: 14px;
     color: #b8860b;
     background-color: rgba(184, 134, 11, 0.12);
     border-width: 1px;
     border-color: rgba(184, 134, 11, 0.35);
-    border-radius: 2px;
+    border-radius: 3px;
     -unity-text-align: middle-center;
     -unity-font-style: bold;
     padding: 0;
     margin: 0;
-    margin-left: 4px;
+    margin-left: 6px;
 }
 
 .char-attr-plus-btn:hover {
@@ -212,8 +204,8 @@
 /* Item Stats Styles */
 .item-stats-container {
     flex-grow: 1;
-    margin-top: 4px;
-    padding-top: 4px;
+    margin-top: 6px;
+    padding-top: 6px;
     border-top-width: 1px;
     border-top-color: rgba(93, 64, 55, 0.2);
 }
@@ -227,17 +219,17 @@
 }
 
 .item-stat-entry {
-    margin-bottom: 2px;
+    margin-bottom: 4px;
 }
 
 .item-stat-name {
-    font-size: 9px;
+    font-size: 12px;
     color: #5d4037;
     -unity-font-style: bold;
 }
 
 .item-stat-values {
-    font-size: 8px;
+    font-size: 11px;
     color: #2e7d32;
-    padding-left: 5px;
+    padding-left: 8px;
 }

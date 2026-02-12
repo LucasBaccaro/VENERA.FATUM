@@ -5,6 +5,7 @@ using FishNet.Object.Synchronizing;
 using Genesis.Core;
 using Genesis.Data;
 using Genesis.Simulation.Combat;
+using FishNet.Connection;
 
 namespace Genesis.Simulation {
 
@@ -179,7 +180,7 @@ namespace Genesis.Simulation {
             float cooldown = _data != null ? _data.AttackCooldown : 2f;
             if (Time.time - _lastAttackTime >= cooldown) {
                 _lastAttackTime = Time.time;
-                float damage = _data != null ? _data.Damage : 10f;
+                float damage = _data != null ? Random.Range(_data.MinDamage, _data.MaxDamage) : 10f;
 
                 var damageable = _target.GetComponent<IDamageable>();
                 if (damageable != null) {
@@ -233,6 +234,11 @@ namespace Genesis.Simulation {
 
             _currentHealth.Value = Mathf.Max(0, _currentHealth.Value - damage);
 
+            // Mostrar floating text al atacante (si es un jugador)
+            if (attacker != null && attacker.Owner.IsValid) {
+                TargetShowDamageText(attacker.Owner, $"{damage:F0}", "damage");
+            }
+
             // Aggro on the attacker
             if (attacker != null && _aiState == AIState.Idle) {
                 _target = attacker.transform;
@@ -278,6 +284,16 @@ namespace Genesis.Simulation {
         // ═══════════════════════════════════════════════════════
         // RPCs
         // ═══════════════════════════════════════════════════════
+
+        [TargetRpc]
+        private void TargetShowDamageText(NetworkConnection conn, string text, string type, bool isCritical = false) {
+            var data = new Genesis.Data.FloatingTextData(
+                transform.position + Vector3.up * 1.5f,
+                text,
+                type,
+                isCritical);
+            EventBus.Trigger("OnShowFloatingText", data);
+        }
 
         [ObserversRpc]
         private void RpcPlayAttackAnimation() {

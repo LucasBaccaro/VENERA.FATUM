@@ -47,6 +47,7 @@ namespace Genesis.Presentation.UI {
             if (_uiDocument == null) return;
             var root = _uiDocument.rootVisualElement;
 
+            root.pickingMode = PickingMode.Ignore;
             _overlay = root.Q<VisualElement>("DialogueOverlay");
             _window = root.Q<VisualElement>("DialogueWindow");
             _npcNameLabel = root.Q<Label>("NpcNameLabel");

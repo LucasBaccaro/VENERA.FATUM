@@ -39,6 +39,7 @@ namespace Genesis.Presentation {
 
         private void InitializeUI() {
             var root = _uiDocument.rootVisualElement;
+            root.pickingMode = PickingMode.Ignore;
             _inventoryWindow = root.Q<VisualElement>("InventoryWindow");
             _inventoryList = root.Q<VisualElement>("InventoryList");
 

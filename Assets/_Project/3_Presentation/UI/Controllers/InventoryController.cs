@@ -28,6 +28,7 @@ namespace Genesis.Presentation.UI {
         private List<VisualElement> _bgs = new List<VisualElement>();
 
         private bool _isVisible = false;
+        private bool _isPlayerDead = false;
 
         private void Awake() {
             if (_uiDocument == null) {
@@ -37,10 +38,23 @@ namespace Genesis.Presentation.UI {
 
         private void OnEnable() {
             EventBus.Subscribe("OnInventoryChanged", RefreshUI);
+            EventBus.Subscribe("OnLocalPlayerDied", OnPlayerDied);
+            EventBus.Subscribe("OnLocalPlayerRespawned", OnPlayerRespawned);
         }
 
         private void OnDisable() {
             EventBus.Unsubscribe("OnInventoryChanged", RefreshUI);
+            EventBus.Unsubscribe("OnLocalPlayerDied", OnPlayerDied);
+            EventBus.Unsubscribe("OnLocalPlayerRespawned", OnPlayerRespawned);
+        }
+
+        private void OnPlayerDied() {
+            _isPlayerDead = true;
+            ToggleVisibility(false);
+        }
+
+        private void OnPlayerRespawned() {
+            _isPlayerDead = false;
         }
 
         private void Start() {
@@ -58,6 +72,7 @@ namespace Genesis.Presentation.UI {
                 return;
             }
 
+            root.pickingMode = PickingMode.Ignore;
             _window = root.Q<VisualElement>("InventoryWindow");
             _grid = root.Q<VisualElement>("InventoryGrid");
             _closeButton = root.Q<Button>("CloseButton");
@@ -93,6 +108,8 @@ namespace Genesis.Presentation.UI {
         }
 
         private void Update() {
+            if (_isPlayerDead) return;
+
             // Toggle with 'I' key
             if (Keyboard.current != null && Keyboard.current.iKey.wasPressedThisFrame) {
                 ToggleVisibility(!_isVisible);

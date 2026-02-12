@@ -132,6 +132,8 @@ namespace Genesis.Presentation.UI {
                 return;
             }
 
+            _root.pickingMode = PickingMode.Ignore;
+
             // Verify PanelSettings
             if (uiDocument.panelSettings == null) {
                 Debug.LogError($"[HUDController] [{gameObject.name}] UI Document has no PanelSettings assigned! This can cause NullReferenceException during reload.");

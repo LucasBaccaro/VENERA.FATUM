@@ -29,6 +29,7 @@ namespace Genesis.Simulation {
         private StatusEffectSystem _statusEffects;
         private EquipmentManager _equipmentManager;
         private PlayerAttributes _attributes;
+        private PlayerStats _playerStats;
         private bool _isDashing;
 
         // ═══════════════════════════════════════════════════════
@@ -41,6 +42,7 @@ namespace Genesis.Simulation {
             _statusEffects = GetComponent<StatusEffectSystem>();
             _equipmentManager = GetComponent<EquipmentManager>();
             _attributes = GetComponent<PlayerAttributes>();
+            _playerStats = GetComponent<PlayerStats>();
         }
 
         public override void OnStartClient() {
@@ -77,6 +79,9 @@ namespace Genesis.Simulation {
 
             // 2. MOVIMIENTO (Solo Owner)
             if (base.IsOwner) {
+                // No movement while dead
+                if (_playerStats != null && _playerStats.IsDead) return;
+
                 if (!_isDashing) {
                     HandleMovement();
                 } else {

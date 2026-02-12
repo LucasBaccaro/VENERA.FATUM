@@ -42,6 +42,7 @@ namespace Genesis.Presentation {
 
         private void InitializeUI() {
             var root = _uiDocument.rootVisualElement;
+            root.pickingMode = PickingMode.Ignore;
             _characterPanelWindow = root.Q<VisualElement>("CharacterPanelWindow");
             _maxHealthLabel = root.Q<Label>("MaxHealthLabel");
             _maxManaLabel = root.Q<Label>("MaxManaLabel");

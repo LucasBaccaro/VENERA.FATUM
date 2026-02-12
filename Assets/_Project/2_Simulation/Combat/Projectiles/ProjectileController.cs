@@ -135,7 +135,12 @@ namespace Genesis.Simulation.Combat {
                     }
                 }
             } else if (targetNetObj.TryGetComponent(out IDamageable damageable)) {
-                damageable.TakeDamage(_damage, _owner);
+                CombatResult result = CombatCalculator.CalculateDamage(_owner, targetNetObj, _damage, _category, config);
+                damageable.TakeDamage(result.FinalDamage, _owner);
+                if (result.LifeStealAmount > 0f) {
+                    PlayerStats ownerStats = _owner != null ? _owner.GetComponent<PlayerStats>() : null;
+                    ownerStats?.Heal(result.LifeStealAmount);
+                }
             }
 
             // ═══ CASO 5: Aplicar Status Effects ═══

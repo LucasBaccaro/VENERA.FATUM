@@ -83,6 +83,8 @@ namespace Genesis.Presentation.UI {
                 return;
             }
 
+            _root.pickingMode = PickingMode.Ignore;
+
             // Query all ability slots
             for (int i = 0; i < 6; i++) {
                 int slotNum = i + 1;

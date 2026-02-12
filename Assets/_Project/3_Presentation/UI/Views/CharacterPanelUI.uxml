@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/CharacterPanelStyle.uss?fileID=7433441132597879392&amp;guid=12b6a8f6a708649cda18a6349fbad696&amp;type=3#CharacterPanelStyle"/>
-    <ui:VisualElement name="CharacterPanelWindow" class="character-panel-window" style="top: 376px;">
+    <ui:VisualElement name="CharacterPanelWindow" class="character-panel-window">
         <ui:VisualElement name="LeftPage" class="page-container left-page" style="pointer-events: none;">
             <ui:VisualElement name="EquipmentLayout" class="equipment-layout" style="pointer-events: none;">
                 <ui:VisualElement name="HeadSlot" class="char-item-slot" style="pointer-events: auto;">
@@ -50,7 +50,7 @@
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="RightPage" class="page-container right-page">
-            <ui:ScrollView name="StatsScrollView" vertical-scroller-visibility="Auto" horizontal-scroller-visibility="Hidden" class="stats-scroll-view">
+            <ui:ScrollView name="StatsScrollView" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden" class="stats-scroll-view">
                 <ui:VisualElement class="stat-row">
                     <ui:Label text="Level" class="stat-label"/>
                     <ui:Label name="LevelLabel" text="1" class="stat-value"/>

@@ -129,6 +129,8 @@ namespace Genesis.Presentation.UI {
                 return;
             }
 
+            _root.pickingMode = PickingMode.Ignore;
+
             _overlay = _root.Q<VisualElement>("AbilityDebugOverlay");
 
             // Query all ability slots

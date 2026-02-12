@@ -1,10 +1,10 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/InventoryStyle.uss?fileID=7433441132597879392&amp;guid=9a272a952cdaf4f6ab8990caebdfb024&amp;type=3#InventoryStyle"/>
     <ui:VisualElement name="InventoryWindow" class="inventory-window">
-        <ui:Label text="Inventario" class="window-title" style="top: -26px;"/>
-        <ui:Button name="CloseButton" text="" class="close-button" style="top: 6px; right: 26px;"/>
-        <ui:ScrollView name="InventoryScroll" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden" class="item-scroll" style="left: 4px; top: -33px;">
-            <ui:VisualElement name="InventoryGrid" class="item-grid" style="top: 6px;">
+        <ui:Label text="Inventario" class="window-title"/>
+        <ui:Button name="CloseButton" text="" class="close-button"/>
+        <ui:ScrollView name="InventoryScroll" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden" class="item-scroll">
+            <ui:VisualElement name="InventoryGrid" class="item-grid">
                 <ui:VisualElement name="InventorySlot0" class="item-slot">
                     <ui:VisualElement class="item-slot-bg"/>
                     <ui:VisualElement name="Icon0" class="item-icon"/>

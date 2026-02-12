@@ -6,6 +6,7 @@ using Genesis.Simulation.Combat;
 using Genesis.Data;
 using Genesis.Simulation.World;
 using FishNet.Connection;
+using System.Collections;
 
 namespace Genesis.Simulation {
 
@@ -22,11 +23,15 @@ namespace Genesis.Simulation {
         [SerializeField] private float manaRegenPerSecond = 5f;
         [SerializeField] private float healthRegenPerSecond = 2f;
 
+        [Header("Respawn")]
+        [SerializeField] private float _respawnDelay = 5f;
+
         [Header("Current Stats (Synced - FishNet v4)")]
         // FishNet v4: Usar SyncVar<T> en lugar de [SyncVar]
         private readonly SyncVar<float> _currentHealth = new SyncVar<float>(800f);
         private readonly SyncVar<float> _currentMana = new SyncVar<float>(800f);
         private readonly SyncVar<float> _currentShield = new SyncVar<float>(0f);
+        private readonly SyncVar<bool> _syncIsDead = new SyncVar<bool>(false);
 
         // Estado
         private bool _isDead;
@@ -176,7 +181,12 @@ namespace Genesis.Simulation {
                 _currentShield.Value -= shieldAbsorbed;
                 damage -= shieldAbsorbed;
 
-                if (attacker != null && attacker.Owner.IsValid) {
+                // Mostrar texto de shield a la víctima
+                if (base.Owner.IsValid) {
+                    TargetShowDamageText(base.Owner, $"{shieldAbsorbed:F0}", "shield");
+                }
+                // Mostrar texto de shield al atacante (si es un jugador)
+                if (attacker != null && attacker.Owner.IsValid && attacker.Owner != base.Owner) {
                     TargetShowDamageText(attacker.Owner, $"{shieldAbsorbed:F0}", "shield");
                 }
             }
@@ -196,7 +206,12 @@ namespace Genesis.Simulation {
             // ═══ PASO 2: Daño a HP ═══
             _currentHealth.Value = Mathf.Max(0, _currentHealth.Value - damage);
 
-            if (attacker != null && attacker.Owner.IsValid) {
+            // Mostrar texto de daño a la víctima
+            if (base.Owner.IsValid) {
+                TargetShowDamageText(base.Owner, $"{damage:F0}", "damage");
+            }
+            // Mostrar texto de daño al atacante (si es un jugador)
+            if (attacker != null && attacker.Owner.IsValid && attacker.Owner != base.Owner) {
                 TargetShowDamageText(attacker.Owner, $"{damage:F0}", "damage");
             }
 
@@ -247,7 +262,10 @@ namespace Genesis.Simulation {
                 _currentShield.Value -= shieldAbsorbed;
                 damage -= shieldAbsorbed;
 
-                if (attacker != null && attacker.Owner.IsValid) {
+                if (base.Owner.IsValid) {
+                    TargetShowDamageText(base.Owner, $"{shieldAbsorbed:F0}", "shield");
+                }
+                if (attacker != null && attacker.Owner.IsValid && attacker.Owner != base.Owner) {
                     TargetShowDamageText(attacker.Owner, $"{shieldAbsorbed:F0}", "shield");
                 }
             }
@@ -276,7 +294,12 @@ namespace Genesis.Simulation {
                     break;
             }
 
-            if (attacker != null && attacker.Owner.IsValid) {
+            // Mostrar texto a la víctima
+            if (base.Owner.IsValid) {
+                TargetShowDamageText(base.Owner, $"{damage:F0}", textType, isCritical);
+            }
+            // Mostrar texto al atacante (si es un jugador)
+            if (attacker != null && attacker.Owner.IsValid && attacker.Owner != base.Owner) {
                 TargetShowDamageText(attacker.Owner, $"{damage:F0}", textType, isCritical);
             }
 
@@ -412,6 +435,7 @@ namespace Genesis.Simulation {
             if (_isDead) return;
 
             _isDead = true;
+            _syncIsDead.Value = true;
 
             Debug.Log($"[PlayerStats] {gameObject.name} ha muerto. Killer: {(killer != null ? killer.name : "Unknown")}");
 
@@ -421,7 +445,40 @@ namespace Genesis.Simulation {
             // Notificar clientes
             RpcOnDeath();
 
-            // TODO: Lógica de respawn (Fase 9)
+            // Iniciar respawn
+            StartCoroutine(RespawnCoroutine());
+        }
+
+        [Server]
+        private IEnumerator RespawnCoroutine() {
+            yield return new WaitForSeconds(_respawnDelay);
+
+            // Find respawn point
+            Vector3 respawnPos = transform.position; // fallback
+            RespawnPoint respawnPoint = RespawnPoint.Instance;
+            if (respawnPoint != null) {
+                respawnPos = respawnPoint.GetSpawnPosition();
+            } else {
+                Debug.LogWarning("[PlayerStats] No RespawnPoint found! Respawning at current position.");
+            }
+
+            // Teleport on server (disable CC to allow position change)
+            var cc = GetComponent<CharacterController>();
+            if (cc != null) cc.enabled = false;
+            transform.position = respawnPos;
+            if (cc != null) cc.enabled = true;
+
+            // Restore stats
+            _currentHealth.Value = _maxHealth.Value;
+            _currentMana.Value = _maxMana.Value;
+            _currentShield.Value = 0f;
+            _isDead = false;
+            _syncIsDead.Value = false;
+
+            Debug.Log($"[PlayerStats] {gameObject.name} respawned at {respawnPos}");
+
+            // Notify clients
+            RpcOnRespawn(respawnPos);
         }
 
         [ObserversRpc]
@@ -432,8 +489,35 @@ namespace Genesis.Simulation {
                 animator.SetTrigger("Die");
             }
 
-            // Efecto visual
+            // Notify local player UI
+            if (base.IsOwner) {
+                EventBus.Trigger("OnLocalPlayerDied");
+            }
+
             Debug.Log($"[PlayerStats] Cliente: {gameObject.name} murió");
+        }
+
+        [ObserversRpc]
+        private void RpcOnRespawn(Vector3 respawnPos) {
+            // Teleport on client (needed for CharacterController)
+            var cc = GetComponent<CharacterController>();
+            if (cc != null) cc.enabled = false;
+            transform.position = respawnPos;
+            if (cc != null) cc.enabled = true;
+
+            // Reset animator
+            var animator = GetComponent<Animator>();
+            if (animator != null) {
+                animator.Rebind();
+                animator.Update(0f);
+            }
+
+            // Notify local player UI
+            if (base.IsOwner) {
+                EventBus.Trigger("OnLocalPlayerRespawned");
+            }
+
+            Debug.Log($"[PlayerStats] Cliente: {gameObject.name} respawned at {respawnPos}");
         }
 
         // ═══════════════════════════════════════════════════════

@@ -36,6 +36,7 @@ namespace Genesis.Presentation.UI {
             if (_uiDocument == null) return;
             var root = _uiDocument.rootVisualElement;
 
+            root.pickingMode = PickingMode.Ignore;
             _panel = root.Q<VisualElement>("QuestTrackerPanel");
             _questTitle = root.Q<Label>("QuestTitle");
             _objectivesContainer = root.Q<VisualElement>("ObjectivesContainer");

@@ -24,6 +24,7 @@ namespace Genesis.Presentation.UI {
                 return;
             }
 
+            root.pickingMode = PickingMode.Ignore;
             _btnBag = root.Q<Button>("BtnBag");
             _btnChar = root.Q<Button>("BtnChar");
             _btnMap = root.Q<Button>("BtnMap");

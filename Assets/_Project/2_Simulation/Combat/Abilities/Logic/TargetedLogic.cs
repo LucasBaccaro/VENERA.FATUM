@@ -108,7 +108,12 @@ namespace Genesis.Simulation.Combat {
                     }
                     Debug.Log($"[TargetedLogic] {caster.name} dealt {result.FinalDamage:F0} ({result.ResultType}) to {target.name}");
                 } else if (target.TryGetComponent(out IDamageable damageable)) {
-                    damageable.TakeDamage(data.BaseDamage, caster);
+                    CombatResult result = CombatCalculator.CalculateDamage(caster, target, data.BaseDamage, data.Category, config);
+                    damageable.TakeDamage(result.FinalDamage, caster);
+                    if (result.LifeStealAmount > 0f) {
+                        PlayerStats casterStats = caster.GetComponent<PlayerStats>();
+                        casterStats?.Heal(result.LifeStealAmount);
+                    }
                 }
             }
 
@@ -164,7 +169,12 @@ namespace Genesis.Simulation.Combat {
                         }
                     }
                 } else if (target.TryGetComponent(out IDamageable damageable)) {
-                    damageable.TakeDamage(data.BaseDamage, caster);
+                    CombatResult result = CombatCalculator.CalculateDamage(caster, target, data.BaseDamage, data.Category, config);
+                    damageable.TakeDamage(result.FinalDamage, caster);
+                    if (result.LifeStealAmount > 0f) {
+                        PlayerStats casterStats = caster.GetComponent<PlayerStats>();
+                        casterStats?.Heal(result.LifeStealAmount);
+                    }
                 }
             }
 

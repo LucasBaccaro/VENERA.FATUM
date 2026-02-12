@@ -48,6 +48,7 @@ namespace Genesis.Presentation.UI {
             if (_uiDocument == null) return;
             var root = _uiDocument.rootVisualElement;
 
+            root.pickingMode = PickingMode.Ignore;
             _window = root.Q<VisualElement>("LootBagWindow");
             _grid = root.Q<VisualElement>("LootGrid");
             _title = root.Q<Label>("LootTitle");

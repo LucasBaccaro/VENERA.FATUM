@@ -51,6 +51,11 @@ namespace Genesis.Data {
         [Tooltip("Damage multiplier on overpower hit")]
         public float OverpowerDamageMultiplier = 1.5f;
 
+        [Header("Damage Variance")]
+        [Tooltip("Random variance applied to all ability damage (0.15 = ±15%, so 100 dmg → 85-115)")]
+        [Range(0f, 0.5f)]
+        public float DamageVariance = 0.15f;
+
         [Header("Critical Hits")]
         [Tooltip("Damage multiplier on critical hit")]
         public float CritDamageMultiplier = 2.0f;

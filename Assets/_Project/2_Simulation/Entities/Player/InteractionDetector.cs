@@ -15,9 +15,15 @@ namespace Genesis.Simulation {
         private IInteractable _nearestInteractable;
         private MonoBehaviour _nearestMono;
         private float _lastScanTime;
+        private PlayerStats _playerStats;
+
+        private void Awake() {
+            _playerStats = GetComponent<PlayerStats>();
+        }
 
         private void Update() {
             if (!base.IsOwner) return;
+            if (_playerStats != null && _playerStats.IsDead) return;
 
             // Periodic scan for nearby interactables
             if (Time.time - _lastScanTime >= _scanInterval) {
@@ -43,9 +49,6 @@ namespace Genesis.Simulation {
                 // Check all MonoBehaviours on this collider for IInteractable
                 var interactables = hit.GetComponents<IInteractable>();
                 foreach (var interactable in interactables) {
-                    // Skip ILootSource — handled by LootBagController
-                    if (interactable is ILootSource) continue;
-
                     if (interactable.CanInteract(base.NetworkObject)) {
                         float dist = Vector3.Distance(transform.position, hit.transform.position);
                         if (dist < minDist) {

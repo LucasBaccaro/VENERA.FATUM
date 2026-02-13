@@ -76,6 +76,8 @@ namespace Genesis.Presentation.UI {
 
                     int slotIndex = i;
                     slot.RegisterCallback<MouseDownEvent>(evt => OnSlotClicked(evt, slotIndex));
+                    slot.RegisterCallback<MouseEnterEvent>(evt => OnSlotMouseEnter(evt, slotIndex));
+                    slot.RegisterCallback<MouseLeaveEvent>(evt => OnSlotMouseLeave(evt, slotIndex));
                 }
             }
 
@@ -183,6 +185,24 @@ namespace Genesis.Presentation.UI {
                 TakeItem(index);
                 evt.StopPropagation();
             }
+        }
+
+        private void OnSlotMouseEnter(MouseEnterEvent evt, int index) {
+            if (_currentLootSource == null || ItemTooltipController.Instance == null) return;
+
+            var items = _currentLootSource.LootItems;
+            if (index >= items.Count || items[index].IsEmpty) return;
+
+            var slotData = items[index];
+            var itemData = ItemDatabase.Instance.GetItem(slotData.ItemID);
+            
+            if (itemData != null) {
+                ItemTooltipController.Instance.Show(itemData, slotData.Rarity);
+            }
+        }
+
+        private void OnSlotMouseLeave(MouseLeaveEvent evt, int index) {
+            ItemTooltipController.Instance?.Hide();
         }
 
         private void TakeItem(int index) {

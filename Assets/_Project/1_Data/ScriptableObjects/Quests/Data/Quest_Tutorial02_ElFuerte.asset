@@ -25,48 +25,8 @@ MonoBehaviour:
   DialogueComplete: Good. You look ready for action.
   DialogueAfterComplete: Your gear suits you well, soldier.
   Objectives:
-  - Type: 0
-    Description: Receive your equipment
-    TargetID: general
-    RequiredCount: 1
-  Rewards:
-  - ItemID: 2001
-    ItemQuantity: 1
-    Tier: 0
-    Rarity: 0
-    XPType: standard
-  - ItemID: 2002
-    ItemQuantity: 1
-    Tier: 0
-    Rarity: 0
-    XPType:
-  - ItemID: 2003
-    ItemQuantity: 1
-    Tier: 0
-    Rarity: 0
-    XPType:
-  - ItemID: 2004
-    ItemQuantity: 1
-    Tier: 0
-    Rarity: 0
-    XPType:
-  - ItemID: 2005
-    ItemQuantity: 1
-    Tier: 0
-    Rarity: 0
-    XPType:
-  - ItemID: 2006
-    ItemQuantity: 1
-    Tier: 0
-    Rarity: 0
-    XPType:
-  - ItemID: 2007
-    ItemQuantity: 1
-    Tier: 0
-    Rarity: 0
-    XPType:
-  - ItemID: 2008
-    ItemQuantity: 1
-    Tier: 0
-    Rarity: 0
-    XPType:
+  - Type: 2
+    Description: Open the chest and collect your equipment
+    TargetID: starter_equipment
+    RequiredCount: 8
+  Rewards: []

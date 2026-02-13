@@ -29,35 +29,35 @@ MonoBehaviour:
   - Type: 4
     Value: 1
   - Type: 5
-    Value: 2
+    Value: 1
   - Type: 15
     Value: 0
-  - Type: 7
-    Value: 0.014977326
+  - Type: 8
+    Value: 0.019972956
   RareStats:
   - Type: 4
-    Value: 3
+    Value: 4
   - Type: 5
     Value: 2
   - Type: 15
     Value: 0
-  - Type: 11
-    Value: 0.036254793
-  - Type: 7
-    Value: 0.025979247
+  - Type: 12
+    Value: 4
+  - Type: 14
+    Value: 0.03546896
   EpicStats:
   - Type: 4
-    Value: 6
+    Value: 7
   - Type: 5
     Value: 5
   - Type: 15
     Value: 0
-  - Type: 7
-    Value: 0.047796614
-  - Type: 12
-    Value: 7
   - Type: 13
-    Value: 5
+    Value: 7
+  - Type: 7
+    Value: 0.058460977
+  - Type: 8
+    Value: 0.058559023
   VisualData:
     VisualPrefab: {fileID: 1058771040042048229, guid: bcb1c880b4bdbc44987a39285dc575e0, type: 3}
     HiddenBodyParts: 16

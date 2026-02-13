@@ -364,10 +364,22 @@ namespace Genesis.Presentation {
                 slotElement.RegisterCallback<MouseDownEvent>(e => OnSlotClicked(e, slot));
 
                 slotElement.UnregisterCallback<MouseEnterEvent>(OnMouseEnterSlot);
-                slotElement.RegisterCallback<MouseEnterEvent>(e => ShowItemBonuses(slot));
+                slotElement.RegisterCallback<MouseEnterEvent>(e => {
+                    ShowItemBonuses(slot);
+                    // Also show tooltip
+                    if (ItemTooltipController.Instance != null) {
+                        var itemData = ItemDatabase.Instance.GetItem(itemSlot.ItemID);
+                        if (itemData != null) {
+                            ItemTooltipController.Instance.Show(itemData, itemSlot.Rarity);
+                        }
+                    }
+                });
 
                 slotElement.UnregisterCallback<MouseLeaveEvent>(OnMouseLeaveSlot);
-                slotElement.RegisterCallback<MouseLeaveEvent>(e => HideItemBonuses());
+                slotElement.RegisterCallback<MouseLeaveEvent>(e => {
+                    HideItemBonuses();
+                    ItemTooltipController.Instance?.Hide();
+                });
             }
         }
 

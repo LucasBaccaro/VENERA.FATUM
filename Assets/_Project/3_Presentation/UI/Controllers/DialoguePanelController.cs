@@ -174,6 +174,11 @@ namespace Genesis.Presentation.UI {
             if (_rewardsList == null || _rewardsContainer == null) return;
 
             _rewardsList.Clear();
+            
+            // Set rewards list to wrap for grid-like behavior
+            _rewardsList.style.flexDirection = FlexDirection.Row;
+            _rewardsList.style.flexWrap = Wrap.Wrap;
+            
             bool hasRewards = false;
 
             foreach (var reward in quest.Rewards) {
@@ -181,13 +186,85 @@ namespace Genesis.Presentation.UI {
                 hasRewards = true;
 
                 var itemData = ItemDatabase.Instance?.GetItem(reward.ItemID);
-                string itemName = itemData != null ? itemData.ItemName : $"Item #{reward.ItemID}";
+                if (itemData == null) continue;
 
-                var label = new Label($"  {reward.ItemQuantity}x {itemName} ({reward.Rarity})");
-                label.style.fontSize = 12;
-                label.style.color = GetRarityColor(reward.Rarity);
-                label.style.marginBottom = 2;
-                _rewardsList.Add(label);
+                // Create reward entry container (horizontal: icon + text)
+                var rewardEntry = new VisualElement();
+                rewardEntry.style.flexDirection = FlexDirection.Row;
+                rewardEntry.style.alignItems = Align.Center;
+                rewardEntry.style.width = 140; // Fixed width for uniform boxes
+                rewardEntry.style.marginRight = 8;
+                rewardEntry.style.marginBottom = 6;
+
+                // Item icon
+                var iconContainer = new VisualElement();
+                iconContainer.style.width = 36;
+                iconContainer.style.height = 36;
+                iconContainer.style.marginRight = 6;
+                iconContainer.style.flexShrink = 0; // Don't shrink icon
+                iconContainer.style.backgroundImage = new StyleBackground(itemData.Icon);
+                iconContainer.style.backgroundColor = new StyleColor(new Color(0.1f, 0.1f, 0.1f, 0.8f));
+                iconContainer.style.borderTopLeftRadius = 4;
+                iconContainer.style.borderTopRightRadius = 4;
+                iconContainer.style.borderBottomLeftRadius = 4;
+                iconContainer.style.borderBottomRightRadius = 4;
+
+                // Add rarity border
+                var rarityColor = GetRarityColor(reward.Rarity);
+                iconContainer.style.borderLeftColor = rarityColor;
+                iconContainer.style.borderRightColor = rarityColor;
+                iconContainer.style.borderTopColor = rarityColor;
+                iconContainer.style.borderBottomColor = rarityColor;
+                iconContainer.style.borderLeftWidth = 2;
+                iconContainer.style.borderRightWidth = 2;
+                iconContainer.style.borderTopWidth = 2;
+                iconContainer.style.borderBottomWidth = 2;
+
+                // Add tooltip events
+                iconContainer.RegisterCallback<MouseEnterEvent>(evt => {
+                    if (ItemTooltipController.Instance != null) {
+                        ItemTooltipController.Instance.Show(itemData, reward.Rarity);
+                    }
+                });
+                iconContainer.RegisterCallback<MouseLeaveEvent>(evt => {
+                    ItemTooltipController.Instance?.Hide();
+                });
+
+                // Quantity badge (if > 1)
+                if (reward.ItemQuantity > 1) {
+                    var qtyLabel = new Label($"x{reward.ItemQuantity}");
+                    qtyLabel.style.fontSize = 9;
+                    qtyLabel.style.color = Color.white;
+                    qtyLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
+                    qtyLabel.style.backgroundColor = new StyleColor(new Color(0f, 0f, 0f, 0.9f));
+                    qtyLabel.style.paddingLeft = 3;
+                    qtyLabel.style.paddingRight = 3;
+                    qtyLabel.style.paddingTop = 1;
+                    qtyLabel.style.paddingBottom = 1;
+                    qtyLabel.style.borderTopLeftRadius = 2;
+                    qtyLabel.style.borderTopRightRadius = 2;
+                    qtyLabel.style.borderBottomLeftRadius = 2;
+                    qtyLabel.style.borderBottomRightRadius = 2;
+                    qtyLabel.style.position = Position.Absolute;
+                    qtyLabel.style.bottom = 1;
+                    qtyLabel.style.right = 1;
+                    
+                    iconContainer.Add(qtyLabel);
+                }
+
+                // Item name label (fixed width for alignment)
+                var nameLabel = new Label(itemData.ItemName);
+                nameLabel.style.fontSize = 12;
+                nameLabel.style.color = rarityColor;
+                nameLabel.style.unityTextAlign = TextAnchor.MiddleLeft;
+                nameLabel.style.width = 94; // Fixed width (140 - 36 icon - 6 margin - 4 padding)
+                nameLabel.style.whiteSpace = WhiteSpace.Normal; // Allow wrapping
+                nameLabel.style.overflow = Overflow.Hidden;
+                nameLabel.style.textOverflow = TextOverflow.Ellipsis;
+
+                rewardEntry.Add(iconContainer);
+                rewardEntry.Add(nameLabel);
+                _rewardsList.Add(rewardEntry);
             }
 
             _rewardsContainer.style.display = hasRewards ? DisplayStyle.Flex : DisplayStyle.None;

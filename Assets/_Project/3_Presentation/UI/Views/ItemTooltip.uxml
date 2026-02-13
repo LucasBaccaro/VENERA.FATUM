@@ -1,0 +1,21 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="../Styles/ItemTooltip.uss" />
+    <ui:VisualElement name="TooltipMain" class="tooltip-main">
+        <ui:VisualElement name="HeaderSection" class="tooltip-header">
+            <ui:Label name="ItemName" text="Item Name" class="tooltip-title"/>
+            <ui:Label name="ItemType" text="Equipment Type" class="tooltip-type"/>
+        </ui:VisualElement>
+        
+        <ui:VisualElement name="StatsSection" class="tooltip-stats-section">
+            <ui:Label name="ArmorValue" text="150 Armor" class="tooltip-armor"/>
+            <ui:VisualElement name="PrimaryStats" class="tooltip-primary-stats"/>
+        </ui:VisualElement>
+        
+        <ui:VisualElement name="SubstatsSection" class="tooltip-substats-section">
+            <ui:VisualElement name="Divider" class="tooltip-divider"/>
+            <ui:VisualElement name="SubstatsList" class="tooltip-substats-list"/>
+        </ui:VisualElement>
+        
+        <ui:Label name="Description" text="Item description goes here..." class="tooltip-description"/>
+    </ui:VisualElement>
+</ui:UXML>

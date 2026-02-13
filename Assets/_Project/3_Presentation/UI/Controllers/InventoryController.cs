@@ -98,6 +98,8 @@ namespace Genesis.Presentation.UI {
                     // Set up click interaction
                     int slotIndex = i;
                     slot.RegisterCallback<MouseDownEvent>(evt => OnSlotClicked(evt, slotIndex));
+                    slot.RegisterCallback<MouseEnterEvent>(evt => OnSlotMouseEnter(evt, slotIndex));
+                    slot.RegisterCallback<MouseLeaveEvent>(evt => OnSlotMouseLeave(evt, slotIndex));
                 }
             }
 
@@ -229,6 +231,26 @@ namespace Genesis.Presentation.UI {
                 }
                 evt.StopPropagation();
             }
+        }
+
+        private void OnSlotMouseEnter(MouseEnterEvent evt, int index) {
+            if (_playerInventory == null || ItemTooltipController.Instance == null) return;
+
+            var slotsData = _playerInventory.InventorySlots;
+            if (index >= slotsData.Count) return;
+            
+            if (slotsData[index].IsEmpty) return;
+
+            var slotData = slotsData[index];
+            var itemData = ItemDatabase.Instance.GetItem(slotData.ItemID);
+            
+            if (itemData != null) {
+                ItemTooltipController.Instance.Show(itemData, slotData.Rarity);
+            }
+        }
+
+        private void OnSlotMouseLeave(MouseLeaveEvent evt, int index) {
+            ItemTooltipController.Instance?.Hide();
         }
 
         private string GetRarityClass(ItemRarity rarity) {

@@ -24,40 +24,40 @@ MonoBehaviour:
   RequiredClass: Mage
   CommonStats:
   - Type: 15
-    Value: 1
+    Value: 3
   UncommonStats:
   - Type: 4
-    Value: 2
+    Value: 3
   - Type: 5
-    Value: 2
+    Value: 1
   - Type: 15
     Value: 0
   - Type: 11
-    Value: 0.01527689
+    Value: 0.014471437
   RareStats:
   - Type: 4
-    Value: 5
+    Value: 4
   - Type: 5
-    Value: 2
+    Value: 4
   - Type: 15
     Value: 0
   - Type: 11
-    Value: 0.034940045
-  - Type: 8
-    Value: 0.022424001
+    Value: 0.036466207
+  - Type: 7
+    Value: 0.023840463
   EpicStats:
   - Type: 4
-    Value: 7
+    Value: 10
   - Type: 5
-    Value: 5
+    Value: 6
   - Type: 15
     Value: 0
-  - Type: 8
-    Value: 0.04826639
-  - Type: 13
-    Value: 8
+  - Type: 7
+    Value: 0.053259544
   - Type: 12
-    Value: 8
+    Value: 6
+  - Type: 14
+    Value: 0.046156608
   VisualData:
     VisualPrefab: {fileID: 1025090697993506231, guid: 4e5357c1f6d040e4ea25fae60c3d6a04, type: 3}
     HiddenBodyParts: 2

@@ -1,0 +1,81 @@
+/* Main Container */
+.tooltip-main {
+    position: absolute;
+    width: 280px;
+    background-color: rgba(20, 20, 20, 0.95);
+    border-width: 2px;
+    border-color: #555;
+    border-radius: 4px;
+    padding: 12px;
+    color: #ddd;
+    font-size: 14px;
+    opacity: 0; /* Hidden by default */
+    transition-property: opacity;
+    transition-duration: 0.15s;
+}
+
+/* Header */
+.tooltip-title {
+    font-size: 18px;
+    -unity-font-style: bold;
+    color: white;
+    margin-bottom: 2px;
+    white-space: normal;
+}
+
+.tooltip-type {
+    font-size: 12px;
+    color: #aaa;
+    margin-bottom: 8px;
+    -unity-font-style: italic;
+}
+
+/* Stats Section */
+.tooltip-stats-section {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.tooltip-armor {
+    font-size: 16px;
+    -unity-font-style: bold;
+    color: #e0e0e0;
+    margin-bottom: 4px;
+}
+
+.tooltip-primary-stats {
+    font-size: 14px;
+    color: #ffd700; /* Goldish for primary stats */
+}
+
+/* Substats Section */
+.tooltip-substats-section {
+    margin-top: 8px;
+}
+
+.tooltip-divider {
+    height: 1px;
+    background-color: #444;
+    margin-bottom: 4px;
+}
+
+.tooltip-substats-list {
+    font-size: 13px;
+    color: #8da6b5; /* Blue-grey for magic props */
+}
+
+/* Description */
+.tooltip-description {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #888;
+    white-space: normal;
+    -unity-font-style: italic;
+}
+
+/* Rarity Colors (Applied via code to Title) */
+.rarity-common { color: #ffffff; }
+.rarity-uncommon { color: #1eff00; }
+.rarity-rare { color: #0070dd; }
+.rarity-epic { color: #a335ee; }
+.rarity-legendary { color: #ff8000; }

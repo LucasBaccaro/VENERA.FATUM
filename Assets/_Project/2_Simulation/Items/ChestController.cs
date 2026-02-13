@@ -34,7 +34,7 @@ namespace Genesis.Simulation {
 
         [Header("Network State")]
         private readonly SyncVar<ChestState> _state = new SyncVar<ChestState>(ChestState.Closed);
-        private readonly SyncList<ItemSlot> _lootItems = new SyncList<ItemSlot>();
+        protected readonly SyncList<ItemSlot> _lootItems = new SyncList<ItemSlot>();
         private readonly SyncVar<string> _looterName = new SyncVar<string>("");
 
         // ILootSource Implementation
@@ -77,7 +77,7 @@ namespace Genesis.Simulation {
 
         #region IInteractable
 
-        public void Interact(NetworkObject player) {
+        public virtual void Interact(NetworkObject player) {
             if (!base.IsServer) return;
 
             if (_state.Value == ChestState.Closed) {
@@ -114,11 +114,11 @@ namespace Genesis.Simulation {
             TargetOpenLootUI(player.Owner);
         }
 
-        public bool CanInteract(NetworkObject player) {
+        public virtual bool CanInteract(NetworkObject player) {
             return _state.Value != ChestState.Empty;
         }
 
-        public string GetInteractionPrompt() {
+        public virtual string GetInteractionPrompt() {
             switch (_state.Value) {
                 case ChestState.Closed: return "Open Chest";
                 case ChestState.Opened: return "Loot Chest";
@@ -158,7 +158,7 @@ namespace Genesis.Simulation {
         #region Server Logic
 
         [Server]
-        private void GenerateLoot() {
+        protected virtual void GenerateLoot() {
             _lootItems.Clear();
 
             if (_lootTable != null) {
@@ -173,7 +173,7 @@ namespace Genesis.Simulation {
         }
 
         [Server]
-        private void TakeItem(int lootIndex, NetworkObject player) {
+        protected virtual void TakeItem(int lootIndex, NetworkObject player) {
             if (lootIndex < 0 || lootIndex >= _lootItems.Count) return;
             ItemSlot item = _lootItems[lootIndex];
             
@@ -190,7 +190,7 @@ namespace Genesis.Simulation {
         }
 
         [Server]
-        private void TakeAll(NetworkObject player) {
+        protected virtual void TakeAll(NetworkObject player) {
             PlayerInventory inventory = player.GetComponent<PlayerInventory>();
              if (inventory == null) return;
 

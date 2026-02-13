@@ -18,7 +18,9 @@ namespace Genesis.Presentation.UI {
         private Button _closeButton;
 
         private ILootSource _currentLootSource;
-        
+        private Vector3 _playerPositionOnOpen;
+        private const float _moveThreshold = 0.1f;
+
         // Slot data
         private List<VisualElement> _slots = new List<VisualElement>();
         private List<VisualElement> _icons = new List<VisualElement>();
@@ -83,8 +85,29 @@ namespace Genesis.Presentation.UI {
             Debug.Log($"[LootBagController] Initialized with {_slots.Count} slots.");
         }
 
+        private void Update() {
+            if (_currentLootSource == null || _window == null || _window.style.display == DisplayStyle.None)
+                return;
+
+            // Close if player moved from where they opened the loot
+            var player = FindLocalPlayer();
+            if (player != null) {
+                float distance = Vector3.Distance(player.transform.position, _playerPositionOnOpen);
+                if (distance > _moveThreshold) {
+                    CloseWindow();
+                }
+            }
+        }
+
         private void OnLootOpened(ILootSource lootSource) {
             _currentLootSource = lootSource;
+
+            // Cache player position at the moment of opening
+            var player = FindLocalPlayer();
+            if (player != null) {
+                _playerPositionOnOpen = player.transform.position;
+            }
+
             if (_window != null) {
                 _window.style.display = DisplayStyle.Flex;
                 _title.text = lootSource.LootName.ToUpper();

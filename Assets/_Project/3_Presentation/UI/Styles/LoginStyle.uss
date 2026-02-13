@@ -51,7 +51,28 @@
     padding: 4px 8px;
 }
 
+.name-input > #unity-text-input {
+    background-color: rgba(10, 10, 15, 0.9);
+    border-width: 0;
+    color: rgb(240, 240, 240);
+    padding: 4px 8px;
+    --unity-cursor-color: rgb(220, 180, 100);
+}
+
+.name-input > #unity-text-input > TextElement {
+    color: rgb(240, 240, 240);
+    font-size: 18px;
+}
+
+.name-input > #unity-text-input > .unity-text-element--placeholder {
+    color: rgba(180, 180, 180, 0.5);
+}
+
 .name-input:focus {
+    border-color: rgba(220, 180, 100, 0.8);
+}
+
+.name-input:focus > #unity-text-input {
     border-color: rgba(220, 180, 100, 0.8);
 }
 

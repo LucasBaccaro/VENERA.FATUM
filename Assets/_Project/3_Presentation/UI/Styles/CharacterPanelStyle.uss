@@ -8,9 +8,8 @@
     height: 550px;
     background-image: url('project://database/Assets/_Project/5_Content/Resources/Panels/UI-GPW-CharacterPanel.png');
     -unity-background-scale-mode: stretch-to-fill;
-    left: 50%;
-    top: 50%;
-    translate: -50% -50%;
+    left: 10px;
+    top: 150px;
     overflow: hidden;
 }
 
@@ -117,19 +116,19 @@
     color: #5d4037;
     -unity-font-style: bold;
     -unity-text-align: middle-center;
-    margin-bottom: 3px;
-    margin-top: 6px;
+    margin-bottom: 1px;
+    margin-top: 2px;
     border-bottom-width: 1px;
     border-bottom-color: rgba(93, 64, 55, 0.3);
-    padding-bottom: 3px;
+    padding-bottom: 1px;
 }
 
 .stat-row {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1px;
-    padding: 2px 8px;
+    margin-bottom: 0;
+    padding: 0 8px;
 }
 
 .stat-label {
@@ -148,7 +147,7 @@
 .attr-title-row {
     flex-direction: row;
     align-items: center;
-    margin-top: 4px;
+    margin-top: 2px;
 }
 
 .unspent-points-label {

@@ -83,6 +83,9 @@ namespace Genesis.Presentation.UI {
 
             // Player Name
             EventBus.Subscribe<string>("OnPlayerNameChanged", OnPlayerNameChanged);
+
+            // Class Icon
+            EventBus.Subscribe<string, Sprite>("OnClassChanged", OnClassChanged);
         }
 
         void OnDisable() {
@@ -106,6 +109,9 @@ namespace Genesis.Presentation.UI {
 
             // Player Name
             EventBus.Unsubscribe<string>("OnPlayerNameChanged", OnPlayerNameChanged);
+
+            // Class Icon
+            EventBus.Unsubscribe<string, Sprite>("OnClassChanged", OnClassChanged);
         }
 
         void Update() {
@@ -282,10 +288,17 @@ namespace Genesis.Presentation.UI {
         }
 
         private void OnClassChanged(string className, Sprite classIcon) {
-            if (_classIcon != null && classIcon != null) {
+            if (_classIcon == null) return;
+
+            // Load class icon from Resources/Classes based on class name
+            Sprite icon = Resources.Load<Sprite>($"Classes/MISC-Class_{className}");
+            if (icon != null) {
+                _classIcon.style.backgroundImage = new StyleBackground(icon);
+            } else if (classIcon != null) {
+                // Fallback to the sprite passed via event
                 _classIcon.style.backgroundImage = new StyleBackground(classIcon);
             }
-            Debug.Log($"[HUD] Class UI Update: {className}");
+            Debug.Log($"[HUD] Class UI Update: {className}, icon loaded: {icon != null}");
         }
 
         private void OnPlayerNameChanged(string playerName) {

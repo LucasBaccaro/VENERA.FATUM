@@ -35,6 +35,21 @@ namespace Genesis.Data {
             StatType.Block
         };
 
+        [Tooltip("Sub-stats for rings (no Block, no MoveSpeed, includes MagicResistance)")]
+        public List<StatType> RingSubStatPool = new List<StatType> {
+            StatType.Haste,
+            StatType.LifeSteal,
+            StatType.Penetration,
+            StatType.MagicResistance,
+            StatType.LootLuck,
+            StatType.Lockpicking,
+            StatType.Perception
+        };
+
+        [Header("Armor Stat (all items)")]
+        [Tooltip("Armor range for Common rarity items")]
+        public FloatRange CommonArmorRange = new FloatRange(1, 3);
+
         [Header("Rarity Tiers")]
         [Tooltip("Stat ranges for each rarity tier (Uncommon, Rare, Epic)")]
         public List<RarityTierConfig> RarityTiers = new List<RarityTierConfig>();
@@ -131,6 +146,10 @@ namespace Genesis.Data {
         public FloatRange WeaponPrimary;
         [Tooltip("Secondary attribute flat range")]
         public FloatRange WeaponSecondary;
+
+        [Header("Armor Stat")]
+        [Tooltip("Armor value range for this rarity")]
+        public FloatRange ArmorRange;
 
         [Header("Sub-Stats (added on top of primary/secondary)")]
         [Tooltip("Number of random sub-stats: Uncommon=1, Rare=2, Epic=3")]

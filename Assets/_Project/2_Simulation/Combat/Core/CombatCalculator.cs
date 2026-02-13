@@ -56,6 +56,18 @@ namespace Genesis.Simulation.Combat {
                 }
             }
 
+            // 2.5 Armor mitigation (physical only)
+            if (category == AbilityCategory.Physical && targetAttrs != null && targetAttrs.Armor > 0f) {
+                float armorMit = targetAttrs.Armor / (targetAttrs.Armor + 100f);
+                result.FinalDamage *= (1f - armorMit);
+            }
+
+            // 2.5 Magic Resistance mitigation (magical only)
+            if (category == AbilityCategory.Magical && targetAttrs != null && targetAttrs.MagicResistance > 0f) {
+                float magResMit = targetAttrs.MagicResistance / (targetAttrs.MagicResistance + 100f);
+                result.FinalDamage *= (1f - magResMit);
+            }
+
             // 3. Check Evasion (target AGI)
             if (targetAttrs != null && targetAttrs.EvasionChance > 0f) {
                 float evasionRoll = Random.Range(0f, 1f);

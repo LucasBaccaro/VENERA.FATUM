@@ -80,7 +80,9 @@ namespace Genesis.Items {
         LootLuck,
         Lockpicking,
         Perception,
-        MoveSpeed
+        MoveSpeed,
+        Armor,
+        MagicResistance
     }
 
     /// <summary>
@@ -130,6 +132,10 @@ namespace Genesis.Items {
                     return $"{prefix}{Value} Perception";
                 case StatType.MoveSpeed:
                     return $"{prefix}{Value * 100f:F0}% Move Speed";
+                case StatType.Armor:
+                    return $"{prefix}{Value} Armor";
+                case StatType.MagicResistance:
+                    return $"{prefix}{Value} Magic Resistance";
                 default:
                     return $"{prefix}{Value} {Type}";
             }

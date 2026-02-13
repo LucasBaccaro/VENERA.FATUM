@@ -44,16 +44,18 @@ namespace Genesis.Simulation.Combat {
                 RaycastHit[] hits = Physics.RaycastAll(origin, direction, maxDistance, LayerMask.GetMask("Enemy", "Player"));
 
                 foreach (var hit in hits) {
-                    if (hit.collider.TryGetComponent(out NetworkObject netObj)) {
+                    var netObj = hit.collider.GetComponentInParent<NetworkObject>();
+                    if (netObj != null) {
                         // Ignorar al caster
                         if (netObj == caster) continue;
-                        hitEnemies.Add(netObj);
+                        if (!hitEnemies.Contains(netObj)) hitEnemies.Add(netObj);
                     }
                 }
             } else {
                 // HIT FIRST ONLY: Usar Raycast simple
                 if (Physics.Raycast(origin, direction, out RaycastHit hit, maxDistance, LayerMask.GetMask("Enemy", "Player"))) {
-                    if (hit.collider.TryGetComponent(out NetworkObject netObj)) {
+                    var netObj = hit.collider.GetComponentInParent<NetworkObject>();
+                    if (netObj != null) {
                         if (netObj != caster) {
                             hitEnemies.Add(netObj);
                         }

@@ -26,8 +26,8 @@ MonoBehaviour:
   DialogueAfterComplete: The coast is cleaner thanks to you.
   Objectives:
   - Type: 1
-    Description: Kill Coastal Pests
-    TargetID: coastal_pest
+    Description: Kill Grunt Fighters
+    TargetID: grunt_melee
     RequiredCount: 5
   Rewards:
   - ItemID: 0

@@ -94,13 +94,11 @@ namespace Genesis.Simulation {
             Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
             
             if (Physics.Raycast(ray, out RaycastHit hit, maxTargetDistance, targetLayer)) {
-                // Click en enemigo
-                if (hit.collider.TryGetComponent(out NetworkObject netObj)) {
-                    // Validar que no sea yo mismo (por si acaso)
-                    if (netObj != base.NetworkObject) {
-                        SetTarget(netObj);
-                        return;
-                    }
+                // Click en enemigo - buscar NetworkObject en el GO o sus padres
+                var netObj = hit.collider.GetComponentInParent<NetworkObject>();
+                if (netObj != null && netObj != base.NetworkObject) {
+                    SetTarget(netObj);
+                    return;
                 }
             } 
             
@@ -120,8 +118,9 @@ namespace Genesis.Simulation {
             // Filtrar y Ordenar por distancia
             List<NetworkObject> candidates = new List<NetworkObject>();
             foreach(var hit in hits) {
-                // Solo agregar si tiene NetworkObject y NO soy yo
-                if(hit.TryGetComponent(out NetworkObject no) && no != base.NetworkObject) {
+                // Buscar NetworkObject en el GO o sus padres
+                var no = hit.GetComponentInParent<NetworkObject>();
+                if(no != null && no != base.NetworkObject && !candidates.Contains(no)) {
                     candidates.Add(no);
                 }
             }

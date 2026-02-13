@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 162382321b14b4e2eb843e009128bb35, type: 3}
+  m_Name: Enemy_GruntRanged
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.EnemyData
+  EnemyTag: grunt_ranged
+  DisplayName: Grunt Ranged
+  MaxHealth: 80
+  MinDamage: 12
+  MaxDamage: 20
+  AttackRange: 12
+  AttackCooldown: 2.5
+  DetectionRange: 12
+  MoveSpeed: 3.5
+  IsRanged: 1
+  ProjectilePrefab: {fileID: 0}
+  ProjectileSpeed: 12
+  PreferredDistance: 10
+  Role: 0
+  Archetype: 1
+  LeashRange: 20
+  PatrolRadius: 3
+  PatrolWaitTime: 3
+  AnticipationDuration: 0.5
+  RecoveryDuration: 0.4
+  KiteThreshold: 4
+  KiteDistance: 8
+  SupportScanRange: 12
+  HealAmount: 20
+  HealCooldown: 4
+  KnockbackForce: 4
+  KnockbackDuration: 0.3

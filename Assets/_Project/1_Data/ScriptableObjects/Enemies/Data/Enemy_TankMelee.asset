@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 162382321b14b4e2eb843e009128bb35, type: 3}
+  m_Name: Enemy_TankMelee
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.EnemyData
+  EnemyTag: tank_melee
+  DisplayName: Tank Melee
+  MaxHealth: 400
+  MinDamage: 10
+  MaxDamage: 18
+  AttackRange: 3
+  AttackCooldown: 3
+  DetectionRange: 8
+  MoveSpeed: 2.5
+  IsRanged: 0
+  ProjectilePrefab: {fileID: 0}
+  ProjectileSpeed: 12
+  PreferredDistance: 8
+  Role: 1
+  Archetype: 0
+  LeashRange: 20
+  PatrolRadius: 3
+  PatrolWaitTime: 3
+  AnticipationDuration: 0.7
+  RecoveryDuration: 0.5
+  KiteThreshold: 3
+  KiteDistance: 6
+  SupportScanRange: 12
+  HealAmount: 20
+  HealCooldown: 4
+  KnockbackForce: 4
+  KnockbackDuration: 0.3

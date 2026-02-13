@@ -41,4 +41,7 @@ namespace Genesis.Data {
         Haste        = 1 << 9,  // Aumenta velocidad ataque/cast
         Speed        = 1 << 10  // Aumenta velocidad movimiento
     }
+
+    public enum EnemyRole { Grunt, Tank, Boss }
+    public enum EnemyArchetype { Melee, Ranged, Support }
 }

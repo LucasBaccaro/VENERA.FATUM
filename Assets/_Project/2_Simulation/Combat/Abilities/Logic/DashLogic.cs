@@ -106,12 +106,13 @@ namespace Genesis.Simulation.Combat {
             RaycastHit[] hits = Physics.SphereCastAll(startPos, data.Radius, direction, distance, LayerMask.GetMask("Enemy", "Player"));
 
             foreach (var hit in hits) {
-                if (hit.collider.TryGetComponent(out NetworkObject netObj)) {
+                var netObj = hit.collider.GetComponentInParent<NetworkObject>();
+                if (netObj != null) {
                     if (netObj == caster) continue; // No dañarse a sí mismo
 
                     // Aplicar DAMAGE (same pattern as ConeLogic)
                     if (data.BaseDamage > 0) {
-                        if (hit.collider.TryGetComponent(out PlayerStats targetStats)) {
+                        if (netObj.TryGetComponent(out PlayerStats targetStats)) {
                             CombatResult result = CombatCalculator.CalculateDamage(caster, netObj, data.BaseDamage, data.Category, config);
                             if (result.ResultType != DamageResultType.Evaded) {
                                 targetStats.TakeDamage(result.FinalDamage, caster, result.ResultType);
@@ -120,7 +121,7 @@ namespace Genesis.Simulation.Combat {
                                     casterStats?.Heal(result.LifeStealAmount);
                                 }
                             }
-                        } else if (hit.collider.TryGetComponent(out IDamageable damageable)) {
+                        } else if (netObj.TryGetComponent(out IDamageable damageable)) {
                             CombatResult result = CombatCalculator.CalculateDamage(caster, netObj, data.BaseDamage, data.Category, config);
                             damageable.TakeDamage(result.FinalDamage, caster);
                             if (result.LifeStealAmount > 0f) {

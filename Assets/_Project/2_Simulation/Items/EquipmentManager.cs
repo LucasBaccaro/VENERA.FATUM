@@ -316,6 +316,7 @@ namespace Genesis.Simulation {
             int equipStr = 0, equipAgi = 0, equipInt = 0, equipWis = 0, equipCon = 0;
             float equipHaste = 0f, equipLifeSteal = 0f, equipPenetration = 0f, equipBlock = 0f;
             float equipLootLuck = 0f, equipLockpicking = 0f, equipPerception = 0f, equipMoveSpeed = 0f;
+            float equipArmor = 0f, equipMagicResistance = 0f;
 
             // Helper function to process equipment slot
             void ProcessSlot(ItemSlot slot) {
@@ -344,6 +345,8 @@ namespace Genesis.Simulation {
                         case StatType.Lockpicking: equipLockpicking += stat.Value; break;
                         case StatType.Perception: equipPerception += stat.Value; break;
                         case StatType.MoveSpeed: equipMoveSpeed += stat.Value; break;
+                        case StatType.Armor: equipArmor += stat.Value; break;
+                        case StatType.MagicResistance: equipMagicResistance += stat.Value; break;
                     }
                 }
             }
@@ -378,7 +381,8 @@ namespace Genesis.Simulation {
                 _playerAttributes.SetEquipmentBonuses(
                     equipStr, equipAgi, equipInt, equipWis, equipCon,
                     equipHaste, equipLifeSteal, equipPenetration, equipBlock,
-                    equipLootLuck, equipLockpicking, equipPerception, equipMoveSpeed);
+                    equipLootLuck, equipLockpicking, equipPerception, equipMoveSpeed,
+                    equipArmor, equipMagicResistance);
             }
 
             Debug.Log($"[EquipmentManager] Stats recalculated: MaxHP={totalMaxHealth}, MaxMana={totalMaxMana}");

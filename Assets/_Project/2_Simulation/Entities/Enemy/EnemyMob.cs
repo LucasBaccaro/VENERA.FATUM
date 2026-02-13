@@ -20,7 +20,7 @@ namespace Genesis.Simulation {
         private readonly SyncVar<bool> _isDead = new SyncVar<bool>(false);
 
         // AI state (server only)
-        private enum AIState { Idle, Aggro, Attack, Return }
+        private enum AIState { Idle, Patrol, Aggro, Attack, Kiting, Return }
         private AIState _aiState = AIState.Idle;
         private Transform _target;
         private NetworkObject _targetNob;
@@ -28,8 +28,25 @@ namespace Genesis.Simulation {
         private float _lastAttackTime;
         private NavMeshAgent _agent;
 
+        // Patrol
+        private Vector3 _patrolTarget;
+        private float _patrolWaitTimer;
+        private bool _isWaitingAtPatrol;
+
+        // Telegraph
+        private bool _isAnticipating;
+        private float _anticipationTimer;
+        private bool _isRecovering;
+        private float _recoveryTimer;
+
+        // Support
+        private float _lastHealTime;
+        private EnemyMob _healTarget;
+
+        // StatusEffects
+        private StatusEffectSystem _statusSystem;
+
         // Return leash
-        private const float LEASH_RANGE = 20f;
         private const float RETURN_THRESHOLD = 1f;
 
         public string EnemyTag => _data != null ? _data.EnemyTag : "";
@@ -53,6 +70,7 @@ namespace Genesis.Simulation {
             }
 
             _spawnPosition = transform.position;
+            _statusSystem = GetComponent<StatusEffectSystem>();
 
             if (_data != null) {
                 _currentHealth.Value = _data.MaxHealth;
@@ -68,7 +86,15 @@ namespace Genesis.Simulation {
 
         private void Update() {
             if (!base.IsServerInitialized || _isDead.Value) return;
+            UpdateAgentSpeed();
             ServerAIUpdate();
+        }
+
+        private void UpdateAgentSpeed() {
+            if (_agent == null || _data == null) return;
+            float speed = _data.MoveSpeed;
+            if (_statusSystem != null) speed *= _statusSystem.GetMovementSpeedMultiplier();
+            _agent.speed = speed;
         }
 
         // ═══════════════════════════════════════════════════════
@@ -76,15 +102,24 @@ namespace Genesis.Simulation {
         // ═══════════════════════════════════════════════════════
 
         private void ServerAIUpdate() {
+            // Telegraph blocks all other actions
+            if (UpdateTelegraph()) return;
+
             switch (_aiState) {
                 case AIState.Idle:
-                    ScanForTargets();
+                    HandleIdle();
+                    break;
+                case AIState.Patrol:
+                    HandlePatrol();
                     break;
                 case AIState.Aggro:
-                    ChaseTarget();
+                    HandleAggro();
                     break;
                 case AIState.Attack:
-                    AttackTarget();
+                    HandleAttack();
+                    break;
+                case AIState.Kiting:
+                    HandleKiting();
                     break;
                 case AIState.Return:
                     ReturnToSpawn();
@@ -92,47 +127,127 @@ namespace Genesis.Simulation {
             }
         }
 
-        private void ScanForTargets() {
-            float detectionRange = _data != null ? _data.DetectionRange : 8f;
-            Collider[] hits = Physics.OverlapSphere(transform.position, detectionRange);
+        // ═══════════════════════════════════════════════════════
+        // TELEGRAPH (Anticipation / Recovery)
+        // ═══════════════════════════════════════════════════════
 
-            float closestDist = float.MaxValue;
-            Transform closest = null;
-            NetworkObject closestNob = null;
-
-            foreach (var hit in hits) {
-                var playerStats = hit.GetComponent<PlayerStats>();
-                if (playerStats != null && playerStats.IsAlive()) {
-                    float dist = Vector3.Distance(transform.position, hit.transform.position);
-                    if (dist < closestDist) {
-                        closestDist = dist;
-                        closest = hit.transform;
-                        closestNob = hit.GetComponent<NetworkObject>();
+        private bool UpdateTelegraph() {
+            if (_isAnticipating) {
+                _anticipationTimer -= Time.deltaTime;
+                if (_anticipationTimer <= 0f) {
+                    _isAnticipating = false;
+                    ExecuteAttack();
+                    // Start recovery
+                    if (_data != null && _data.RecoveryDuration > 0f) {
+                        _isRecovering = true;
+                        _recoveryTimer = _data.RecoveryDuration;
                     }
                 }
+                return true;
             }
 
-            if (closest != null) {
-                _target = closest;
-                _targetNob = closestNob;
-                _aiState = AIState.Aggro;
+            if (_isRecovering) {
+                _recoveryTimer -= Time.deltaTime;
+                if (_recoveryTimer <= 0f) {
+                    _isRecovering = false;
+                }
+                return true;
+            }
+
+            return false;
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // IDLE
+        // ═══════════════════════════════════════════════════════
+
+        private void HandleIdle() {
+            if (_data != null && _data.PatrolRadius > 0f) {
+                PickNewPatrolTarget();
+                _aiState = AIState.Patrol;
+                return;
+            }
+            ScanForTargets();
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // PATROL
+        // ═══════════════════════════════════════════════════════
+
+        private void HandlePatrol() {
+            // Always scan while patrolling
+            if (ScanForTargets()) return;
+
+            if (_isWaitingAtPatrol) {
+                _patrolWaitTimer -= Time.deltaTime;
+                if (_patrolWaitTimer <= 0f) {
+                    _isWaitingAtPatrol = false;
+                    PickNewPatrolTarget();
+                }
+                return;
+            }
+
+            float dist = Vector3.Distance(transform.position, _patrolTarget);
+            if (dist <= 1.5f) {
+                _isWaitingAtPatrol = true;
+                _patrolWaitTimer = _data != null ? _data.PatrolWaitTime : 3f;
+                if (_agent != null) _agent.ResetPath();
+                return;
+            }
+
+            if (_agent != null && _agent.isOnNavMesh) {
+                _agent.SetDestination(_patrolTarget);
             }
         }
 
-        private void ChaseTarget() {
+        private void PickNewPatrolTarget() {
+            float radius = _data != null ? _data.PatrolRadius : 5f;
+            Vector2 randomCircle = Random.insideUnitCircle * radius;
+            Vector3 candidate = _spawnPosition + new Vector3(randomCircle.x, 0f, randomCircle.y);
+
+            if (NavMesh.SamplePosition(candidate, out NavMeshHit hit, radius, NavMesh.AllAreas)) {
+                _patrolTarget = hit.position;
+            } else {
+                _patrolTarget = _spawnPosition;
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // AGGRO (Chase)
+        // ═══════════════════════════════════════════════════════
+
+        private void HandleAggro() {
             if (_target == null || !IsTargetValid()) {
                 LoseTarget();
                 return;
             }
 
             // Leash check
+            float leashRange = _data != null ? _data.LeashRange : 20f;
             float distFromSpawn = Vector3.Distance(transform.position, _spawnPosition);
-            if (distFromSpawn > LEASH_RANGE) {
+            if (distFromSpawn > leashRange) {
                 LoseTarget();
                 _aiState = AIState.Return;
                 return;
             }
 
+            // Support: chase wounded ally instead of player
+            if (_data != null && _data.Archetype == EnemyArchetype.Support) {
+                AggroAsSupport();
+                return;
+            }
+
+            // Tank: try to interpose between player and ranged/support allies
+            if (_data != null && _data.Role == EnemyRole.Tank) {
+                AggroAsTank();
+                return;
+            }
+
+            // Default chase logic
+            ChaseTarget();
+        }
+
+        private void ChaseTarget() {
             float distToTarget = Vector3.Distance(transform.position, _target.position);
             float attackRange = _data != null ? _data.AttackRange : 2f;
             bool isRanged = _data != null && _data.IsRanged;
@@ -150,19 +265,20 @@ namespace Genesis.Simulation {
                 return;
             }
 
-            // Move toward target
+            MoveToward(_target.position, isRanged);
+        }
+
+        private void MoveToward(Vector3 destination, bool isRanged = false) {
             if (_agent != null && _agent.isOnNavMesh) {
-                if (isRanged) {
-                    // Ranged: move to preferred distance, not melee range
-                    Vector3 dirToTarget = (_target.position - transform.position).normalized;
-                    Vector3 desiredPos = _target.position - dirToTarget * _data.PreferredDistance * 0.8f;
+                if (isRanged && _data != null && _data.PreferredDistance > 0f) {
+                    Vector3 dirToTarget = (destination - transform.position).normalized;
+                    Vector3 desiredPos = destination - dirToTarget * _data.PreferredDistance * 0.8f;
                     _agent.SetDestination(desiredPos);
                 } else {
-                    _agent.SetDestination(_target.position);
+                    _agent.SetDestination(destination);
                 }
             } else {
-                // Fallback: direct movement
-                Vector3 direction = (_target.position - transform.position).normalized;
+                Vector3 direction = (destination - transform.position).normalized;
                 float speed = _data != null ? _data.MoveSpeed : 3f;
                 transform.position += direction * speed * Time.deltaTime;
                 if (direction != Vector3.zero) {
@@ -171,7 +287,175 @@ namespace Genesis.Simulation {
             }
         }
 
-        private void AttackTarget() {
+        // ═══════════════════════════════════════════════════════
+        // SUPPORT BEHAVIOR
+        // ═══════════════════════════════════════════════════════
+
+        private void AggroAsSupport() {
+            // Find wounded ally
+            _healTarget = FindLowestHPAlly();
+
+            if (_healTarget != null) {
+                float distToAlly = Vector3.Distance(transform.position, _healTarget.transform.position);
+                float healRange = _data != null ? _data.AttackRange : 3f;
+
+                if (distToAlly <= healRange) {
+                    _aiState = AIState.Attack;
+                    if (_agent != null) _agent.ResetPath();
+                    return;
+                }
+
+                // Move toward wounded ally
+                MoveToward(_healTarget.transform.position);
+            } else {
+                // No wounded allies - check if player is too close, kite
+                if (_target != null) {
+                    float distToPlayer = Vector3.Distance(transform.position, _target.position);
+                    float kiteThreshold = _data != null ? _data.KiteThreshold : 3f;
+                    if (distToPlayer < kiteThreshold) {
+                        _aiState = AIState.Kiting;
+                        return;
+                    }
+                }
+                // Stay near spawn area
+                float distFromSpawn = Vector3.Distance(transform.position, _spawnPosition);
+                if (distFromSpawn > 5f) {
+                    MoveToward(_spawnPosition);
+                }
+            }
+        }
+
+        private void AttackAsSupport() {
+            if (_healTarget == null || _healTarget._isDead.Value) {
+                _healTarget = FindLowestHPAlly();
+                if (_healTarget == null) {
+                    _aiState = AIState.Aggro;
+                    return;
+                }
+            }
+
+            float distToAlly = Vector3.Distance(transform.position, _healTarget.transform.position);
+            float healRange = _data != null ? _data.AttackRange : 3f;
+
+            if (distToAlly > healRange * 1.2f) {
+                _aiState = AIState.Aggro;
+                return;
+            }
+
+            // Face heal target
+            FaceTarget(_healTarget.transform.position);
+
+            float healCooldown = _data != null ? _data.HealCooldown : 4f;
+            if (Time.time - _lastHealTime >= healCooldown) {
+                StartAttackOrTelegraph();
+            }
+        }
+
+        private EnemyMob FindLowestHPAlly() {
+            float scanRange = _data != null ? _data.SupportScanRange : 12f;
+            Collider[] hits = Physics.OverlapSphere(transform.position, scanRange);
+
+            EnemyMob lowestAlly = null;
+            float lowestPercent = 0.9f; // Only heal below 90% HP
+
+            foreach (var hit in hits) {
+                var ally = hit.GetComponent<EnemyMob>();
+                if (ally == null || ally == this || ally._isDead.Value) continue;
+                if (ally._data == null) continue;
+
+                float hpPercent = ally._currentHealth.Value / ally._data.MaxHealth;
+                if (hpPercent < lowestPercent) {
+                    lowestPercent = hpPercent;
+                    lowestAlly = ally;
+                }
+            }
+
+            return lowestAlly;
+        }
+
+        [Server]
+        public void HealFromSupport(float amount) {
+            if (_isDead.Value) return;
+            _currentHealth.Value = Mathf.Min(_currentHealth.Value + amount, _data != null ? _data.MaxHealth : 100f);
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // TANK BEHAVIOR
+        // ═══════════════════════════════════════════════════════
+
+        private void AggroAsTank() {
+            // Try to interpose between player and ranged/support allies
+            Vector3 interposeTarget = GetInterposePosition();
+
+            float distToTarget = Vector3.Distance(transform.position, _target.position);
+            float attackRange = _data != null ? _data.AttackRange : 3f;
+
+            if (distToTarget <= attackRange) {
+                _aiState = AIState.Attack;
+                if (_agent != null) _agent.ResetPath();
+                return;
+            }
+
+            // Move toward interpose position or directly toward player
+            MoveToward(interposeTarget);
+        }
+
+        private Vector3 GetInterposePosition() {
+            if (_target == null) return transform.position;
+
+            float scanRange = _data != null ? _data.DetectionRange : 8f;
+            Collider[] hits = Physics.OverlapSphere(transform.position, scanRange);
+
+            Vector3 allyCenter = Vector3.zero;
+            int allyCount = 0;
+
+            foreach (var hit in hits) {
+                var ally = hit.GetComponent<EnemyMob>();
+                if (ally == null || ally == this || ally._isDead.Value) continue;
+                if (ally._data == null) continue;
+                if (ally._data.Archetype == EnemyArchetype.Ranged || ally._data.Archetype == EnemyArchetype.Support) {
+                    allyCenter += ally.transform.position;
+                    allyCount++;
+                }
+            }
+
+            if (allyCount == 0) return _target.position;
+
+            allyCenter /= allyCount;
+            return Vector3.Lerp(_target.position, allyCenter, 0.4f);
+        }
+
+        private void ApplyKnockback(Transform playerTransform) {
+            if (_data == null || _data.Role != EnemyRole.Tank) return;
+
+            var motor = playerTransform.GetComponent<PlayerMotorMultiplayer>();
+            if (motor == null) return;
+
+            var nob = playerTransform.GetComponent<NetworkObject>();
+            if (nob == null || !nob.Owner.IsValid) return;
+
+            Vector3 knockDir = (playerTransform.position - transform.position).normalized;
+            Vector3 knockTarget = playerTransform.position + knockDir * _data.KnockbackForce;
+
+            // Validate with NavMesh
+            if (NavMesh.SamplePosition(knockTarget, out NavMeshHit hit, _data.KnockbackForce, NavMesh.AllAreas)) {
+                knockTarget = hit.position;
+            }
+
+            motor.RpcKnockback(nob.Owner, knockTarget, _data.KnockbackDuration);
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // ATTACK
+        // ═══════════════════════════════════════════════════════
+
+        private void HandleAttack() {
+            // Support attacks (heals) allies, not the player
+            if (_data != null && _data.Archetype == EnemyArchetype.Support) {
+                AttackAsSupport();
+                return;
+            }
+
             if (_target == null || !IsTargetValid()) {
                 LoseTarget();
                 return;
@@ -181,48 +465,78 @@ namespace Genesis.Simulation {
             float attackRange = _data != null ? _data.AttackRange : 2f;
             bool isRanged = _data != null && _data.IsRanged;
 
-            // Out of range → chase again
+            // Out of range -> chase again
             float maxRange = isRanged ? _data.PreferredDistance * 1.3f : attackRange * 1.2f;
             if (distToTarget > maxRange) {
                 _aiState = AIState.Aggro;
                 return;
             }
 
-            // Ranged: retreat if player gets too close
-            if (isRanged && distToTarget < _data.PreferredDistance * 0.4f) {
-                Vector3 retreatDir = (transform.position - _target.position).normalized;
-                Vector3 retreatPos = transform.position + retreatDir * _data.PreferredDistance * 0.5f;
-                if (_agent != null && _agent.isOnNavMesh) {
-                    _agent.SetDestination(retreatPos);
-                } else {
-                    float speed = _data.MoveSpeed;
-                    transform.position += retreatDir * speed * Time.deltaTime;
+            // Kiting: ranged enemies retreat if player gets too close
+            if (isRanged && _data != null) {
+                float kiteThreshold = _data.KiteThreshold;
+                if (distToTarget < kiteThreshold) {
+                    _aiState = AIState.Kiting;
+                    return;
                 }
             }
 
             // Face target
-            Vector3 lookDir = (_target.position - transform.position);
-            lookDir.y = 0;
-            if (lookDir.sqrMagnitude > 0.001f) {
-                transform.rotation = Quaternion.LookRotation(lookDir);
-            }
+            FaceTarget(_target.position);
 
             float cooldown = _data != null ? _data.AttackCooldown : 2f;
             if (Time.time - _lastAttackTime >= cooldown) {
-                _lastAttackTime = Time.time;
-                float damage = _data != null ? Random.Range(_data.MinDamage, _data.MaxDamage) : 10f;
+                StartAttackOrTelegraph();
+            }
+        }
 
-                if (_data != null && _data.IsRanged && _data.ProjectilePrefab != null) {
-                    FireProjectile(damage);
-                } else {
-                    var damageable = _target.GetComponent<IDamageable>();
-                    if (damageable != null) {
-                        damageable.TakeDamage(damage, base.NetworkObject);
-                    }
+        private void StartAttackOrTelegraph() {
+            _lastAttackTime = Time.time;
+
+            // Telegraph: if anticipation > 0, delay the attack
+            if (_data != null && _data.AnticipationDuration > 0f) {
+                _isAnticipating = true;
+                _anticipationTimer = _data.AnticipationDuration;
+                RpcPlayAnticipation();
+                return;
+            }
+
+            // Instant attack (legacy behavior)
+            ExecuteAttack();
+        }
+
+        private void ExecuteAttack() {
+            // Support: heal ally
+            if (_data != null && _data.Archetype == EnemyArchetype.Support) {
+                if (_healTarget != null && !_healTarget._isDead.Value) {
+                    float healAmount = _data.HealAmount;
+                    _healTarget.HealFromSupport(healAmount);
+                    _lastHealTime = Time.time;
+                    RpcPlayAttackAnimation();
+                }
+                return;
+            }
+
+            // Offensive attack
+            if (_target == null || !IsTargetValid()) return;
+
+            float damage = _data != null ? Random.Range(_data.MinDamage, _data.MaxDamage) : 10f;
+
+            if (_data != null && _data.IsRanged && _data.ProjectilePrefab != null) {
+                FireProjectile(damage);
+            } else {
+                var damageable = _target.GetComponent<IDamageable>();
+                if (damageable != null) {
+                    damageable.TakeDamage(damage, base.NetworkObject);
                 }
 
-                RpcPlayAttackAnimation();
+                // Tank: apply knockback on melee hit
+                if (_data != null && _data.Role == EnemyRole.Tank) {
+                    ApplyKnockback(_target);
+                }
             }
+
+            RpcPlayAttackAnimation();
         }
 
         [Server]
@@ -239,6 +553,69 @@ namespace Genesis.Simulation {
 
             FishNet.InstanceFinder.ServerManager.Spawn(projectile);
         }
+
+        // ═══════════════════════════════════════════════════════
+        // KITING
+        // ═══════════════════════════════════════════════════════
+
+        private void HandleKiting() {
+            if (_target == null || !IsTargetValid()) {
+                LoseTarget();
+                return;
+            }
+
+            // Leash check
+            float leashRange = _data != null ? _data.LeashRange : 20f;
+            float distFromSpawn = Vector3.Distance(transform.position, _spawnPosition);
+            if (distFromSpawn > leashRange) {
+                LoseTarget();
+                _aiState = AIState.Return;
+                return;
+            }
+
+            float distToTarget = Vector3.Distance(transform.position, _target.position);
+            float kiteDistance = _data != null ? _data.KiteDistance : 6f;
+
+            // Reached safe distance -> go back to attack
+            if (distToTarget >= kiteDistance) {
+                _aiState = AIState.Attack;
+                return;
+            }
+
+            // Move away from player
+            Vector3 retreatDir = (transform.position - _target.position).normalized;
+            Vector3 retreatPos = transform.position + retreatDir * kiteDistance;
+
+            // Clamp to leash range
+            Vector3 fromSpawn = retreatPos - _spawnPosition;
+            if (fromSpawn.magnitude > leashRange) {
+                retreatPos = _spawnPosition + fromSpawn.normalized * leashRange;
+            }
+
+            if (_agent != null && _agent.isOnNavMesh) {
+                _agent.SetDestination(retreatPos);
+            } else {
+                float speed = _data != null ? _data.MoveSpeed : 3f;
+                transform.position += retreatDir * speed * Time.deltaTime;
+            }
+
+            // Face target while retreating
+            FaceTarget(_target.position);
+
+            // Attack during kiting if cooldown ready
+            float cooldown = _data != null ? _data.AttackCooldown : 2f;
+            float attackRange = _data != null ? _data.AttackRange : 2f;
+            bool isRanged = _data != null && _data.IsRanged;
+            float effectiveRange = isRanged ? (_data != null ? _data.PreferredDistance : attackRange) : attackRange;
+
+            if (distToTarget <= effectiveRange && Time.time - _lastAttackTime >= cooldown) {
+                StartAttackOrTelegraph();
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // RETURN
+        // ═══════════════════════════════════════════════════════
 
         private void ReturnToSpawn() {
             float dist = Vector3.Distance(transform.position, _spawnPosition);
@@ -262,6 +639,47 @@ namespace Genesis.Simulation {
             ScanForTargets();
         }
 
+        // ═══════════════════════════════════════════════════════
+        // HELPERS
+        // ═══════════════════════════════════════════════════════
+
+        private bool ScanForTargets() {
+            float detectionRange = _data != null ? _data.DetectionRange : 8f;
+            Collider[] hits = Physics.OverlapSphere(transform.position, detectionRange);
+
+            float closestDist = float.MaxValue;
+            Transform closest = null;
+            NetworkObject closestNob = null;
+
+            foreach (var hit in hits) {
+                var playerStats = hit.GetComponent<PlayerStats>();
+                if (playerStats != null && playerStats.IsAlive()) {
+                    float dist = Vector3.Distance(transform.position, hit.transform.position);
+                    if (dist < closestDist) {
+                        closestDist = dist;
+                        closest = hit.transform;
+                        closestNob = hit.GetComponent<NetworkObject>();
+                    }
+                }
+            }
+
+            if (closest != null) {
+                _target = closest;
+                _targetNob = closestNob;
+                _aiState = AIState.Aggro;
+                return true;
+            }
+            return false;
+        }
+
+        private void FaceTarget(Vector3 targetPos) {
+            Vector3 lookDir = (targetPos - transform.position);
+            lookDir.y = 0;
+            if (lookDir.sqrMagnitude > 0.001f) {
+                transform.rotation = Quaternion.LookRotation(lookDir);
+            }
+        }
+
         private bool IsTargetValid() {
             if (_target == null) return false;
             var stats = _target.GetComponent<PlayerStats>();
@@ -271,6 +689,7 @@ namespace Genesis.Simulation {
         private void LoseTarget() {
             _target = null;
             _targetNob = null;
+            _healTarget = null;
             _aiState = AIState.Return;
         }
 
@@ -289,7 +708,7 @@ namespace Genesis.Simulation {
             }
 
             // Aggro on the attacker
-            if (attacker != null && _aiState == AIState.Idle) {
+            if (attacker != null && (_aiState == AIState.Idle || _aiState == AIState.Patrol)) {
                 _target = attacker.transform;
                 _targetNob = attacker;
                 _aiState = AIState.Aggro;
@@ -350,6 +769,12 @@ namespace Genesis.Simulation {
             if (animator != null) {
                 animator.SetTrigger("Attack");
             }
+        }
+
+        [ObserversRpc]
+        private void RpcPlayAnticipation() {
+            var animator = GetComponentInChildren<Animator>();
+            if (animator != null) animator.SetTrigger("Anticipation");
         }
 
         // ═══════════════════════════════════════════════════════

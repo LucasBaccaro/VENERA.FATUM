@@ -1,5 +1,6 @@
 using UnityEngine;
 using FishNet.Object;
+using FishNet.Connection;
 using UnityEngine.InputSystem;
 using Genesis.Core;
 using Genesis.Simulation.Combat;
@@ -134,6 +135,12 @@ namespace Genesis.Simulation {
             }
 
             _isDashing = false;
+        }
+
+        [TargetRpc]
+        public void RpcKnockback(NetworkConnection conn, Vector3 targetPosition, float duration) {
+            if (!base.IsOwner) return;
+            PerformDash(targetPosition, duration);
         }
 
         // ═══════════════════════════════════════════════════════

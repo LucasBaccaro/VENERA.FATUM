@@ -34,6 +34,7 @@ namespace Genesis.Presentation {
         private Label _healPowerLabel, _evasionLabel, _overpowerLabel;
         // Sub-stat labels
         private Label _hasteLabel, _lifeStealLabel, _penetrationLabel, _blockLabel;
+        private Label _armorLabel, _magicResLabel;
         private Label _moveSpeedLabel;
         // World stat labels
         private Label _lootLuckLabel, _lockpickingLabel, _perceptionLabel;
@@ -77,9 +78,10 @@ namespace Genesis.Presentation {
             _isPlayerDead = false;
         }
 
+        private bool _uiInitialized = false;
+
         private void Start() {
-            // Wait for network initialization
-            Invoke(nameof(InitializeUI), 1.0f);
+            InitializeUI();
         }
 
         private void InitializeUI() {
@@ -138,6 +140,8 @@ namespace Genesis.Presentation {
             _lifeStealLabel = root.Q<Label>("LifeStealLabel");
             _penetrationLabel = root.Q<Label>("PenetrationLabel");
             _blockLabel = root.Q<Label>("BlockLabel");
+            _armorLabel = root.Q<Label>("ArmorLabel");
+            _magicResLabel = root.Q<Label>("MagicResLabel");
             _moveSpeedLabel = root.Q<Label>("MoveSpeedLabel");
             // World stats
             _lootLuckLabel = root.Q<Label>("LootLuckLabel");
@@ -146,31 +150,24 @@ namespace Genesis.Presentation {
 
             // Hide initially
             _characterPanelWindow.style.display = DisplayStyle.None;
-
-            // Find player's equipment manager
-            StartCoroutine(FindPlayerComponentsCoroutine());
+            _uiInitialized = true;
         }
 
-        private IEnumerator FindPlayerComponentsCoroutine() {
-            int attempts = 0;
-            const int maxAttempts = 10;
+        private bool TryFindPlayerComponents() {
+            if (_equipmentManager != null && _playerStats != null && _playerAttributes != null)
+                return true;
 
-            while (_equipmentManager == null && attempts < maxAttempts) {
-                var allEquipmentManagers = Object.FindObjectsByType<EquipmentManager>(FindObjectsSortMode.None);
-                foreach (var manager in allEquipmentManagers) {
-                    if (manager.IsOwner) {
-                        _equipmentManager = manager;
-                        _playerStats = manager.GetComponent<PlayerStats>();
-                        _playerAttributes = manager.GetComponent<PlayerAttributes>();
-                        Debug.Log($"[CharacterPanelController] Found owner EquipmentManager on attempt {attempts + 1}");
-                        RefreshCharacterPanel();
-                        yield break;
-                    }
+            var allEquipmentManagers = Object.FindObjectsByType<EquipmentManager>(FindObjectsSortMode.None);
+            foreach (var manager in allEquipmentManagers) {
+                if (manager.IsOwner) {
+                    _equipmentManager = manager;
+                    _playerStats = manager.GetComponent<PlayerStats>();
+                    _playerAttributes = manager.GetComponent<PlayerAttributes>();
+                    Debug.Log("[CharacterPanelController] Found owner EquipmentManager");
+                    return true;
                 }
-
-                attempts++;
-                yield return new WaitForSeconds(0.2f);
             }
+            return false;
         }
 
         private void Update() {
@@ -188,6 +185,7 @@ namespace Genesis.Presentation {
             if (_characterPanelWindow != null) {
                 _characterPanelWindow.style.display = _isVisible ? DisplayStyle.Flex : DisplayStyle.None;
                 if (_isVisible) {
+                    TryFindPlayerComponents();
                     RefreshCharacterPanel();
                 }
             }
@@ -215,8 +213,9 @@ namespace Genesis.Presentation {
         }
 
         private void RefreshCharacterPanel() {
-            if (_equipmentManager == null || _playerStats == null) {
-                return;
+            if (!_uiInitialized) return;
+            if (_equipmentManager == null || _playerStats == null || _playerAttributes == null) {
+                if (!TryFindPlayerComponents()) return;
             }
 
             // Update base stats
@@ -260,6 +259,8 @@ namespace Genesis.Presentation {
                 if (_lifeStealLabel != null) _lifeStealLabel.text = $"{_playerAttributes.LifeSteal * 100f:F1}%";
                 if (_penetrationLabel != null) _penetrationLabel.text = $"{_playerAttributes.Penetration * 100f:F1}%";
                 if (_blockLabel != null) _blockLabel.text = $"{_playerAttributes.BlockValue:F0}";
+                if (_armorLabel != null) _armorLabel.text = $"{_playerAttributes.Armor:F0}";
+                if (_magicResLabel != null) _magicResLabel.text = $"{_playerAttributes.MagicResistance:F0}";
                 if (_moveSpeedLabel != null) _moveSpeedLabel.text = $"+{_playerAttributes.MoveSpeed * 100f:F1}%";
 
                 // World stats

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5125968919145266774}
   - component: {fileID: 4937553553959738662}
   - component: {fileID: 6056420498284741763}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -77,7 +77,8 @@ GameObject:
   - component: {fileID: 9007571347963570942}
   - component: {fileID: 5398327317769051112}
   - component: {fileID: 8866683992697655960}
-  m_Layer: 0
+  - component: {fileID: -83207681057411919}
+  m_Layer: 6
   m_Name: Tank_Enemy_Melee
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -119,7 +120,9 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   <PredictedOwner>k__BackingField: {fileID: 0}
-  NetworkBehaviours: []
+  NetworkBehaviours:
+  - {fileID: 9007571347963570942}
+  - {fileID: 8866683992697655960}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -130,7 +133,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: 0
+  _initializedTimestamp: -8584306547586927138
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -146,15 +149,15 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 65535
+  <PrefabId>k__BackingField: 45
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 18103904499107155883
   SceneId: 0
   SerializedTransformProperties:
     Position: {x: 0, y: 0, z: 0}
-    Rotation: {x: 0, y: 0, z: 0, w: 0}
-    Scale: {x: 0, y: 0, z: 0}
-    IsValid: 0
+    Rotation: {x: 0, y: 0, z: 0, w: 1}
+    Scale: {x: 1, y: 1, z: 1}
+    IsValid: 1
 --- !u!114 &9007571347963570942
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,10 +170,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dc0023efd33a46b7b6b07939f972389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.EnemyMob
-  _componentIndexCache: 255
+  _componentIndexCache: 0
   _addedNetworkObject: {fileID: 3506559088270627228}
-  _networkObjectCache: {fileID: 0}
-  _data: {fileID: 0}
+  _networkObjectCache: {fileID: 3506559088270627228}
+  _data: {fileID: 11400000, guid: 9848451810d314d7bae97350a2cebe9f, type: 2}
 --- !u!195 &5398327317769051112
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -205,9 +208,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2836e36774ca1c4bbbee976e17b649c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: FishNet.Runtime::FishNet.Component.Transforming.NetworkTransform
-  _componentIndexCache: 255
+  _componentIndexCache: 1
   _addedNetworkObject: {fileID: 3506559088270627228}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 3506559088270627228}
   _componentConfiguration: 0
   _synchronizeParent: 0
   _packing:
@@ -239,6 +242,32 @@ MonoBehaviour:
     X: 0
     Y: 0
     Z: 0
+--- !u!114 &-83207681057411919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8688921051181976416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9b4fdedf70fc4923b1b6a4368fc3ef2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.TargetingSystem
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 3506559088270627228}
+  _networkObjectCache: {fileID: 0}
+  maxTargetDistance: 40
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  targetRingPrefab: {fileID: 0}
+  ringScaleMultiplier: 1.2
+  ringHeight: 0.05
+  cursorCrossPrefab: {fileID: 0}
 --- !u!1001 &3743329995968926841
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -287,9 +316,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6324387521220526077, guid: 485deee9f8ec8ca4c97f1ef44ba41690, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 635547659545568360, guid: 485deee9f8ec8ca4c97f1ef44ba41690, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 485deee9f8ec8ca4c97f1ef44ba41690, type: 3}
       propertyPath: m_Name
       value: Tank_Enemy_Melee
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 485deee9f8ec8ca4c97f1ef44ba41690, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4940966351095479674, guid: 485deee9f8ec8ca4c97f1ef44ba41690, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

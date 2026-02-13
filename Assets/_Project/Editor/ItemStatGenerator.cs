@@ -82,9 +82,10 @@ namespace Genesis.Editor {
 
             EditorGUILayout.Space(5);
             EditorGUILayout.HelpBox(
-                "Generates: 2 primary stats (class attrs) + N sub-stats per rarity.\n" +
+                "Generates: Armor + 2 primary stats (class attrs) + N sub-stats per rarity.\n" +
                 "Uncommon: +1 sub-stat | Rare: +2 sub-stats | Epic: +3 sub-stats\n" +
-                "Weapons use combat-only sub-stats. CommonStats are preserved.",
+                "Weapons use combat-only sub-stats. Rings use ring pool (no Block/MoveSpeed, has MagicRes).\n" +
+                "CommonStats get only Armor.",
                 MessageType.Info);
         }
 
@@ -125,6 +126,11 @@ namespace Genesis.Editor {
                         continue;
                     }
                 }
+
+                // Generate CommonStats with only Armor
+                item.CommonStats = new List<StatModifier> {
+                    new StatModifier(StatType.Armor, config.CommonArmorRange.RandomInt())
+                };
 
                 item.UncommonStats = GenerateStatsForRarity(ItemRarity.Uncommon, category, item.Slot, mapping);
                 item.RareStats = GenerateStatsForRarity(ItemRarity.Rare, category, item.Slot, mapping);
@@ -170,9 +176,13 @@ namespace Genesis.Editor {
                 stats.Add(new StatModifier(mapping.Value.SecondaryAttribute, secondaryRange.RandomInt()));
             }
 
-            // 2. Add random sub-stats (filtered by class exclusions)
+            // 2. Add mandatory Armor stat
+            stats.Add(new StatModifier(StatType.Armor, tier.ArmorRange.RandomInt()));
+
+            // 3. Add random sub-stats (filtered by class exclusions)
             bool isWeapon = category == SlotCategory.Weapon;
-            List<StatType> pool = isWeapon ? config.CombatSubStatPool : config.SubStatPool;
+            bool isRing = slot == EquipmentSlot.Ring1 || slot == EquipmentSlot.Ring2;
+            List<StatType> pool = isWeapon ? config.CombatSubStatPool : (isRing ? config.RingSubStatPool : config.SubStatPool);
 
             if (mapping.HasValue && mapping.Value.ExcludedSubStats != null && mapping.Value.ExcludedSubStats.Count > 0) {
                 pool = new List<StatType>(pool);

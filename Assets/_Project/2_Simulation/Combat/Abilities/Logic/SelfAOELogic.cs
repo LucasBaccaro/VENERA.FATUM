@@ -59,16 +59,17 @@ namespace Genesis.Simulation.Combat {
             int hitCount = 0;
 
             foreach (var hit in hits) {
-                if (hit.TryGetComponent(out NetworkObject netObj)) {
+                var netObj = hit.GetComponentInParent<NetworkObject>();
+                if (netObj != null) {
 
                     // Ignorar al caster (a menos que includeSelf = true)
                     if (netObj == caster && !includeSelf) continue;
 
-                    Debug.Log($"[SelfAOELogic] Hit {hit.name}");
+                    Debug.Log($"[SelfAOELogic] Hit {netObj.name}");
 
                     // Aplicar DAMAGE
                     if (data.BaseDamage > 0) {
-                        if (hit.TryGetComponent(out PlayerStats targetStats)) {
+                        if (netObj.TryGetComponent(out PlayerStats targetStats)) {
                             CombatResult result = CombatCalculator.CalculateDamage(caster, netObj, data.BaseDamage, data.Category, config);
                             if (result.ResultType != DamageResultType.Evaded) {
                                 targetStats.TakeDamage(result.FinalDamage, caster, result.ResultType);
@@ -78,7 +79,7 @@ namespace Genesis.Simulation.Combat {
                                 }
                                 hitCount++;
                             }
-                        } else if (hit.TryGetComponent(out IDamageable damageable)) {
+                        } else if (netObj.TryGetComponent(out IDamageable damageable)) {
                             CombatResult result = CombatCalculator.CalculateDamage(caster, netObj, data.BaseDamage, data.Category, config);
                             damageable.TakeDamage(result.FinalDamage, caster);
                             if (result.LifeStealAmount > 0f) {

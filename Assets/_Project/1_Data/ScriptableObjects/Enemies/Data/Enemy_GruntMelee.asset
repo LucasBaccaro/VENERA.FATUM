@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 162382321b14b4e2eb843e009128bb35, type: 3}
+  m_Name: Enemy_GruntMelee
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.EnemyData
+  EnemyTag: grunt_melee
+  DisplayName: Grunt Melee
+  MaxHealth: 150
+  MinDamage: 8
+  MaxDamage: 14
+  AttackRange: 2.5
+  AttackCooldown: 2
+  DetectionRange: 10
+  MoveSpeed: 3.5
+  IsRanged: 0
+  ProjectilePrefab: {fileID: 0}
+  ProjectileSpeed: 12
+  PreferredDistance: 8
+  Role: 0
+  Archetype: 0
+  LeashRange: 20
+  PatrolRadius: 5
+  PatrolWaitTime: 3
+  AnticipationDuration: 0.4
+  RecoveryDuration: 0.3
+  KiteThreshold: 3
+  KiteDistance: 6
+  SupportScanRange: 12
+  HealAmount: 20
+  HealCooldown: 4
+  KnockbackForce: 4
+  KnockbackDuration: 0.3

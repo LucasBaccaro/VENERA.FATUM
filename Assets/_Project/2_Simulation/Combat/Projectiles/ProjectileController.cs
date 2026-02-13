@@ -88,7 +88,7 @@ namespace Genesis.Simulation.Combat {
             }
 
             // ═══ CASO 2: Impacto con Entidad ═══
-            NetworkObject targetNetObj = hit.collider.GetComponent<NetworkObject>();
+            NetworkObject targetNetObj = hit.collider.GetComponentInParent<NetworkObject>();
             if (targetNetObj == null) {
                 Despawn();
                 return;

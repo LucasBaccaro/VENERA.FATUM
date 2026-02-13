@@ -42,6 +42,7 @@ namespace Genesis.Simulation {
         private int _equipStr, _equipAgi, _equipInt, _equipWis, _equipCon;
         private float _equipHaste, _equipLifeSteal, _equipPenetration, _equipBlock;
         private float _equipLootLuck, _equipLockpicking, _equipPerception, _equipMoveSpeed;
+        private float _equipArmor, _equipMagicResistance;
 
         // ═══════════════════════════════════════════════════════
         // DERIVED STATS (Calculated, Synced for client read)
@@ -67,6 +68,8 @@ namespace Genesis.Simulation {
         private readonly SyncVar<float> _lockpicking = new SyncVar<float>(0f);
         private readonly SyncVar<float> _perception = new SyncVar<float>(0f);
         private readonly SyncVar<float> _moveSpeed = new SyncVar<float>(0f);
+        private readonly SyncVar<float> _armor = new SyncVar<float>(0f);
+        private readonly SyncVar<float> _magicResistance = new SyncVar<float>(0f);
 
         // ═══════════════════════════════════════════════════════
         // PUBLIC PROPERTIES
@@ -108,6 +111,8 @@ namespace Genesis.Simulation {
         public float Lockpicking => _lockpicking.Value;
         public float Perception => _perception.Value;
         public float MoveSpeed => _moveSpeed.Value;
+        public float Armor => _armor.Value;
+        public float MagicResistance => _magicResistance.Value;
 
         public AttributeConfig Config => _config;
 
@@ -270,6 +275,8 @@ namespace Genesis.Simulation {
             _lockpicking.Value = _equipLockpicking;
             _perception.Value = _equipPerception;
             _moveSpeed.Value = _equipMoveSpeed;
+            _armor.Value = _equipArmor;
+            _magicResistance.Value = _equipMagicResistance;
         }
 
         /// <summary>
@@ -296,7 +303,8 @@ namespace Genesis.Simulation {
         public void SetEquipmentBonuses(
             int str, int agi, int intel, int wis, int con,
             float haste, float lifeSteal, float penetration, float block,
-            float lootLuck, float lockpicking, float perception, float moveSpeed) {
+            float lootLuck, float lockpicking, float perception, float moveSpeed,
+            float armor, float magicResistance) {
 
             _equipStr = str;
             _equipAgi = agi;
@@ -311,6 +319,8 @@ namespace Genesis.Simulation {
             _equipLockpicking = lockpicking;
             _equipPerception = perception;
             _equipMoveSpeed = moveSpeed;
+            _equipArmor = armor;
+            _equipMagicResistance = magicResistance;
 
             // Recalculate derived stats with new equipment bonuses
             RecalculateDerivedStats();

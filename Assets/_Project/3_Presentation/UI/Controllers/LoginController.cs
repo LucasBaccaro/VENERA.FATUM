@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Genesis.Core.Networking;
@@ -92,6 +93,12 @@ namespace Genesis.Presentation.UI {
             LoginData.ClassIndex = _selectedClassIndex;
             LoginData.IsSet = true;
 
+            // Disable controls while connecting
+            _connectButton?.SetEnabled(false);
+            _nameInput?.SetEnabled(false);
+            _mageButton?.SetEnabled(false);
+            _warriorButton?.SetEnabled(false);
+
             if (_statusLabel != null)
                 _statusLabel.text = "Connecting...";
 
@@ -101,6 +108,7 @@ namespace Genesis.Presentation.UI {
                 Debug.LogError("[LoginController] NetworkBootstrap not found in scene!");
                 if (_statusLabel != null)
                     _statusLabel.text = "Error: NetworkBootstrap not found.";
+                ReEnableControls();
                 return;
             }
 
@@ -117,10 +125,31 @@ namespace Genesis.Presentation.UI {
             bootstrap.StartClient();
 #endif
 
-            // Hide login UI
-            IsActive = false;
+            Debug.Log($"[LoginController] Connecting as '{playerName}', class index {_selectedClassIndex}");
+
+            // Keep UI visible as overlay until player spawns and camera is ready
+            StartCoroutine(WaitForPlayerSpawn());
+        }
+
+        private IEnumerator WaitForPlayerSpawn() {
+            // Wait until the camera has a valid target (player spawned)
+            while (LostArkCamera.Instance == null || LostArkCamera.Instance.target == null)
+                yield return null;
+
+            // Extra wait for chunks/visuals to finish loading
+            yield return new WaitForSeconds(2f);
+
+            // Camera is tracking the player, safe to hide login
             _root.style.display = DisplayStyle.None;
-            Debug.Log($"[LoginController] Connected as '{playerName}', class index {_selectedClassIndex}");
+            IsActive = false;
+            Debug.Log("[LoginController] Player spawned, hiding login screen.");
+        }
+
+        private void ReEnableControls() {
+            _connectButton?.SetEnabled(true);
+            _nameInput?.SetEnabled(true);
+            _mageButton?.SetEnabled(true);
+            _warriorButton?.SetEnabled(true);
         }
 
         void OnDestroy() {

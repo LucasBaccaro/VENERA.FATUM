@@ -140,6 +140,14 @@
                     <ui:Label name="BlockLabel" text="0" class="stat-value"/>
                 </ui:VisualElement>
                 <ui:VisualElement class="stat-row">
+                    <ui:Label text="Armor" class="stat-label"/>
+                    <ui:Label name="ArmorLabel" text="0" class="stat-value"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="Magic Res" class="stat-label"/>
+                    <ui:Label name="MagicResLabel" text="0" class="stat-value"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
                     <ui:Label text="Move Speed" class="stat-label"/>
                     <ui:Label name="MoveSpeedLabel" text="+0.0%" class="stat-value"/>
                 </ui:VisualElement>

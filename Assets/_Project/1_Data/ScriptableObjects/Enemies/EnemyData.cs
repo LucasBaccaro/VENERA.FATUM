@@ -24,5 +24,31 @@ namespace Genesis.Data {
         public GameObject ProjectilePrefab;
         public float ProjectileSpeed = 12f;
         public float PreferredDistance = 8f;
+
+        [Header("Role & Archetype")]
+        public EnemyRole Role = EnemyRole.Grunt;
+        public EnemyArchetype Archetype = EnemyArchetype.Melee;
+
+        [Header("Leash & Patrol")]
+        public float LeashRange = 20f;
+        public float PatrolRadius = 0f;
+        public float PatrolWaitTime = 3f;
+
+        [Header("Telegraph")]
+        public float AnticipationDuration = 0f;
+        public float RecoveryDuration = 0f;
+
+        [Header("Kiting (Ranged/Support)")]
+        public float KiteThreshold = 3f;
+        public float KiteDistance = 6f;
+
+        [Header("Support")]
+        public float SupportScanRange = 12f;
+        public float HealAmount = 20f;
+        public float HealCooldown = 4f;
+
+        [Header("Knockback (Tank)")]
+        public float KnockbackForce = 4f;
+        public float KnockbackDuration = 0.3f;
     }
 }

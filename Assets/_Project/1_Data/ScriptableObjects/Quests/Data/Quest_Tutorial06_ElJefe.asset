@@ -24,12 +24,12 @@ MonoBehaviour:
   DialogueInProgress: The Renegade Leader still lives. You'll find him at the lighthouse.
   DialogueComplete: You did it. The island is safe. Take this weapon, you've earned
     it champion.
-  DialogueAfterComplete: You've proven yourself a true warrior. The island is in your
-    debt.
+  DialogueAfterComplete: You've proven yourself a true warrior. The island is in
+    your debt.
   Objectives:
   - Type: 1
-    Description: Defeat the Renegade Leader
-    TargetID: renegade_leader
+    Description: Defeat the Iron Tank
+    TargetID: tank_melee
     RequiredCount: 1
   Rewards:
   - ItemID: 2012

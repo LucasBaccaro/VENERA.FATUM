@@ -188,7 +188,58 @@ Transform:
   - {fileID: 539444780}
   - {fileID: 1088727931}
   - {fileID: 599112250}
+  - {fileID: 1999000003}
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1999000001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1999000003}
+  - component: {fileID: 1999000002}
+  m_Layer: 0
+  m_Name: Spawner_GruntSupport
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1999000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1999000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7453131d4205e423497d10cfdc178d48, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.EnemySpawner
+  _enemyPrefab: {fileID: 5887143813374421320, guid: 0490883c87f84c749a888dbcee338919, type: 3}
+  _enemyData: {fileID: 11400000, guid: d6ca3f5f616ef4ec287fed9dd8e25a1a, type: 2}
+  _maxAlive: 3
+  _respawnDelay: 20
+  _spawnRadius: 8
+  _initialCount: 2
+--- !u!4 &1999000003
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1999000001}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 195, y: 5, z: 135}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8744398}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8911415
 GameObject:
@@ -9109,7 +9160,7 @@ GameObject:
   - component: {fileID: 320460185}
   - component: {fileID: 320460183}
   m_Layer: 0
-  m_Name: Spawner_CoastalPest
+  m_Name: Spawner_GruntMelee
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9127,8 +9178,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7453131d4205e423497d10cfdc178d48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.EnemySpawner
-  _enemyPrefab: {fileID: 1267862188239826411, guid: 9d9b14caaa7a84c4fa8ae7e6d484525e, type: 3}
-  _enemyData: {fileID: 11400000, guid: 5a61d810b18b04a89896c4c1c11fbb3a, type: 2}
+  _enemyPrefab: {fileID: 3792371725247606947, guid: 5c7ad08d063d2a4479ceed89bfa270e8, type: 3}
+  _enemyData: {fileID: 11400000, guid: 318cc8598c8084fdab9f1206434c5964, type: 2}
   _maxAlive: 5
   _respawnDelay: 15
   _spawnRadius: 10
@@ -12061,7 +12112,7 @@ GameObject:
   - component: {fileID: 550729196}
   - component: {fileID: 550729194}
   m_Layer: 0
-  m_Name: Spawner_RenegadeLeader
+  m_Name: Spawner_TankMelee
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12079,11 +12130,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7453131d4205e423497d10cfdc178d48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.EnemySpawner
-  _enemyPrefab: {fileID: 1002672919376650082, guid: fb16ea18ec0324fbc8e7716f6e9a112f, type: 3}
-  _enemyData: {fileID: 11400000, guid: 09295ed68f31346258fde87fa34085b7, type: 2}
-  _maxAlive: 1
-  _respawnDelay: 60
-  _spawnRadius: 3
+  _enemyPrefab: {fileID: 8688921051181976416, guid: 9b94785d30af79b45b0a839e26260c76, type: 3}
+  _enemyData: {fileID: 11400000, guid: 9848451810d314d7bae97350a2cebe9f, type: 2}
+  _maxAlive: 2
+  _respawnDelay: 30
+  _spawnRadius: 6
   _initialCount: 1
 --- !u!4 &550729196
 Transform:
@@ -26339,7 +26390,7 @@ GameObject:
   - component: {fileID: 1673517679}
   - component: {fileID: 1673517677}
   m_Layer: 0
-  m_Name: Spawner_PathEnemy
+  m_Name: Spawner_GruntRanged
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26357,8 +26408,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7453131d4205e423497d10cfdc178d48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.EnemySpawner
-  _enemyPrefab: {fileID: 3732212379241033716, guid: a047f2903c2a844f9b9f63c796001aa0, type: 3}
-  _enemyData: {fileID: 11400000, guid: 1b6dce0c36fc54c9c992fe631539d1a8, type: 2}
+  _enemyPrefab: {fileID: 8135937817257979960, guid: 3efc04c5ebbee6f419cc7b008a08d8fb, type: 3}
+  _enemyData: {fileID: 11400000, guid: 7090fd7b69c234f4ea2a4fdec5795066, type: 2}
   _maxAlive: 8
   _respawnDelay: 15
   _spawnRadius: 10

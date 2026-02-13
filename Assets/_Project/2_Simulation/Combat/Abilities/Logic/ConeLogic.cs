@@ -34,12 +34,13 @@ namespace Genesis.Simulation.Combat {
             int hitCount = 0;
 
             foreach (var hit in hits) {
-                if (hit.TryGetComponent(out NetworkObject netObj)) {
+                var netObj = hit.GetComponentInParent<NetworkObject>();
+                if (netObj != null) {
 
                     // Ignorar al caster
                     if (netObj == caster) continue;
 
-                    Vector3 dirToTarget = (hit.transform.position - casterPos).normalized;
+                    Vector3 dirToTarget = (netObj.transform.position - casterPos).normalized;
                     float angleToTarget = Vector3.Angle(direction, dirToTarget);
 
                     // Verificar si está dentro del cono
@@ -47,14 +48,14 @@ namespace Genesis.Simulation.Combat {
 
                         // Opcional: Line of Sight check
                         if (requiresLineOfSight) {
-                            if (Physics.Linecast(casterPos, hit.transform.position, out RaycastHit losHit, LayerMask.GetMask("Environment"))) {
+                            if (Physics.Linecast(casterPos, netObj.transform.position, out RaycastHit losHit, LayerMask.GetMask("Environment"))) {
                                 continue;
                             }
                         }
 
                         // Aplicar DAMAGE
                         if (data.BaseDamage > 0) {
-                            if (hit.TryGetComponent(out PlayerStats targetStats)) {
+                            if (netObj.TryGetComponent(out PlayerStats targetStats)) {
                                 CombatResult result = CombatCalculator.CalculateDamage(caster, netObj, data.BaseDamage, data.Category, config);
                                 if (result.ResultType != DamageResultType.Evaded) {
                                     targetStats.TakeDamage(result.FinalDamage, caster, result.ResultType);
@@ -64,7 +65,7 @@ namespace Genesis.Simulation.Combat {
                                     }
                                     hitCount++;
                                 }
-                            } else if (hit.TryGetComponent(out IDamageable damageable)) {
+                            } else if (netObj.TryGetComponent(out IDamageable damageable)) {
                                 CombatResult result = CombatCalculator.CalculateDamage(caster, netObj, data.BaseDamage, data.Category, config);
                                 damageable.TakeDamage(result.FinalDamage, caster);
                                 if (result.LifeStealAmount > 0f) {
@@ -87,7 +88,7 @@ namespace Genesis.Simulation.Combat {
 
                         // Impact VFX en cada target
                         if (data.ImpactVFX != null) {
-                            GameObject impactVfx = Object.Instantiate(data.ImpactVFX, hit.transform.position + Vector3.up * 1f, Quaternion.identity);
+                            GameObject impactVfx = Object.Instantiate(data.ImpactVFX, netObj.transform.position + Vector3.up * 1f, Quaternion.identity);
                             FishNet.InstanceFinder.ServerManager.Spawn(impactVfx);
                             Object.Destroy(impactVfx, data.ImpactVFXDuration);
                         }

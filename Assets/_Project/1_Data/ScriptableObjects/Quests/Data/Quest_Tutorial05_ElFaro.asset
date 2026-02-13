@@ -26,8 +26,8 @@ MonoBehaviour:
   DialogueAfterComplete: The lighthouse road is safe thanks to you.
   Objectives:
   - Type: 1
-    Description: Eliminate Path Marauders
-    TargetID: path_enemy
+    Description: Eliminate Ranged Marauders
+    TargetID: grunt_ranged
     RequiredCount: 8
   Rewards:
   - ItemID: 2010
@@ -39,4 +39,4 @@ MonoBehaviour:
     ItemQuantity: 1
     Tier: 0
     Rarity: 0
-    XPType:
+    XPType: 

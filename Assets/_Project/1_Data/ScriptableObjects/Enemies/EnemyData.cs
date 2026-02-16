@@ -41,6 +41,8 @@ namespace Genesis.Data {
         [Header("Kiting (Ranged/Support)")]
         public float KiteThreshold = 3f;
         public float KiteDistance = 6f;
+        public GameObject KitingProjectilePrefab;
+        public float KitingProjectileSpeed = 12f;
 
         [Header("Support")]
         public float SupportScanRange = 12f;

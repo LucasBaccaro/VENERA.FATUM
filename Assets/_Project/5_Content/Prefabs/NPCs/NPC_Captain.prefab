@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6792047399135508976}
   - component: {fileID: 977913417351109998}
   - component: {fileID: 2979131650406430033}
+  - component: {fileID: 1556511880917990335}
   m_Layer: 0
   m_Name: NPC_Captain
   m_TagString: Untagged
@@ -128,6 +129,22 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1556511880917990335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2416424172480874583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 687697cb34ba94b11bfb94836f42ecbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.Feedback.NpcQuestMarker
+  _offset: {x: 0, y: 2.5, z: 0}
+  _fontSize: 8
+  _bobSpeed: 2
+  _bobAmount: 0.15
 --- !u!1 &3310118099332053089
 GameObject:
   m_ObjectHideFlags: 0

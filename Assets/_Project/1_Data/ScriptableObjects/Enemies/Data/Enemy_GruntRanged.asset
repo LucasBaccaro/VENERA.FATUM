@@ -34,6 +34,8 @@ MonoBehaviour:
   RecoveryDuration: 0.4
   KiteThreshold: 4
   KiteDistance: 8
+  KitingProjectilePrefab: {fileID: 29690531400654767, guid: 8f7b9620c51ac0b40aa7a1f6cdb26f0a, type: 3}
+  KitingProjectileSpeed: 15
   SupportScanRange: 12
   HealAmount: 20
   HealCooldown: 4

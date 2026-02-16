@@ -12,6 +12,7 @@ namespace Genesis.Simulation {
         [Header("Settings")]
         [SerializeField] private NetworkObject _chestPrefab;
         [SerializeField] private bool _spawnOnStart = true;
+        [SerializeField] private LootTable _lootTableOverride;
 
         private bool _hasSpawned = false;
 
@@ -57,10 +58,18 @@ namespace Genesis.Simulation {
 
             // Instantiate at this spawner's position/rotation
             NetworkObject chestInstance = Instantiate(_chestPrefab, transform.position, transform.rotation);
-            
+
+            // Apply loot table override if set
+            if (_lootTableOverride != null) {
+                var controller = chestInstance.GetComponent<ChestController>();
+                if (controller != null) {
+                    controller.SetLootTable(_lootTableOverride);
+                }
+            }
+
             // Spawn over network
             InstanceFinder.ServerManager.Spawn(chestInstance);
-            
+
             Debug.Log($"[ChestSpawner] Spawning Chest at {transform.position}");
         }
         

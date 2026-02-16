@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c1ffd0a479a48cc8d293b9d678132a, type: 3}
+  m_Name: LootTable_Epic_Weapons
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Simulation.LootTable
+  _entries:
+  - Item: {fileID: 11400000, guid: 442ef719a7553df47a34eb928b201066, type: 2}
+    DropChance: 0.3
+    MinQuantity: 1
+    MaxQuantity: 1
+    Tier: 0
+    Rarity: 3
+  - Item: {fileID: 11400000, guid: 437b16854eacb4241bdc2635146e054f, type: 2}
+    DropChance: 0.3
+    MinQuantity: 1
+    MaxQuantity: 1
+    Tier: 0
+    Rarity: 3
+  - Item: {fileID: 11400000, guid: d9728ef43ec05214ab27e0923827c616, type: 2}
+    DropChance: 0.35
+    MinQuantity: 1
+    MaxQuantity: 1
+    Tier: 0
+    Rarity: 3
+  - Item: {fileID: 11400000, guid: 6350a45a1bcec48f4b2f6d40c6956cac, type: 2}
+    DropChance: 0.4
+    MinQuantity: 1
+    MaxQuantity: 1
+    Tier: 0
+    Rarity: 3

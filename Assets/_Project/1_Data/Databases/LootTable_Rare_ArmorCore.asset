@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c1ffd0a479a48cc8d293b9d678132a, type: 3}
+  m_Name: LootTable_Rare_ArmorCore
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Simulation.LootTable
+  _entries:
+  - Item: {fileID: 11400000, guid: b203178a8b034481aa98fd2739236b8e, type: 2}
+    DropChance: 0.55
+    MinQuantity: 1
+    MaxQuantity: 1
+    Tier: 0
+    Rarity: 2
+  - Item: {fileID: 11400000, guid: b2bc29e79d6af3444ba4ba33917e760c, type: 2}
+    DropChance: 0.55
+    MinQuantity: 1
+    MaxQuantity: 1
+    Tier: 0
+    Rarity: 2
+  - Item: {fileID: 11400000, guid: 8643273adb13041e1bf7d2b3bcc2a24e, type: 2}
+    DropChance: 0.55
+    MinQuantity: 1
+    MaxQuantity: 1
+    Tier: 0
+    Rarity: 2
+  - Item: {fileID: 11400000, guid: 64eea378169aa5444a06b49f202bbbcf, type: 2}
+    DropChance: 0.55
+    MinQuantity: 1
+    MaxQuantity: 1
+    Tier: 0
+    Rarity: 2
+  - Item: {fileID: 11400000, guid: 6350a45a1bcec48f4b2f6d40c6956cac, type: 2}
+    DropChance: 0.6
+    MinQuantity: 1
+    MaxQuantity: 1
+    Tier: 0
+    Rarity: 2

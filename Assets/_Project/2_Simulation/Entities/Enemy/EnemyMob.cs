@@ -43,6 +43,9 @@ namespace Genesis.Simulation {
         private float _lastHealTime;
         private EnemyMob _healTarget;
 
+        // Arc distribution
+        private float _arcAngleOffset;
+
         // StatusEffects
         private StatusEffectSystem _statusSystem;
 
@@ -66,11 +69,12 @@ namespace Genesis.Simulation {
             _agent = GetComponent<NavMeshAgent>();
             if (_agent != null) {
                 _agent.speed = _data != null ? _data.MoveSpeed : 3f;
-                _agent.stoppingDistance = _data != null ? _data.AttackRange * 0.8f : 1.5f;
+                _agent.stoppingDistance = GetIdealStoppingDistance();
             }
 
             _spawnPosition = transform.position;
             _statusSystem = GetComponent<StatusEffectSystem>();
+            _arcAngleOffset = GetInstanceID() * 2.399f; // Golden angle for optimal distribution
 
             if (_data != null) {
                 _currentHealth.Value = _data.MaxHealth;
@@ -104,6 +108,9 @@ namespace Genesis.Simulation {
         private void ServerAIUpdate() {
             // Telegraph blocks all other actions
             if (UpdateTelegraph()) return;
+
+            // Dynamically adjust stopping distance based on current state
+            if (_agent != null) _agent.stoppingDistance = GetIdealStoppingDistance();
 
             switch (_aiState) {
                 case AIState.Idle:
@@ -258,14 +265,24 @@ namespace Genesis.Simulation {
                 return;
             }
 
-            // Ranged enemies: if within preferred distance, stop and attack
-            if (isRanged && _data.PreferredDistance > 0f && distToTarget <= _data.PreferredDistance) {
-                _aiState = AIState.Attack;
-                if (_agent != null) _agent.ResetPath();
+            // Ranged enemies: move to arc position at preferred distance
+            if (isRanged && _data.PreferredDistance > 0f) {
+                Vector3 arcPos = GetArcPosition(_target.position, _data.PreferredDistance);
+                float distToArc = Vector3.Distance(transform.position, arcPos);
+
+                if (distToArc <= 1.5f || distToTarget <= _data.PreferredDistance) {
+                    _aiState = AIState.Attack;
+                    if (_agent != null) _agent.ResetPath();
+                    return;
+                }
+
+                if (_agent != null && _agent.isOnNavMesh) {
+                    _agent.SetDestination(arcPos);
+                }
                 return;
             }
 
-            MoveToward(_target.position, isRanged);
+            MoveToward(_target.position);
         }
 
         private void MoveToward(Vector3 destination, bool isRanged = false) {
@@ -316,11 +333,16 @@ namespace Genesis.Simulation {
                         _aiState = AIState.Kiting;
                         return;
                     }
-                }
-                // Stay near spawn area
-                float distFromSpawn = Vector3.Distance(transform.position, _spawnPosition);
-                if (distFromSpawn > 5f) {
-                    MoveToward(_spawnPosition);
+
+                    // Position in arc around player at preferred distance
+                    float prefDist = _data != null ? _data.PreferredDistance : 8f;
+                    Vector3 arcPos = GetArcPosition(_target.position, prefDist);
+                    float distToArc = Vector3.Distance(transform.position, arcPos);
+                    if (distToArc > 2f) {
+                        MoveToward(arcPos);
+                    } else {
+                        FaceTarget(_target.position);
+                    }
                 }
             }
         }
@@ -359,7 +381,7 @@ namespace Genesis.Simulation {
             float lowestPercent = 0.9f; // Only heal below 90% HP
 
             foreach (var hit in hits) {
-                var ally = hit.GetComponent<EnemyMob>();
+                var ally = hit.GetComponentInParent<EnemyMob>();
                 if (ally == null || ally == this || ally._isDead.Value) continue;
                 if (ally._data == null) continue;
 
@@ -388,29 +410,40 @@ namespace Genesis.Simulation {
             Vector3 interposeTarget = GetInterposePosition();
 
             float distToTarget = Vector3.Distance(transform.position, _target.position);
+            float distToInterpose = Vector3.Distance(transform.position, interposeTarget);
             float attackRange = _data != null ? _data.AttackRange : 3f;
 
+            // If at interpose position and player is within attack range, fight
             if (distToTarget <= attackRange) {
                 _aiState = AIState.Attack;
                 if (_agent != null) _agent.ResetPath();
                 return;
             }
 
-            // Move toward interpose position or directly toward player
+            // Prioritize reaching interpose position; if already there, face the player
+            if (distToInterpose <= attackRange * 0.5f) {
+                if (_agent != null) _agent.ResetPath();
+                FaceTarget(_target.position);
+                return;
+            }
+
+            // Move toward interpose position
             MoveToward(interposeTarget);
         }
 
         private Vector3 GetInterposePosition() {
             if (_target == null) return transform.position;
 
-            float scanRange = _data != null ? _data.DetectionRange : 8f;
-            Collider[] hits = Physics.OverlapSphere(transform.position, scanRange);
+            // Scan from spawn position with leash range so we always find our allies
+            // even when the tank has chased far toward the player
+            float scanRange = _data != null ? _data.LeashRange : 20f;
+            Collider[] hits = Physics.OverlapSphere(_spawnPosition, scanRange);
 
             Vector3 allyCenter = Vector3.zero;
             int allyCount = 0;
 
             foreach (var hit in hits) {
-                var ally = hit.GetComponent<EnemyMob>();
+                var ally = hit.GetComponentInParent<EnemyMob>();
                 if (ally == null || ally == this || ally._isDead.Value) continue;
                 if (ally._data == null) continue;
                 if (ally._data.Archetype == EnemyArchetype.Ranged || ally._data.Archetype == EnemyArchetype.Support) {
@@ -422,7 +455,13 @@ namespace Genesis.Simulation {
             if (allyCount == 0) return _target.position;
 
             allyCenter /= allyCount;
-            return Vector3.Lerp(_target.position, allyCenter, 0.4f);
+
+            // Position the tank between player and allies, closer to the ally side to block
+            Vector3 dirPlayerToAllies = (allyCenter - _target.position).normalized;
+            float distPlayerToAllies = Vector3.Distance(_target.position, allyCenter);
+            // Stand at 30% of the distance from allies toward player (blocking position)
+            float blockDistance = Mathf.Max(distPlayerToAllies * 0.3f, _data != null ? _data.AttackRange : 3f);
+            return allyCenter - dirPlayerToAllies * blockDistance;
         }
 
         private void ApplyKnockback(Transform playerTransform) {
@@ -472,12 +511,21 @@ namespace Genesis.Simulation {
                 return;
             }
 
-            // Kiting: ranged enemies retreat if player gets too close
+            // Kiting: ranged enemies hold and shoot if player gets too close
             if (isRanged && _data != null) {
                 float kiteThreshold = _data.KiteThreshold;
                 if (distToTarget < kiteThreshold) {
                     _aiState = AIState.Kiting;
                     return;
+                }
+            }
+
+            // Ranged: drift toward arc position while attacking
+            if (isRanged && _data != null && _data.PreferredDistance > 0f) {
+                Vector3 arcPos = GetArcPosition(_target.position, _data.PreferredDistance);
+                float distToArc = Vector3.Distance(transform.position, arcPos);
+                if (distToArc > 2f && _agent != null && _agent.isOnNavMesh) {
+                    _agent.SetDestination(arcPos);
                 }
             }
 
@@ -522,15 +570,31 @@ namespace Genesis.Simulation {
 
             float damage = _data != null ? Random.Range(_data.MinDamage, _data.MaxDamage) : 10f;
 
-            if (_data != null && _data.IsRanged && _data.ProjectilePrefab != null) {
+            bool isRanged = _data != null && _data.IsRanged;
+
+            // Kiting: fire kiting projectile (fireball)
+            if (_aiState == AIState.Kiting && _data != null && _data.KitingProjectilePrefab != null) {
+                FireKitingProjectile(damage);
+            }
+            // Ranged: regular projectile
+            else if (isRanged && _data.ProjectilePrefab != null) {
                 FireProjectile(damage);
-            } else {
+            }
+            // Ranged fallback: use kiting projectile for regular attacks too
+            else if (isRanged && _data.KitingProjectilePrefab != null) {
+                FireKitingProjectile(damage);
+            }
+            // Ranged without any projectile: skip (no melee fallback)
+            else if (isRanged) {
+                return;
+            }
+            // Melee attack (only for non-ranged enemies)
+            else {
                 var damageable = _target.GetComponent<IDamageable>();
                 if (damageable != null) {
                     damageable.TakeDamage(damage, base.NetworkObject);
                 }
 
-                // Tank: apply knockback on melee hit
                 if (_data != null && _data.Role == EnemyRole.Tank) {
                     ApplyKnockback(_target);
                 }
@@ -548,6 +612,21 @@ namespace Genesis.Simulation {
 
             if (projectile.TryGetComponent(out Combat.ProjectileController controller)) {
                 float speed = _data.ProjectileSpeed;
+                controller.Initialize(base.NetworkObject, damage, direction * speed, 0.3f);
+            }
+
+            FishNet.InstanceFinder.ServerManager.Spawn(projectile);
+        }
+
+        [Server]
+        private void FireKitingProjectile(float damage) {
+            Vector3 spawnPos = transform.position + Vector3.up * 1.2f + transform.forward * 0.5f;
+            Vector3 direction = (_target.position + Vector3.up * 1f - spawnPos).normalized;
+
+            GameObject projectile = Instantiate(_data.KitingProjectilePrefab, spawnPos, Quaternion.LookRotation(direction));
+
+            if (projectile.TryGetComponent(out Combat.ProjectileController controller)) {
+                float speed = _data.KitingProjectileSpeed;
                 controller.Initialize(base.NetworkObject, damage, direction * speed, 0.3f);
             }
 
@@ -576,39 +655,21 @@ namespace Genesis.Simulation {
             float distToTarget = Vector3.Distance(transform.position, _target.position);
             float kiteDistance = _data != null ? _data.KiteDistance : 6f;
 
-            // Reached safe distance -> go back to attack
+            // Player backed off -> return to normal attack
             if (distToTarget >= kiteDistance) {
                 _aiState = AIState.Attack;
                 return;
             }
 
-            // Move away from player
-            Vector3 retreatDir = (transform.position - _target.position).normalized;
-            Vector3 retreatPos = transform.position + retreatDir * kiteDistance;
+            // STOP and hold position
+            if (_agent != null) _agent.ResetPath();
 
-            // Clamp to leash range
-            Vector3 fromSpawn = retreatPos - _spawnPosition;
-            if (fromSpawn.magnitude > leashRange) {
-                retreatPos = _spawnPosition + fromSpawn.normalized * leashRange;
-            }
-
-            if (_agent != null && _agent.isOnNavMesh) {
-                _agent.SetDestination(retreatPos);
-            } else {
-                float speed = _data != null ? _data.MoveSpeed : 3f;
-                transform.position += retreatDir * speed * Time.deltaTime;
-            }
-
-            // Face target while retreating
+            // Face target
             FaceTarget(_target.position);
 
-            // Attack during kiting if cooldown ready
+            // Fire kiting projectile (fireball) when cooldown ready
             float cooldown = _data != null ? _data.AttackCooldown : 2f;
-            float attackRange = _data != null ? _data.AttackRange : 2f;
-            bool isRanged = _data != null && _data.IsRanged;
-            float effectiveRange = isRanged ? (_data != null ? _data.PreferredDistance : attackRange) : attackRange;
-
-            if (distToTarget <= effectiveRange && Time.time - _lastAttackTime >= cooldown) {
+            if (Time.time - _lastAttackTime >= cooldown) {
                 StartAttackOrTelegraph();
             }
         }
@@ -684,6 +745,39 @@ namespace Genesis.Simulation {
             if (_target == null) return false;
             var stats = _target.GetComponent<PlayerStats>();
             return stats != null && stats.IsAlive();
+        }
+
+        private Vector3 GetArcPosition(Vector3 targetPos, float radius) {
+            float angle = _arcAngleOffset;
+            Vector3 arcPos = targetPos + new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * radius;
+
+            if (NavMesh.SamplePosition(arcPos, out NavMeshHit hit, radius * 0.5f, NavMesh.AllAreas)) {
+                return hit.position;
+            }
+            return arcPos;
+        }
+
+        private float GetIdealStoppingDistance() {
+            if (_data == null) return 1.5f;
+            bool isRanged = _data.IsRanged;
+            switch (_aiState) {
+                case AIState.Kiting:
+                    return 0.5f;
+                case AIState.Attack:
+                    if (_data.Archetype == EnemyArchetype.Support)
+                        return _data.AttackRange * 0.5f;
+                    if (isRanged)
+                        return Mathf.Min(_data.PreferredDistance * 0.8f, 2f);
+                    return _data.AttackRange * 0.8f;
+                case AIState.Aggro:
+                    if (_data.Archetype == EnemyArchetype.Support)
+                        return 0.5f;
+                    if (isRanged)
+                        return Mathf.Min(_data.PreferredDistance * 0.5f, 2f);
+                    return _data.AttackRange * 0.8f;
+                default:
+                    return _data.AttackRange * 0.8f;
+            }
         }
 
         private void LoseTarget() {

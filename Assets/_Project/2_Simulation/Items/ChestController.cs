@@ -20,6 +20,10 @@ namespace Genesis.Simulation {
         [SerializeField] private string _chestName = "Treasure Chest";
         [SerializeField] private LootTable _lootTable;
         [SerializeField] private float _interactRadius = 3f;
+
+        public void SetLootTable(LootTable table) {
+            _lootTable = table;
+        }
         
         [Header("Opening Settings")]
         [SerializeField] private float _openingTime = 2f;

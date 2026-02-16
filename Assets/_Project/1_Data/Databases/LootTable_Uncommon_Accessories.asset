@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c1ffd0a479a48cc8d293b9d678132a, type: 3}
+  m_Name: LootTable_Uncommon_Accessories
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Simulation.LootTable
+  _entries:
+  - Item: {fileID: 11400000, guid: 4a34af1ea76e948299fc1b4f2f2353b9, type: 2}
+    DropChance: 0.75
+    MinQuantity: 1
+    MaxQuantity: 1
+    Tier: 0
+    Rarity: 1
+  - Item: {fileID: 11400000, guid: 23eae41206d1ee74398a53e4caab22de, type: 2}
+    DropChance: 0.75
+    MinQuantity: 1
+    MaxQuantity: 1
+    Tier: 0
+    Rarity: 1
+  - Item: {fileID: 11400000, guid: ef380957f8ae24061baf980a447ca493, type: 2}
+    DropChance: 0.75
+    MinQuantity: 1
+    MaxQuantity: 1
+    Tier: 0
+    Rarity: 1
+  - Item: {fileID: 11400000, guid: 71c529e85460f194fb45b57f29344b28, type: 2}
+    DropChance: 0.75
+    MinQuantity: 1
+    MaxQuantity: 1
+    Tier: 0
+    Rarity: 1
+  - Item: {fileID: 11400000, guid: fd6a9d3ba6c904598be51e50ed2aa900, type: 2}
+    DropChance: 0.8
+    MinQuantity: 1
+    MaxQuantity: 1
+    Tier: 0
+    Rarity: 1

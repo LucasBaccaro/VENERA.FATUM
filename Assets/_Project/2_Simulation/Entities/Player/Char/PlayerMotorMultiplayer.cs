@@ -143,6 +143,15 @@ namespace Genesis.Simulation {
             PerformDash(targetPosition, duration);
         }
 
+        [TargetRpc]
+        public void RpcTeleportTo(NetworkConnection conn, Vector3 position, Vector3 eulerRotation) {
+            if (!base.IsOwner) return;
+            _cc.enabled = false;
+            transform.position = position;
+            transform.rotation = Quaternion.Euler(eulerRotation);
+            _cc.enabled = true;
+        }
+
         // ═══════════════════════════════════════════════════════
         // MOVEMENT LOGIC (Owner)
         // ═══════════════════════════════════════════════════════

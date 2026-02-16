@@ -7880,6 +7880,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TeleportPortal
       objectReference: {fileID: 0}
+    - target: {fileID: 1587368034970371517, guid: 51bc6a27da2ec426a8fe2a59a687dd5f, type: 3}
+      propertyPath: _portalData
+      value: 
+      objectReference: {fileID: 11400000, guid: d6f969e18fc21466f84d199fe0a074b3, type: 2}
     - target: {fileID: 5315441707180147752, guid: 51bc6a27da2ec426a8fe2a59a687dd5f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 115.51
@@ -30933,7 +30937,7 @@ Transform:
   m_GameObject: {fileID: 1954662313}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 136.74, y: 5.18, z: 132.65}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

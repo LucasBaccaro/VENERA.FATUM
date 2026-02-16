@@ -10,12 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 68ac86d97ac414f4f9e6d9c329855b16, type: 3}
-  m_Name: Chunk_0_0
+  m_Name: Chunk_50_0
   m_EditorClassIdentifier: Genesis.Data::Genesis.Data.ChunkData
-  Coordinate: {x: 0, y: 0}
-  ChunkName: PortCity
-  SceneName: Chunk_0_0
-  IsStartingChunk: 1
-  SpawnPositions:
-  - {x: 136, y: 5, z: 132}
-  BiomeType: Beach
+  Coordinate: {x: 50, y: 0}
+  ChunkName: Prision
+  SceneName: Chunk_50_0
+  IsStartingChunk: 0
+  SpawnPositions: []
+  BiomeType: Prision

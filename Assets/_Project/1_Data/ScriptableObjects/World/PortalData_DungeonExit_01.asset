@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7be877399bb44b82aab8e2772171a58, type: 3}
+  m_Name: PortalData_DungeonExit_01
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.PortalData
+  _portalID: dungeon_entrance_test
+  _displayName: Dungeon Portal
+  _destinationPosition: {x: 115.51, y: 6.24, z: 144.5}
+  _destinationRotation: {x: 0, y: 180, z: 0}
+  _linkedPortal: {fileID: 0}
+  _minLevel: 1
+  _requireOutOfCombat: 1
+  _transitionDuration: 1.5
+  _cooldown: 3

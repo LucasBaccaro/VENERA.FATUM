@@ -227,17 +227,17 @@ namespace Genesis.Simulation {
         private IEnumerator OpeningCoroutine(float duration, string text) {
             float elapsed = 0f;
             Vector3 startPosition = transform.position;
-            
+
             // Get local player reference
             NetworkObject player = null;
             if (FishNet.InstanceFinder.ClientManager != null && FishNet.InstanceFinder.ClientManager.Connection != null) {
                 player = FishNet.InstanceFinder.ClientManager.Connection.FirstObject;
             }
-            
+
             while (elapsed < duration) {
                 elapsed += Time.deltaTime;
                 float percent = Mathf.Clamp01(elapsed / duration);
-                
+
                 // Check distance
                 if (player != null) {
                     float distance = Vector3.Distance(startPosition, player.transform.position);
@@ -247,7 +247,7 @@ namespace Genesis.Simulation {
                         yield break;
                     }
                 }
-                
+
                 // Update cast bar
                 EventBus.Trigger<CastUpdateData>("OnCastUpdate", new CastUpdateData {
                     Percent = percent,
@@ -258,15 +258,27 @@ namespace Genesis.Simulation {
                     TickRate = 0,
                     Category = AbilityCategory.Magical
                 });
-                
+
                 yield return null;
             }
-            
+
             // Clear cast bar
             EventBus.Trigger<CastUpdateData>("OnCastUpdate", CastUpdateData.Empty);
-            
+
             // Tell server we finished
             CmdFinishOpening(player);
+
+            // Wait for server to confirm opening via SyncVar (more reliable than TargetRpc for remote clients)
+            float timeout = 3f;
+            float waitTime = 0f;
+            while (_state.Value != ChestState.Opened && waitTime < timeout) {
+                waitTime += Time.deltaTime;
+                yield return null;
+            }
+
+            if (_state.Value == ChestState.Opened) {
+                EventBus.Trigger("OnLootOpened", (ILootSource)this);
+            }
         }
 
         [TargetRpc]

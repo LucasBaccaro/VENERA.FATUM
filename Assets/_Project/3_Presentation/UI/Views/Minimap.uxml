@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/MinimapStyle.uss?fileID=7433441132597879392&amp;guid=6f46c3c00fe27422fa594afa1d25bb73&amp;type=3#MinimapStyle"/>
+    <ui:VisualElement name="MinimapRoot" picking-mode="Ignore" style="position: absolute; top: 20px; right: 20px;">
+        <ui:VisualElement name="MinimapContainer" class="minimap-container">
+            <ui:VisualElement name="MinimapTexture" class="minimap-texture" />
+            <ui:VisualElement name="MinimapFrame" class="minimap-frame" />
+            <ui:VisualElement name="MinimapPlayerIcon" class="minimap-player-icon" />
+        </ui:VisualElement>
+        <ui:VisualElement name="MinimapControls" class="minimap-controls">
+            <ui:Button name="BtnZoomIn" text="+" class="minimap-zoom-btn" />
+            <ui:Button name="BtnZoomOut" text="-" class="minimap-zoom-btn" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

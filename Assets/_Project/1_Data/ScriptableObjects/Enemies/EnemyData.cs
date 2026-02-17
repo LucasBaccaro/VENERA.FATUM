@@ -1,4 +1,5 @@
 using UnityEngine;
+using Genesis.Simulation;
 
 namespace Genesis.Data {
 
@@ -52,5 +53,12 @@ namespace Genesis.Data {
         [Header("Knockback (Tank)")]
         public float KnockbackForce = 4f;
         public float KnockbackDuration = 0.3f;
+
+        [Header("Rewards")]
+        [Tooltip("Gold dropped on death")]
+        public int GoldReward = 10;
+
+        [Tooltip("Loot table for item drops on death")]
+        public LootTable LootTable;
     }
 }

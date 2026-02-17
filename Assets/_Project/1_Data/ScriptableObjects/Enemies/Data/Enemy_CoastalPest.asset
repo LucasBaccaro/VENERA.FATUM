@@ -15,8 +15,31 @@ MonoBehaviour:
   EnemyTag: coastal_pest
   DisplayName: Coastal Pest
   MaxHealth: 80
-  Damage: 8
+  MinDamage: 5
+  MaxDamage: 11
   AttackRange: 2
   AttackCooldown: 2
   DetectionRange: 8
   MoveSpeed: 3
+  IsRanged: 0
+  ProjectilePrefab: {fileID: 0}
+  ProjectileSpeed: 12
+  PreferredDistance: 8
+  Role: 0
+  Archetype: 0
+  LeashRange: 20
+  PatrolRadius: 0
+  PatrolWaitTime: 3
+  AnticipationDuration: 0
+  RecoveryDuration: 0
+  KiteThreshold: 3
+  KiteDistance: 6
+  KitingProjectilePrefab: {fileID: 0}
+  KitingProjectileSpeed: 12
+  SupportScanRange: 12
+  HealAmount: 20
+  HealCooldown: 4
+  KnockbackForce: 4
+  KnockbackDuration: 0.3
+  GoldReward: 5
+  LootTable: {fileID: 11400000, guid: ef2ffd5b8acb94915bc701b71a86fbc6, type: 2}

@@ -24,6 +24,7 @@ namespace Genesis.Simulation {
         private readonly SyncVar<float> _currentXP = new SyncVar<float>(0f);
         private readonly SyncVar<float> _xpToNextLevel = new SyncVar<float>(100f);
         private readonly SyncVar<int> _unspentPoints = new SyncVar<int>(0);
+        private readonly SyncVar<int> _gold = new SyncVar<int>(0);
 
         // ═══════════════════════════════════════════════════════
         // PRIMARY ATTRIBUTES (Synced)
@@ -79,6 +80,7 @@ namespace Genesis.Simulation {
         public float CurrentXP => _currentXP.Value;
         public float XPToNextLevel => _xpToNextLevel.Value;
         public int UnspentPoints => _unspentPoints.Value;
+        public int Gold => _gold.Value;
 
         public int Strength => _strength.Value + _equipStr;
         public int Agility => _agility.Value + _equipAgi;
@@ -131,6 +133,7 @@ namespace Genesis.Simulation {
             _intelligence.OnChange += OnAttributeChanged;
             _wisdom.OnChange += OnAttributeChanged;
             _constitution.OnChange += OnAttributeChanged;
+            _gold.OnChange += OnGoldChanged;
 
             // Derived stats changes
             _physicalDamageBonus.OnChange += OnDerivedStatChanged;
@@ -347,6 +350,23 @@ namespace Genesis.Simulation {
         }
 
         // ═══════════════════════════════════════════════════════
+        // GOLD
+        // ═══════════════════════════════════════════════════════
+
+        [Server]
+        public void GainGold(int amount) {
+            if (amount <= 0) return;
+            _gold.Value += amount;
+        }
+
+        [Server]
+        public bool SpendGold(int amount) {
+            if (amount <= 0 || _gold.Value < amount) return false;
+            _gold.Value -= amount;
+            return true;
+        }
+
+        // ═══════════════════════════════════════════════════════
         // SYNCVAR CALLBACKS
         // ═══════════════════════════════════════════════════════
 
@@ -377,6 +397,22 @@ namespace Genesis.Simulation {
         private void OnDerivedStatChanged(float oldVal, float newVal, bool asServer) {
             if (base.IsOwner) {
                 EventBus.Trigger("OnDerivedStatsChanged");
+            }
+        }
+
+        private void OnGoldChanged(int oldVal, int newVal, bool asServer) {
+            if (base.IsOwner) {
+                EventBus.Trigger("OnGoldChanged", newVal);
+
+                int gained = newVal - oldVal;
+                if (gained > 0) {
+                    var data = new FloatingTextData(
+                        transform.position + Vector3.up * 2f,
+                        $"+{gained} Gold",
+                        "gold"
+                    );
+                    EventBus.Trigger("OnShowFloatingText", data);
+                }
             }
         }
 

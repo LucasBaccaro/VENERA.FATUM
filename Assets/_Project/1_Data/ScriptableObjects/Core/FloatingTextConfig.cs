@@ -19,6 +19,7 @@ namespace Genesis.Data {
         public Color shieldColor = new Color(0.5f, 0.8f, 1f);
         public Color criticalColor = Color.yellow;
         public Color manaColor = Color.cyan;
+        public Color goldColor = new Color(1f, 0.84f, 0f);
 
         [Header("General Animation")]
         public float duration = 1.5f;

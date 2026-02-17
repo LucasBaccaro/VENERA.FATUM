@@ -1,0 +1,68 @@
+/* ═══════════════════════════════════════════════════════
+   MINIMAP / RADAR
+   ═══════════════════════════════════════════════════════ */
+
+.minimap-container {
+    width: 200px;
+    height: 200px;
+    border-radius: 100px;
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+}
+
+.minimap-texture {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.minimap-frame {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 100px;
+    border-width: 3px;
+    border-color: rgba(200, 200, 200, 0.6);
+}
+
+.minimap-player-icon {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: rgb(80, 200, 255);
+    border-radius: 6px;
+    border-width: 1px;
+    border-color: white;
+}
+
+.minimap-controls {
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 4px;
+}
+
+.minimap-zoom-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+    -unity-font-style: bold;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.65);
+    border-radius: 4px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.2);
+    margin-left: 4px;
+    margin-right: 4px;
+    -unity-text-align: middle-center;
+    padding: 0;
+}
+
+.minimap-zoom-btn:hover {
+    background-color: rgba(60, 60, 60, 0.8);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.minimap-zoom-btn:active {
+    background-color: rgba(100, 100, 100, 0.8);
+}

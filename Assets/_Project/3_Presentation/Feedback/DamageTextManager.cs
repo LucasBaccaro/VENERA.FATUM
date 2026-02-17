@@ -32,6 +32,7 @@ namespace Genesis.Presentation.Feedback {
                 case "overpower": color = GetColorForOverpower(); break;
                 case "evade": color = GetColorForEvade(); break;
                 case "critheal": color = GetColorForCritHeal(); break;
+                case "gold": color = GetColorForGold(); break;
             }
             Spawn(data.position, data.text, color, data.isCritical);
         }
@@ -57,7 +58,7 @@ namespace Genesis.Presentation.Feedback {
             Debug.Log($"[DamageTextManager] Spawning text: {text} at {position}");
             GameObject obj = Instantiate(floatingTextPrefab, position, Quaternion.identity);
             FloatingText fText = obj.GetComponent<FloatingText>();
-            
+
             if (fText != null) {
                 fText.Initialize(text, color, config, isCritical);
             }
@@ -71,5 +72,6 @@ namespace Genesis.Presentation.Feedback {
         public Color GetColorForOverpower() => new Color(1f, 0.5f, 0f); // Orange
         public Color GetColorForEvade() => new Color(0.6f, 0.6f, 0.6f); // Grey
         public Color GetColorForCritHeal() => new Color(0.4f, 1f, 0.4f); // Bright green
+        public Color GetColorForGold() => config != null ? config.goldColor : new Color(1f, 0.84f, 0f);
     }
 }

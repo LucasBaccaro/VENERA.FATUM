@@ -41,3 +41,5 @@ MonoBehaviour:
   HealCooldown: 4
   KnockbackForce: 4
   KnockbackDuration: 0.3
+  GoldReward: 10
+  LootTable: {fileID: 11400000, guid: 3d43f6e1fae4c4c8bb0dc9abf8830991, type: 2}

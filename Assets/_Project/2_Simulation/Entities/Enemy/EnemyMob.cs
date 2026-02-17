@@ -5,7 +5,9 @@ using FishNet.Object.Synchronizing;
 using Genesis.Core;
 using Genesis.Data;
 using Genesis.Simulation.Combat;
+using Genesis.Items;
 using FishNet.Connection;
+using System.Collections.Generic;
 
 namespace Genesis.Simulation {
 
@@ -14,6 +16,9 @@ namespace Genesis.Simulation {
 
         [Header("Data")]
         [SerializeField] private EnemyData _data;
+
+        [Header("Loot")]
+        [SerializeField] private GameObject _lootBagPrefab;
 
         // Synced state
         private readonly SyncVar<float> _currentHealth = new SyncVar<float>(100f);
@@ -56,6 +61,7 @@ namespace Genesis.Simulation {
         public string DisplayName => _data != null ? _data.DisplayName : gameObject.name;
         public float CurrentHealthValue => _currentHealth.Value;
         public float MaxHealthValue => _data != null ? _data.MaxHealth : 100f;
+        public int GoldReward => _data != null ? _data.GoldReward : 0;
 
         public override void OnStartNetwork() {
             base.OnStartNetwork();
@@ -66,6 +72,21 @@ namespace Genesis.Simulation {
         public override void OnStartServer() {
             base.OnStartServer();
 
+            // Reset all state (critical for FishNet object pooling — objects are reused, not destroyed)
+            _isDead.Value = false;
+            _aiState = AIState.Idle;
+            _target = null;
+            _targetNob = null;
+            _healTarget = null;
+            _lastAttackTime = 0f;
+            _lastHealTime = 0f;
+            _isAnticipating = false;
+            _anticipationTimer = 0f;
+            _isRecovering = false;
+            _recoveryTimer = 0f;
+            _isWaitingAtPatrol = false;
+            _patrolWaitTimer = 0f;
+
             _agent = GetComponent<NavMeshAgent>();
             if (_agent != null) {
                 _agent.speed = _data != null ? _data.MoveSpeed : 3f;
@@ -75,6 +96,13 @@ namespace Genesis.Simulation {
             _spawnPosition = transform.position;
             _statusSystem = GetComponent<StatusEffectSystem>();
             _arcAngleOffset = GetInstanceID() * 2.399f; // Golden angle for optimal distribution
+
+            // Re-enable colliders (disabled on death by OnDeadSyncChanged)
+            var col = GetComponent<Collider>();
+            if (col != null) col.enabled = true;
+            foreach (var childCol in GetComponentsInChildren<Collider>(true)) {
+                childCol.enabled = true;
+            }
 
             if (_data != null) {
                 _currentHealth.Value = _data.MaxHealth;
@@ -140,6 +168,9 @@ namespace Genesis.Simulation {
 
         private bool UpdateTelegraph() {
             if (_isAnticipating) {
+                // Keep facing target during anticipation
+                FaceTelegraphTarget();
+
                 _anticipationTimer -= Time.deltaTime;
                 if (_anticipationTimer <= 0f) {
                     _isAnticipating = false;
@@ -154,6 +185,7 @@ namespace Genesis.Simulation {
             }
 
             if (_isRecovering) {
+                FaceTelegraphTarget();
                 _recoveryTimer -= Time.deltaTime;
                 if (_recoveryTimer <= 0f) {
                     _isRecovering = false;
@@ -164,11 +196,29 @@ namespace Genesis.Simulation {
             return false;
         }
 
+        private void FaceTelegraphTarget() {
+            if (_data != null && _data.Archetype == EnemyArchetype.Support && _healTarget != null && !_healTarget._isDead.Value) {
+                FaceTarget(_healTarget.transform.position);
+            } else if (_target != null) {
+                FaceTarget(_target.position);
+            }
+        }
+
         // ═══════════════════════════════════════════════════════
         // IDLE
         // ═══════════════════════════════════════════════════════
 
         private void HandleIdle() {
+            // Support: scan for wounded allies even without a player nearby
+            if (_data != null && _data.Archetype == EnemyArchetype.Support) {
+                _healTarget = FindLowestHPAlly();
+                if (_healTarget != null) {
+                    ScanForTargets(); // Try to find a player too, but not required
+                    _aiState = AIState.Aggro;
+                    return;
+                }
+            }
+
             if (_data != null && _data.PatrolRadius > 0f) {
                 PickNewPatrolTarget();
                 _aiState = AIState.Patrol;
@@ -224,6 +274,27 @@ namespace Genesis.Simulation {
         // ═══════════════════════════════════════════════════════
 
         private void HandleAggro() {
+            // Support: can operate without a player target (healing allies)
+            if (_data != null && _data.Archetype == EnemyArchetype.Support) {
+                // Leash check
+                float supportLeash = _data.LeashRange;
+                float distFromSpawn = Vector3.Distance(transform.position, _spawnPosition);
+                if (distFromSpawn > supportLeash) {
+                    LoseTarget();
+                    _aiState = AIState.Return;
+                    return;
+                }
+
+                // Invalidate stale player target but don't abort
+                if (_target != null && !IsTargetValid()) {
+                    _target = null;
+                    _targetNob = null;
+                }
+
+                AggroAsSupport();
+                return;
+            }
+
             if (_target == null || !IsTargetValid()) {
                 LoseTarget();
                 return;
@@ -231,16 +302,10 @@ namespace Genesis.Simulation {
 
             // Leash check
             float leashRange = _data != null ? _data.LeashRange : 20f;
-            float distFromSpawn = Vector3.Distance(transform.position, _spawnPosition);
-            if (distFromSpawn > leashRange) {
+            float distFromSpawn2 = Vector3.Distance(transform.position, _spawnPosition);
+            if (distFromSpawn2 > leashRange) {
                 LoseTarget();
                 _aiState = AIState.Return;
-                return;
-            }
-
-            // Support: chase wounded ally instead of player
-            if (_data != null && _data.Archetype == EnemyArchetype.Support) {
-                AggroAsSupport();
                 return;
             }
 
@@ -309,8 +374,11 @@ namespace Genesis.Simulation {
         // ═══════════════════════════════════════════════════════
 
         private void AggroAsSupport() {
-            // Find wounded ally
-            _healTarget = FindLowestHPAlly();
+            // Only re-scan if current heal target is invalid or healthy enough
+            if (_healTarget == null || _healTarget._isDead.Value ||
+                (_healTarget._data != null && _healTarget._currentHealth.Value / _healTarget._data.MaxHealth >= 0.9f)) {
+                _healTarget = FindLowestHPAlly();
+            }
 
             if (_healTarget != null) {
                 float distToAlly = Vector3.Distance(transform.position, _healTarget.transform.position);
@@ -322,11 +390,13 @@ namespace Genesis.Simulation {
                     return;
                 }
 
-                // Move toward wounded ally
+                // Move toward wounded ally and face them
                 MoveToward(_healTarget.transform.position);
+                FaceTarget(_healTarget.transform.position);
             } else {
-                // No wounded allies - check if player is too close, kite
+                // No wounded allies
                 if (_target != null) {
+                    // Player nearby: check kite or hold arc position
                     float distToPlayer = Vector3.Distance(transform.position, _target.position);
                     float kiteThreshold = _data != null ? _data.KiteThreshold : 3f;
                     if (distToPlayer < kiteThreshold) {
@@ -334,7 +404,6 @@ namespace Genesis.Simulation {
                         return;
                     }
 
-                    // Position in arc around player at preferred distance
                     float prefDist = _data != null ? _data.PreferredDistance : 8f;
                     Vector3 arcPos = GetArcPosition(_target.position, prefDist);
                     float distToArc = Vector3.Distance(transform.position, arcPos);
@@ -343,12 +412,17 @@ namespace Genesis.Simulation {
                     } else {
                         FaceTarget(_target.position);
                     }
+                } else {
+                    // No player and no wounded ally — return to idle and keep scanning
+                    _aiState = AIState.Idle;
                 }
             }
         }
 
         private void AttackAsSupport() {
-            if (_healTarget == null || _healTarget._isDead.Value) {
+            // Re-scan if target is null, dead, or healthy enough (same threshold as AggroAsSupport)
+            if (_healTarget == null || _healTarget._isDead.Value ||
+                (_healTarget._data != null && _healTarget._currentHealth.Value / _healTarget._data.MaxHealth >= 0.9f)) {
                 _healTarget = FindLowestHPAlly();
                 if (_healTarget == null) {
                     _aiState = AIState.Aggro;
@@ -359,7 +433,7 @@ namespace Genesis.Simulation {
             float distToAlly = Vector3.Distance(transform.position, _healTarget.transform.position);
             float healRange = _data != null ? _data.AttackRange : 3f;
 
-            if (distToAlly > healRange * 1.2f) {
+            if (distToAlly > healRange * 1.5f) {
                 _aiState = AIState.Aggro;
                 return;
             }
@@ -398,7 +472,21 @@ namespace Genesis.Simulation {
         [Server]
         public void HealFromSupport(float amount) {
             if (_isDead.Value) return;
-            _currentHealth.Value = Mathf.Min(_currentHealth.Value + amount, _data != null ? _data.MaxHealth : 100f);
+            float maxHp = _data != null ? _data.MaxHealth : 100f;
+            float actualHeal = Mathf.Min(amount, maxHp - _currentHealth.Value);
+            _currentHealth.Value = Mathf.Min(_currentHealth.Value + amount, maxHp);
+            if (actualHeal > 0f) {
+                RpcShowHealText($"+{actualHeal:F0}");
+            }
+        }
+
+        [ObserversRpc]
+        private void RpcShowHealText(string text) {
+            var data = new Genesis.Data.FloatingTextData(
+                transform.position + Vector3.up * 1.5f,
+                text,
+                "heal");
+            EventBus.Trigger("OnShowFloatingText", data);
         }
 
         // ═══════════════════════════════════════════════════════
@@ -832,8 +920,33 @@ namespace Genesis.Simulation {
 
             Debug.Log($"[EnemyMob] {gameObject.name} killed by {(killer != null ? killer.name : "unknown")}");
 
+            // Drop loot bag if enemy has loot table
+            if (_data != null && _data.LootTable != null) {
+                SpawnLootBag();
+            }
+
             // Despawn after delay
             StartCoroutine(DespawnAfterDelay(3f));
+        }
+
+        [Server]
+        private void SpawnLootBag() {
+            List<ItemSlot> loot = _data.LootTable.GetLoot();
+            if (loot.Count == 0) return;
+            if (_lootBagPrefab == null) return;
+
+            Vector3 spawnPos = transform.position + Vector3.up * 0.5f;
+            if (Physics.Raycast(transform.position + Vector3.up, Vector3.down, out RaycastHit hit, 10f)) {
+                spawnPos = hit.point + Vector3.up * 0.5f;
+            }
+
+            GameObject bagObj = Instantiate(_lootBagPrefab, spawnPos, Quaternion.identity);
+            base.ServerManager.Spawn(bagObj);
+
+            LootBag bag = bagObj.GetComponent<LootBag>();
+            if (bag != null) {
+                bag.Initialize(loot, _data.DisplayName);
+            }
         }
 
         private System.Collections.IEnumerator DespawnAfterDelay(float delay) {

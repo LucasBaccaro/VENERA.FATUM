@@ -23,6 +23,14 @@ namespace Genesis.Simulation {
         public void Interact(NetworkObject player) {
             if (player == null || _npcData == null) return;
 
+            // Vendor NPCs open shop instead of dialogue
+            if (_npcData.IsVendor && _npcData.VendorInventory != null) {
+                if (player.Owner.IsValid) {
+                    TargetOpenVendorUI(player.Owner, _npcData.NpcID, _npcData.DisplayName);
+                }
+                return;
+            }
+
             // Handle quest talk objectives (server-side)
             if (base.IsServerInitialized) {
                 var questMgr = player.GetComponent<PlayerQuestManager>();
@@ -42,7 +50,9 @@ namespace Genesis.Simulation {
         }
 
         public string GetInteractionPrompt() {
-            return _npcData != null ? $"Talk to {_npcData.DisplayName}" : "Talk";
+            if (_npcData == null) return "Talk";
+            if (_npcData.IsVendor) return $"Trade with {_npcData.DisplayName}";
+            return $"Talk to {_npcData.DisplayName}";
         }
 
         // ═══════════════════════════════════════════════════════
@@ -52,6 +62,11 @@ namespace Genesis.Simulation {
         [TargetRpc]
         private void TargetOpenDialogue(NetworkConnection conn, string npcId, string displayName) {
             EventBus.Trigger("OnNpcDialogueOpen", npcId, displayName);
+        }
+
+        [TargetRpc]
+        private void TargetOpenVendorUI(NetworkConnection conn, string npcId, string displayName) {
+            EventBus.Trigger("OnVendorUIOpen", npcId, displayName);
         }
     }
 }

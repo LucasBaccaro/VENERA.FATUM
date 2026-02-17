@@ -19,14 +19,14 @@ namespace Genesis.Presentation.Feedback {
             _config = config;
             textMesh.text = text;
             textMesh.color = color;
-            
+
             // Forzar centrado técnico
             textMesh.alignment = TextAlignmentOptions.Center;
 
             if (config.fontAsset != null) {
                 textMesh.font = config.fontAsset;
             }
-            
+
             if (isCritical) {
                 textMesh.fontSize = config.fontSize * config.criticalScaleMultiplier;
                 textMesh.fontStyle = FontStyles.Bold;
@@ -58,10 +58,10 @@ namespace Genesis.Presentation.Feedback {
 
             _elapsedTime = 0;
             _isInitialized = true;
-            
+
             // Aplicar el estado inicial inmediatamente
             ApplyState(0);
-            
+
             gameObject.SetActive(true);
         }
 
@@ -95,7 +95,7 @@ namespace Genesis.Presentation.Feedback {
                 Vector3 displacement = (_initialVelocity * elapsed) + (0.5f * Vector3.down * _config.gravity * elapsed * elapsed);
                 transform.position = _startPos + _randomOffset + displacement;
             }
-            
+
             // 3. Escala y Alpha mediante curvas
             float scale = _config.scaleCurve.Evaluate(t);
             transform.localScale = Vector3.one * scale;
@@ -103,7 +103,7 @@ namespace Genesis.Presentation.Feedback {
             Color c = textMesh.color;
             c.a = _config.alphaCurve.Evaluate(t);
             textMesh.color = c;
-            
+
             // Debug visual en la Scene View
             Debug.DrawLine(transform.position, transform.position + Vector3.up * 0.1f, Color.yellow);
         }

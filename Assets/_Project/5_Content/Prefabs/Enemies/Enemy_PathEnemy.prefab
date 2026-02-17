@@ -188,6 +188,7 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 8844910436990250186}
   _networkObjectCache: {fileID: 0}
   _data: {fileID: 11400000, guid: 1b6dce0c36fc54c9c992fe631539d1a8, type: 2}
+  _lootBagPrefab: {fileID: 1518507829531864150, guid: 9d1e389be81094476aac15ceb9610e09, type: 3}
 --- !u!195 &5563816697069011998
 NavMeshAgent:
   m_ObjectHideFlags: 0

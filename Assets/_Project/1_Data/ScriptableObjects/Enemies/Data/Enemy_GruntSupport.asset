@@ -17,7 +17,7 @@ MonoBehaviour:
   MaxHealth: 80
   MinDamage: 3
   MaxDamage: 6
-  AttackRange: 3
+  AttackRange: 8
   AttackCooldown: 3
   DetectionRange: 12
   MoveSpeed: 4
@@ -37,7 +37,9 @@ MonoBehaviour:
   KitingProjectilePrefab: {fileID: 29690531400654767, guid: 8f7b9620c51ac0b40aa7a1f6cdb26f0a, type: 3}
   KitingProjectileSpeed: 12
   SupportScanRange: 12
-  HealAmount: 25
-  HealCooldown: 4
+  HealAmount: 40
+  HealCooldown: 2.5
   KnockbackForce: 4
   KnockbackDuration: 0.3
+  GoldReward: 12
+  LootTable: {fileID: 11400000, guid: 0bd738bc8cee84e31a9fe035d9692e58, type: 2}

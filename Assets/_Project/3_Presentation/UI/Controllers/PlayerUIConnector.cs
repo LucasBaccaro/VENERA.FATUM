@@ -78,6 +78,24 @@ namespace Genesis.Presentation.UI {
                     Debug.LogWarning("[PlayerUIConnector] ⚠️ No se encontró AbilityBarController");
                 }
             }
+
+            // Conectar Minimap (si existe)
+            MinimapController minimapController = Object.FindFirstObjectByType<MinimapController>();
+            if (minimapController != null) {
+                minimapController.SetTarget(transform);
+
+                // Create MinimapCamera if not already present
+                if (Genesis.Simulation.MinimapCamera.Instance == null) {
+                    GameObject minimapGO = new GameObject("MinimapCameraRig");
+                    var minimapCam = minimapGO.AddComponent<Genesis.Simulation.MinimapCamera>();
+                    minimapCam.SetTarget(transform);
+                }
+                else {
+                    Genesis.Simulation.MinimapCamera.Instance.SetTarget(transform);
+                }
+
+                Debug.Log("[PlayerUIConnector] ✅ Minimap conectado");
+            }
         }
     }
 }

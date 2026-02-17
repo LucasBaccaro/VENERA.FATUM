@@ -34,8 +34,12 @@ MonoBehaviour:
   RecoveryDuration: 0.5
   KiteThreshold: 3
   KiteDistance: 6
+  KitingProjectilePrefab: {fileID: 0}
+  KitingProjectileSpeed: 12
   SupportScanRange: 12
   HealAmount: 20
   HealCooldown: 4
   KnockbackForce: 4
   KnockbackDuration: 0.3
+  GoldReward: 25
+  LootTable: {fileID: 11400000, guid: e998b76ab9ae543ec8331335739f3605, type: 2}

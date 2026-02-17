@@ -1,0 +1,13 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/InventoryStyle.uss?fileID=7433441132597879392&amp;guid=9a272a952cdaf4f6ab8990caebdfb024&amp;type=3#InventoryStyle"/>
+    <ui:VisualElement name="VendorWindow" class="loot-window" style="width: 320px; height: auto; min-height: 200px; max-height: 500px;">
+        <ui:Label name="VendorTitle" text="VENDOR" class="window-title"/>
+        <ui:Button name="CloseButton" text="" class="close-button" style="top: 16px; right: 41px;"/>
+        <ui:VisualElement name="GoldDisplay" style="flex-direction: row; justify-content: flex-end; padding-right: 10px; padding-bottom: 5px;">
+            <ui:Label name="PlayerGoldLabel" text="0" style="color: rgb(255, 215, 0); font-size: 14px; -unity-font-style: bold;"/>
+        </ui:VisualElement>
+        <ui:ScrollView name="VendorScroll" vertical-scroller-visibility="Auto" horizontal-scroller-visibility="Hidden" style="flex-grow: 1;">
+            <ui:VisualElement name="VendorItemList" style="flex-direction: column;"/>
+        </ui:ScrollView>
+    </ui:VisualElement>
+</ui:UXML>

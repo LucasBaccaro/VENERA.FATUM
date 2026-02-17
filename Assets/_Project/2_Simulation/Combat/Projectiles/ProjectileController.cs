@@ -16,6 +16,7 @@ namespace Genesis.Simulation.Combat {
         private float _radius = 0.2f;
         private float _spawnTime;
         private bool _initialized;
+        private bool _ownerIsEnemy;
         private StatusEffectData[] _effectsToApply;
         private AbilityCategory _category = AbilityCategory.Magical;
 
@@ -31,6 +32,7 @@ namespace Genesis.Simulation.Combat {
             _category = category;
             _spawnTime = Time.time;
             _initialized = true;
+            _ownerIsEnemy = _owner != null && _owner.GetComponent<EnemyMob>() != null;
 
             // Ignorar colisiones físicas con el dueño (si usamos Rigidbody/Colliders)
             if (_owner != null) {
@@ -61,8 +63,10 @@ namespace Genesis.Simulation.Combat {
             Vector3 direction = _velocity.normalized;
 
             // Detección de Colisión (SphereCast)
-            // LayerMask: Enemy (6) + Environment (8) + Player (3)
-            int mask = LayerMask.GetMask("Enemy", "Environment", "Player", "Colliders");
+            // Enemy projectiles ignore other enemies; reflected projectiles detect them
+            int mask = _ownerIsEnemy
+                ? LayerMask.GetMask("Environment", "Player", "Colliders")
+                : LayerMask.GetMask("Enemy", "Environment", "Player", "Colliders");
 
             // Origen ajustado para evitar colisionar con uno mismo si nace muy cerca
             Vector3 origin = transform.position + direction * 0.1f;
@@ -103,6 +107,7 @@ namespace Genesis.Simulation.Combat {
                     // Reflejar el proyectil en dirección opuesta
                     _velocity = Vector3.Reflect(_velocity, hit.normal);
                     _owner = targetNetObj; // El target ahora es el nuevo dueño del proyectil
+                    _ownerIsEnemy = false; // Proyectil reflejado puede dañar enemigos
 
                     // VFX de reflejo (escudo brillante)
                     RpcPlayReflectVFX(hit.point);

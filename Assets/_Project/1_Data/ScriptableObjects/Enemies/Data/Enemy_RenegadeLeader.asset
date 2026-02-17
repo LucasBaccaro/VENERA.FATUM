@@ -25,3 +25,21 @@ MonoBehaviour:
   ProjectilePrefab: {fileID: 29690531400654767, guid: 8f7b9620c51ac0b40aa7a1f6cdb26f0a, type: 3}
   ProjectileSpeed: 12
   PreferredDistance: 10
+  Role: 0
+  Archetype: 0
+  LeashRange: 20
+  PatrolRadius: 0
+  PatrolWaitTime: 3
+  AnticipationDuration: 0
+  RecoveryDuration: 0
+  KiteThreshold: 3
+  KiteDistance: 6
+  KitingProjectilePrefab: {fileID: 0}
+  KitingProjectileSpeed: 12
+  SupportScanRange: 12
+  HealAmount: 20
+  HealCooldown: 4
+  KnockbackForce: 4
+  KnockbackDuration: 0.3
+  GoldReward: 75
+  LootTable: {fileID: 11400000, guid: a14cce6beb462464b9ff5d8e48b1d717, type: 2}

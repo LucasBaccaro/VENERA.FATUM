@@ -42,6 +42,9 @@ namespace Genesis.Presentation.UI {
         private VisualElement _healthBarMask;
         private VisualElement _manaBarMask;
         private VisualElement _expBarMask;
+        private VisualElement _healthBarFill;
+        private VisualElement _manaBarFill;
+        private VisualElement _expBarFill;
         private Label _healthTextStylized;
         private Label _manaTextStylized;
 
@@ -51,6 +54,9 @@ namespace Genesis.Presentation.UI {
         private ProgressBar _targetHealthBar;
         private Label _targetHealthText;
         private ProgressBar _targetManaBar;
+
+        // Gold
+        private Label _goldLabel;
 
         // Player & Target references
         private PlayerStats _localPlayerStats;
@@ -86,6 +92,9 @@ namespace Genesis.Presentation.UI {
 
             // Class Icon
             EventBus.Subscribe<string, Sprite>("OnClassChanged", OnClassChanged);
+
+            // Gold
+            EventBus.Subscribe<int>("OnGoldChanged", OnGoldChanged);
         }
 
         void OnDisable() {
@@ -112,6 +121,9 @@ namespace Genesis.Presentation.UI {
 
             // Class Icon
             EventBus.Unsubscribe<string, Sprite>("OnClassChanged", OnClassChanged);
+
+            // Gold
+            EventBus.Unsubscribe<int>("OnGoldChanged", OnGoldChanged);
         }
 
         void Update() {
@@ -155,6 +167,9 @@ namespace Genesis.Presentation.UI {
             _healthBarMask = _root.Q<VisualElement>("HealthBar_Mask");
             _manaBarMask = _root.Q<VisualElement>("ManaBar_Mask");
             _expBarMask = _root.Q<VisualElement>("ExpBar_Mask");
+            _healthBarFill = _root.Q<VisualElement>("HealthBar_Fill");
+            _manaBarFill = _root.Q<VisualElement>("ManaBar_Fill");
+            _expBarFill = _root.Q<VisualElement>("ExpBar_Fill");
             _healthTextStylized = _root.Q<Label>("HealthText_Stylized");
             _manaTextStylized = _root.Q<Label>("ManaText_Stylized");
 
@@ -178,6 +193,9 @@ namespace Genesis.Presentation.UI {
             _gcdBar = _root.Q<ProgressBar>("GCDBar");
             _gcdText = _root.Q<Label>("GCDText");
             _notificationLabel = _root.Q<Label>("NotificationLabel");
+
+            // Gold
+            _goldLabel = _root.Q<Label>("GoldLabel");
 
             // Targeting
             _targetFrame = _root.Q<VisualElement>("TargetFrame");
@@ -309,6 +327,10 @@ namespace Genesis.Presentation.UI {
             ShowNotification(message);
         }
 
+        private void OnGoldChanged(int newGold) {
+            if (_goldLabel != null) _goldLabel.text = newGold.ToString();
+        }
+
         private void ShowNotification(string message) {
             if (_notificationLabel == null) return;
 
@@ -332,8 +354,9 @@ namespace Genesis.Presentation.UI {
 
         private void SetHealth(float current, float max) {
             if (_healthBarMask != null) {
-                float percent = Mathf.Clamp((current / max) * 100f, 0, 100);
-                _healthBarMask.style.width = new Length(percent, LengthUnit.Percent);
+                float ratio = Mathf.Clamp01(max > 0 ? current / max : 0f);
+                float fillWidth = GetFillWidth(_healthBarFill, 201f);
+                _healthBarMask.style.width = new Length(ratio * fillWidth, LengthUnit.Pixel);
             }
 
             if (_healthTextStylized != null) {
@@ -343,8 +366,9 @@ namespace Genesis.Presentation.UI {
 
         private void SetMana(float current, float max) {
             if (_manaBarMask != null) {
-                float percent = Mathf.Clamp((current / max) * 100f, 0, 100);
-                _manaBarMask.style.width = new Length(percent, LengthUnit.Percent);
+                float ratio = Mathf.Clamp01(max > 0 ? current / max : 0f);
+                float fillWidth = GetFillWidth(_manaBarFill, 206f);
+                _manaBarMask.style.width = new Length(ratio * fillWidth, LengthUnit.Pixel);
             }
 
             if (_manaTextStylized != null) {
@@ -357,9 +381,16 @@ namespace Genesis.Presentation.UI {
         /// </summary>
         public void SetExperience(float percent) {
             if (_expBarMask != null) {
-                float clampedPercent = Mathf.Clamp(percent, 0, 100);
-                _expBarMask.style.width = new Length(clampedPercent, LengthUnit.Percent);
+                float ratio = Mathf.Clamp01(percent / 100f);
+                float fillWidth = GetFillWidth(_expBarFill, 211f);
+                _expBarMask.style.width = new Length(ratio * fillWidth, LengthUnit.Pixel);
             }
+        }
+
+        private float GetFillWidth(VisualElement fill, float fallback) {
+            if (fill == null) return fallback;
+            float w = fill.resolvedStyle.width;
+            return w > 0 ? w : fallback;
         }
 
         public void SetLevel(int level) {

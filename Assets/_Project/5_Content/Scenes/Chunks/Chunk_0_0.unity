@@ -11716,6 +11716,52 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 511559145}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &511566958
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 511566960}
+  - component: {fileID: 511566959}
+  m_Layer: 0
+  m_Name: NPC_Vendor_Spawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &511566959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 511566958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f18db29b934db48e29069d917b580c47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.NetworkEntitySpawner
+  _prefab: {fileID: 6792047399135508976, guid: cb651268f84154039a7e39ba4e8c17ce, type: 3}
+  _spawnOnStart: 1
+--- !u!4 &511566960
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 511566958}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 125, y: 6.43, z: 80}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &532389260
 GameObject:
   m_ObjectHideFlags: 0
@@ -12241,7 +12287,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.EnemySpawner
   _enemyPrefab: {fileID: 8688921051181976416, guid: 9b94785d30af79b45b0a839e26260c76, type: 3}
   _enemyData: {fileID: 11400000, guid: 9848451810d314d7bae97350a2cebe9f, type: 2}
-  _maxAlive: 2
+  _maxAlive: 1
   _respawnDelay: 30
   _spawnRadius: 6
   _initialCount: 1
@@ -12254,7 +12300,7 @@ Transform:
   m_GameObject: {fileID: 550729193}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 180, y: 5, z: 160}
+  m_LocalPosition: {x: 186.56, y: 5, z: 154.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -27075,7 +27121,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.EnemySpawner
   _enemyPrefab: {fileID: 8135937817257979960, guid: 3efc04c5ebbee6f419cc7b008a08d8fb, type: 3}
   _enemyData: {fileID: 11400000, guid: 7090fd7b69c234f4ea2a4fdec5795066, type: 2}
-  _maxAlive: 8
+  _maxAlive: 1
   _respawnDelay: 15
   _spawnRadius: 10
   _initialCount: 5
@@ -27088,7 +27134,7 @@ Transform:
   m_GameObject: {fileID: 1673517676}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 200.19, y: 5, z: 130}
+  m_LocalPosition: {x: 192.43, y: 5, z: 151.16}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -31582,7 +31628,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.EnemySpawner
   _enemyPrefab: {fileID: 5887143813374421320, guid: 0490883c87f84c749a888dbcee338919, type: 3}
   _enemyData: {fileID: 11400000, guid: d6ca3f5f616ef4ec287fed9dd8e25a1a, type: 2}
-  _maxAlive: 3
+  _maxAlive: 1
   _respawnDelay: 20
   _spawnRadius: 8
   _initialCount: 2
@@ -31595,7 +31641,7 @@ Transform:
   m_GameObject: {fileID: 1999000001}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 195, y: 5, z: 135}
+  m_LocalPosition: {x: 186.42, y: 5, z: 152.99}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -32944,3 +32990,4 @@ SceneRoots:
   - {fileID: 2126411135}
   - {fileID: 1429311059}
   - {fileID: 263906284}
+  - {fileID: 511566960}

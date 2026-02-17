@@ -7,5 +7,9 @@ namespace Genesis.Data {
         public string NpcID;
         public string DisplayName;
         [TextArea] public string IdleDialogue;
+
+        [Header("Vendor")]
+        public bool IsVendor;
+        public VendorInventoryData VendorInventory;
     }
 }

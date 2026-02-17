@@ -33,6 +33,9 @@
                     </ui:VisualElement>
                     <ui:VisualElement name="EXP_Highlight" class="exp-highlight" style="top: 0; left: 15px; height: 11px;"/>
                 </ui:VisualElement>
+                <ui:VisualElement name="GoldContainer" picking-mode="Ignore" style="position: absolute; bottom: -25px; right: 10px; flex-direction: row; align-items: center;">
+                    <ui:Label text="0" name="GoldLabel" style="color: rgb(255, 215, 0); font-size: 16px; -unity-font-style: bold; -unity-text-outline-width: 0.5px; -unity-text-outline-color: rgb(0, 0, 0);"/>
+                </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="NotificationContainer" style="position: absolute; top: 25%; left: 0; width: 100%; height: 50px; align-items: center; justify-content: center; display: flex; pointer-events: none;">

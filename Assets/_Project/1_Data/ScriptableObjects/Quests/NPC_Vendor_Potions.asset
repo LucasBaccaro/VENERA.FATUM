@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: faec532c50e4343afa92c3bb3014b0b6, type: 3}
+  m_Name: NPC_Vendor_Potions
+  m_EditorClassIdentifier: Genesis.Data::Genesis.Data.NpcData
+  NpcID: vendor_potions
+  DisplayName: Alchemist
+  IdleDialogue: 
+  IsVendor: 1
+  VendorInventory: {fileID: 11400000, guid: a7f3c8d9b69004d02b8221c41710e04d, type: 2}

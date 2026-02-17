@@ -54,6 +54,10 @@ namespace Genesis.Data {
         public float KnockbackForce = 4f;
         public float KnockbackDuration = 0.3f;
 
+        [Header("Audio")]
+        public AudioClip HitSound;
+        public AudioClip DeathSound;
+
         [Header("Rewards")]
         [Tooltip("Gold dropped on death")]
         public int GoldReward = 10;

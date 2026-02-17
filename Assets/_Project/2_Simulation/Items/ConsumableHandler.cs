@@ -104,10 +104,18 @@ namespace Genesis.Simulation {
                     _playerInventory.RemoveItem(inventorySlotIndex, 1);
                 }
 
+                // Play consumable sound on owner client
+                TargetPlayConsumableSound(base.Owner);
+
                 return true;
             }
 
             return false;
+        }
+
+        [TargetRpc]
+        private void TargetPlayConsumableSound(FishNet.Connection.NetworkConnection conn) {
+            EventBus.Trigger("OnConsumableUsed");
         }
 
         #endregion

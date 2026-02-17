@@ -19,17 +19,19 @@ namespace Genesis.Simulation.Combat {
         private bool _ownerIsEnemy;
         private StatusEffectData[] _effectsToApply;
         private AbilityCategory _category = AbilityCategory.Magical;
+        private int _abilityId = -1;
 
         [Header("Visuals")]
         [SerializeField] private GameObject impactVfxPrefab;
 
-        public void Initialize(NetworkObject owner, float damage, Vector3 velocity, float radius, StatusEffectData[] effects = null, AbilityCategory category = AbilityCategory.Magical) {
+        public void Initialize(NetworkObject owner, float damage, Vector3 velocity, float radius, StatusEffectData[] effects = null, AbilityCategory category = AbilityCategory.Magical, int abilityId = -1) {
             _owner = owner;
             _damage = damage;
             _velocity = velocity;
             _radius = radius;
             _effectsToApply = effects;
             _category = category;
+            _abilityId = abilityId;
             _spawnTime = Time.time;
             _initialized = true;
             _ownerIsEnemy = _owner != null && _owner.GetComponent<EnemyMob>() != null;
@@ -180,6 +182,20 @@ namespace Genesis.Simulation.Combat {
                 GameObject vfx = Instantiate(impactVfxPrefab, pos, Quaternion.LookRotation(normal));
                 Spawn(vfx); // Spawn en red
                 Destroy(vfx, 2f);
+            }
+
+            // Impact sound (notify all clients with position + abilityId)
+            if (_abilityId >= 0) {
+                RpcPlayImpactSound(pos, _abilityId);
+            }
+        }
+
+        [ObserversRpc]
+        private void RpcPlayImpactSound(Vector3 position, int abilityId) {
+            if (AbilityDatabase.Instance == null) return;
+            AbilityData ability = AbilityDatabase.Instance.GetAbility(abilityId);
+            if (ability != null && ability.ImpactSound != null) {
+                EventBus.Trigger("OnPlaySFX3D", ability.ImpactSound, position);
             }
         }
 

@@ -1,4 +1,5 @@
 using FishNet.Object;
+using Genesis.Core;
 using UnityEngine;
 
 namespace Genesis.Simulation.World
@@ -9,6 +10,10 @@ namespace Genesis.Simulation.World
         [Header("Zone Config")]
         [SerializeField] private ZoneType zoneType = ZoneType.SafeZone;
         [SerializeField] private string zoneName = "Safe Zone";
+
+        [Header("Audio")]
+        [SerializeField] private AudioClip zoneMusic;
+        [SerializeField] private AudioClip zoneAmbient;
 
         void Awake()
         {
@@ -23,30 +28,33 @@ namespace Genesis.Simulation.World
         {
             Debug.Log($"[ZoneTrigger] OnTriggerEnter detected: {other.gameObject.name} | Layer: {other.gameObject.layer} | IsServer: {FishNet.InstanceFinder.IsServer}");
 
+            // Zone audio: client-side only, for the local player
+            NetworkObject netObj = other.GetComponent<NetworkObject>();
+            if (netObj != null && netObj.IsOwner && (zoneMusic != null || zoneAmbient != null))
+            {
+                EventBus.Trigger("OnZoneMusicChanged", zoneMusic, zoneAmbient);
+            }
+
             if (!FishNet.InstanceFinder.IsServer)
             {
-                Debug.Log($"[ZoneTrigger] Ignoring trigger (not server)");
                 return;
             }
 
-            NetworkObject netObj = other.GetComponent<NetworkObject>();
             if (netObj == null)
             {
-                Debug.LogWarning($"[ZoneTrigger] No NetworkObject on {other.gameObject.name}");
                 return;
             }
 
             PlayerState playerState = netObj.GetComponent<PlayerState>();
             if (playerState == null)
             {
-                Debug.LogWarning($"[ZoneTrigger] No PlayerState on {netObj.name}");
                 return;
             }
 
             if (zoneType == ZoneType.SafeZone)
             {
                 playerState.SetSafeZone(true);
-                Debug.Log($"<color=green>[ZoneTrigger] ✅ Player {netObj.ObjectId} ENTERED {zoneName}</color>");
+                Debug.Log($"[ZoneTrigger] Player {netObj.ObjectId} ENTERED {zoneName}");
             }
         }
 

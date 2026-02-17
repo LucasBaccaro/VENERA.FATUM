@@ -23,7 +23,7 @@ namespace Genesis.Simulation.Combat {
 
             // Configurar
             if (instance.TryGetComponent(out ProjectileController controller)) {
-                controller.Initialize(caster, data.BaseDamage, direction * data.ProjectileSpeed, data.Radius, data.ApplyToTarget);
+                controller.Initialize(caster, data.BaseDamage, direction * data.ProjectileSpeed, data.Radius, data.ApplyToTarget, data.Category, data.ID);
             }
 
             // Spawn en red

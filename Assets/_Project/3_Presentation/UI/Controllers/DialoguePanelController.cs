@@ -312,12 +312,14 @@ namespace Genesis.Presentation.UI {
         private void Show() {
             if (_overlay != null) _overlay.style.display = DisplayStyle.Flex;
             if (_window != null) _window.style.display = DisplayStyle.Flex;
+            Audio.UISoundPlayer.PlayOpen();
         }
 
         private void Hide() {
             if (_overlay != null) _overlay.style.display = DisplayStyle.None;
             if (_window != null) _window.style.display = DisplayStyle.None;
             _pendingQuest = null;
+            Audio.UISoundPlayer.PlayClose();
         }
 
         // ═══════════════════════════════════════════════════════

@@ -125,12 +125,17 @@ namespace Genesis.Presentation.UI {
         }
 
         public void ToggleVisibility(bool visible) {
+            bool changed = _isVisible != visible;
             _isVisible = visible;
             if (_window != null) {
                 _window.style.display = _isVisible ? DisplayStyle.Flex : DisplayStyle.None;
-                
-                // If opening, refresh to ensure data is current
-                if (_isVisible) RefreshUI();
+
+                if (_isVisible) {
+                    RefreshUI();
+                    if (changed) Audio.UISoundPlayer.PlayOpen();
+                } else if (changed) {
+                    Audio.UISoundPlayer.PlayClose();
+                }
             }
         }
 

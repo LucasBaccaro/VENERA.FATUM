@@ -432,9 +432,7 @@ namespace Genesis.Simulation.Combat {
 
             // SFX
             if (data.ApplySound != null) {
-                // TODO: Integrar con AudioManager cuando esté implementado
-                // AudioManager.Instance.PlaySFX(data.ApplySound, transform.position);
-                Debug.Log($"[StatusEffectSystem] Playing apply sound for {data.Name}");
+                EventBus.Trigger("OnPlaySFX3D", data.ApplySound, transform.position);
             }
 
             // Floating text (solo owner)

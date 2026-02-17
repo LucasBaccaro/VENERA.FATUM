@@ -41,5 +41,7 @@ MonoBehaviour:
   HealCooldown: 2.5
   KnockbackForce: 4
   KnockbackDuration: 0.3
+  HitSound: {fileID: 0}
+  DeathSound: {fileID: 8300000, guid: 51a8458ab7f1e499b919605ba61f34d8, type: 3}
   GoldReward: 12
   LootTable: {fileID: 11400000, guid: 0bd738bc8cee84e31a9fe035d9692e58, type: 2}

@@ -896,6 +896,9 @@ namespace Genesis.Simulation {
                 _aiState = AIState.Aggro;
             }
 
+            if (_data != null && _data.HitSound != null)
+                RpcPlayEnemyHitSound();
+
             if (_currentHealth.Value <= 0) {
                 Die(attacker);
             }
@@ -919,6 +922,9 @@ namespace Genesis.Simulation {
             EventBus.Trigger("OnEnemyMobKilled", killer, tag);
 
             Debug.Log($"[EnemyMob] {gameObject.name} killed by {(killer != null ? killer.name : "unknown")}");
+
+            if (_data != null && _data.DeathSound != null)
+                RpcPlayEnemyDeathSound();
 
             // Drop loot bag if enemy has loot table
             if (_data != null && _data.LootTable != null) {
@@ -982,6 +988,18 @@ namespace Genesis.Simulation {
         private void RpcPlayAnticipation() {
             var animator = GetComponentInChildren<Animator>();
             if (animator != null) animator.SetTrigger("Anticipation");
+        }
+
+        [ObserversRpc]
+        private void RpcPlayEnemyHitSound() {
+            if (_data != null && _data.HitSound != null)
+                EventBus.Trigger("OnPlaySFX3D", _data.HitSound, transform.position);
+        }
+
+        [ObserversRpc]
+        private void RpcPlayEnemyDeathSound() {
+            if (_data != null && _data.DeathSound != null)
+                EventBus.Trigger("OnPlaySFX3D", _data.DeathSound, transform.position);
         }
 
         // ═══════════════════════════════════════════════════════

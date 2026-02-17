@@ -1170,6 +1170,11 @@ namespace Genesis.Simulation {
 
             AbilityData ability = AbilityDatabase.Instance != null ? AbilityDatabase.Instance.GetAbility(abilityId) : null;
 
+            // SFX: Play cast sound on all clients
+            if (ability != null && ability.CastSound != null) {
+                EventBus.Trigger("OnPlaySFX3D", ability.CastSound, transform.position);
+            }
+
             // Reset state (solo para el owner)
             if (base.IsOwner) {
                 // Stop cast coroutine if still running

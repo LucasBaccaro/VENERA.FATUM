@@ -100,6 +100,8 @@ namespace Genesis.Simulation {
             // Trigger global event for owner-only UI modules (Inventory, Character Panel, etc.)
             if (IsOwner) {
                 EventBus.Trigger("OnEquipmentChanged");
+                bool isEquip = !newSlot.IsEmpty;
+                EventBus.Trigger("OnEquipmentSound", isEquip);
             }
         }
 

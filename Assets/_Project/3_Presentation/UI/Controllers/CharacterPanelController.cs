@@ -187,6 +187,9 @@ namespace Genesis.Presentation {
                 if (_isVisible) {
                     TryFindPlayerComponents();
                     RefreshCharacterPanel();
+                    Audio.UISoundPlayer.PlayOpen();
+                } else {
+                    Audio.UISoundPlayer.PlayClose();
                 }
             }
         }

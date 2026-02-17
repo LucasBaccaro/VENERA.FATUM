@@ -97,6 +97,7 @@ namespace Genesis.Presentation.UI {
                 BuildItemList();
                 _window.style.display = DisplayStyle.Flex;
                 _isVisible = true;
+                Audio.UISoundPlayer.PlayOpen();
             }
         }
 
@@ -218,6 +219,7 @@ namespace Genesis.Presentation.UI {
             _currentVendorData = null;
             _currentNpcId = null;
             ItemTooltipController.Instance?.Hide();
+            Audio.UISoundPlayer.PlayClose();
         }
 
         private FishNet.Object.NetworkObject FindLocalPlayer() {

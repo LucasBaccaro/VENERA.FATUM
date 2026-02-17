@@ -22,6 +22,11 @@ namespace Genesis.Simulation {
         public float rotationSpeed = 15f;
         public float gravity = -20f;
 
+        [Header("Footsteps")]
+        [SerializeField] private float walkStepInterval = 0.45f;
+        [SerializeField] private float runStepInterval = 0.3f;
+        [SerializeField] private float footstepSpeedThreshold = 0.5f;
+
         // Variables internas
         private CharacterController _cc;
         private Vector3 _velocity; // Velocidad vertical (gravedad)
@@ -32,6 +37,7 @@ namespace Genesis.Simulation {
         private PlayerAttributes _attributes;
         private PlayerStats _playerStats;
         private bool _isDashing;
+        private float _footstepTimer;
 
         // ═══════════════════════════════════════════════════════
         // INITIALIZATION
@@ -281,6 +287,22 @@ namespace Genesis.Simulation {
             }
 
             animator.SetFloat("Speed", currentSpeed);
+
+            // ═══ FOOTSTEPS (Owner only) ═══
+            if (base.IsOwner && _cc.isGrounded && currentSpeed > footstepSpeedThreshold) {
+                bool isRunning = currentSpeed > (walkSpeed + runSpeed) * 0.5f;
+                float interval = isRunning ? runStepInterval : walkStepInterval;
+                _footstepTimer -= Time.deltaTime;
+                if (_footstepTimer <= 0f) {
+                    _footstepTimer = interval;
+                    EventBus.Trigger("OnFootstep", transform.position);
+                }
+            } else if (base.IsOwner) {
+                if (_footstepTimer != 0f) {
+                    EventBus.Trigger("OnFootstepStop");
+                }
+                _footstepTimer = 0f;
+            }
 
             // ═══ WEAPON STATE ANIMATION ═══
             if (_equipmentManager != null) {

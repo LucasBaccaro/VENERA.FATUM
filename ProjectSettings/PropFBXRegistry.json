@@ -1,0 +1,53 @@
+{
+    "Entries": [
+        {
+            "FbxPath": "Assets/_Project/5_Content/Models/Props/PROP_Bones.fbx",
+            "OutputPath": "Assets/_Project/5_Content/Prefabs/Dungeon/Props",
+            "Layer": "Environment",
+            "AddBoxCollider": false,
+            "MaterialPath": "Assets/_Project/5_Content/Models/Chunks/Chunk_0_0/MainTex.mat"
+        },
+        {
+            "FbxPath": "Assets/_Project/5_Content/Models/Props/PROP_Chairs.fbx",
+            "OutputPath": "Assets/_Project/5_Content/Prefabs/Dungeon/Props",
+            "Layer": "Environment",
+            "AddBoxCollider": true,
+            "MaterialPath": "Assets/_Project/5_Content/Models/Chunks/Chunk_0_0/MainTex.mat"
+        },
+        {
+            "FbxPath": "Assets/_Project/5_Content/Models/Props/PROP_Crates.fbx",
+            "OutputPath": "Assets/_Project/5_Content/Prefabs/Dungeon/Props",
+            "Layer": "Environment",
+            "AddBoxCollider": true,
+            "MaterialPath": "Assets/_Project/5_Content/Models/Chunks/Chunk_0_0/MainTex.mat"
+        },
+        {
+            "FbxPath": "Assets/_Project/5_Content/Models/Props/PROP_Kitchen.fbx",
+            "OutputPath": "Assets/_Project/5_Content/Prefabs/Dungeon/Props",
+            "Layer": "Environment",
+            "AddBoxCollider": false,
+            "MaterialPath": "Assets/_Project/5_Content/Models/Chunks/Chunk_0_0/MainTex.mat"
+        },
+        {
+            "FbxPath": "Assets/_Project/5_Content/Models/Props/PROP_Table.fbx",
+            "OutputPath": "Assets/_Project/5_Content/Prefabs/Dungeon/Props",
+            "Layer": "Environment",
+            "AddBoxCollider": true,
+            "MaterialPath": "Assets/_Project/5_Content/Models/Chunks/Chunk_0_0/MainTex.mat"
+        },
+        {
+            "FbxPath": "Assets/_Project/5_Content/Models/Props/PROP_Torch.fbx",
+            "OutputPath": "Assets/_Project/5_Content/Prefabs/Dungeon/Props",
+            "Layer": "Environment",
+            "AddBoxCollider": true,
+            "MaterialPath": "Assets/_Project/5_Content/Models/Chunks/Chunk_0_0/MainTex.mat"
+        },
+        {
+            "FbxPath": "Assets/_Project/5_Content/Models/Props/PROP_Weapons.fbx",
+            "OutputPath": "Assets/_Project/5_Content/Prefabs/Dungeon/Props",
+            "Layer": "Environment",
+            "AddBoxCollider": true,
+            "MaterialPath": "Assets/_Project/5_Content/Models/Chunks/Chunk_0_0/MainTex.mat"
+        }
+    ]
+}

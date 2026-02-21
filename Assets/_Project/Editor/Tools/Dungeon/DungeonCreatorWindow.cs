@@ -37,6 +37,10 @@ namespace Genesis.Editor.Dungeon
         private GameObject _selectedPropPrefab;
         private bool _isHanger = false; // Checkbox for wall-mounted items
 
+        // World Anchor ([WORLD] GameObject from the chunk scene)
+        private Transform _worldAnchor;
+        private const string WorldAnchorName = "[WORLD]";
+
         [MenuItem("Genesis/Dungeon/Dungeon Creator")]
         public static void ShowWindow()
         {
@@ -70,6 +74,25 @@ namespace Genesis.Editor.Dungeon
             _debugMode = EditorGUILayout.Toggle("Debug Mode", _debugMode);
 
             if (_currentTheme == null) return;
+
+            // ── World Anchor Block ──────────────────────────────────────────────
+            GUILayout.Space(6);
+            GUILayout.Label("World Anchor", EditorStyles.boldLabel);
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                if (_worldAnchor != null)
+                {
+                    EditorGUILayout.HelpBox($"[WORLD] found: {_worldAnchor.gameObject.scene.name} @ {_worldAnchor.position}", MessageType.Info);
+                }
+                else
+                {
+                    EditorGUILayout.HelpBox("No [WORLD] detected. Dungeon will be placed at grid origin.", MessageType.Warning);
+                }
+
+                if (GUILayout.Button("Detect", GUILayout.Width(60)))
+                    DetectWorldAnchor();
+            }
 
             GUILayout.Space(10);
             _currentMode = (ToolMode)GUILayout.Toolbar((int)_currentMode, new string[] { "Structure", "Props" });
@@ -459,9 +482,11 @@ namespace Genesis.Editor.Dungeon
 
         private Vector3 GetSnappedPosition(Vector3 worldPos)
         {
-            float x = Mathf.Round(worldPos.x / _gridSize) * _gridSize;
-            float z = Mathf.Round(worldPos.z / _gridSize) * _gridSize;
-            return new Vector3(x, _yOffset, z);
+            // Snap relative to the world anchor so the grid aligns to chunk origin
+            Vector3 anchorPos = _worldAnchor != null ? _worldAnchor.position : Vector3.zero;
+            float x = Mathf.Round((worldPos.x - anchorPos.x) / _gridSize) * _gridSize + anchorPos.x;
+            float z = Mathf.Round((worldPos.z - anchorPos.z) / _gridSize) * _gridSize + anchorPos.z;
+            return new Vector3(x, anchorPos.y + _yOffset, z);
         }
 
         // Cache for transparent material
@@ -678,13 +703,50 @@ namespace Genesis.Editor.Dungeon
 
         private Transform GetContainer(string name)
         {
-            GameObject container = GameObject.Find(name + "_Container");
-            if (container == null)
+            // If we have a [WORLD] anchor, nest containers inside it
+            if (_worldAnchor != null)
             {
-                container = new GameObject(name + "_Container");
+                Transform existing = _worldAnchor.Find(name + "_Container");
+                if (existing != null) return existing;
+
+                GameObject container = new GameObject(name + "_Container");
                 Undo.RegisterCreatedObjectUndo(container, "Create Container");
+                container.transform.SetParent(_worldAnchor, worldPositionStays: true);
+                return container.transform;
             }
-            return container.transform;
+
+            // Fallback: root-level container (original behaviour)
+            GameObject rootContainer = GameObject.Find(name + "_Container");
+            if (rootContainer == null)
+            {
+                rootContainer = new GameObject(name + "_Container");
+                Undo.RegisterCreatedObjectUndo(rootContainer, "Create Container");
+            }
+            return rootContainer.transform;
+        }
+
+        private void DetectWorldAnchor()
+        {
+            _worldAnchor = null;
+
+            // Search all root GameObjects in all loaded scenes
+            for (int i = 0; i < UnityEngine.SceneManagement.SceneManager.sceneCount; i++)
+            {
+                var scene = UnityEngine.SceneManagement.SceneManager.GetSceneAt(i);
+                if (!scene.isLoaded) continue;
+
+                foreach (GameObject root in scene.GetRootGameObjects())
+                {
+                    if (root.name == WorldAnchorName)
+                    {
+                        _worldAnchor = root.transform;
+                        Debug.Log($"[DungeonCreator] Found [WORLD] anchor in scene '{scene.name}' at {_worldAnchor.position}");
+                        return;
+                    }
+                }
+            }
+
+            Debug.LogWarning("[DungeonCreator] No [WORLD] GameObject found in any loaded scene.");
         }
     }
 }

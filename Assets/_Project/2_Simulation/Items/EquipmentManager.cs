@@ -5,6 +5,7 @@ using UnityEngine;
 using Genesis.Items;
 using Genesis.Data;
 using Genesis.Core;
+using Genesis.Core.Persistence;
 
 namespace Genesis.Simulation {
     /// <summary>
@@ -297,6 +298,54 @@ namespace Genesis.Simulation {
             if (!_ring2Slot.Value.IsEmpty) items.Add(_ring2Slot.Value);
 
             return items;
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // PERSISTENCE HYDRATION
+        // ═══════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Directly set equipment slots from saved data (server-only).
+        /// Slot order matches EquipmentSlot enum: Head=0, Shoulders=1, ..., Ring2=10
+        /// </summary>
+        [Server]
+        public void HydrateFromSave(SerializedItemSlot[] slots) {
+            if (slots == null || slots.Length != 11) return;
+
+            SetSlotDirect(EquipmentSlot.Head, slots[0]);
+            SetSlotDirect(EquipmentSlot.Shoulders, slots[1]);
+            SetSlotDirect(EquipmentSlot.Chest, slots[2]);
+            SetSlotDirect(EquipmentSlot.Pants, slots[3]);
+            SetSlotDirect(EquipmentSlot.Feet, slots[4]);
+            SetSlotDirect(EquipmentSlot.Hands, slots[5]);
+            SetSlotDirect(EquipmentSlot.Belt, slots[6]);
+            SetSlotDirect(EquipmentSlot.Weapon, slots[7]);
+            SetSlotDirect(EquipmentSlot.OffHand, slots[8]);
+            SetSlotDirect(EquipmentSlot.Ring1, slots[9]);
+            SetSlotDirect(EquipmentSlot.Ring2, slots[10]);
+
+            RecalculateStats();
+        }
+
+        [Server]
+        private void SetSlotDirect(EquipmentSlot slot, SerializedItemSlot data) {
+            ItemSlot itemSlot = data.itemId > 0
+                ? new ItemSlot(data.itemId, data.quantity, (ItemTier)data.tier, (ItemRarity)data.rarity)
+                : ItemSlot.Empty;
+
+            switch (slot) {
+                case EquipmentSlot.Head: _headSlot.Value = itemSlot; break;
+                case EquipmentSlot.Shoulders: _shouldersSlot.Value = itemSlot; break;
+                case EquipmentSlot.Chest: _chestSlot.Value = itemSlot; break;
+                case EquipmentSlot.Pants: _pantsSlot.Value = itemSlot; break;
+                case EquipmentSlot.Feet: _feetSlot.Value = itemSlot; break;
+                case EquipmentSlot.Hands: _handsSlot.Value = itemSlot; break;
+                case EquipmentSlot.Belt: _beltSlot.Value = itemSlot; break;
+                case EquipmentSlot.Weapon: _weaponSlot.Value = itemSlot; break;
+                case EquipmentSlot.OffHand: _offHandSlot.Value = itemSlot; break;
+                case EquipmentSlot.Ring1: _ring1Slot.Value = itemSlot; break;
+                case EquipmentSlot.Ring2: _ring2Slot.Value = itemSlot; break;
+            }
         }
 
         /// <summary>

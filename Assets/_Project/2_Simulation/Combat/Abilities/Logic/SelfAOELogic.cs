@@ -105,6 +105,12 @@ namespace Genesis.Simulation.Combat {
                 }
             }
 
+            // IMPACT SOUND (once at caster position)
+            if (data.ImpactSound != null) {
+                PlayerCombat combat = caster.GetComponent<PlayerCombat>();
+                combat?.RpcPlayImpactSoundAtPosition(casterPos, data.ID);
+            }
+
             Debug.Log($"[SelfAOELogic] Finished {data.Name}. Total valid hits: {hitCount}");
         }
     }

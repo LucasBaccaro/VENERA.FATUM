@@ -1,0 +1,97 @@
+.settings-window {
+    position: absolute;
+    width: 360px;
+    height: auto;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    background-color: rgba(20, 20, 30, 0.95);
+    border-width: 2px;
+    border-color: rgba(180, 160, 120, 0.6);
+    border-radius: 8px;
+    padding: 16px;
+    display: none;
+}
+
+.settings-title {
+    font-size: 18px;
+    color: rgb(220, 200, 160);
+    -unity-text-align: middle-center;
+    margin-bottom: 16px;
+    -unity-font-style: bold;
+}
+
+.close-button {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+    color: rgb(200, 180, 140);
+    background-color: rgba(60, 50, 40, 0.8);
+    border-width: 1px;
+    border-color: rgba(180, 160, 120, 0.4);
+    border-radius: 4px;
+    -unity-text-align: middle-center;
+}
+
+.close-button:hover {
+    background-color: rgba(120, 40, 40, 0.8);
+    color: rgb(255, 220, 180);
+}
+
+.settings-content {
+    flex-direction: column;
+}
+
+.slider-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 12px;
+    height: 30px;
+}
+
+.slider-label {
+    width: 70px;
+    font-size: 14px;
+    color: rgb(200, 190, 170);
+    -unity-text-align: middle-left;
+}
+
+.volume-slider {
+    flex-grow: 1;
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.volume-slider #unity-tracker {
+    background-color: rgba(80, 70, 60, 0.8);
+    border-radius: 3px;
+    height: 6px;
+}
+
+.volume-slider #unity-dragger {
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    background-color: rgb(200, 180, 140);
+    border-width: 1px;
+    border-color: rgba(120, 100, 70, 0.8);
+}
+
+.volume-slider #unity-dragger:hover {
+    background-color: rgb(240, 220, 170);
+}
+
+.volume-slider #unity-fill {
+    background-color: rgba(180, 160, 120, 0.5);
+    border-radius: 3px;
+}
+
+.slider-value {
+    width: 45px;
+    font-size: 12px;
+    color: rgb(160, 150, 130);
+    -unity-text-align: middle-right;
+}

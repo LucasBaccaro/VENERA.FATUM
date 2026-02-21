@@ -1,0 +1,29 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/AudioSettings.uss" />
+    <ui:VisualElement name="AudioSettingsWindow" class="settings-window">
+        <ui:Label name="SettingsTitle" text="Audio Settings" class="settings-title" />
+        <ui:Button name="CloseButton" text="X" class="close-button" />
+        <ui:VisualElement class="settings-content">
+            <ui:VisualElement class="slider-row">
+                <ui:Label text="Master" class="slider-label" />
+                <ui:Slider name="SliderMaster" low-value="0" high-value="1" value="1" class="volume-slider" />
+                <ui:Label name="ValueMaster" text="100%" class="slider-value" />
+            </ui:VisualElement>
+            <ui:VisualElement class="slider-row">
+                <ui:Label text="Music" class="slider-label" />
+                <ui:Slider name="SliderMusic" low-value="0" high-value="1" value="1" class="volume-slider" />
+                <ui:Label name="ValueMusic" text="100%" class="slider-value" />
+            </ui:VisualElement>
+            <ui:VisualElement class="slider-row">
+                <ui:Label text="SFX" class="slider-label" />
+                <ui:Slider name="SliderSFX" low-value="0" high-value="1" value="1" class="volume-slider" />
+                <ui:Label name="ValueSFX" text="100%" class="slider-value" />
+            </ui:VisualElement>
+            <ui:VisualElement class="slider-row">
+                <ui:Label text="Ambient" class="slider-label" />
+                <ui:Slider name="SliderAmbient" low-value="0" high-value="1" value="1" class="volume-slider" />
+                <ui:Label name="ValueAmbient" text="100%" class="slider-value" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

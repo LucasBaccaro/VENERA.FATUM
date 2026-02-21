@@ -5,6 +5,7 @@ using UnityEngine;
 using Genesis.Items;
 using Genesis.Data;
 using Genesis.Core;
+using Genesis.Core.Persistence;
 
 namespace Genesis.Simulation {
     /// <summary>
@@ -221,6 +222,29 @@ namespace Genesis.Simulation {
         }
 
         #endregion
+
+        // ═══════════════════════════════════════════════════════
+        // PERSISTENCE HYDRATION
+        // ═══════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Directly set inventory slots from saved data (server-only).
+        /// </summary>
+        [Server]
+        public void HydrateFromSave(SerializedItemSlot[] slots) {
+            _inventorySlots.Clear();
+            for (int i = 0; i < _inventorySize; i++) {
+                if (slots != null && i < slots.Length && slots[i].itemId > 0) {
+                    _inventorySlots.Add(new ItemSlot(
+                        slots[i].itemId,
+                        slots[i].quantity,
+                        (ItemTier)slots[i].tier,
+                        (ItemRarity)slots[i].rarity));
+                } else {
+                    _inventorySlots.Add(ItemSlot.Empty);
+                }
+            }
+        }
 
         #region Public Utility Methods (Client-Safe)
 

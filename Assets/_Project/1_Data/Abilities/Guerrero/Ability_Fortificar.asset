@@ -44,8 +44,9 @@ MonoBehaviour:
   CastVFX: {fileID: 0}
   ImpactVFX: {fileID: 0}
   ImpactVFXDuration: 2
-  CastSound: {fileID: 0}
+  CastSound: {fileID: 8300000, guid: bbd393011230a8741a843a5360075546, type: 3}
   ImpactSound: {fileID: 0}
+  ChannelLoopSound: {fileID: 0}
   StartCastAnimationTrigger: Fortify
   AnimationTrigger: 
   UseAvatarMask: 1

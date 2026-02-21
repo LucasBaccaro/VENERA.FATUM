@@ -953,6 +953,13 @@ namespace Genesis.Simulation {
             if (bag != null) {
                 bag.Initialize(loot, _data.DisplayName);
             }
+
+            RpcPlayLootDropSound(spawnPos);
+        }
+
+        [ObserversRpc]
+        private void RpcPlayLootDropSound(Vector3 position) {
+            EventBus.Trigger("OnLootDropped", position);
         }
 
         private System.Collections.IEnumerator DespawnAfterDelay(float delay) {

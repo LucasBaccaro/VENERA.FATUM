@@ -3,6 +3,7 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FishNet.Connection;
 using Genesis.Core;
+using Genesis.Core.Persistence;
 using Genesis.Data;
 using Genesis.Items;
 using System;
@@ -242,6 +243,32 @@ namespace Genesis.Simulation {
             string oldItem, string newItem, bool asServer) {
             if (base.IsOwner) {
                 EventBus.Trigger("OnQuestLogChanged");
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // PERSISTENCE HYDRATION
+        // ═══════════════════════════════════════════════════════
+
+        [Server]
+        public void HydrateFromSave(SerializedQuestProgress[] quests, string[] completed) {
+            _questLog.Clear();
+            if (quests != null) {
+                foreach (var sq in quests) {
+                    _questLog.Add(new QuestProgress {
+                        QuestID = sq.questId,
+                        State = (QuestState)sq.state,
+                        Progress0 = sq.progress0,
+                        Progress1 = sq.progress1,
+                        Progress2 = sq.progress2
+                    });
+                }
+            }
+            _completedQuests.Clear();
+            if (completed != null) {
+                foreach (var id in completed) {
+                    _completedQuests.Add(id);
+                }
             }
         }
 

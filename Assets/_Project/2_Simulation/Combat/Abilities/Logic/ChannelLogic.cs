@@ -120,6 +120,12 @@ namespace Genesis.Simulation.Combat {
                 }
             }
 
+            // IMPACT SOUND (once per tick if we hit anything)
+            if (hitCount > 0 && data.ImpactSound != null) {
+                PlayerCombat combat = caster.GetComponent<PlayerCombat>();
+                combat?.RpcPlayImpactSoundAtPosition(caster.transform.position + direction * data.Range * 0.5f, data.ID);
+            }
+
             Debug.Log($"[ChannelLogic] {caster.name} channeling {data.Name}: Hit {hitCount} enemies");
         }
     }

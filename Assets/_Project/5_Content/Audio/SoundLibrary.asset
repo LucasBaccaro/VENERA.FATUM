@@ -14,12 +14,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: Genesis.Data::Genesis.Data.SoundLibrary
   uiSounds: []
   combatSounds:
+  - Type: 8
+    Clip: {fileID: 8300000, guid: c4be08529d11947a185df471c00e460c, type: 3}
+    Volume: 1
+    PitchMin: 0.9
+    PitchMax: 1.1
+    Is3D: 0
+  - Type: 9
+    Clip: {fileID: 8300000, guid: 6b9e6c21f81ac0740abb23b54c6ac80c, type: 3}
+    Volume: 1
+    PitchMin: 1
+    PitchMax: 1
+    Is3D: 0
   - Type: 11
     Clip: {fileID: 8300000, guid: 0f411cc25986b4688b8eb39a95ecb501, type: 3}
     Volume: 1
     PitchMin: 0.9
     PitchMax: 1.1
     Is3D: 0
+  - Type: 12
+    Clip: {fileID: 8300000, guid: 0f411cc25986b4688b8eb39a95ecb501, type: 3}
+    Volume: 0.8
+    PitchMin: 0.9
+    PitchMax: 1.1
+    Is3D: 1
   footstepSounds:
   - Type: 0
     Clip: {fileID: 8300000, guid: d4120e85b065d420f83805d55894a7ac, type: 3}
@@ -62,6 +80,24 @@ MonoBehaviour:
   - Type: 25
     Clip: {fileID: 8300000, guid: 6864abc2c0d5d4690bcd0ec6c2587ede, type: 3}
     Volume: 0.3
+    PitchMin: 1
+    PitchMax: 1
+    Is3D: 0
+  - Type: 17
+    Clip: {fileID: 8300000, guid: dbad400318896614c95358a902983651, type: 3}
+    Volume: 0.8
+    PitchMin: 1
+    PitchMax: 1
+    Is3D: 0
+  - Type: 18
+    Clip: {fileID: 8300000, guid: dbad400318896614c95358a902983651, type: 3}
+    Volume: 0.8
+    PitchMin: 1
+    PitchMax: 1
+    Is3D: 0
+  - Type: 24
+    Clip: {fileID: 8300000, guid: 6b9e6c21f81ac0740abb23b54c6ac80c, type: 3}
+    Volume: 1
     PitchMin: 1
     PitchMax: 1
     Is3D: 0

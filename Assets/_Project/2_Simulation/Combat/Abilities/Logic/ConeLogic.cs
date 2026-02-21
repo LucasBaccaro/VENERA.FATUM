@@ -96,6 +96,12 @@ namespace Genesis.Simulation.Combat {
                 }
             }
 
+            // IMPACT SOUND (once for the whole cone)
+            if (hitCount > 0 && data.ImpactSound != null) {
+                PlayerCombat combat = caster.GetComponent<PlayerCombat>();
+                combat?.RpcPlayImpactSoundAtPosition(casterPos + direction * data.Range * 0.5f, data.ID);
+            }
+
             Debug.Log($"[ConeLogic] {caster.name} cast {data.Name}. Hit {hitCount} targets in {data.Angle}° cone");
         }
     }

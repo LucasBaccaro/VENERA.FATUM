@@ -329,6 +329,26 @@ namespace Genesis.Simulation {
             RecalculateDerivedStats();
         }
 
+        // ═══════════════════════════════════════════════════════
+        // PERSISTENCE HYDRATION
+        // ═══════════════════════════════════════════════════════
+
+        [Server]
+        public void HydrateFromSave(int level, float xp, int unspentPoints, int gold,
+            int str, int agi, int intel, int wis, int con) {
+            _level.Value = level;
+            _currentXP.Value = xp;
+            _xpToNextLevel.Value = _config != null ? _config.GetXPForLevel(level) : 100f;
+            _unspentPoints.Value = unspentPoints;
+            _gold.Value = gold;
+            _strength.Value = str;
+            _agility.Value = agi;
+            _intelligence.Value = intel;
+            _wisdom.Value = wis;
+            _constitution.Value = con;
+            RecalculateDerivedStats();
+        }
+
         [Server]
         public void GrantBonusPoints(int points) {
             _unspentPoints.Value += points;

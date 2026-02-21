@@ -1,6 +1,7 @@
 using UnityEngine;
 using FishNet.Object;
 using Genesis.Data;
+using Genesis.Simulation;
 using UnityEngine.AI;
 
 namespace Genesis.Simulation.Combat {
@@ -90,6 +91,12 @@ namespace Genesis.Simulation.Combat {
                         Debug.Log($"[DashLogic] Applied {effectData.Name} to self");
                     }
                 }
+            }
+
+            // IMPACT SOUND at final position
+            if (caster.IsServer && data.ImpactSound != null) {
+                PlayerCombat combat = caster.GetComponent<PlayerCombat>();
+                combat?.RpcPlayImpactSoundAtPosition(finalPosition, data.ID);
             }
 
             Debug.Log($"[DashLogic] {caster.name} dashed {(isBackwards ? "backwards" : "forward")} to {finalPosition}");

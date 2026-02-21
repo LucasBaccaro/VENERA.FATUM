@@ -188,6 +188,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.UI.LoginController
   uiDocument: {fileID: 31986198}
+  availableClasses: []
 --- !u!1 &137644100
 GameObject:
   m_ObjectHideFlags: 0
@@ -1041,6 +1042,56 @@ MonoBehaviour:
   m_PivotReferenceSize: 0
   m_Pivot: 0
   m_WorldSpaceCollider: {fileID: 0}
+--- !u!1 &745035222
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 745035224}
+  - component: {fileID: 745035223}
+  m_Layer: 0
+  m_Name: NakamaManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &745035223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 745035222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78b14f217c853470b9d63dbd1d8c6562, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Core::Genesis.Core.Persistence.NakamaManager
+  _scheme: http
+  _host: 127.0.0.1
+  _port: 7350
+  _serverKey: defaultkey
+  _autoSaveInterval: 30
+  _enableAutoSave: 1
+--- !u!4 &745035224
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 745035222}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &856079731
 GameObject:
   m_ObjectHideFlags: 0
@@ -1450,6 +1501,56 @@ MonoBehaviour:
   _port: 7770
   _maximumClients: 4095
   _clientAddress: 10.223.136.35
+--- !u!1 &1392107798
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1392107799}
+  - component: {fileID: 1392107800}
+  m_Layer: 0
+  m_Name: NakamaManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1392107799
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1392107798}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1889061011}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1392107800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1392107798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78b14f217c853470b9d63dbd1d8c6562, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Core::Genesis.Core.Persistence.NakamaManager
+  _scheme: http
+  _host: 127.0.0.1
+  _port: 7350
+  _serverKey: defaultkey
+  _autoSaveInterval: 30
+  _enableAutoSave: 1
 --- !u!1 &1413132926
 GameObject:
   m_ObjectHideFlags: 0
@@ -2023,6 +2124,7 @@ Transform:
   - {fileID: 489666296}
   - {fileID: 1508077052}
   - {fileID: 1451542514}
+  - {fileID: 1392107799}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2047985155
@@ -2265,3 +2367,4 @@ SceneRoots:
   - {fileID: 665111258}
   - {fileID: 856079732}
   - {fileID: 1705287623}
+  - {fileID: 745035224}

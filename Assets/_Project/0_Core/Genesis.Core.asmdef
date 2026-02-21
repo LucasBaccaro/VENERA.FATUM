@@ -4,7 +4,8 @@
     "references": [
         "FishNet.Runtime",
         "GameKit.Dependencies",
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "Nakama"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

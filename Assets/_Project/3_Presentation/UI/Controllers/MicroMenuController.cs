@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using Genesis.Core;
 
 namespace Genesis.Presentation.UI {
     public class MicroMenuController : MonoBehaviour {
@@ -51,7 +52,7 @@ namespace Genesis.Presentation.UI {
         }
 
         private void OnSetupClicked() {
-            Debug.Log("[MicroMenu] Setup Clicked");
+            EventBus.Trigger("OnToggleAudioSettings");
         }
     }
 }

@@ -43,7 +43,8 @@ MonoBehaviour:
   IndicatorMaterial: {fileID: 0}
   CastVFX: {fileID: 0}
   ImpactVFX: {fileID: 0}
-  CastSound: {fileID: 0}
-  ImpactSound: {fileID: 0}
+  CastSound: {fileID: 8300000, guid: b4efa7983708296408bbedfd3813efda, type: 3}
+  ImpactSound: {fileID: 8300000, guid: 0eda96a0e12935c4c9a0cd1eff4f37bb, type: 3}
+  ChannelLoopSound: {fileID: 0}
   StartCastAnimationTrigger:
   AnimationTrigger: CastInstant

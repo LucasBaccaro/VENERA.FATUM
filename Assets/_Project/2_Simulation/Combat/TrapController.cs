@@ -1,6 +1,7 @@
 using UnityEngine;
 using FishNet.Object;
 using Genesis.Data;
+using Genesis.Simulation;
 using System.Collections.Generic;
 
 namespace Genesis.Simulation.Combat {
@@ -130,6 +131,12 @@ namespace Genesis.Simulation.Combat {
                 } else {
                     Debug.LogWarning($"[TrapController] {victim.name} has no StatusEffectSystem component!");
                 }
+            }
+
+            // IMPACT SOUND via owner's RPC relay
+            if (_abilityData != null && _abilityData.ImpactSound != null && _owner != null) {
+                PlayerCombat combat = _owner.GetComponent<PlayerCombat>();
+                combat?.RpcPlayImpactSoundAtPosition(transform.position, _abilityData.ID);
             }
 
             // VFX de activación

@@ -146,12 +146,14 @@ namespace Genesis.Simulation
         private void TargetFadeOut(NetworkConnection conn, float duration)
         {
             EventBus.Trigger(PortalEvents.TELEPORT_FADE_OUT, duration);
+            EventBus.Trigger("OnPortalSound", true);
         }
 
         [TargetRpc]
         private void TargetFadeIn(NetworkConnection conn, float duration)
         {
             EventBus.Trigger(PortalEvents.TELEPORT_FADE_IN, duration);
+            EventBus.Trigger("OnPortalSound", false);
         }
 
         // ═══════════════════════════════════════════════════════

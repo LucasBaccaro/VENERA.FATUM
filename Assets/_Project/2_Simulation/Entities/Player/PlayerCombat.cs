@@ -1060,6 +1060,9 @@ namespace Genesis.Simulation {
                 ApplyAbilityStatusEffects(ability, null);
             }
 
+            // Start channel loop sound on all clients
+            RpcStartChannelLoop(abilityId);
+
             Debug.Log($"[PlayerCombat] Server: Channeling started for {ability.Name}");
         }
 
@@ -1093,8 +1096,11 @@ namespace Genesis.Simulation {
         /// </summary>
         [ServerRpc]
         private void CmdStopChanneling(int abilityId, bool isInterrupted) {
+            // Stop channel loop sound on all clients
+            RpcStopChannelLoop();
+
             Debug.Log($"[PlayerCombat] Server: Channeling stopped for {abilityId} (Interrupted: {isInterrupted})");
-            
+
             if (abilityId != -1) {
                 if (isInterrupted) {
                     // Si fue interrumpido, resetear triggers en lugar de disparar el de éxito
@@ -1518,6 +1524,39 @@ namespace Genesis.Simulation {
         }
 
 
+
+        // ═══════════════════════════════════════════════════════
+        // AUDIO RPC RELAY (for ability logics that can't RPC)
+        // ═══════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Relay RPC: Plays impact sound at a world position on all clients.
+        /// Called from AbilityLogic SOs (server-side) that cannot RPC directly.
+        /// </summary>
+        [ObserversRpc]
+        public void RpcPlayImpactSoundAtPosition(Vector3 position, int abilityId) {
+            AbilityData ability = AbilityDatabase.Instance?.GetAbility(abilityId);
+            if (ability?.ImpactSound != null)
+                EventBus.Trigger("OnPlaySFX3D", ability.ImpactSound, position);
+        }
+
+        /// <summary>
+        /// Relay RPC: Starts a looping channel sound on all clients.
+        /// </summary>
+        [ObserversRpc]
+        public void RpcStartChannelLoop(int abilityId) {
+            var ability = AbilityDatabase.Instance?.GetAbility(abilityId);
+            if (ability?.ChannelLoopSound != null)
+                EventBus.Trigger("OnStartLoopSFX3D", ability.ChannelLoopSound, transform.position, base.ObjectId);
+        }
+
+        /// <summary>
+        /// Relay RPC: Stops a looping channel sound on all clients.
+        /// </summary>
+        [ObserversRpc]
+        public void RpcStopChannelLoop() {
+            EventBus.Trigger("OnStopLoopSFX3D", base.ObjectId);
+        }
 
         // ═══════════════════════════════════════════════════════
         // SPELL POWER INTEGRATION (Phase 9 - Item System)

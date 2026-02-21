@@ -39,6 +39,9 @@ namespace Genesis.Presentation.Audio {
         // Dedicated footstep source (so we can stop it instantly)
         private AudioSource _footstepSource;
 
+        // Loop SFX tracking (keyed by entity ObjectId)
+        private Dictionary<int, AudioSource> _loopSources = new Dictionary<int, AudioSource>();
+
         // Guard against SyncVar double-fire for zone music
         private AudioClip _currentZoneMusic;
 
@@ -50,6 +53,7 @@ namespace Genesis.Presentation.Audio {
             base.Awake();
             InitializeSources();
             InitializePool();
+            LoadVolumeSettings();
         }
 
         private void OnEnable() {
@@ -74,6 +78,10 @@ namespace Genesis.Presentation.Audio {
             // Direct SFX from Simulation layer (CastSound, ImpactSound, ApplySound)
             EventBus.Subscribe<AudioClip, Vector3>("OnPlaySFX3D", OnPlaySFX3D);
 
+            // Loop SFX (channel abilities)
+            EventBus.Subscribe<AudioClip, Vector3, int>("OnStartLoopSFX3D", OnStartLoopSFX);
+            EventBus.Subscribe<int>("OnStopLoopSFX3D", OnStopLoopSFX);
+
             // Footsteps
             EventBus.Subscribe<Vector3>("OnFootstep", OnFootstep);
             EventBus.Subscribe("OnFootstepStop", OnFootstepStop);
@@ -84,6 +92,12 @@ namespace Genesis.Presentation.Audio {
             EventBus.Subscribe("OnConsumableUsed", OnConsumableUsed);
             EventBus.Subscribe("OnLocalPlayerRespawned", OnPlayerRespawned);
             EventBus.Subscribe<bool>("OnPlayerZoneChanged", OnZoneChanged);
+
+            // Portal sounds
+            EventBus.Subscribe<bool>("OnPortalSound", OnPortalSound);
+
+            // Loot drop
+            EventBus.Subscribe<Vector3>("OnLootDropped", OnLootDropped);
         }
 
         private void OnDisable() {
@@ -101,6 +115,8 @@ namespace Genesis.Presentation.Audio {
 
             EventBus.Unsubscribe<AudioClip, AudioClip>("OnZoneMusicChanged", OnZoneMusicChanged);
             EventBus.Unsubscribe<AudioClip, Vector3>("OnPlaySFX3D", OnPlaySFX3D);
+            EventBus.Unsubscribe<AudioClip, Vector3, int>("OnStartLoopSFX3D", OnStartLoopSFX);
+            EventBus.Unsubscribe<int>("OnStopLoopSFX3D", OnStopLoopSFX);
             EventBus.Unsubscribe<Vector3>("OnFootstep", OnFootstep);
             EventBus.Unsubscribe("OnFootstepStop", OnFootstepStop);
 
@@ -109,6 +125,8 @@ namespace Genesis.Presentation.Audio {
             EventBus.Unsubscribe("OnConsumableUsed", OnConsumableUsed);
             EventBus.Unsubscribe("OnLocalPlayerRespawned", OnPlayerRespawned);
             EventBus.Unsubscribe<bool>("OnPlayerZoneChanged", OnZoneChanged);
+            EventBus.Unsubscribe<bool>("OnPortalSound", OnPortalSound);
+            EventBus.Unsubscribe<Vector3>("OnLootDropped", OnLootDropped);
         }
 
         // ═══════════════════════════════════════════════════════
@@ -421,5 +439,66 @@ namespace Genesis.Presentation.Audio {
             _currentZoneMusic = entry.Clip;
             PlayMusic(entry.Clip, 1f, entry.Volume);
         }
+
+        // ═══════════════════════════════════════════════════════
+        // PORTAL & LOOT SOUNDS
+        // ═══════════════════════════════════════════════════════
+
+        private void OnPortalSound(bool isEntering) {
+            PlaySFX(isEntering ? SoundType.Portal_Enter : SoundType.Portal_Exit);
+        }
+
+        private void OnLootDropped(Vector3 position) {
+            PlaySFX(SoundType.Loot_Drop, position);
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // LOOP SFX (Channel Abilities)
+        // ═══════════════════════════════════════════════════════
+
+        private void OnStartLoopSFX(AudioClip clip, Vector3 position, int entityId) {
+            if (clip == null) return;
+
+            // Stop existing loop for this entity if any
+            OnStopLoopSFX(entityId);
+
+            AudioSource source = GetPooledSource();
+            source.transform.position = position;
+            source.clip = clip;
+            source.volume = 1f;
+            source.pitch = 1f;
+            source.spatialBlend = 1f;
+            source.loop = true;
+            source.Play();
+
+            _loopSources[entityId] = source;
+        }
+
+        private void OnStopLoopSFX(int entityId) {
+            if (_loopSources.TryGetValue(entityId, out AudioSource source)) {
+                if (source != null) {
+                    source.Stop();
+                    source.loop = false;
+                    source.clip = null;
+                }
+                _loopSources.Remove(entityId);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // VOLUME PERSISTENCE
+        // ═══════════════════════════════════════════════════════
+
+        private void LoadVolumeSettings() {
+            SetMasterVolume(PlayerPrefs.GetFloat("vol_master", 1f));
+            SetMusicVolume(PlayerPrefs.GetFloat("vol_music", 1f));
+            SetSFXVolume(PlayerPrefs.GetFloat("vol_sfx", 1f));
+            SetAmbientVolume(PlayerPrefs.GetFloat("vol_ambient", 1f));
+        }
+
+        public float GetMasterVolume() => PlayerPrefs.GetFloat("vol_master", 1f);
+        public float GetMusicVolume() => PlayerPrefs.GetFloat("vol_music", 1f);
+        public float GetSFXVolume() => PlayerPrefs.GetFloat("vol_sfx", 1f);
+        public float GetAmbientVolume() => PlayerPrefs.GetFloat("vol_ambient", 1f);
     }
 }

@@ -44,8 +44,9 @@ MonoBehaviour:
   CastVFX: {fileID: 0}
   ImpactVFX: {fileID: 0}
   ImpactVFXDuration: 2
-  CastSound: {fileID: 0}
+  CastSound: {fileID: 8300000, guid: ae55c8d1907f2a741bb44d3bd6954e47, type: 3}
   ImpactSound: {fileID: 0}
+  ChannelLoopSound: {fileID: 0}
   StartCastAnimationTrigger: Reflect
   AnimationTrigger: 
   UseAvatarMask: 1

@@ -72,6 +72,8 @@ public Material IndicatorMaterial;
         public float ImpactVFXDuration = 2.0f;
         public AudioClip CastSound;
         public AudioClip ImpactSound;
+        [Tooltip("Loop de audio durante channeling (se detiene al terminar).")]
+        public AudioClip ChannelLoopSound;
         public string StartCastAnimationTrigger = "StartCast"; // Trigger al INICIAR el cast
         public string AnimationTrigger = "Cast"; // Trigger al FINALIZAR el cast
         [Tooltip("Si es true, activa el layer de Avatar Mask (Upper Body). Si es false, usa el layer base (Full Body).")]

@@ -1,3 +1,4 @@
+/* ── Login Overlay ── */
 .login-overlay {
     position: absolute;
     left: 0;
@@ -11,8 +12,9 @@
     justify-content: center;
 }
 
+/* ── Main Panel ── */
 .login-panel {
-    width: 400px;
+    width: 750px;
     padding: 30px;
     background-color: rgba(20, 20, 30, 0.95);
     border-color: rgba(120, 90, 50, 0.8);
@@ -21,14 +23,213 @@
     align-items: center;
 }
 
+/* ── Title ── */
 .game-title {
     font-size: 36px;
     color: rgb(220, 180, 100);
     -unity-font-style: bold;
     -unity-text-outline-width: 1px;
     -unity-text-outline-color: rgb(0, 0, 0);
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     letter-spacing: 4px;
+}
+
+/* ── Content Row (class list + detail) ── */
+.content-row {
+    flex-direction: row;
+    width: 100%;
+    min-height: 340px;
+    margin-bottom: 16px;
+}
+
+/* ── Section Title ── */
+.section-title {
+    font-size: 13px;
+    color: rgb(180, 180, 180);
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    -unity-text-align: upper-left;
+}
+
+.section-title--detail {
+    margin-top: 4px;
+}
+
+/* ── Class List Panel (left) ── */
+.class-list-panel {
+    width: 200px;
+    margin-right: 12px;
+    padding: 12px;
+    background-color: rgba(15, 15, 22, 0.8);
+    border-color: rgba(80, 80, 100, 0.4);
+    border-width: 1px;
+    border-radius: 6px;
+}
+
+.class-list-scroll {
+    flex-grow: 1;
+}
+
+/* ── Class List Entry ── */
+.class-list-entry {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 10px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    border-width: 1px;
+    border-color: rgba(80, 80, 100, 0.3);
+    background-color: rgba(30, 30, 45, 0.6);
+    transition-duration: 0.15s;
+}
+
+.class-list-entry:hover {
+    background-color: rgba(50, 50, 70, 0.8);
+    border-color: rgba(120, 120, 150, 0.6);
+}
+
+.class-list-entry--selected {
+    background-color: rgba(60, 45, 20, 0.9);
+    border-color: rgba(220, 180, 100, 0.9);
+}
+
+.class-list-entry--selected:hover {
+    background-color: rgba(70, 55, 25, 0.95);
+    border-color: rgba(220, 180, 100, 1);
+}
+
+.class-list-icon {
+    width: 28px;
+    height: 28px;
+    margin-right: 8px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.class-list-name {
+    font-size: 14px;
+    color: rgb(200, 200, 210);
+    -unity-font-style: bold;
+}
+
+.class-list-entry--selected .class-list-name {
+    color: rgb(220, 180, 100);
+}
+
+/* ── Class Detail Panel (right) ── */
+.class-detail-panel {
+    flex-grow: 1;
+    padding: 16px;
+    background-color: rgba(15, 15, 22, 0.8);
+    border-color: rgba(80, 80, 100, 0.4);
+    border-width: 1px;
+    border-radius: 6px;
+}
+
+/* ── Class Header ── */
+.class-header {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.class-icon-large {
+    width: 56px;
+    height: 56px;
+    margin-right: 12px;
+    -unity-background-scale-mode: scale-to-fit;
+    border-radius: 6px;
+    border-width: 1px;
+    border-color: rgba(120, 90, 50, 0.6);
+    background-color: rgba(30, 30, 45, 0.5);
+}
+
+.class-name-label {
+    font-size: 24px;
+    color: rgb(220, 180, 100);
+    -unity-font-style: bold;
+}
+
+/* ── Class Description ── */
+.class-description-label {
+    font-size: 13px;
+    color: rgb(180, 180, 190);
+    -unity-font-style: italic;
+    white-space: normal;
+    margin-bottom: 8px;
+}
+
+/* ── Divider ── */
+.divider {
+    height: 1px;
+    width: 100%;
+    background-color: rgba(120, 90, 50, 0.3);
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+/* ── Stats Grid ── */
+.stats-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.stat-row {
+    flex-direction: row;
+    width: 50%;
+    padding: 2px 0;
+    align-items: center;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: rgb(150, 150, 165);
+    width: 55px;
+}
+
+.stat-value {
+    font-size: 13px;
+    color: rgb(230, 230, 240);
+    -unity-font-style: bold;
+}
+
+/* ── Abilities Row ── */
+.abilities-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.ability-slot-login {
+    width: 48px;
+    height: 48px;
+    margin-right: 6px;
+    margin-bottom: 6px;
+    border-radius: 4px;
+    border-width: 1px;
+    border-color: rgba(80, 80, 100, 0.5);
+    background-color: rgba(25, 25, 40, 0.8);
+    transition-duration: 0.15s;
+    overflow: hidden;
+}
+
+.ability-slot-login:hover {
+    border-color: rgba(220, 180, 100, 0.8);
+    scale: 1.08;
+}
+
+.ability-icon-login {
+    width: 100%;
+    height: 100%;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+/* ── Bottom Section ── */
+.bottom-section {
+    width: 100%;
+    align-items: center;
+    margin-top: 4px;
 }
 
 .name-hint {
@@ -42,7 +243,7 @@
     width: 100%;
     height: 40px;
     font-size: 18px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     background-color: rgba(10, 10, 15, 0.9);
     border-color: rgba(100, 100, 120, 0.6);
     border-width: 1px;
@@ -76,47 +277,7 @@
     border-color: rgba(220, 180, 100, 0.8);
 }
 
-.class-hint {
-    font-size: 14px;
-    color: rgb(180, 180, 180);
-    margin-bottom: 8px;
-    align-self: flex-start;
-}
-
-.class-button-row {
-    flex-direction: row;
-    width: 100%;
-    justify-content: space-between;
-    margin-bottom: 24px;
-}
-
-.class-button {
-    width: 48%;
-    height: 50px;
-    font-size: 18px;
-    -unity-font-style: bold;
-    border-width: 2px;
-    border-radius: 6px;
-    transition-duration: 0.15s;
-}
-
-.class-button--selected {
-    background-color: rgba(60, 45, 20, 0.9);
-    border-color: rgba(220, 180, 100, 0.9);
-    color: rgb(220, 180, 100);
-}
-
-.class-button--unselected {
-    background-color: rgba(40, 40, 55, 0.9);
-    border-color: rgba(80, 80, 100, 0.6);
-    color: rgb(180, 180, 180);
-}
-
-.class-button--unselected:hover {
-    background-color: rgba(60, 60, 80, 0.9);
-    border-color: rgba(120, 120, 150, 0.8);
-}
-
+/* ── Connect Button ── */
 .connect-button {
     width: 100%;
     height: 50px;
@@ -127,7 +288,7 @@
     border-width: 2px;
     border-radius: 6px;
     color: rgb(220, 180, 100);
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     transition-duration: 0.15s;
 }
 
@@ -136,8 +297,71 @@
     border-color: rgba(255, 210, 120, 1);
 }
 
+.connect-button:disabled {
+    opacity: 0.5;
+}
+
+/* ── Status Label ── */
 .status-label {
     font-size: 14px;
     color: rgb(255, 80, 80);
     min-height: 20px;
+}
+
+/* ── Ability Tooltip ── */
+.ability-tooltip {
+    position: absolute;
+    display: none;
+    width: 260px;
+    padding: 12px;
+    background-color: rgba(15, 12, 20, 0.97);
+    border-color: rgba(120, 90, 50, 0.8);
+    border-width: 1.5px;
+    border-radius: 6px;
+}
+
+.tooltip-name {
+    font-size: 15px;
+    color: rgb(220, 180, 100);
+    -unity-font-style: bold;
+    margin-bottom: 2px;
+}
+
+.tooltip-category {
+    font-size: 11px;
+    color: rgb(150, 150, 170);
+    -unity-font-style: italic;
+    margin-bottom: 6px;
+}
+
+.tooltip-divider {
+    height: 1px;
+    width: 100%;
+    background-color: rgba(120, 90, 50, 0.3);
+    margin-bottom: 6px;
+}
+
+.tooltip-description {
+    font-size: 12px;
+    color: rgb(200, 200, 210);
+    white-space: normal;
+    margin-bottom: 8px;
+}
+
+.tooltip-stats {
+    flex-direction: column;
+}
+
+.tooltip-stat {
+    font-size: 12px;
+    color: rgb(180, 180, 195);
+    margin-bottom: 2px;
+}
+
+.tooltip-stat--damage {
+    color: rgb(255, 100, 100);
+}
+
+.tooltip-stat--heal {
+    color: rgb(100, 255, 130);
 }

@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 using Genesis.Core;
 using Genesis.Simulation.Combat;
 using Genesis.Items;
+using System.Collections;
 
 namespace Genesis.Simulation {
 
@@ -38,6 +39,8 @@ namespace Genesis.Simulation {
         private PlayerStats _playerStats;
         private bool _isDashing;
         private float _footstepTimer;
+        private bool _spawnProtection;
+        private Coroutine _groundingCoroutine;
 
         // ═══════════════════════════════════════════════════════
         // INITIALIZATION
@@ -69,9 +72,45 @@ namespace Genesis.Simulation {
                 if (OccluderFader.Instance != null) {
                     OccluderFader.Instance.SetTarget(transform);
                 }
+
+                // Spawn protection: wait for terrain/chunks to load then snap to ground
+                _groundingCoroutine = StartCoroutine(SpawnGroundingRoutine());
             }
 
             _lastPosition = transform.position;
+        }
+
+        private IEnumerator SpawnGroundingRoutine() {
+            _spawnProtection = true;
+            _cc.enabled = false;
+
+            // Wait up to 8 seconds for terrain/chunks to load, checking each frame.
+            // Uses transform.position each frame (NOT cached) so server hydration
+            // teleports are picked up automatically.
+            float elapsed = 0f;
+            const float maxWait = 8f;
+            bool grounded = false;
+            while (elapsed < maxWait) {
+                Vector3 currentPos = transform.position;
+                if (Physics.Raycast(currentPos + Vector3.up * 50f, Vector3.down, out RaycastHit hit, 100f)) {
+                    transform.position = hit.point + Vector3.up * 0.1f;
+                    grounded = true;
+                    Debug.Log($"[Motor] Spawn grounding found terrain at {elapsed:F1}s → {hit.point}");
+                    break;
+                }
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            if (!grounded) {
+                Debug.LogWarning($"[Motor] Spawn grounding: no terrain after {maxWait}s at {transform.position}");
+            }
+
+            _cc.enabled = true;
+            _velocity.y = -5f;
+            _spawnProtection = false;
+            _groundingCoroutine = null;
+            Debug.Log($"[Motor] Spawn grounding complete at {transform.position} (grounded={grounded})");
         }
 
         // ═══════════════════════════════════════════════════════
@@ -80,12 +119,10 @@ namespace Genesis.Simulation {
 
         void Update() {
             // 1. ANIMACIONES (Para TODOS: Owner y Remotos)
-            // Calculamos la velocidad visualmente para que el BlendTree funcione en todos los clientes
-            // sin necesidad de gastar ancho de banda sincronizando un float "Speed".
             UpdateAnimations();
 
-            // 2. MOVIMIENTO (Solo Owner)
-            if (base.IsOwner) {
+            // 2. MOVIMIENTO (Solo Owner, skip during spawn protection)
+            if (base.IsOwner && !_spawnProtection) {
                 // No movement while dead
                 if (_playerStats != null && _playerStats.IsDead) return;
 
@@ -156,6 +193,30 @@ namespace Genesis.Simulation {
             transform.position = position;
             transform.rotation = Quaternion.Euler(eulerRotation);
             _cc.enabled = true;
+        }
+
+        /// <summary>
+        /// Called by server after hydrating saved position. Teleports the client
+        /// and restarts the grounding routine so chunks load at the saved position.
+        /// </summary>
+        [TargetRpc]
+        public void RpcHydrateTeleport(NetworkConnection conn, Vector3 position, float rotY) {
+            if (!base.IsOwner) return;
+
+            // Stop existing grounding routine if running
+            if (_groundingCoroutine != null) {
+                StopCoroutine(_groundingCoroutine);
+                _groundingCoroutine = null;
+            }
+
+            // Set position directly (CC is already disabled by grounding routine or we disable it)
+            _cc.enabled = false;
+            transform.position = position;
+            transform.rotation = Quaternion.Euler(0f, rotY, 0f);
+
+            // Restart grounding at the saved position
+            _groundingCoroutine = StartCoroutine(SpawnGroundingRoutine());
+            Debug.Log($"[Motor] Hydration teleport → {position}, re-grounding");
         }
 
         // ═══════════════════════════════════════════════════════

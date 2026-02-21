@@ -1,5 +1,7 @@
 using UnityEngine;
 using Genesis.Core;
+using Genesis.Core.Persistence;
+using Genesis.Simulation.Persistence;
 
 namespace Genesis.Bootstrap {
 
@@ -23,6 +25,10 @@ namespace Genesis.Bootstrap {
 
             // Inicializar EventBus (ya está listo, solo log)
             Log("EventBus initialized");
+
+            // Register persistence bridge (Simulation → Core interface)
+            ServiceLocator.Instance.Register<IPersistenceBridge>(new CharacterPersistenceBridge());
+            Log("IPersistenceBridge registered");
         }
 
         void Start() {

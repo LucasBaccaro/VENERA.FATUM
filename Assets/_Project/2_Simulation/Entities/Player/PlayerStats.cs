@@ -414,6 +414,16 @@ namespace Genesis.Simulation {
         }
 
         // ═══════════════════════════════════════════════════════
+        // PERSISTENCE HYDRATION
+        // ═══════════════════════════════════════════════════════
+
+        [Server]
+        public void HydrateFromSave(float health, float mana) {
+            _currentHealth.Value = Mathf.Min(health, _maxHealth.Value);
+            _currentMana.Value = Mathf.Min(mana, _maxMana.Value);
+        }
+
+        // ═══════════════════════════════════════════════════════
         // SHIELD MANAGEMENT
         // ═══════════════════════════════════════════════════════
 

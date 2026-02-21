@@ -3,15 +3,81 @@
     <ui:VisualElement name="LoginOverlay" class="login-overlay">
         <ui:VisualElement name="LoginPanel" class="login-panel">
             <ui:Label text="VENERA FATUM" name="GameTitle" class="game-title"/>
-            <ui:Label text="Enter your name" name="NameHint" class="name-hint"/>
-            <ui:TextField name="NameInput" max-length="16" class="name-input"/>
-            <ui:Label text="Choose your class" name="ClassHint" class="class-hint"/>
-            <ui:VisualElement name="ClassButtonRow" class="class-button-row">
-                <ui:Button text="MAGE" name="MageButton" class="class-button class-button--selected"/>
-                <ui:Button text="WARRIOR" name="WarriorButton" class="class-button class-button--unselected"/>
+
+            <ui:VisualElement name="ContentRow" class="content-row">
+                <!-- Left: Class List -->
+                <ui:VisualElement name="ClassListPanel" class="class-list-panel">
+                    <ui:Label text="Choose Class" class="section-title"/>
+                    <ui:ScrollView name="ClassListScroll" class="class-list-scroll"/>
+                </ui:VisualElement>
+
+                <!-- Right: Class Detail -->
+                <ui:VisualElement name="ClassDetailPanel" class="class-detail-panel">
+                    <ui:VisualElement name="ClassHeader" class="class-header">
+                        <ui:VisualElement name="ClassIconLarge" class="class-icon-large"/>
+                        <ui:Label text="Class Name" name="ClassNameLabel" class="class-name-label"/>
+                    </ui:VisualElement>
+                    <ui:Label text="" name="ClassDescriptionLabel" class="class-description-label"/>
+
+                    <ui:VisualElement class="divider"/>
+                    <ui:Label text="Base Stats" class="section-title section-title--detail"/>
+
+                    <ui:VisualElement name="StatsGrid" class="stats-grid">
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Health" class="stat-label"/>
+                            <ui:Label text="0" name="StatHealth" class="stat-value"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="Mana" class="stat-label"/>
+                            <ui:Label text="0" name="StatMana" class="stat-value"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="HP/s" class="stat-label"/>
+                            <ui:Label text="0" name="StatHPRegen" class="stat-value"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="MP/s" class="stat-label"/>
+                            <ui:Label text="0" name="StatMPRegen" class="stat-value"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="HP/Lvl" class="stat-label"/>
+                            <ui:Label text="0" name="StatHPLevel" class="stat-value"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="stat-row">
+                            <ui:Label text="MP/Lvl" class="stat-label"/>
+                            <ui:Label text="0" name="StatMPLevel" class="stat-value"/>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="divider"/>
+                    <ui:Label text="Starting Abilities" class="section-title section-title--detail"/>
+                    <ui:VisualElement name="AbilitiesRow" class="abilities-row"/>
+                </ui:VisualElement>
             </ui:VisualElement>
-            <ui:Button text="ENTER WORLD" name="ConnectButton" class="connect-button"/>
-            <ui:Label text="" name="StatusLabel" class="status-label"/>
+
+            <!-- Bottom Section -->
+            <ui:VisualElement name="BottomSection" class="bottom-section">
+                <ui:Label text="Enter your name" class="name-hint"/>
+                <ui:TextField name="NameInput" max-length="16" class="name-input"/>
+                <ui:Button text="ENTER WORLD" name="ConnectButton" class="connect-button"/>
+                <ui:Label text="" name="StatusLabel" class="status-label"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- Ability Tooltip (floating, hidden by default) -->
+        <ui:VisualElement name="AbilityTooltip" class="ability-tooltip">
+            <ui:Label name="TooltipName" class="tooltip-name"/>
+            <ui:Label name="TooltipCategory" class="tooltip-category"/>
+            <ui:VisualElement class="tooltip-divider"/>
+            <ui:Label name="TooltipDescription" class="tooltip-description"/>
+            <ui:VisualElement name="TooltipStats" class="tooltip-stats">
+                <ui:Label name="TooltipMana" class="tooltip-stat"/>
+                <ui:Label name="TooltipCooldown" class="tooltip-stat"/>
+                <ui:Label name="TooltipCastTime" class="tooltip-stat"/>
+                <ui:Label name="TooltipRange" class="tooltip-stat"/>
+                <ui:Label name="TooltipDamage" class="tooltip-stat tooltip-stat--damage"/>
+                <ui:Label name="TooltipHeal" class="tooltip-stat tooltip-stat--heal"/>
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

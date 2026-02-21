@@ -145,6 +145,12 @@ namespace Genesis.Simulation.Combat {
                 FishNet.InstanceFinder.ServerManager.Spawn(vfx);
                 Object.Destroy(vfx, data.ImpactVFXDuration);
             }
+
+            // IMPACT SOUND
+            if (data.ImpactSound != null) {
+                PlayerCombat combat = caster.GetComponent<PlayerCombat>();
+                combat?.RpcPlayImpactSoundAtPosition(target.transform.position, data.ID);
+            }
         }
 
         /// <summary>
@@ -192,6 +198,12 @@ namespace Genesis.Simulation.Combat {
                 GameObject vfx = Object.Instantiate(data.ImpactVFX, impactPos, Quaternion.identity);
                 FishNet.InstanceFinder.ServerManager.Spawn(vfx);
                 Object.Destroy(vfx, data.ImpactVFXDuration);
+            }
+
+            // IMPACT SOUND
+            if (data.ImpactSound != null) {
+                PlayerCombat combat = caster.GetComponent<PlayerCombat>();
+                combat?.RpcPlayImpactSoundAtPosition(target.transform.position, data.ID);
             }
         }
 

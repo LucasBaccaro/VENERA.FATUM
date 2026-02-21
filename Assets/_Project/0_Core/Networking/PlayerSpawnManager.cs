@@ -2,9 +2,11 @@ using UnityEngine;
 using FishNet;
 using FishNet.Managing;
 using FishNet.Connection;
+using FishNet.Object;
 using FishNet.Transporting;
 using System.Collections;
 using Genesis.Core;
+using Genesis.Core.Persistence;
 
 namespace Genesis.Core.Networking {
 
@@ -58,7 +60,62 @@ namespace Genesis.Core.Networking {
             Debug.Log($"[SpawnManager] Conn Event: {conn.ClientId} -> {args.ConnectionState}");
             if (args.ConnectionState == RemoteConnectionState.Started) {
                 StartCoroutine(SpawnWithDelay(conn));
+            } else if (args.ConnectionState == RemoteConnectionState.Stopped) {
+                SavePlayerOnDisconnect(conn);
             }
+        }
+
+        /// <summary>
+        /// Saves player data and cleans up when a remote client disconnects.
+        /// FishNet fires OnRemoteConnectionState BEFORE despawning objects,
+        /// so conn.FirstObject and sessions are still valid here.
+        /// Save MUST happen before cleanup (UnregisterConnection removes the session).
+        /// </summary>
+        private void SavePlayerOnDisconnect(NetworkConnection conn) {
+            Debug.Log($"[SpawnManager] ═══ DISCONNECT SAVE ═══ clientId={conn.ClientId}");
+
+            if (!ServiceLocator.Instance.TryGet<IPersistenceService>(out var persistence)) {
+                Debug.LogWarning($"[SpawnManager] Disconnect save SKIPPED: No IPersistenceService");
+                return;
+            }
+
+            if (!(persistence is NakamaManager nakama)) {
+                Debug.LogWarning($"[SpawnManager] Disconnect save SKIPPED: Not NakamaManager");
+                return;
+            }
+
+            // ── SAVE FIRST (sessions and objects still valid) ──
+            NetworkObject playerObj = conn.FirstObject;
+            if (playerObj != null) {
+                string userId = nakama.GetUserId(conn.ClientId);
+                if (!string.IsNullOrEmpty(userId) && ServiceLocator.Instance.TryGet<IPersistenceBridge>(out var bridge)) {
+                    try {
+                        var data = bridge.ExtractPlayerData(playerObj);
+                        if (data != null) {
+                            // Fire and forget — SaveAsync captures session ref synchronously
+                            // before UnregisterConnection removes it below
+                            var saveTask = persistence.SaveAsync(userId, data);
+                            saveTask.ContinueWith(t => {
+                                if (t.IsFaulted)
+                                    Debug.LogError($"[SpawnManager] Disconnect save FAILED: {t.Exception?.InnerException?.Message}");
+                                else
+                                    Debug.Log($"[SpawnManager] ✓ Disconnect save CONFIRMED: {data.playerName} pos=({data.posX:F1},{data.posY:F1},{data.posZ:F1})");
+                            });
+                            Debug.Log($"[SpawnManager] Disconnect save queued: {data.playerName} pos=({data.posX:F1},{data.posY:F1},{data.posZ:F1})");
+                        }
+                    } catch (System.Exception e) {
+                        Debug.LogError($"[SpawnManager] Disconnect save exception: {e.Message}");
+                    }
+                }
+            } else {
+                Debug.LogWarning($"[SpawnManager] Disconnect save: conn.FirstObject is null (unexpected)");
+            }
+
+            // ── CLEANUP AFTER save started ──
+            nakama.UnregisterPlayer(conn.ClientId);
+            nakama.UnregisterConnection(conn.ClientId);
+            Debug.Log($"[SpawnManager] ✓ Cleanup done for client {conn.ClientId}");
+            Debug.Log($"[SpawnManager] ═══ DISCONNECT SAVE END ═══");
         }
 
         private IEnumerator SpawnWithDelay(NetworkConnection conn) {
@@ -88,12 +145,29 @@ namespace Genesis.Core.Networking {
             // Get spawn position from provider (if registered), otherwise use spawnPoints
             Vector3 pos = GetSpawnPosition();
 
+            // Snap to ground to prevent spawning mid-air
+            if (Physics.Raycast(pos + Vector3.up * 2f, Vector3.down, out RaycastHit hit, 20f))
+            {
+                pos.y = hit.point.y;
+            }
+
             GameObject player = Instantiate(playerPrefab, pos, Quaternion.identity);
+
+            // Disable CharacterController before FishNet spawn to prevent physics conflicts
+            var cc = player.GetComponent<CharacterController>();
+            if (cc != null) cc.enabled = false;
 
             // FishNet Spawn
             _networkManager.ServerManager.Spawn(player, conn);
 
-            Debug.Log($"[SpawnManager] 🟢 SPAWN COMMAND SENT for Client {conn.ClientId} at {pos}");
+            // Re-enable CC after spawn with correct position
+            if (cc != null)
+            {
+                player.transform.position = pos;
+                cc.enabled = true;
+            }
+
+            Debug.Log($"[SpawnManager] SPAWN for Client {conn.ClientId} at {pos}");
         }
 
         private Vector3 GetSpawnPosition() {

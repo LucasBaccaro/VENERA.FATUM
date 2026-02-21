@@ -45,7 +45,8 @@ MonoBehaviour:
   ImpactVFX: {fileID: 0}
   ImpactVFXDuration: 2
   CastSound: {fileID: 0}
-  ImpactSound: {fileID: 0}
+  ImpactSound: {fileID: 8300000, guid: 19de9ad9e63359544ababe3620668d19, type: 3}
+  ChannelLoopSound: {fileID: 8300000, guid: 90e50e5149c129a4fbc7ac90e0fb16aa, type: 3}
   StartCastAnimationTrigger: Torbellino
   AnimationTrigger: EndTorbellino
   UseAvatarMask: 0

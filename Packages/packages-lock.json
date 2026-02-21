@@ -9,6 +9,15 @@
       },
       "hash": "1e491520cce7188e0786c13ab0ef7e3ecbc49afb"
     },
+    "com.heroiclabs.nakama-unity": {
+      "version": "https://github.com/heroiclabs/nakama-unity.git?path=/Packages/Nakama#v3.13.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.modules.unitywebrequest": "1.0.0"
+      },
+      "hash": "b57e1d982b73f2abd9fbaca9ff042b223f302585"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,

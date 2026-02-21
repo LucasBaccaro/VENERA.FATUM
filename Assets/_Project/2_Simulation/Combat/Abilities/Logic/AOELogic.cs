@@ -77,13 +77,19 @@ namespace Genesis.Simulation.Combat {
             // Spawn impact VFX
             if (data.ImpactVFX != null) {
                 GameObject vfx = Object.Instantiate(data.ImpactVFX, targetPoint, Quaternion.identity);
-                
+
                 // ESCALAR EL VFX
                 float scaleMultiplier = data.Radius / baseVisualRadius;
                 vfx.transform.localScale = new Vector3(scaleMultiplier, scaleMultiplier, scaleMultiplier);
-                
+
                 FishNet.InstanceFinder.ServerManager.Spawn(vfx);
                 Object.Destroy(vfx, data.ImpactVFXDuration);
+            }
+
+            // IMPACT SOUND (once for the whole AOE, not per target)
+            if (data.ImpactSound != null) {
+                PlayerCombat combat = caster.GetComponent<PlayerCombat>();
+                combat?.RpcPlayImpactSoundAtPosition(targetPoint, data.ID);
             }
 
             // Get config for combat calculations

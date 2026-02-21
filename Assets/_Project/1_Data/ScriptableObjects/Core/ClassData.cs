@@ -7,6 +7,7 @@ namespace Genesis.Data {
         [Header("Identity")]
         public string ClassName;
         public Sprite ClassIcon;
+        [TextArea(2, 5)] public string Description;
 
         [Header("Base Stats")]
         public float MaxHealth = 100f;

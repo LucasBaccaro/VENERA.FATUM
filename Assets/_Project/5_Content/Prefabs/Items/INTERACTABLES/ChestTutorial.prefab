@@ -66,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -1294284738371021749, guid: aacfcd8c6e89d4798826ced37cf12419, type: 3}
+  - {fileID: 2100000, guid: 4d409b5f10735f54aaf396a4c73f8258, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -213,7 +213,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -905690159841262435, guid: aacfcd8c6e89d4798826ced37cf12419, type: 3}
+  - {fileID: 2100000, guid: bf1a30f6192876641b565bcccf981f9e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -249,6 +249,8 @@ GameObject:
   - component: {fileID: 5921129850951694236}
   - component: {fileID: 622666541671019124}
   - component: {fileID: 8244865109155665129}
+  - component: {fileID: 8292786397869156504}
+  - component: {fileID: -6167716488653483711}
   m_Layer: 0
   m_Name: ChestTutorial
   m_TagString: Untagged
@@ -290,7 +292,8 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   <PredictedOwner>k__BackingField: {fileID: 0}
-  NetworkBehaviours: []
+  NetworkBehaviours:
+  - {fileID: 8244865109155665129}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -301,7 +304,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: 0
+  _initializedTimestamp: -8584298221013008056
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -317,15 +320,15 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 65535
+  <PrefabId>k__BackingField: 5
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 1496851840943118703
   SceneId: 0
   SerializedTransformProperties:
     Position: {x: 0, y: 0, z: 0}
-    Rotation: {x: 0, y: 0, z: 0, w: 0}
-    Scale: {x: 0, y: 0, z: 0}
-    IsValid: 0
+    Rotation: {x: 0, y: 0, z: 0, w: 1}
+    Scale: {x: 1, y: 1, z: 1}
+    IsValid: 1
 --- !u!65 &622666541671019124
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -359,9 +362,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14e237df84ceffd499b7f93651178793, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.ClassSpecificChestController
-  _componentIndexCache: 255
+  _componentIndexCache: 0
   _addedNetworkObject: {fileID: 5921129850951694236}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 5921129850951694236}
   _chestName: Equipment Chest
   _lootTable: {fileID: 0}
   _interactRadius: 3
@@ -374,6 +377,34 @@ MonoBehaviour:
   _closeTrigger: Closed
   _isOneTimeUse: 1
   _questID: tutorial_02
+--- !u!114 &8292786397869156504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5473535846728153681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0bbcde941241a94297adb460f51b72c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.Feedback.OutlineToggle
+  _outlineLayer:
+    serializedVersion: 2
+    m_Bits: 2048
+  _outlineOnStart: 0
+--- !u!114 &-6167716488653483711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5473535846728153681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2485409c0523f84b82e10dfecf049bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.Feedback.InteractableOutlineHover
 --- !u!1 &8784434264763489261
 GameObject:
   m_ObjectHideFlags: 0
@@ -440,7 +471,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -1294284738371021749, guid: aacfcd8c6e89d4798826ced37cf12419, type: 3}
+  - {fileID: 2100000, guid: 4d409b5f10735f54aaf396a4c73f8258, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

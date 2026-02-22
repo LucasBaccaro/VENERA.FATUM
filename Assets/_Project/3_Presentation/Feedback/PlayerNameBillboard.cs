@@ -15,7 +15,7 @@ namespace Genesis.Presentation.Feedback {
         [SerializeField] private float _outlineWidth = 0.25f;
 
         [Header("Visibility")]
-        [SerializeField] private bool _hideForOwner = false;
+        // [SerializeField] private bool _hideForOwner = false; // Replaced by NameplateManager logic
 
         private TextMeshPro _textMesh;
         private Transform _billboardTransform;
@@ -39,7 +39,7 @@ namespace Genesis.Presentation.Feedback {
             _textMesh.alignment = TextAlignmentOptions.Center;
             _textMesh.fontSize = _fontSize;
             _textMesh.color = _nameColor;
-            _textMesh.enableWordWrapping = false;
+            _textMesh.textWrappingMode = TextWrappingModes.NoWrap;
             _textMesh.sortingOrder = 90;
             _textMesh.text = "";
             _textMesh.enabled = false;
@@ -60,6 +60,7 @@ namespace Genesis.Presentation.Feedback {
         }
 
         private void LateUpdate() {
+            /* Legacy 3D Billboard - Replaced by NameplateManager 2D UI
             if (_classManager == null) return;
 
             if (_hideForOwner && _networkObject != null && _networkObject.IsOwner) {
@@ -81,6 +82,7 @@ namespace Genesis.Presentation.Feedback {
             if (cam != null && _billboardTransform != null) {
                 _billboardTransform.rotation = cam.transform.rotation;
             }
+            */
         }
     }
 }

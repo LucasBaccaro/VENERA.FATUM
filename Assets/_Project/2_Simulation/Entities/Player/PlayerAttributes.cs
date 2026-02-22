@@ -428,7 +428,7 @@ namespace Genesis.Simulation {
                 if (gained > 0) {
                     var data = new FloatingTextData(
                         transform.position + Vector3.up * 2f,
-                        $"+{gained} Gold",
+                        $"+{gained}",
                         "gold"
                     );
                     EventBus.Trigger("OnShowFloatingText", data);

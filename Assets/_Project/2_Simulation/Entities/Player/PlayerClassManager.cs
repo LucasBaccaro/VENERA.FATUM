@@ -40,6 +40,11 @@ namespace Genesis.Simulation {
 
         public override void OnStartClient() {
             base.OnStartClient();
+
+            // Notify UI for nameplates
+            Debug.Log($"[PlayerClassManager] OnStartClient: Triggering registration for {NetworkObject.OwnerId}");
+            Genesis.Core.EventBus.Trigger("OnPlayerNameplateRegister", this);
+
             if (!base.IsOwner) return;
 
             // If login data was set, send it to the server
@@ -55,6 +60,11 @@ namespace Genesis.Simulation {
             if (_currentClassIndex.Value == -1 && availableClasses.Count > 0) {
                 SetClass(0);
             }
+        }
+
+        public override void OnStopClient() {
+            base.OnStopClient();
+            Genesis.Core.EventBus.Trigger("OnPlayerNameplateUnregister", this);
         }
 
         public override void OnStopServer() {
@@ -329,8 +339,11 @@ namespace Genesis.Simulation {
         }
 
         private void OnPlayerNameChanged(string oldName, string newName, bool asServer) {
+            // Trigger always so the HUD/NameplateManager can see the change for any player
+            Genesis.Core.EventBus.Trigger("OnPlayerNameChanged", newName);
+            
             if (base.IsOwner) {
-                EventBus.Trigger("OnPlayerNameChanged", newName);
+                // Specific local handling if needed
             }
         }
     }

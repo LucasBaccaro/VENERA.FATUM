@@ -36,6 +36,7 @@ GameObject:
   - component: {fileID: 9097693861308998482}
   - component: {fileID: 2783915817344820037}
   - component: {fileID: -772194818275116858}
+  - component: {fileID: 3652627071219974014}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -150,6 +151,7 @@ MonoBehaviour:
   - {fileID: 4975949508799160666}
   - {fileID: 2357473902400772969}
   - {fileID: 2783915817344820037}
+  - {fileID: -772194818275116858}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -160,7 +162,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584298522714486878
+  _initializedTimestamp: -8584298168261744676
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -612,7 +614,6 @@ MonoBehaviour:
   _nameColor: {r: 0.95, g: 0.92, b: 0.78, a: 1}
   _outlineColor: {r: 0, g: 0, b: 0, a: 0.8}
   _outlineWidth: 0.25
-  _hideForOwner: 0
 --- !u!114 &2783915817344820037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -640,9 +641,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edd149271542b4f5686c07b525c3dc5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.PartyMember
-  _componentIndexCache: 255
+  _componentIndexCache: 22
   _addedNetworkObject: {fileID: 5015743577735707121}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 5015743577735707121}
+--- !u!114 &3652627071219974014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3168934939399175360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8e89ae11cc026347b4bb7cd94262342, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.Feedback.InteractableOutlineProximity
 --- !u!1 &8233073365634962066
 GameObject:
   m_ObjectHideFlags: 0

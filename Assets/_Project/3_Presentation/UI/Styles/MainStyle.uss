@@ -414,3 +414,25 @@ Label {
     text-shadow: 1px 1px 2px black;
     z-index: 25;
 }
+
+/* ═══════════════════════════════════════════════════════
+   NAMEPLATES
+   ═══════════════════════════════════════════════════════ */
+
+.nameplate {
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    translate: -50% 0; /* Center horizontally */
+}
+
+.nameplate-label {
+    font-size: 18px;
+    -unity-font-style: bold;
+    color: rgb(160, 210, 255); /* Soft Blue */
+    -unity-text-outline-width: 0.8px;
+    -unity-text-outline-color: rgba(0, 0, 0, 0.8);
+    text-shadow: 1px 1px 2px black;
+    white-space: nowrap;
+}

@@ -61,7 +61,7 @@ namespace Genesis.Presentation.Feedback {
             _textMesh.alignment = TextAlignmentOptions.Center;
             _textMesh.fontSize = _fontSize;
             _textMesh.fontStyle = FontStyles.Bold;
-            _textMesh.enableWordWrapping = false;
+            _textMesh.textWrappingMode = TextWrappingModes.NoWrap;
             _textMesh.text = "";
             _textMesh.enabled = false;
 

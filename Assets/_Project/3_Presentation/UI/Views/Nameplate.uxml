@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="Nameplate" class="nameplate" picking-mode="Ignore">
+        <ui:Label text="Player Name" name="NameLabel" class="nameplate-label" picking-mode="Ignore" />
+    </ui:VisualElement>
+</ui:UXML>

@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 6201230521766880598}
   - component: {fileID: 7106055066627112138}
   - component: {fileID: 3395357637659113576}
+  - component: {fileID: -1485910965072978301}
+  - component: {fileID: 9107461934651388011}
   m_Layer: 0
   m_Name: LootBag
   m_TagString: Untagged
@@ -133,7 +135,8 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   <PredictedOwner>k__BackingField: {fileID: 0}
-  NetworkBehaviours: []
+  NetworkBehaviours:
+  - {fileID: 7106055066627112138}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -144,7 +147,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: 0
+  _initializedTimestamp: -8584298161045556626
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -160,15 +163,15 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 65535
+  <PrefabId>k__BackingField: 33
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 12680719458796136260
   SceneId: 0
   SerializedTransformProperties:
     Position: {x: 0, y: 0, z: 0}
-    Rotation: {x: 0, y: 0, z: 0, w: 0}
-    Scale: {x: 0, y: 0, z: 0}
-    IsValid: 0
+    Rotation: {x: 0, y: 0, z: 0, w: 1}
+    Scale: {x: 0.5, y: 0.5, z: 0.5}
+    IsValid: 1
 --- !u!114 &7106055066627112138
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,11 +184,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dd1cf832eb494ff78405c9be9928524, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.LootBag
-  _componentIndexCache: 255
+  _componentIndexCache: 0
   _addedNetworkObject: {fileID: 6201230521766880598}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 6201230521766880598}
   _despawnTime: 300
   _interactRadius: 3
+  _openingTime: 1.5
+  _openingText: Looting
+  _maxOpeningDistance: 5
 --- !u!135 &3395357637659113576
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -207,3 +213,31 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 3
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-1485910965072978301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1518507829531864150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0bbcde941241a94297adb460f51b72c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.Feedback.OutlineToggle
+  _outlineLayer:
+    serializedVersion: 2
+    m_Bits: 2048
+  _outlineOnStart: 0
+--- !u!114 &9107461934651388011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1518507829531864150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2485409c0523f84b82e10dfecf049bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.Feedback.InteractableOutlineHover

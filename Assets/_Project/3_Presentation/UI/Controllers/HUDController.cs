@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.InputSystem;
 using Genesis.Core;
 using Genesis.Simulation;
 using Genesis.Simulation.Combat;
@@ -128,6 +129,16 @@ namespace Genesis.Presentation.UI {
 
         void Update() {
             UpdateTargetUI();
+            
+            // Debug for raycast blocking (Using New Input System)
+            if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame) {
+                Vector2 mousePos = Pointer.current.position.ReadValue();
+                Vector2 flippedMousePos = new Vector2(mousePos.x, Screen.height - mousePos.y);
+                VisualElement picked = _root.panel.Pick(flippedMousePos);
+                if (picked != null && picked.pickingMode != PickingMode.Ignore) {
+                    Debug.Log($"[HUD Debug] Mouse clicked on UI: {picked.name} (type: {picked.GetType().Name}) which is blocking raycasts.");
+                }
+            }
         }
 
         void Start() {

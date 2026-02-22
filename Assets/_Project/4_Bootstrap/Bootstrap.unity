@@ -348,6 +348,7 @@ GameObject:
   - component: {fileID: 283858261}
   - component: {fileID: 283858263}
   - component: {fileID: 283858262}
+  - component: {fileID: 283858264}
   m_Layer: 5
   m_Name: HUD
   m_TagString: Untagged
@@ -406,6 +407,20 @@ MonoBehaviour:
   m_PivotReferenceSize: 0
   m_Pivot: 0
   m_WorldSpaceCollider: {fileID: 0}
+--- !u!114 &283858264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 283858260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a40d640c8cd09541b6726be3316571f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.UI.NameplateManager
+  _uiDocument: {fileID: 283858263}
+  _nameplateTemplate: {fileID: 9197481963319205126, guid: 18d09104806c58f47812d4917c26c2a9, type: 3}
 --- !u!1 &289927435
 GameObject:
   m_ObjectHideFlags: 0
@@ -1983,7 +1998,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3302142697858957488, guid: b69f335e28e4745a58dd5089cd8294f0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1962297717}
   m_SourcePrefab: {fileID: 100100000, guid: b69f335e28e4745a58dd5089cd8294f0, type: 3}
 --- !u!4 &1654514765 stripped
 Transform:
@@ -2350,6 +2368,27 @@ Transform:
   - {fileID: 1668302952}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1962297712 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3302142697858957488, guid: b69f335e28e4745a58dd5089cd8294f0, type: 3}
+  m_PrefabInstance: {fileID: 1654514764}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1962297717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1962297712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c49b4cc203aa6414fae5c798d1d0e7d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.PhysicsRaycaster
+  m_EventMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_MaxRayIntersections: 0
 --- !u!1 &1967553625
 GameObject:
   m_ObjectHideFlags: 0

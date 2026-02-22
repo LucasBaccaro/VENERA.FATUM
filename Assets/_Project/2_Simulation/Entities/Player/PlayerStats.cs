@@ -329,7 +329,7 @@ namespace Genesis.Simulation {
             float healAmount = Mathf.Min(amount, _maxHealth.Value - _currentHealth.Value);
             _currentHealth.Value += healAmount;
 
-            if (base.Owner.IsValid) {
+            if (base.Owner.IsValid && healAmount > 0.01f) {
                 TargetShowDamageText(base.Owner, $"+{healAmount:F0}", "heal");
             }
 

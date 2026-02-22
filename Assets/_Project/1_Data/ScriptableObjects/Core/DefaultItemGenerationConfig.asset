@@ -23,6 +23,10 @@ MonoBehaviour:
     ExcludedSubStats: 0a00000009000000
   SubStatPool: 0700000008000000090000000a0000000b0000000c0000000d0000000e000000
   CombatSubStatPool: 0700000008000000090000000a000000
+  RingSubStatPool: 070000000800000009000000100000000b0000000c0000000d000000
+  CommonArmorRange:
+    Min: 1
+    Max: 3
   RarityTiers:
   - ArmorPrimary:
       Min: 2
@@ -35,45 +39,51 @@ MonoBehaviour:
       Max: 2
     ComplementSecondary:
       Min: 1
-      Max: 2
+      Max: 1
     WeaponPrimary:
-      Min: 3
+      Min: 4
       Max: 5
     WeaponSecondary:
       Min: 1
       Max: 2
+    ArmorRange:
+      Min: 2
+      Max: 3
     NumSubStats: 1
     SubStatPercent:
       Min: 0.01
       Max: 0.02
     SubStatFlat:
       Min: 1
-      Max: 3
+      Max: 2
   - ArmorPrimary:
       Min: 4
       Max: 6
     ArmorSecondary:
       Min: 2
-      Max: 4
+      Max: 3
     ComplementPrimary:
       Min: 3
       Max: 4
     ComplementSecondary:
       Min: 2
-      Max: 3
+      Max: 2
     WeaponPrimary:
-      Min: 5
+      Min: 6
       Max: 8
     WeaponSecondary:
       Min: 2
-      Max: 4
+      Max: 3
+    ArmorRange:
+      Min: 3
+      Max: 5
     NumSubStats: 2
     SubStatPercent:
       Min: 0.02
       Max: 0.04
     SubStatFlat:
-      Min: 3
-      Max: 5
+      Min: 2
+      Max: 4
   - ArmorPrimary:
       Min: 7
       Max: 10
@@ -87,15 +97,18 @@ MonoBehaviour:
       Min: 3
       Max: 5
     WeaponPrimary:
-      Min: 8
+      Min: 9
       Max: 12
     WeaponSecondary:
       Min: 4
       Max: 6
+    ArmorRange:
+      Min: 5
+      Max: 8
     NumSubStats: 3
     SubStatPercent:
       Min: 0.04
       Max: 0.06
     SubStatFlat:
-      Min: 5
-      Max: 8
+      Min: 4
+      Max: 7

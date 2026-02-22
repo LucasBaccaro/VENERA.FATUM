@@ -152,6 +152,13 @@ namespace Genesis.Simulation {
                 }
             }
 
+            // Validate Level Requirement
+            if (equipmentData.RequiredLevel > 0 && _playerAttributes != null) {
+                if (_playerAttributes.Level < equipmentData.RequiredLevel) {
+                    TargetShowError(base.Owner, $"Requires level {equipmentData.RequiredLevel}");
+                    return false;
+                }
+            }
 
             // Create item slot
             ItemSlot newSlot = new ItemSlot(itemId, 1, tier, rarity);

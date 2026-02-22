@@ -30,6 +30,13 @@
     -unity-font-style: italic;
 }
 
+.tooltip-required-level {
+    font-size: 11px;
+    color: rgb(255, 210, 0);
+    -unity-font-style: italic;
+    margin-top: 2px;
+}
+
 /* Stats Section */
 .tooltip-stats-section {
     margin-top: 5px;

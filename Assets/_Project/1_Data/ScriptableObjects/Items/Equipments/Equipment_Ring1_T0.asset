@@ -22,30 +22,31 @@ MonoBehaviour:
   IsProtected: 0
   Slot: 9
   RequiredClass: 
+  RequiredLevel: 0
   CommonStats:
   - Type: 15
     Value: 3
   UncommonStats:
   - Type: 15
-    Value: 0
-  - Type: 8
-    Value: 0.015760781
+    Value: 2
+  - Type: 13
+    Value: 2
   RareStats:
   - Type: 15
-    Value: 0
-  - Type: 13
-    Value: 4
-  - Type: 16
-    Value: 5
+    Value: 3
+  - Type: 9
+    Value: 0.03
+  - Type: 11
+    Value: 0.03
   EpicStats:
   - Type: 15
-    Value: 0
-  - Type: 9
-    Value: 0.04007346
+    Value: 7
   - Type: 8
-    Value: 0.04944718
+    Value: 0.04
   - Type: 11
-    Value: 0.058880668
+    Value: 0.06
+  - Type: 16
+    Value: 4
   VisualData:
     VisualPrefab: {fileID: 0}
     HiddenBodyParts: 0

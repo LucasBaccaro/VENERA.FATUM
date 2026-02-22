@@ -22,42 +22,43 @@ MonoBehaviour:
   IsProtected: 0
   Slot: 5
   RequiredClass: Mage
+  RequiredLevel: 0
   CommonStats:
   - Type: 15
-    Value: 2
+    Value: 3
   UncommonStats:
   - Type: 4
     Value: 1
   - Type: 5
     Value: 1
   - Type: 15
-    Value: 0
-  - Type: 8
-    Value: 0.019972956
+    Value: 3
+  - Type: 7
+    Value: 0.01
   RareStats:
   - Type: 4
     Value: 4
   - Type: 5
     Value: 2
   - Type: 15
-    Value: 0
+    Value: 3
+  - Type: 14
+    Value: 0.03
+  - Type: 12
+    Value: 4
+  EpicStats:
+  - Type: 4
+    Value: 6
+  - Type: 5
+    Value: 4
+  - Type: 15
+    Value: 8
   - Type: 12
     Value: 4
   - Type: 14
-    Value: 0.03546896
-  EpicStats:
-  - Type: 4
-    Value: 7
-  - Type: 5
-    Value: 5
-  - Type: 15
-    Value: 0
-  - Type: 13
-    Value: 7
-  - Type: 7
-    Value: 0.058460977
+    Value: 0.04
   - Type: 8
-    Value: 0.058559023
+    Value: 0.04
   VisualData:
     VisualPrefab: {fileID: 1058771040042048229, guid: bcb1c880b4bdbc44987a39285dc575e0, type: 3}
     HiddenBodyParts: 16

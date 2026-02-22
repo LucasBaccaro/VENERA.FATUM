@@ -4,6 +4,7 @@
         <ui:VisualElement name="HeaderSection" class="tooltip-header">
             <ui:Label name="ItemName" text="Item Name" class="tooltip-title"/>
             <ui:Label name="ItemType" text="Equipment Type" class="tooltip-type"/>
+            <ui:Label name="RequiredLevel" text="" class="tooltip-required-level"/>
         </ui:VisualElement>
         
         <ui:VisualElement name="StatsSection" class="tooltip-stats-section">

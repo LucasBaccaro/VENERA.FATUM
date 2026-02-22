@@ -18,6 +18,7 @@ namespace Genesis.Presentation.UI {
         private VisualElement _tooltipRoot;
         private Label _titleLabel;
         private Label _typeLabel;
+        private Label _requiredLevelLabel;
         private Label _armorLabel;
         private VisualElement _primaryStatsList;
         private VisualElement _substatsList;
@@ -71,6 +72,7 @@ namespace Genesis.Presentation.UI {
 
             _titleLabel = _tooltipRoot.Q<Label>("ItemName");
             _typeLabel = _tooltipRoot.Q<Label>("ItemType");
+            _requiredLevelLabel = _tooltipRoot.Q<Label>("RequiredLevel");
             _armorLabel = _tooltipRoot.Q<Label>("ArmorValue");
             _primaryStatsList = _tooltipRoot.Q<VisualElement>("PrimaryStats");
             _substatsList = _tooltipRoot.Q<VisualElement>("SubstatsList");
@@ -169,6 +171,15 @@ namespace Genesis.Presentation.UI {
                 _typeLabel.text = item.Type.ToString();
                 if (item is EquipmentItemData equipment) {
                     _typeLabel.text = $"{rarity} {equipment.Slot}";
+                }
+            }
+
+            if (_requiredLevelLabel != null) {
+                if (item is EquipmentItemData eqItem && eqItem.RequiredLevel > 0) {
+                    _requiredLevelLabel.text = $"Requires Level {eqItem.RequiredLevel}";
+                    _requiredLevelLabel.style.display = DisplayStyle.Flex;
+                } else {
+                    _requiredLevelLabel.style.display = DisplayStyle.None;
                 }
             }
 

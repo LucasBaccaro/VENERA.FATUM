@@ -1,11 +1,14 @@
 namespace Genesis.Core.Persistence
 {
+    public enum PlayerFaction { Citizen = 0, PK = 1 }
+
     [System.Serializable]
     public class CharacterData
     {
         // Identity
         public string playerName;
         public int classIndex;
+        public int faction;
 
         // Level & XP
         public int level = 1;

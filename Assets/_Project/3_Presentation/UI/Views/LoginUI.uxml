@@ -59,6 +59,11 @@
             <ui:VisualElement name="BottomSection" class="bottom-section">
                 <ui:Label text="Enter your name" class="name-hint"/>
                 <ui:TextField name="NameInput" max-length="16" class="name-input"/>
+                <ui:Label text="Choose your path" class="name-hint"/>
+                <ui:VisualElement name="FactionRow" class="faction-row">
+                    <ui:Button text="CITIZEN" name="BtnCitizen" class="faction-button faction-button--selected"/>
+                    <ui:Button text="PK" name="BtnPK" class="faction-button"/>
+                </ui:VisualElement>
                 <ui:Button text="ENTER WORLD" name="ConnectButton" class="connect-button"/>
                 <ui:Label text="" name="StatusLabel" class="status-label"/>
             </ui:VisualElement>

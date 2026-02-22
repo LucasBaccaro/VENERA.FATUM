@@ -22,42 +22,43 @@ MonoBehaviour:
   IsProtected: 0
   Slot: 6
   RequiredClass: Warrior
+  RequiredLevel: 0
   CommonStats:
   - Type: 15
-    Value: 3
+    Value: 1
   UncommonStats:
   - Type: 2
     Value: 3
   - Type: 6
     Value: 1
   - Type: 15
-    Value: 0
-  - Type: 10
-    Value: 2
+    Value: 3
+  - Type: 9
+    Value: 0.02
   RareStats:
   - Type: 2
-    Value: 5
+    Value: 4
   - Type: 6
-    Value: 4
+    Value: 2
   - Type: 15
-    Value: 0
-  - Type: 9
-    Value: 0.029317692
-  - Type: 10
     Value: 4
+  - Type: 10
+    Value: 3
+  - Type: 11
+    Value: 0.02
   EpicStats:
   - Type: 2
-    Value: 7
+    Value: 10
   - Type: 6
-    Value: 5
+    Value: 6
   - Type: 15
-    Value: 0
-  - Type: 7
-    Value: 0.056691993
+    Value: 6
   - Type: 11
-    Value: 0.043043293
-  - Type: 8
-    Value: 0.04524371
+    Value: 0.05
+  - Type: 9
+    Value: 0.06
+  - Type: 7
+    Value: 0.05
   VisualData:
     VisualPrefab: {fileID: 4800488159766874226, guid: 70ac68af76859d24d9e2c22921556a33, type: 3}
     HiddenBodyParts: 32

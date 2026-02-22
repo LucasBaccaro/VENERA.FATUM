@@ -23,6 +23,7 @@ namespace Genesis.Simulation {
         private readonly SyncVar<int> _currentClassIndex = new SyncVar<int>(-1);
         private readonly SyncVar<string> _playerName = new SyncVar<string>("");
         private readonly SyncVar<bool> _classLocked = new SyncVar<bool>(false);
+        private readonly SyncVar<int> _faction = new SyncVar<int>(0);
 
         // Cached persistence identifiers (set after successful persistence flow)
         private int _persistedClientId = -1;
@@ -31,11 +32,13 @@ namespace Genesis.Simulation {
 
         public string PlayerName => _playerName.Value;
         public int CurrentClassIndex => _currentClassIndex.Value;
+        public int Faction => _faction.Value;
 
         public override void OnStartNetwork() {
             base.OnStartNetwork();
             _currentClassIndex.OnChange += OnClassChanged;
             _playerName.OnChange += OnPlayerNameChanged;
+            _faction.OnChange += OnFactionChanged;
         }
 
         public override void OnStartClient() {
@@ -49,7 +52,7 @@ namespace Genesis.Simulation {
 
             // If login data was set, send it to the server
             if (LoginData.IsSet) {
-                CmdSetLoginData(LoginData.PlayerName, LoginData.ClassIndex);
+                CmdSetLoginData(LoginData.PlayerName, LoginData.ClassIndex, LoginData.FactionIndex);
                 LoginData.Clear();
             }
         }
@@ -123,15 +126,16 @@ namespace Genesis.Simulation {
         }
 
         [ServerRpc]
-        private void CmdSetLoginData(string playerName, int classIndex) {
+        private void CmdSetLoginData(string playerName, int classIndex, int factionIndex) {
             _playerName.Value = playerName;
+            _faction.Value = factionIndex;
             if (classIndex >= 0 && classIndex < availableClasses.Count) {
                 SetClass(classIndex);
             }
             _classLocked.Value = true;
 
             // Trigger async persistence load
-            LoadOrCreateCharacterAsync(playerName, classIndex);
+            LoadOrCreateCharacterAsync(playerName, classIndex, factionIndex);
         }
 
         /// <summary>
@@ -139,8 +143,8 @@ namespace Genesis.Simulation {
         /// Called after SetClass so base class stats are initialized before hydration overwrites them.
         /// </summary>
         [Server]
-        private async void LoadOrCreateCharacterAsync(string playerName, int classIndex) {
-            Debug.Log($"[PlayerClassManager] ═══ PERSISTENCE FLOW START ═══ player={playerName} class={classIndex} clientId={base.Owner.ClientId}");
+        private async void LoadOrCreateCharacterAsync(string playerName, int classIndex, int factionIndex) {
+            Debug.Log($"[PlayerClassManager] ═══ PERSISTENCE FLOW START ═══ player={playerName} class={classIndex} faction={factionIndex} clientId={base.Owner.ClientId}");
 
             try
             {
@@ -176,7 +180,7 @@ namespace Genesis.Simulation {
                 var data = await persistence.LoadAsync(userId);
 
                 if (data != null) {
-                    Debug.Log($"[PlayerClassManager] Step 4 ✓ Character FOUND: {data.playerName} Lv{data.level} gold={data.gold} class={data.classIndex}");
+                    Debug.Log($"[PlayerClassManager] Step 4 ✓ Character FOUND: {data.playerName} Lv{data.level} gold={data.gold} class={data.classIndex} faction={data.faction}");
 
                     // Step 5a: Hydrate existing character
                     if (!ServiceLocator.Instance.TryGet<IPersistenceBridge>(out var bridge)) {
@@ -191,6 +195,9 @@ namespace Genesis.Simulation {
                         SetClass(data.classIndex);
                     }
 
+                    // Restore persisted faction (overrides login selection)
+                    _faction.Value = data.faction;
+
                     bridge.HydratePlayer(base.NetworkObject, data);
                     Debug.Log($"[PlayerClassManager] Step 5a ✓ Character HYDRATED: {data.playerName} Lv{data.level}");
                 } else {
@@ -203,6 +210,7 @@ namespace Genesis.Simulation {
                     }
 
                     var newData = bridge.CreateNewPlayerData(playerName, classIndex, transform.position);
+                    newData.faction = factionIndex;
                     await persistence.SaveAsync(userId, newData);
                     Debug.Log($"[PlayerClassManager] Step 5b ✓ New character SAVED: {playerName} at {transform.position}");
                 }
@@ -336,6 +344,10 @@ namespace Genesis.Simulation {
                 return availableClasses[_currentClassIndex.Value].ClassName;
             }
             return "";
+        }
+
+        private void OnFactionChanged(int old, int next, bool asServer) {
+            Genesis.Core.EventBus.Trigger("OnPlayerFactionChanged", this);
         }
 
         private void OnPlayerNameChanged(string oldName, string newName, bool asServer) {

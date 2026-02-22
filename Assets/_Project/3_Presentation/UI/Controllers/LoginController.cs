@@ -48,7 +48,10 @@ namespace Genesis.Presentation.UI {
         private VisualElement _tooltipStats;
 
         private int _selectedClassIndex = 0;
+        private int _selectedFactionIndex = 0;
         private List<VisualElement> _classEntries = new List<VisualElement>();
+        private Button _btnCitizen;
+        private Button _btnPK;
 
         void Awake() {
             LoginData.LoginRequired = true;
@@ -98,6 +101,8 @@ namespace Genesis.Presentation.UI {
                 SelectClass(0);
 
             _connectButton?.RegisterCallback<ClickEvent>(_ => OnConnectClicked());
+            _btnCitizen?.RegisterCallback<ClickEvent>(_ => SelectFaction(0));
+            _btnPK?.RegisterCallback<ClickEvent>(_ => SelectFaction(1));
 
             // Hide tooltip on any click
             _root.RegisterCallback<PointerDownEvent>(_ => HideAbilityTooltip());
@@ -133,6 +138,10 @@ namespace Genesis.Presentation.UI {
             _nameInput = _root.Q<TextField>("NameInput");
             _connectButton = _root.Q<Button>("ConnectButton");
             _statusLabel = _root.Q<Label>("StatusLabel");
+
+            // Faction
+            _btnCitizen = _root.Q<Button>("BtnCitizen");
+            _btnPK = _root.Q<Button>("BtnPK");
 
             // Tooltip
             _abilityTooltip = _root.Q<VisualElement>("AbilityTooltip");
@@ -314,6 +323,12 @@ namespace Genesis.Presentation.UI {
                 _abilityTooltip.style.display = DisplayStyle.None;
         }
 
+        private void SelectFaction(int index) {
+            _selectedFactionIndex = index;
+            _btnCitizen?.EnableInClassList("faction-button--selected", index == 0);
+            _btnPK?.EnableInClassList("faction-button--selected", index == 1);
+        }
+
         private void BuildLoadingOverlay() {
             _loadingOverlay = new VisualElement();
             _loadingOverlay.style.position = Position.Absolute;
@@ -378,6 +393,7 @@ namespace Genesis.Presentation.UI {
 
             LoginData.PlayerName = playerName;
             LoginData.ClassIndex = _selectedClassIndex;
+            LoginData.FactionIndex = _selectedFactionIndex;
             LoginData.IsSet = true;
 
             _connectButton?.SetEnabled(false);

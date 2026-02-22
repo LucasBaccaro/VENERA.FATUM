@@ -365,3 +365,29 @@
 .tooltip-stat--heal {
     color: rgb(100, 255, 130);
 }
+
+/* ── Faction Buttons ── */
+.faction-row {
+    flex-direction: row;
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.faction-button {
+    flex-grow: 1;
+    height: 40px;
+    font-size: 16px;
+    -unity-font-style: bold;
+    background-color: rgba(30, 30, 45, 0.8);
+    border-color: rgba(80, 80, 100, 0.5);
+    border-width: 1px;
+    border-radius: 4px;
+    color: rgb(180, 180, 190);
+    margin-right: 8px;
+}
+
+.faction-button--selected {
+    background-color: rgba(60, 45, 20, 0.9);
+    border-color: rgba(220, 180, 100, 0.9);
+    color: rgb(220, 180, 100);
+}

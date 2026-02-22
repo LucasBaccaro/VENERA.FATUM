@@ -14,6 +14,10 @@ namespace Genesis.Items {
         [Tooltip("Required Class Name (empty for any)")]
         public string RequiredClass;
 
+        [Tooltip("Minimum player level required to equip (0 = no requirement)")]
+        [Range(0, 50)]
+        public int RequiredLevel = 0;
+
         [Header("Stat Modifiers (Per Rarity)")]
         [Tooltip("Stats for rarity Common (white)")]
         public List<StatModifier> CommonStats = new List<StatModifier>();

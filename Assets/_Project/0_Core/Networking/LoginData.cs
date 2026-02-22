@@ -7,6 +7,7 @@ namespace Genesis.Core.Networking {
     public static class LoginData {
         public static string PlayerName { get; set; } = "";
         public static int ClassIndex { get; set; } = 0;
+        public static int FactionIndex { get; set; } = 0;
         public static bool IsSet { get; set; } = false;
 
         /// <summary>
@@ -18,6 +19,7 @@ namespace Genesis.Core.Networking {
         public static void Clear() {
             PlayerName = "";
             ClassIndex = 0;
+            FactionIndex = 0;
             IsSet = false;
         }
     }

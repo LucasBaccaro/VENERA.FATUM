@@ -36,6 +36,7 @@ namespace Genesis.Simulation.Persistence
             // Identity
             data.playerName = classManager != null ? classManager.PlayerName : "";
             data.classIndex = classManager != null ? classManager.CurrentClassIndex : 0;
+            data.faction = classManager != null ? classManager.Faction : 0;
 
             // Level & XP
             if (attributes != null)

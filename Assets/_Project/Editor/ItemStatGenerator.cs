@@ -77,7 +77,13 @@ namespace Genesis.Editor {
             EditorGUILayout.Space(15);
 
             if (GUILayout.Button("Generate Stats", GUILayout.Height(35))) {
-                GenerateStats();
+                GenerateStats(false);
+            }
+
+            EditorGUILayout.Space(5);
+
+            if (GUILayout.Button("Generate Stats & Log Summary", GUILayout.Height(30))) {
+                GenerateStats(true);
             }
 
             EditorGUILayout.Space(5);
@@ -89,7 +95,7 @@ namespace Genesis.Editor {
                 MessageType.Info);
         }
 
-        private void GenerateStats() {
+        private void GenerateStats(bool logSummary) {
             string classFilter = selectedClassIndex == 0 ? null : classOptions[selectedClassIndex];
 
             string[] guids = AssetDatabase.FindAssets("t:EquipmentItemData");
@@ -104,6 +110,7 @@ namespace Genesis.Editor {
 
             int processed = 0;
             int skipped = 0;
+            var summaryLines = logSummary ? new System.Text.StringBuilder() : null;
 
             foreach (var item in items) {
                 // Filter by class if selected
@@ -140,12 +147,33 @@ namespace Genesis.Editor {
                 processed++;
 
                 Debug.Log($"[ItemStatGenerator] '{item.ItemName}' ({category}{(hasClass ? ", " + item.RequiredClass : "")}) - U:{item.UncommonStats.Count} R:{item.RareStats.Count} E:{item.EpicStats.Count} stats");
+
+                if (logSummary) {
+                    summaryLines.AppendLine($"--- {item.ItemName} [{item.Slot}] {(hasClass ? item.RequiredClass : "Any")} ---");
+                    AppendStatList(summaryLines, "  Common", item.CommonStats);
+                    AppendStatList(summaryLines, "  Uncommon", item.UncommonStats);
+                    AppendStatList(summaryLines, "  Rare", item.RareStats);
+                    AppendStatList(summaryLines, "  Epic", item.EpicStats);
+                }
             }
 
             AssetDatabase.SaveAssets();
 
             string filterMsg = classFilter != null ? $" (class: {classFilter})" : " (all classes)";
             Debug.Log($"<color=green>[ItemStatGenerator] Generated stats for {processed} items{filterMsg}. Skipped: {skipped}.</color>");
+
+            if (logSummary && summaryLines != null) {
+                Debug.Log($"<color=cyan>[ItemStatGenerator] === FULL SUMMARY ===\n{summaryLines}</color>");
+            }
+        }
+
+        private static void AppendStatList(System.Text.StringBuilder sb, string prefix, List<StatModifier> stats) {
+            sb.Append($"{prefix}: ");
+            for (int i = 0; i < stats.Count; i++) {
+                if (i > 0) sb.Append(", ");
+                sb.Append(stats[i].ToString());
+            }
+            sb.AppendLine();
         }
 
         private List<StatModifier> GenerateStatsForRarity(ItemRarity rarity, SlotCategory category, EquipmentSlot slot, ClassAttributeMapping? mapping) {
@@ -207,7 +235,7 @@ namespace Genesis.Editor {
                 available.RemoveAt(idx);
 
                 float value = ItemGenerationConfig.IsPercentageStat(stat)
-                    ? tier.SubStatPercent.RandomValue()
+                    ? Mathf.Round(tier.SubStatPercent.RandomValue() * 100f) / 100f
                     : tier.SubStatFlat.RandomInt();
 
                 stats.Add(new StatModifier(stat, value));

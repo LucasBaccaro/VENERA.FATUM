@@ -1,5 +1,6 @@
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,6 +38,7 @@ namespace Genesis.Simulation {
         // ILootSource Implementation
         public IReadOnlyList<ItemSlot> LootItems => _lootItems;
         public string LootName => $"{_ownerName.Value}'s Bag";
+        public event Action OnItemsChanged;
 
         private void Awake() {
             // Subscribe to loot changes
@@ -95,6 +97,9 @@ namespace Genesis.Simulation {
             if (asServer && _isInitialized && _lootItems.Count == 0) {
                 Debug.Log("[LootBag] All items taken, despawning.");
                 DespawnBag();
+            }
+            if (!asServer) {
+                OnItemsChanged?.Invoke();
             }
         }
 

@@ -177,7 +177,7 @@ namespace Genesis.Simulation {
         }
 
         [ServerRpc]
-        public void CmdAddTradeItem(int inventorySlotIndex) {
+        public void CmdAddTradeItem(int inventorySlotIndex, int quantity) {
             if (_currentSession == null || _currentSession.State != TradeState.Active) {
                 TargetTradeError(base.Owner, "No active trade.");
                 return;
@@ -188,6 +188,11 @@ namespace Genesis.Simulation {
             var slot = _inventory.GetSlot(inventorySlotIndex);
             if (slot.IsEmpty) {
                 TargetTradeError(base.Owner, "Empty inventory slot.");
+                return;
+            }
+
+            if (quantity <= 0 || quantity > slot.Quantity) {
+                TargetTradeError(base.Owner, "Invalid quantity.");
                 return;
             }
 
@@ -216,7 +221,7 @@ namespace Genesis.Simulation {
                 return;
             }
 
-            offer.Items[emptyTradeSlot] = slot;
+            offer.Items[emptyTradeSlot] = new ItemSlot(slot.ItemID, quantity, slot.Tier, slot.Rarity);
             offer.SourceSlots[emptyTradeSlot] = inventorySlotIndex;
 
             // Reset locks on any change
@@ -271,6 +276,9 @@ namespace Genesis.Simulation {
 
             var offer = _currentSession.GetOffer(base.NetworkObject);
             if (offer == null) return;
+
+            // Only reset locks if gold actually changed
+            if (offer.Gold == amount) return;
 
             offer.Gold = amount;
 

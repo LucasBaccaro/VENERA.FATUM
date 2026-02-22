@@ -107,6 +107,26 @@
             </ui:VisualElement>
         </ui:VisualElement>
 
+        <!-- Quantity Picker Popup -->
+        <ui:VisualElement name="QuantityPickerPopup" class="quantity-picker-popup">
+            <ui:Label name="QuantityPickerTitle" text="Select Quantity" class="quantity-picker-title"/>
+            <ui:VisualElement name="QuantityPickerItemRow" class="quantity-picker-item-row">
+                <ui:VisualElement name="QuantityPickerIcon" class="quantity-picker-icon"/>
+                <ui:Label name="QuantityPickerItemName" text="" class="quantity-picker-item-name"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="quantity-picker-controls">
+                <ui:Button name="QtyMinButton" text="Min" class="qty-control-button"/>
+                <ui:Button name="QtyMinusButton" text="-" class="qty-control-button"/>
+                <ui:TextField name="QtyInputField" value="1" class="qty-input-field"/>
+                <ui:Button name="QtyPlusButton" text="+" class="qty-control-button"/>
+                <ui:Button name="QtyMaxButton" text="Max" class="qty-control-button"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="quantity-picker-buttons">
+                <ui:Button name="QtyConfirmButton" text="Confirm" class="trade-button accept-request-button"/>
+                <ui:Button name="QtyCancelButton" text="Cancel" class="trade-button decline-button"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
         <!-- Trade Request Popup -->
         <ui:VisualElement name="TradeRequestPopup" class="trade-request-popup">
             <ui:Label name="RequestLabel" text="Player wants to trade" class="request-label"/>

@@ -102,7 +102,12 @@ namespace Genesis.Presentation.UI {
         }
 
         private void OnLootOpened(ILootSource lootSource) {
+            if (_currentLootSource != null) {
+                _currentLootSource.OnItemsChanged -= RefreshUI;
+            }
+
             _currentLootSource = lootSource;
+            _currentLootSource.OnItemsChanged += RefreshUI;
 
             // Cache player position at the moment of opening
             var player = FindLocalPlayer();
@@ -209,8 +214,6 @@ namespace Genesis.Presentation.UI {
             var localPlayer = FindLocalPlayer();
             if (localPlayer != null) {
                 _currentLootSource.CmdTakeItem(index, localPlayer);
-                // Refresh after short delay to catch network sync
-                Invoke(nameof(RefreshUI), 0.1f);
             }
         }
 
@@ -224,7 +227,10 @@ namespace Genesis.Presentation.UI {
 
         private void CloseWindow() {
             if (_window != null) _window.style.display = DisplayStyle.None;
-            _currentLootSource = null;
+            if (_currentLootSource != null) {
+                _currentLootSource.OnItemsChanged -= RefreshUI;
+                _currentLootSource = null;
+            }
         }
 
         private FishNet.Object.NetworkObject FindLocalPlayer() {

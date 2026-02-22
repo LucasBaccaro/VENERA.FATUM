@@ -263,6 +263,98 @@
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
 }
 
+/* Quantity Picker Popup */
+.quantity-picker-popup {
+    position: absolute;
+    width: 240px;
+    padding: 14px;
+    background-color: rgba(15, 12, 8, 0.97);
+    border-width: 2px;
+    border-color: rgba(200, 180, 120, 0.6);
+    border-radius: 6px;
+    display: none;
+    align-items: center;
+}
+
+.quantity-picker-title {
+    font-size: 14px;
+    color: #e0bc7f;
+    -unity-font-style: bold;
+    -unity-text-align: upper-center;
+    margin-bottom: 8px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.quantity-picker-item-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.quantity-picker-icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.quantity-picker-item-name {
+    font-size: 12px;
+    color: #cccccc;
+    flex-shrink: 1;
+    white-space: normal;
+}
+
+.quantity-picker-controls {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.qty-control-button {
+    width: 36px;
+    height: 28px;
+    margin: 0 2px;
+    background-color: rgba(60, 45, 20, 0.8);
+    border-color: rgba(200, 180, 120, 0.4);
+    border-width: 1px;
+    border-radius: 3px;
+    color: #e0bc7f;
+    font-size: 13px;
+    -unity-font-style: bold;
+}
+
+.qty-control-button:hover {
+    background-color: rgba(90, 70, 30, 0.9);
+}
+
+.qty-input-field {
+    width: 50px;
+    height: 28px;
+    margin: 0 4px;
+    font-size: 13px;
+    color: #ffd700;
+    background-color: rgba(20, 18, 12, 0.8);
+    border-width: 1px;
+    border-color: rgba(200, 180, 120, 0.4);
+    border-radius: 3px;
+    -unity-text-align: upper-center;
+}
+
+.qty-input-field > .unity-text-field__input {
+    color: #ffd700;
+    background-color: transparent;
+    border-width: 0;
+    padding: 2px 4px;
+    -unity-text-align: upper-center;
+}
+
+.quantity-picker-buttons {
+    flex-direction: row;
+    justify-content: center;
+}
+
 /* Trade Request Popup */
 .trade-request-popup {
     position: absolute;

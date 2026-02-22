@@ -4,6 +4,7 @@ using FishNet.Object.Synchronizing;
 using Genesis.Core;
 using Genesis.Data;
 using Genesis.Items;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -44,6 +45,7 @@ namespace Genesis.Simulation {
         // ILootSource Implementation
         public string LootName => _chestName;
         public IReadOnlyList<ItemSlot> LootItems => _lootItems;
+        public event Action OnItemsChanged;
 
         private void Awake() {
             _state.OnChange += OnStateChanged;
@@ -74,9 +76,12 @@ namespace Genesis.Simulation {
         }
 
         private void OnLootChanged(SyncListOperation op, int index, ItemSlot oldItem, ItemSlot newItem, bool asServer) {
-             if (asServer && _state.Value == ChestState.Opened && _lootItems.Count == 0) {
-                 _state.Value = ChestState.Empty;
-             }
+            if (asServer && _state.Value == ChestState.Opened && _lootItems.Count == 0) {
+                _state.Value = ChestState.Empty;
+            }
+            if (!asServer) {
+                OnItemsChanged?.Invoke();
+            }
         }
 
         #region IInteractable

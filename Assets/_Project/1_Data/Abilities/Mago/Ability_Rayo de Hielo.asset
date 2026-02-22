@@ -34,6 +34,7 @@ MonoBehaviour:
   Category: 1
   BaseDamage: 40
   BaseHeal: 0
+  ApplyEffectsInstant: 0
   ApplyToTarget:
   - {fileID: 11400000, guid: 4c9b9197e03d14aa3a61ac4c94080f41, type: 2}
   ApplyToSelf: []
@@ -42,8 +43,10 @@ MonoBehaviour:
   IndicatorMaterial: {fileID: 2100000, guid: ccc7986bd53c54c448bafdcb87bc61b2, type: 2}
   CastVFX: {fileID: 2009436335926725086, guid: a83d63e8d48fb4c319b1a41a98ecd5b0, type: 3}
   ImpactVFX: {fileID: 5368608346029468957, guid: ab65935bceb3e4cfa9aea1958acaf946, type: 3}
+  ImpactVFXDuration: 2
   CastSound: {fileID: 0}
-  ImpactSound: {fileID: 0}
-  ChannelLoopSound: {fileID: 0}
+  ImpactSound: {fileID: 8300000, guid: e8a65b52a8273864c9d845dec0cb6ea1, type: 3}
+  ChannelLoopSound: {fileID: 8300000, guid: a1d9b987f987ed1409e7beb5841a5d3b, type: 3}
   StartCastAnimationTrigger: ChannelFront
   AnimationTrigger: ChannelFront_Success
+  UseAvatarMask: 0

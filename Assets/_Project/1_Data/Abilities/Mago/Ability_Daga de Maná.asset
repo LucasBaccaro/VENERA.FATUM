@@ -21,7 +21,7 @@ MonoBehaviour:
   Cooldown: 0.5
   GCD: 1
   CastType: 1
-  CastTime: 0
+  CastTime: 0.3
   CanMoveWhileCasting: 1
   ChannelTickRate: 0.1
   ChannelHitAllTargets: 1
@@ -44,8 +44,8 @@ MonoBehaviour:
   CastVFX: {fileID: 0}
   ImpactVFX: {fileID: 7916383555196542610, guid: f3c8a76df4b32284c93f05c4e5d6da73, type: 3}
   ImpactVFXDuration: 2
-  CastSound: {fileID: 0}
-  ImpactSound: {fileID: 8300000, guid: 0fe28cbcb43167b43a00406c464f4656, type: 3}
+  CastSound: {fileID: 8300000, guid: 50f1fe76df5909343a0ae628db4429b5, type: 3}
+  ImpactSound: {fileID: 8300000, guid: b112dc105df2e144d939126092804d94, type: 3}
   ChannelLoopSound: {fileID: 0}
   StartCastAnimationTrigger: 
   AnimationTrigger: CastInstant

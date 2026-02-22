@@ -30,7 +30,7 @@ namespace Genesis.Simulation {
         public const int MAX_TRADE_SLOTS = 6;
         public const float TRADE_RANGE = 10f;
         public const float COMBAT_COOLDOWN = 5f;
-        public const float COUNTDOWN_DURATION = 3f;
+        public const float COUNTDOWN_DURATION = 4f;
     }
 
     public class TradeOffer {

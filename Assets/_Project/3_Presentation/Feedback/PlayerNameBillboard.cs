@@ -4,10 +4,6 @@ using Genesis.Simulation;
 using FishNet.Object;
 
 namespace Genesis.Presentation.Feedback {
-    /// <summary>
-    /// Displays the player name as a world-space billboard below the character.
-    /// Reads the name from PlayerClassManager's SyncVar (synced from DB via Nakama).
-    /// </summary>
     public class PlayerNameBillboard : MonoBehaviour {
         [Header("Position")]
         [SerializeField] private Vector3 _offset = new Vector3(0, 2.2f, 0);
@@ -48,27 +44,18 @@ namespace Genesis.Presentation.Feedback {
             _textMesh.text = "";
             _textMesh.enabled = false;
 
-            // Outline for readability
             _textMesh.outlineWidth = _outlineWidth;
             _textMesh.outlineColor = _outlineColor;
 
-            // RectTransform size for proper centering
             var rt = _textMesh.rectTransform;
             rt.sizeDelta = new Vector2(5f, 1f);
 
-            // Force render on top of everything: ZTest Always + Overlay queue
-            _textMesh.ForceMeshUpdate();
-            ForceOverlayRendering();
-        }
-
-        private void ForceOverlayRendering() {
-            // Apply ZTest Always to the main material and all shared materials
-            var renderer = _textMesh.GetComponent<MeshRenderer>();
-            if (renderer == null) return;
-
-            foreach (var mat in renderer.materials) {
-                mat.renderQueue = 5000;
-                mat.SetInt("_ZTestMode", (int)UnityEngine.Rendering.CompareFunction.Always);
+            // Overlay material so text renders on top of all geometry
+            var overlayShader = Shader.Find("TextMeshPro/Distance Field Overlay");
+            if (overlayShader != null) {
+                var overlayMat = new Material(_textMesh.fontSharedMaterial);
+                overlayMat.shader = overlayShader;
+                _textMesh.fontMaterial = overlayMat;
             }
         }
 
@@ -86,12 +73,10 @@ namespace Genesis.Presentation.Feedback {
 
                 _textMesh.text = playerName;
                 _textMesh.enabled = true;
-                _textMesh.ForceMeshUpdate();
-                ForceOverlayRendering();
                 _nameSet = true;
             }
 
-            // Billboard - match camera rotation
+            // Billboard — same pattern as NpcQuestMarker
             var cam = Camera.main;
             if (cam != null && _billboardTransform != null) {
                 _billboardTransform.rotation = cam.transform.rotation;

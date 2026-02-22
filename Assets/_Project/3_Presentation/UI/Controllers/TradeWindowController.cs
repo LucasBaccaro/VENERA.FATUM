@@ -35,6 +35,21 @@ namespace Genesis.Presentation.UI {
         private Button _acceptRequestButton;
         private Button _declineRequestButton;
 
+        // Quantity picker elements
+        private VisualElement _quantityPickerPopup;
+        private VisualElement _quantityPickerIcon;
+        private Label _quantityPickerItemName;
+        private TextField _qtyInputField;
+        private Button _qtyMinButton;
+        private Button _qtyMinusButton;
+        private Button _qtyPlusButton;
+        private Button _qtyMaxButton;
+        private Button _qtyConfirmButton;
+        private Button _qtyCancelButton;
+        private int _pendingSlotIndex;
+        private int _pendingMaxQty;
+        private int _pendingCurrentQty;
+
         // Slot caches
         private VisualElement[] _localIcons = new VisualElement[6];
         private Label[] _localQtys = new Label[6];
@@ -49,6 +64,7 @@ namespace Genesis.Presentation.UI {
         private uint _pendingSessionId;
         private float _countdownTime;
         private bool _countdownActive;
+        private bool _initialized;
 
         private void Awake() {
             if (_uiDocument == null)
@@ -80,11 +96,15 @@ namespace Genesis.Presentation.UI {
         }
 
         private void Update() {
+            if (!_initialized) {
+                InitializeUI();
+                return;
+            }
+
             if (_countdownActive) {
                 _countdownTime -= Time.deltaTime;
-                if (_countdownTime > 0f) {
-                    _countdownLabel.text = Mathf.CeilToInt(_countdownTime).ToString();
-                }
+                int display = Mathf.Max(0, Mathf.CeilToInt(_countdownTime) - 1);
+                _countdownLabel.text = display.ToString();
             }
         }
 
@@ -106,6 +126,7 @@ namespace Genesis.Presentation.UI {
             var root = _uiDocument.rootVisualElement;
             if (root == null) return;
 
+            _initialized = true;
             root.pickingMode = PickingMode.Ignore;
 
             // Trade Window
@@ -127,6 +148,18 @@ namespace Genesis.Presentation.UI {
             _requestLabel = root.Q<Label>("RequestLabel");
             _acceptRequestButton = root.Q<Button>("AcceptRequestButton");
             _declineRequestButton = root.Q<Button>("DeclineRequestButton");
+
+            // Quantity Picker
+            _quantityPickerPopup = root.Q<VisualElement>("QuantityPickerPopup");
+            _quantityPickerIcon = root.Q<VisualElement>("QuantityPickerIcon");
+            _quantityPickerItemName = root.Q<Label>("QuantityPickerItemName");
+            _qtyInputField = root.Q<TextField>("QtyInputField");
+            _qtyMinButton = root.Q<Button>("QtyMinButton");
+            _qtyMinusButton = root.Q<Button>("QtyMinusButton");
+            _qtyPlusButton = root.Q<Button>("QtyPlusButton");
+            _qtyMaxButton = root.Q<Button>("QtyMaxButton");
+            _qtyConfirmButton = root.Q<Button>("QtyConfirmButton");
+            _qtyCancelButton = root.Q<Button>("QtyCancelButton");
 
             // Cache slot elements
             for (int i = 0; i < 6; i++) {
@@ -155,6 +188,21 @@ namespace Genesis.Presentation.UI {
             if (_declineRequestButton != null)
                 _declineRequestButton.clicked += OnDeclineRequest;
 
+            // Quantity picker callbacks
+            if (_qtyMinButton != null) _qtyMinButton.clicked += () => SetPickerQuantity(1);
+            if (_qtyMinusButton != null) _qtyMinusButton.clicked += () => SetPickerQuantity(_pendingCurrentQty - 1);
+            if (_qtyPlusButton != null) _qtyPlusButton.clicked += () => SetPickerQuantity(_pendingCurrentQty + 1);
+            if (_qtyMaxButton != null) _qtyMaxButton.clicked += () => SetPickerQuantity(_pendingMaxQty);
+            if (_qtyConfirmButton != null) _qtyConfirmButton.clicked += OnQuantityConfirmed;
+            if (_qtyCancelButton != null) _qtyCancelButton.clicked += HideQuantityPicker;
+            if (_qtyInputField != null) {
+                _qtyInputField.RegisterValueChangedCallback(evt => {
+                    if (int.TryParse(evt.newValue, out int val)) {
+                        _pendingCurrentQty = Mathf.Clamp(val, 1, _pendingMaxQty);
+                    }
+                });
+            }
+
             // Gold input change
             if (_localGoldInput != null) {
                 _localGoldInput.RegisterValueChangedCallback(OnGoldInputChanged);
@@ -179,6 +227,7 @@ namespace Genesis.Presentation.UI {
             if (_tradeWindow != null) _tradeWindow.style.display = DisplayStyle.None;
             if (_requestPopup != null) _requestPopup.style.display = DisplayStyle.None;
             if (_countdownOverlay != null) _countdownOverlay.style.display = DisplayStyle.None;
+            if (_quantityPickerPopup != null) _quantityPickerPopup.style.display = DisplayStyle.None;
         }
 
         // ═══════════════════════════════════════════════════════
@@ -266,6 +315,7 @@ namespace Genesis.Presentation.UI {
 
             // Close popups/windows
             if (_requestPopup != null) _requestPopup.style.display = DisplayStyle.None;
+            HideQuantityPicker();
 
             if (_isTradeOpen) {
                 Audio.UISoundPlayer.PlayClose();
@@ -320,16 +370,32 @@ namespace Genesis.Presentation.UI {
         }
 
         private void OnGoldInputChanged(ChangeEvent<string> evt) {
-            // Only submit when not locked
             if (_isLocked) return;
+            if (int.TryParse(evt.newValue, out int amount)) {
+                int maxGold = GetAvailableGold();
+                if (amount > maxGold) {
+                    _localGoldInput.SetValueWithoutNotify(maxGold.ToString());
+                } else if (amount < 0) {
+                    _localGoldInput.SetValueWithoutNotify("0");
+                }
+            }
         }
 
         private void SubmitGold() {
             if (_tradeManager == null || _localGoldInput == null) return;
             if (int.TryParse(_localGoldInput.value, out int amount)) {
                 if (amount < 0) amount = 0;
+                int maxGold = GetAvailableGold();
+                if (amount > maxGold) amount = maxGold;
+                _localGoldInput.SetValueWithoutNotify(amount.ToString());
                 _tradeManager.CmdSetTradeGold(amount);
             }
+        }
+
+        private int GetAvailableGold() {
+            if (_tradeManager == null) return 0;
+            var attrs = _tradeManager.GetComponent<PlayerAttributes>();
+            return attrs != null ? attrs.Gold : 0;
         }
 
         // ═══════════════════════════════════════════════════════
@@ -337,11 +403,69 @@ namespace Genesis.Presentation.UI {
         // ═══════════════════════════════════════════════════════
 
         public void OnInventorySlotClicked(int inventorySlotIndex) {
-            if (!_isTradeOpen || _isLocked || _tradeManager == null) return;
-            _tradeManager.CmdAddTradeItem(inventorySlotIndex);
+            if (!_isTradeOpen || _isLocked || _tradeManager == null || _playerInventory == null) return;
+
+            var slots = _playerInventory.InventorySlots;
+            if (inventorySlotIndex >= slots.Count) return;
+            var slot = slots[inventorySlotIndex];
+            if (slot.IsEmpty) return;
+
+            // Check if stackable with quantity > 1
+            var itemData = ItemDatabase.Instance?.GetItem(slot.ItemID);
+            if (itemData != null && itemData.IsStackable && slot.Quantity > 1) {
+                ShowQuantityPicker(inventorySlotIndex, slot, itemData);
+            } else {
+                _tradeManager.CmdAddTradeItem(inventorySlotIndex, slot.Quantity);
+            }
         }
 
         public bool IsTradeOpen => _isTradeOpen;
+
+        // ═══════════════════════════════════════════════════════
+        // QUANTITY PICKER
+        // ═══════════════════════════════════════════════════════
+
+        private void ShowQuantityPicker(int slotIndex, ItemSlot slot, BaseItemData itemData) {
+            _pendingSlotIndex = slotIndex;
+            _pendingMaxQty = slot.Quantity;
+            _pendingCurrentQty = slot.Quantity;
+
+            if (_quantityPickerIcon != null) {
+                _quantityPickerIcon.style.backgroundImage = new StyleBackground(itemData.Icon);
+            }
+            if (_quantityPickerItemName != null) {
+                _quantityPickerItemName.text = $"{itemData.ItemName} (x{slot.Quantity})";
+            }
+
+            UpdatePickerDisplay();
+
+            if (_quantityPickerPopup != null) _quantityPickerPopup.style.display = DisplayStyle.Flex;
+        }
+
+        private void HideQuantityPicker() {
+            if (_quantityPickerPopup != null) _quantityPickerPopup.style.display = DisplayStyle.None;
+        }
+
+        private void SetPickerQuantity(int qty) {
+            _pendingCurrentQty = Mathf.Clamp(qty, 1, _pendingMaxQty);
+            UpdatePickerDisplay();
+        }
+
+        private void UpdatePickerDisplay() {
+            if (_qtyInputField != null) _qtyInputField.SetValueWithoutNotify(_pendingCurrentQty.ToString());
+        }
+
+        private void OnQuantityConfirmed() {
+            if (_tradeManager == null) return;
+
+            // Re-read from input field in case user typed a value
+            if (_qtyInputField != null && int.TryParse(_qtyInputField.value, out int typed)) {
+                _pendingCurrentQty = Mathf.Clamp(typed, 1, _pendingMaxQty);
+            }
+
+            _tradeManager.CmdAddTradeItem(_pendingSlotIndex, _pendingCurrentQty);
+            HideQuantityPicker();
+        }
 
         // ═══════════════════════════════════════════════════════
         // UI HELPERS
@@ -428,6 +552,7 @@ namespace Genesis.Presentation.UI {
             _countdownActive = false;
             if (_tradeWindow != null) _tradeWindow.style.display = DisplayStyle.None;
             if (_countdownOverlay != null) _countdownOverlay.style.display = DisplayStyle.None;
+            HideQuantityPicker();
         }
 
         private string GetRarityClass(ItemRarity rarity) {

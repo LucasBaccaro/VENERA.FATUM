@@ -22,6 +22,7 @@ namespace Genesis.Presentation.UI {
         private bool _isVisible;
         private Camera _mainCamera;
         private int _showFrame; // Frame when popup was shown
+        private bool _initialized;
 
         private void Awake() {
             if (_uiDocument == null)
@@ -43,6 +44,7 @@ namespace Genesis.Presentation.UI {
             var root = _uiDocument.rootVisualElement;
             if (root == null) return;
 
+            _initialized = true;
             root.pickingMode = PickingMode.Ignore;
 
             _popup = root.Q<VisualElement>("ContextMenuPopup");
@@ -57,6 +59,10 @@ namespace Genesis.Presentation.UI {
         }
 
         private void Update() {
+            if (!_initialized) {
+                InitializeUI();
+                return;
+            }
             if (_localPlayerNob == null) return;
             if (LoginController.IsActive) return;
 

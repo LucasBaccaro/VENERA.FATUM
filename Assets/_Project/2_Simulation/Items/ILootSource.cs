@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using FishNet.Object;
 using Genesis.Items;
@@ -16,6 +17,12 @@ namespace Genesis.Simulation {
         /// List of items currently in the source
         /// </summary>
         IReadOnlyList<ItemSlot> LootItems { get; }
+
+        /// <summary>
+        /// Fired on clients whenever the item list changes (any player looted).
+        /// Used by UI to refresh in real-time.
+        /// </summary>
+        event Action OnItemsChanged;
         
         /// <summary>
         /// True if the source is interactable/viewable

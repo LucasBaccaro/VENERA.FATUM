@@ -154,6 +154,18 @@ namespace Genesis.Simulation
         {
             EventBus.Trigger(PortalEvents.TELEPORT_FADE_IN, duration);
             EventBus.Trigger("OnPortalSound", false);
+
+            // Resync audio state based on the zone at the destination
+            var player = conn.FirstObject;
+            if (player != null)
+            {
+                var playerState = player.GetComponent<Genesis.Simulation.World.PlayerState>();
+                if (playerState != null)
+                {
+                    // Use EventBus to decoupling Simulation from Presentation/Audio
+                    EventBus.Trigger("OnPlayerZoneChanged", playerState.IsInSafeZone);
+                }
+            }
         }
 
         // ═══════════════════════════════════════════════════════

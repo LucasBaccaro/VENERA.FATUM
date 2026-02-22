@@ -18,23 +18,23 @@
                 <ui:VisualElement name="AudioContent" class="tab-panel">
                     <ui:VisualElement class="slider-row">
                         <ui:Label text="Master" class="slider-label" />
-                        <ui:Slider name="SliderMaster" low-value="0" high-value="1" value="1" class="volume-slider" />
-                        <ui:Label name="ValueMaster" text="100%" class="slider-value" />
+                        <ui:Slider name="SliderMaster" low-value="0" high-value="1" value="0.5" class="volume-slider" />
+                        <ui:Label name="ValueMaster" text="50%" class="slider-value" />
                     </ui:VisualElement>
                     <ui:VisualElement class="slider-row">
                         <ui:Label text="Music" class="slider-label" />
-                        <ui:Slider name="SliderMusic" low-value="0" high-value="1" value="1" class="volume-slider" />
-                        <ui:Label name="ValueMusic" text="100%" class="slider-value" />
+                        <ui:Slider name="SliderMusic" low-value="0" high-value="1" value="0.5" class="volume-slider" />
+                        <ui:Label name="ValueMusic" text="50%" class="slider-value" />
                     </ui:VisualElement>
                     <ui:VisualElement class="slider-row">
                         <ui:Label text="SFX" class="slider-label" />
-                        <ui:Slider name="SliderSFX" low-value="0" high-value="1" value="1" class="volume-slider" />
-                        <ui:Label name="ValueSFX" text="100%" class="slider-value" />
+                        <ui:Slider name="SliderSFX" low-value="0" high-value="1" value="0.5" class="volume-slider" />
+                        <ui:Label name="ValueSFX" text="50%" class="slider-value" />
                     </ui:VisualElement>
                     <ui:VisualElement class="slider-row">
                         <ui:Label text="Ambient" class="slider-label" />
-                        <ui:Slider name="SliderAmbient" low-value="0" high-value="1" value="1" class="volume-slider" />
-                        <ui:Label name="ValueAmbient" text="100%" class="slider-value" />
+                        <ui:Slider name="SliderAmbient" low-value="0" high-value="1" value="0.5" class="volume-slider" />
+                        <ui:Label name="ValueAmbient" text="50%" class="slider-value" />
                     </ui:VisualElement>
                 </ui:VisualElement>
 

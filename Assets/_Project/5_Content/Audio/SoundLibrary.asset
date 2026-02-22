@@ -48,7 +48,7 @@ MonoBehaviour:
   ambientSounds:
   - Type: 0
     Clip: {fileID: 8300000, guid: ad20f48d167bf1345a95772936be3034, type: 3}
-    Volume: 0.507
+    Volume: 0.05
     PitchMin: 0
     PitchMax: 0
     Is3D: 0
@@ -85,7 +85,7 @@ MonoBehaviour:
     Is3D: 0
   - Type: 25
     Clip: {fileID: 8300000, guid: 6864abc2c0d5d4690bcd0ec6c2587ede, type: 3}
-    Volume: 0.3
+    Volume: 0.05
     PitchMin: 1
     PitchMax: 1
     Is3D: 0

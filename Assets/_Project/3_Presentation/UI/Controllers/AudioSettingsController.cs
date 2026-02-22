@@ -66,10 +66,10 @@ namespace Genesis.Presentation.UI {
         }
 
         private void LoadSettings() {
-            float master = PlayerPrefs.GetFloat("vol_master", 1f);
-            float music = PlayerPrefs.GetFloat("vol_music", 1f);
-            float sfx = PlayerPrefs.GetFloat("vol_sfx", 1f);
-            float ambient = PlayerPrefs.GetFloat("vol_ambient", 1f);
+            float master = PlayerPrefs.GetFloat("vol_master", 0.5f);
+            float music = PlayerPrefs.GetFloat("vol_music", 0.5f);
+            float sfx = PlayerPrefs.GetFloat("vol_sfx", 0.5f);
+            float ambient = PlayerPrefs.GetFloat("vol_ambient", 0.5f);
 
             if (_sliderMaster != null) _sliderMaster.value = master;
             if (_sliderMusic != null) _sliderMusic.value = music;

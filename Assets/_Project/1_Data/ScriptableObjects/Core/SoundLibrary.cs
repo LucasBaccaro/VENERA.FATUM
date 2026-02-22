@@ -108,6 +108,19 @@ namespace Genesis.Data {
             return entry;
         }
 
+        public SoundEntry GetEntryByClip(AudioClip clip) {
+            if (clip == null) return null;
+            
+            // Search in categories (Ambient is most common for raw clip triggers)
+            if (ambientSounds != null) foreach (var e in ambientSounds) if (e.Clip == clip) return e;
+            if (uiSounds != null) foreach (var e in uiSounds) if (e.Clip == clip) return e;
+            if (combatSounds != null) foreach (var e in combatSounds) if (e.Clip == clip) return e;
+            if (interactionSounds != null) foreach (var e in interactionSounds) if (e.Clip == clip) return e;
+            if (footstepSounds != null) foreach (var e in footstepSounds) if (e.Clip == clip) return e;
+
+            return null;
+        }
+
         public SoundEntry GetFootstepEntry() {
             if (footstepSounds == null || footstepSounds.Length == 0) return null;
             return footstepSounds[UnityEngine.Random.Range(0, footstepSounds.Length)];

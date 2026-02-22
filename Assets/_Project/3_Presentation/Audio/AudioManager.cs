@@ -53,6 +53,11 @@ namespace Genesis.Presentation.Audio {
             base.Awake();
             InitializeSources();
             InitializePool();
+        }
+
+        private IEnumerator Start() {
+            // Wait until the end of frame to ensure AudioMixer is fully ready
+            yield return new WaitForEndOfFrame();
             LoadVolumeSettings();
         }
 
@@ -215,10 +220,16 @@ namespace Genesis.Presentation.Audio {
         public void PlaySFX(AudioClip clip, Vector3 position, float volume = 1f) {
             if (clip == null) return;
 
+            float baseVol = volume;
+            if (_soundLibrary != null) {
+                var entry = _soundLibrary.GetEntryByClip(clip);
+                if (entry != null) baseVol = entry.Volume * volume;
+            }
+
             AudioSource source = GetPooledSource();
             source.transform.position = position;
             source.clip = clip;
-            source.volume = volume;
+            source.volume = baseVol;
             source.pitch = 1f;
             source.spatialBlend = 1f;
             source.Play();
@@ -231,13 +242,19 @@ namespace Genesis.Presentation.Audio {
         public void PlayMusic(AudioClip clip, float fadeTime = 1f, float targetVolume = 1f) {
             if (clip == null) return;
 
+            float baseVol = targetVolume;
+            if (_soundLibrary != null) {
+                var entry = _soundLibrary.GetEntryByClip(clip);
+                if (entry != null) baseVol = entry.Volume * targetVolume;
+            }
+
             AudioSource incoming = _musicAIsActive ? _musicSourceB : _musicSourceA;
             AudioSource outgoing = _musicAIsActive ? _musicSourceA : _musicSourceB;
             _musicAIsActive = !_musicAIsActive;
 
             incoming.clip = clip;
             incoming.Play();
-            StartCoroutine(CrossfadeCoroutine(outgoing, incoming, fadeTime, targetVolume));
+            StartCoroutine(CrossfadeCoroutine(outgoing, incoming, fadeTime, baseVol));
         }
 
         public void StopMusic(float fadeTime = 1f) {
@@ -249,8 +266,14 @@ namespace Genesis.Presentation.Audio {
         // PUBLIC API — AMBIENT
         // ═══════════════════════════════════════════════════════
 
-        public void PlayAmbient(AudioClip clip, float fadeTime = 2f) {
+        public void PlayAmbient(AudioClip clip, float fadeTime = 2f, float targetVolume = 1f) {
             if (clip == null) return;
+
+            float baseVol = targetVolume;
+            if (_soundLibrary != null) {
+                var entry = _soundLibrary.GetEntryByClip(clip);
+                if (entry != null) baseVol = entry.Volume * targetVolume;
+            }
 
             AudioSource incoming = _ambientAIsActive ? _ambientSourceB : _ambientSourceA;
             AudioSource outgoing = _ambientAIsActive ? _ambientSourceA : _ambientSourceB;
@@ -258,7 +281,7 @@ namespace Genesis.Presentation.Audio {
 
             incoming.clip = clip;
             incoming.Play();
-            StartCoroutine(CrossfadeCoroutine(outgoing, incoming, fadeTime));
+            StartCoroutine(CrossfadeCoroutine(outgoing, incoming, fadeTime, baseVol));
         }
 
         public void StopAmbient(float fadeTime = 2f) {
@@ -288,7 +311,10 @@ namespace Genesis.Presentation.Audio {
 
         private void SetMixerVolume(string parameter, float normalized) {
             if (_mixer == null) return;
-            float dB = normalized > 0.0001f ? Mathf.Log10(Mathf.Clamp01(normalized)) * 20f : -80f;
+            // High-precision calibration: 50% slider (0.5) = 0dB (pure asset volume)
+            // Range: [0.0] -> -80dB, [0.5] -> 0dB, [1.0] -> +6dB
+            float volumeScale = normalized * 2f;
+            float dB = volumeScale > 0.0001f ? Mathf.Log10(volumeScale) * 20f : -80f;
             _mixer.SetFloat(parameter, dB);
         }
 
@@ -306,6 +332,8 @@ namespace Genesis.Presentation.Audio {
                 elapsed += Time.unscaledDeltaTime;
                 float t = elapsed / duration;
                 outgoing.volume = Mathf.Lerp(startVolumeOut, 0f, t);
+                
+                // Note: targetVolume is already calibrated when passed to PlayMusic/PlayAmbient
                 incoming.volume = Mathf.Lerp(0f, targetVolume, t);
                 yield return null;
             }
@@ -432,12 +460,20 @@ namespace Genesis.Presentation.Audio {
         }
 
         private void OnZoneChanged(bool isInSafeZone) {
+            SyncAudioState(isInSafeZone);
+        }
+
+        public void SyncAudioState(bool isInSafeZone) {
             if (_soundLibrary == null) return;
             SoundEntry entry = _soundLibrary.GetEntry(isInSafeZone ? SoundType.Zone_SafeEnter : SoundType.Zone_UnsafeEnter);
             if (entry == null || entry.Clip == null) return;
             if (entry.Clip == _currentZoneMusic) return;
+            
             _currentZoneMusic = entry.Clip;
-            PlayMusic(entry.Clip, 1f, entry.Volume);
+            // Play with targetVolume 1.0, the PlayMusic overload will handle lookup and calibration
+            PlayMusic(entry.Clip, 1f, 1f);
+            
+            Debug.Log($"[AudioManager] SyncAudioState: {(isInSafeZone ? "Safe" : "Unsafe")} | Clip: {entry.Clip.name}");
         }
 
         // ═══════════════════════════════════════════════════════
@@ -462,10 +498,16 @@ namespace Genesis.Presentation.Audio {
             // Stop existing loop for this entity if any
             OnStopLoopSFX(entityId);
 
+            float baseVol = 1f;
+            if (_soundLibrary != null) {
+                var entry = _soundLibrary.GetEntryByClip(clip);
+                if (entry != null) baseVol = entry.Volume;
+            }
+
             AudioSource source = GetPooledSource();
             source.transform.position = position;
             source.clip = clip;
-            source.volume = 1f;
+            source.volume = baseVol;
             source.pitch = 1f;
             source.spatialBlend = 1f;
             source.loop = true;
@@ -490,15 +532,25 @@ namespace Genesis.Presentation.Audio {
         // ═══════════════════════════════════════════════════════
 
         private void LoadVolumeSettings() {
-            SetMasterVolume(PlayerPrefs.GetFloat("vol_master", 1f));
-            SetMusicVolume(PlayerPrefs.GetFloat("vol_music", 1f));
-            SetSFXVolume(PlayerPrefs.GetFloat("vol_sfx", 1f));
-            SetAmbientVolume(PlayerPrefs.GetFloat("vol_ambient", 1f));
+            // One-time migration to force 50% for existing users
+            if (PlayerPrefs.GetInt("audio_v2_initialized", 0) == 0) {
+                PlayerPrefs.SetFloat("vol_master", 0.5f);
+                PlayerPrefs.SetFloat("vol_music", 0.5f);
+                PlayerPrefs.SetFloat("vol_sfx", 0.5f);
+                PlayerPrefs.SetFloat("vol_ambient", 0.5f);
+                PlayerPrefs.SetInt("audio_v2_initialized", 1);
+                PlayerPrefs.Save();
+            }
+
+            SetMasterVolume(PlayerPrefs.GetFloat("vol_master", 0.5f));
+            SetMusicVolume(PlayerPrefs.GetFloat("vol_music", 0.5f));
+            SetSFXVolume(PlayerPrefs.GetFloat("vol_sfx", 0.5f));
+            SetAmbientVolume(PlayerPrefs.GetFloat("vol_ambient", 0.5f));
         }
 
-        public float GetMasterVolume() => PlayerPrefs.GetFloat("vol_master", 1f);
-        public float GetMusicVolume() => PlayerPrefs.GetFloat("vol_music", 1f);
-        public float GetSFXVolume() => PlayerPrefs.GetFloat("vol_sfx", 1f);
-        public float GetAmbientVolume() => PlayerPrefs.GetFloat("vol_ambient", 1f);
+        public float GetMasterVolume() => PlayerPrefs.GetFloat("vol_master", 0.5f);
+        public float GetMusicVolume() => PlayerPrefs.GetFloat("vol_music", 0.5f);
+        public float GetSFXVolume() => PlayerPrefs.GetFloat("vol_sfx", 0.5f);
+        public float GetAmbientVolume() => PlayerPrefs.GetFloat("vol_ambient", 0.5f);
     }
 }

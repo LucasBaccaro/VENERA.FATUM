@@ -263,10 +263,20 @@ namespace Genesis.Presentation.UI {
 
         private void LoadAllSettings() {
             // Audio
-            float master = PlayerPrefs.GetFloat("vol_master", 1f);
-            float music = PlayerPrefs.GetFloat("vol_music", 1f);
-            float sfx = PlayerPrefs.GetFloat("vol_sfx", 1f);
-            float ambient = PlayerPrefs.GetFloat("vol_ambient", 1f);
+            // One-time migration to force 50% for existing users
+            if (PlayerPrefs.GetInt("audio_v2_initialized", 0) == 0) {
+                PlayerPrefs.SetFloat("vol_master", 0.5f);
+                PlayerPrefs.SetFloat("vol_music", 0.5f);
+                PlayerPrefs.SetFloat("vol_sfx", 0.5f);
+                PlayerPrefs.SetFloat("vol_ambient", 0.5f);
+                PlayerPrefs.SetInt("audio_v2_initialized", 1);
+                PlayerPrefs.Save();
+            }
+
+            float master = PlayerPrefs.GetFloat("vol_master", 0.5f);
+            float music = PlayerPrefs.GetFloat("vol_music", 0.5f);
+            float sfx = PlayerPrefs.GetFloat("vol_sfx", 0.5f);
+            float ambient = PlayerPrefs.GetFloat("vol_ambient", 0.5f);
 
             SetSlider(_sliderMaster, master); UpdatePercent(_valueMaster, master);
             SetSlider(_sliderMusic, music);   UpdatePercent(_valueMusic, music);

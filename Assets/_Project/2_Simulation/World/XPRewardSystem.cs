@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using FishNet;
 using FishNet.Object;
 using Genesis.Core;
 using Genesis.Data;
@@ -27,6 +29,37 @@ namespace Genesis.Simulation {
         private void OnEnemyKilled(NetworkObject killer, NetworkObject enemy) {
             if (killer == null || _config == null) return;
 
+            Vector3 enemyPos = enemy != null ? enemy.transform.position : killer.transform.position;
+
+            // Party XP sharing
+            if (ServiceLocator.Instance.TryGet<PartyManager>(out var partyManager)) {
+                var party = partyManager.GetParty(killer.OwnerId);
+                if (party != null && party.MemberClientIds.Count > 1) {
+                    var qualifying = new List<PlayerAttributes>();
+                    foreach (int memberId in party.MemberClientIds) {
+                        if (InstanceFinder.NetworkManager.ServerManager.Clients.TryGetValue(memberId, out var conn)
+                            && conn.FirstObject != null) {
+                            float dist = Vector3.Distance(conn.FirstObject.transform.position, enemyPos);
+                            if (dist <= 30f) {
+                                var memberAttrs = conn.FirstObject.GetComponent<PlayerAttributes>();
+                                if (memberAttrs != null) qualifying.Add(memberAttrs);
+                            }
+                        }
+                    }
+
+                    if (qualifying.Count > 0) {
+                        float totalXP = _config.BaseEnemyKillXP * (1f + 0.05f * (qualifying.Count - 1));
+                        float xpPerMember = totalXP / qualifying.Count;
+                        foreach (var memberAttrs in qualifying) {
+                            memberAttrs.GainXP(xpPerMember);
+                        }
+                        Debug.Log($"[XPRewardSystem] Party XP: {qualifying.Count} members each got {xpPerMember:F2} XP");
+                        return;
+                    }
+                }
+            }
+
+            // Solo player
             PlayerAttributes attrs = killer.GetComponent<PlayerAttributes>();
             if (attrs == null) return;
 

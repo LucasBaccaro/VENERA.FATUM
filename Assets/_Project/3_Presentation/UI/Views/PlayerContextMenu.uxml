@@ -5,6 +5,7 @@
             <ui:Label name="TargetNameLabel" text="Player Name" class="context-menu-title"/>
             <ui:VisualElement class="context-menu-divider"/>
             <ui:Button name="TradeButton" text="Trade" class="context-menu-button"/>
+            <ui:Button name="InviteButton" text="Invitar a Party" class="context-menu-button"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

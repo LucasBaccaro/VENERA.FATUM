@@ -4,6 +4,7 @@ using Genesis.Simulation;
 using Genesis.Items;
 using Genesis.Data;
 using Genesis.Core;
+using Genesis.Presentation.Audio;
 using System.Collections.Generic;
 
 namespace Genesis.Presentation.UI {
@@ -120,6 +121,20 @@ namespace Genesis.Presentation.UI {
                 _title.text = lootSource.LootName.ToUpper();
                 RefreshUI();
             }
+
+            // Sonido especial si el cofre tiene un item Epic o mejor
+            if (lootSource is ChestController) {
+                bool hasEpic = false;
+                foreach (var item in lootSource.LootItems) {
+                    if (!item.IsEmpty && item.Rarity >= ItemRarity.Epic) {
+                        hasEpic = true;
+                        break;
+                    }
+                }
+                if (hasEpic) {
+                    EventBus.Trigger("OnEpicChestItem");
+                }
+            }
         }
 
         private void RefreshUI() {
@@ -214,6 +229,7 @@ namespace Genesis.Presentation.UI {
             var localPlayer = FindLocalPlayer();
             if (localPlayer != null) {
                 _currentLootSource.CmdTakeItem(index, localPlayer);
+                UISoundPlayer.PlayLootPickup();
             }
         }
 
@@ -221,6 +237,7 @@ namespace Genesis.Presentation.UI {
             var localPlayer = FindLocalPlayer();
             if (localPlayer != null && _currentLootSource != null) {
                 _currentLootSource.CmdTakeAll(localPlayer);
+                UISoundPlayer.PlayLootPickup();
                 CloseWindow();
             }
         }

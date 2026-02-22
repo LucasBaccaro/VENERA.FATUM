@@ -17,6 +17,7 @@ namespace Genesis.Presentation.UI {
         private VisualElement _popup;
         private Label _targetNameLabel;
         private Button _tradeButton;
+        private Button _inviteButton;
 
         private NetworkObject _targetPlayer;
         private bool _isVisible;
@@ -53,6 +54,11 @@ namespace Genesis.Presentation.UI {
 
             if (_tradeButton != null) {
                 _tradeButton.clicked += OnTradeClicked;
+            }
+
+            _inviteButton = root.Q<Button>("InviteButton");
+            if (_inviteButton != null) {
+                _inviteButton.clicked += OnInviteClicked;
             }
 
             if (_popup != null) _popup.style.display = DisplayStyle.None;
@@ -130,6 +136,16 @@ namespace Genesis.Presentation.UI {
 
                 if (_targetNameLabel != null) _targetNameLabel.text = playerName;
 
+                // Invite button: disabled if already in same party or local party is full
+                if (_inviteButton != null) {
+                    var localPm = _localPlayerNob.GetComponent<Genesis.Simulation.PartyMember>();
+                    var targetPm = nob.GetComponent<Genesis.Simulation.PartyMember>();
+                    bool sameParty = localPm != null && targetPm != null
+                                     && localPm.IsInParty && localPm.PartyId == targetPm.PartyId;
+                    bool partyFull = localPm != null && localPm.IsPartyFull;
+                    _inviteButton.SetEnabled(!sameParty && !partyFull);
+                }
+
                 // Position popup near mouse, clamped to screen
                 PositionPopup(mousePos);
 
@@ -167,6 +183,18 @@ namespace Genesis.Presentation.UI {
             }
             Debug.Log($"[ContextMenu] Requesting trade with ObjectId={_targetPlayer.ObjectId}");
             _tradeManager.CmdRequestTrade(_targetPlayer.ObjectId);
+            Hide();
+        }
+
+        private void OnInviteClicked() {
+            if (_localPlayerNob == null || _targetPlayer == null) return;
+            var localPm = _localPlayerNob.GetComponent<Genesis.Simulation.PartyMember>();
+            if (localPm == null) {
+                Debug.LogWarning("[ContextMenu] Local player has no PartyMember component.");
+                return;
+            }
+            Debug.Log($"[ContextMenu] Inviting player {_targetPlayer.OwnerId} to party.");
+            localPm.CmdInvitePlayer(_targetPlayer.OwnerId);
             Hide();
         }
 

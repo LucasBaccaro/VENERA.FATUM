@@ -74,6 +74,11 @@ namespace Genesis.Core.Networking {
         private void SavePlayerOnDisconnect(NetworkConnection conn) {
             Debug.Log($"[SpawnManager] ═══ DISCONNECT SAVE ═══ clientId={conn.ClientId}");
 
+            // Party cleanup before save
+            if (ServiceLocator.Instance.TryGet<IPartyService>(out var partyService)) {
+                partyService.OnPlayerDisconnected(conn.ClientId);
+            }
+
             if (!ServiceLocator.Instance.TryGet<IPersistenceService>(out var persistence)) {
                 Debug.LogWarning($"[SpawnManager] Disconnect save SKIPPED: No IPersistenceService");
                 return;

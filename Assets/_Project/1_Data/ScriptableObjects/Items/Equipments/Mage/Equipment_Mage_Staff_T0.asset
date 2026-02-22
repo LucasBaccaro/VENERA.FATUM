@@ -19,7 +19,7 @@ MonoBehaviour:
   Type: 1
   IsStackable: 0
   MaxStackSize: 1
-  IsProtected: 1
+  IsProtected: 0
   Slot: 7
   RequiredClass: Mage
   CommonStats:

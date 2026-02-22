@@ -2,7 +2,7 @@
 
 ## Resumen
 
-Sistema de intercambio de items y gold entre jugadores, diseñado para la economía Full Loot del juego. Implementado con FishNet server-authoritative, protocolo anti-scam (Lock > Accept > Countdown 3s), y swap atomico server-side.
+Sistema de intercambio de items y gold entre jugadores, diseñado para la economía Full Loot del juego. Implementado con FishNet server-authoritative, protocolo anti-scam (Lock > Accept > Countdown 4s), swap atomico server-side, y selector de cantidad para items stackeables.
 
 ---
 
@@ -33,9 +33,9 @@ None -> Requested -> Active -> [Lock Phase] -> Countdown -> Completed
 |---------|------|-------------|
 | `2_Simulation/Trading/TradeSession.cs` | Simulation | Modelo de datos: TradeState, TradeOffer, TradeSession, constantes |
 | `2_Simulation/Trading/TradeManager.cs` | Simulation | NetworkBehaviour: 9 ServerRpcs + 8 TargetRpcs + swap atomico |
-| `3_Presentation/UI/Controllers/TradeWindowController.cs` | Presentation | Controller: ventana de trade + popup de request |
+| `3_Presentation/UI/Controllers/TradeWindowController.cs` | Presentation | Controller: ventana de trade + popup request + quantity picker |
 | `3_Presentation/UI/Controllers/PlayerContextMenuController.cs` | Presentation | Controller: menu contextual right-click sobre otro player |
-| `3_Presentation/UI/Views/TradeWindowUI.uxml` | Presentation | Layout UXML: ventana de trade con 2 paneles + countdown |
+| `3_Presentation/UI/Views/TradeWindowUI.uxml` | Presentation | Layout UXML: trade window + countdown + quantity picker popup |
 | `3_Presentation/UI/Styles/TradeWindowStyle.uss` | Presentation | Estilos USS: tema medieval oscuro con acentos gold |
 | `3_Presentation/UI/Views/PlayerContextMenu.uxml` | Presentation | Layout UXML: popup contextual compacto |
 | `3_Presentation/UI/Styles/PlayerContextMenu.uss` | Presentation | Estilos USS: popup con borde gold |
@@ -57,19 +57,20 @@ None -> Requested -> Active -> [Lock Phase] -> Countdown -> Completed
 
 1. **Request**: A hace right-click en B > context menu > "Trade" > `CmdRequestTrade(targetObjectId)` > Server valida (vivos, sin combat, < 10m, no en trade) > `TargetTradeRequested` a B con nombre de A
 2. **Accept/Decline**: B ve popup > acepta > `CmdRespondTrade(sessionId, true)` > Server crea sesion Active > `TargetTradeOpened` a ambos
-3. **Offer Phase**: Cada jugador agrega items/gold > `CmdAddTradeItem` / `CmdSetTradeGold` > Server valida (item existe, gold suficiente) > copia datos a sesion > `TargetTradeOfferUpdated` al otro jugador. Cualquier cambio resetea ambos locks.
-4. **Lock**: Jugador presiona Lock > `CmdLockTrade` > Server marca locked > `TargetTradeLockChanged` a ambos
-5. **Unlock**: Si alguien desbloquea > ambos locks y accepts se resetean > notificar a ambos
-6. **Accept**: Solo disponible cuando ambos locked > `CmdAcceptTrade` > si ambos aceptaron > `TargetTradeCountdownStarted` (3s)
-7. **Countdown**: Server cuenta 3s en Update. Cualquiera puede cancelar. Al completar > `ExecuteTrade()` > `TargetTradeCompleted` a ambos
-8. **Cancel**: En cualquier momento > `CmdCancelTrade` > cleanup > `TargetTradeCancelled` a ambos
+3. **Offer Phase**: Cada jugador agrega items/gold > `CmdAddTradeItem(slot, qty)` / `CmdSetTradeGold(amount)` > Server valida (item existe, cantidad valida, gold suficiente) > copia datos a sesion > `TargetTradeOfferUpdated` al otro jugador. Cualquier cambio resetea ambos locks.
+4. **Quantity Picker**: Si el item es stackeable (qty > 1), se muestra popup con botones Min/-/+/Max y campo de texto para elegir cantidad. Items no-stackeables se agregan directo.
+5. **Lock**: Jugador presiona Lock > `CmdLockTrade` > Server marca locked > `TargetTradeLockChanged` a ambos
+6. **Unlock**: Si alguien desbloquea > ambos locks y accepts se resetean > notificar a ambos
+7. **Accept**: Solo disponible cuando ambos locked > `CmdAcceptTrade` > si ambos aceptaron > `TargetTradeCountdownStarted` (4s)
+8. **Countdown**: Server cuenta 4s en Update. Display muestra 3→2→1→0. Cualquiera puede cancelar. Al completar > `ExecuteTrade()` > `TargetTradeCompleted` a ambos
+9. **Cancel**: En cualquier momento > `CmdCancelTrade` > cleanup > `TargetTradeCancelled` a ambos
 
 ### RPCs
 
 **ServerRpcs (Cliente > Servidor):**
 - `CmdRequestTrade(int targetObjectId)`
 - `CmdRespondTrade(uint sessionId, bool accepted)`
-- `CmdAddTradeItem(int inventorySlotIndex)`
+- `CmdAddTradeItem(int inventorySlotIndex, int quantity)`
 - `CmdRemoveTradeItem(int tradeSlotIndex)`
 - `CmdSetTradeGold(int amount)`
 - `CmdLockTrade()`
@@ -131,8 +132,24 @@ PASO 3 - COMPLETAR:
 MAX_TRADE_SLOTS = 6      // Items por lado
 TRADE_RANGE = 10f         // Metros maximos para iniciar trade
 COMBAT_COOLDOWN = 5f      // Segundos fuera de combate requeridos
-COUNTDOWN_DURATION = 3f   // Segundos de countdown final
+COUNTDOWN_DURATION = 4f   // Segundos de countdown (display: 3,2,1,0)
 ```
+
+---
+
+## Validaciones
+
+### Gold (cliente + servidor)
+- **Cliente**: `OnGoldInputChanged` clampa al tipear via `PlayerAttributes.Gold` (SyncVar)
+- **Cliente**: `SubmitGold` clampa antes de enviar RPC
+- **Servidor**: `CmdSetTradeGold` clampa a `_attributes.Gold`
+- **Servidor**: `CmdSetTradeGold` hace early-return si el monto no cambio (evita resetear locks innecesariamente)
+
+### Items con cantidad parcial
+- `CmdAddTradeItem(slotIndex, quantity)` acepta cantidad parcial de stacks
+- Servidor valida: `quantity > 0 && quantity <= slot.Quantity`
+- El trade slot guarda solo la cantidad elegida, no el stack completo
+- `ExecuteTrade` valida que la cantidad original aun exista al momento del swap
 
 ---
 
@@ -145,6 +162,28 @@ COUNTDOWN_DURATION = 3f   // Segundos de countdown final
 - **Distancia**: Validada al iniciar request
 - **Doble trade**: Rechazado si cualquier player ya tiene sesion activa
 - **Self-trade**: Rechazado en CmdRequestTrade
+- **Gold set sin cambio**: Early-return evita reset de locks (fix race condition SubmitGold + CmdLockTrade)
+- **UI init timing**: Controllers reintentan InitializeUI() en Update() si rootVisualElement no estaba listo en Start()
+
+---
+
+## Vulnerabilidades Conocidas (TODO)
+
+### CRITICAS
+
+| # | Vulnerabilidad | Impacto | Fix propuesto |
+|---|---------------|---------|---------------|
+| 1 | **SpendGold return value ignorado** | Si SpendGold falla (gold insuficiente por race), gold no se descuenta pero trade continua | Verificar return de SpendGold; si falla, rollback |
+| 2 | **AddItem return value ignorado** | Si AddItem falla (inventario lleno por race), items se pierden permanentemente | Verificar return de AddItem; si falla, rollback |
+| 3 | **No hay save inmediato post-trade** | Si el server crashea dentro de los 30s de auto-save, el trade se revierte | Llamar SavePlayerNow() para ambos jugadores despues de ExecuteTrade |
+
+### MEDIAS
+
+| # | Vulnerabilidad | Impacto | Fix propuesto |
+|---|---------------|---------|---------------|
+| 4 | **Race condition inventario durante ejecucion** | Otro ServerRpc puede modificar inventario entre validacion y ejecucion (mismo frame) | Bloquear inventario durante ExecuteTrade (flag `_isTrading`) |
+| 5 | **ActiveSessions no se limpia en server restart** | Diccionario estatico retiene referencias muertas despues de scene reload | Limpiar en OnServerStart o usar non-static |
+| 6 | **Sin timeout de sesion** | Si ambos players disconnectan sin cancel, sesion queda en memoria | Timer de timeout (ej: 5 min inactivo → auto-cancel) |
 
 ---
 
@@ -175,56 +214,38 @@ if (tradeManager != null) {
 
 ---
 
-## Interaccion con Inventario
+## Bugs Corregidos
 
-Cuando la ventana de trade esta abierta, left-click en un slot del inventario agrega el item al trade:
+### Race Condition en Context Menu
+**Problema**: Al clickear "Trade", el `Update()` detectaba el left-click ANTES que UI Toolkit procesara el evento del boton, llamando `Hide()` y seteando `_targetPlayer = null`.
+**Fix**: `_showFrame` + bounds check para no ocultar si click esta dentro del popup.
 
-```csharp
-// En InventoryController.OnSlotClicked:
-if (evt.button == 0) {
-    var tradeWindow = FindFirstObjectByType<TradeWindowController>();
-    if (tradeWindow != null && tradeWindow.IsTradeOpen) {
-        tradeWindow.OnInventorySlotClicked(index);
-        evt.StopPropagation();
-        return;
-    }
-}
-```
+### SubmitGold reseteaba locks
+**Problema**: `OnLockClicked()` llamaba `SubmitGold()` antes de `CmdLockTrade()`. `CmdSetTradeGold(0)` reseteaba todos los locks aunque el gold no habia cambiado. Resultado: al lockear B, se deslockeaba A.
+**Fix**: Early-return en `CmdSetTradeGold` si `offer.Gold == amount`.
 
-Click en un slot del trade propio lo remueve (via `CmdRemoveTradeItem`).
-
----
-
-## Bug Corregido: Race Condition en Context Menu
-
-**Problema**: Al clickear el boton "Trade" en el context menu, el `Update()` detectaba el left-click ANTES que UI Toolkit procesara el evento del boton. Esto llamaba `Hide()` que seteaba `_targetPlayer = null`, y cuando `OnTradeClicked()` se ejecutaba despues, fallaba porque no habia target.
-
-**Solucion**:
-1. Se agrego `_showFrame` para ignorar clicks en el frame donde se mostro el popup
-2. Se verifica que el click este FUERA de los bounds del popup antes de ocultar
-3. El boton Trade ya no compite con la logica de hide
-
-```csharp
-// En PlayerContextMenuController.Update():
-if (_isVisible && Time.frameCount > _showFrame + 1) {
-    if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame) {
-        Vector2 mousePos = Mouse.current.position.ReadValue();
-        float uiY = Screen.height - mousePos.y;
-        var bounds = _popup.worldBound;
-        if (!bounds.Contains(new Vector2(mousePos.x, uiY))) {
-            Hide();
-        }
-    }
-}
-```
+### UI bloqueada en cliente
+**Problema**: Si `rootVisualElement` era null en `Start()` (timing de init del UIDocument), `pickingMode = Ignore` nunca se seteaba, bloqueando clicks en paneles de abajo.
+**Fix**: Flag `_initialized` + reintento en `Update()` hasta que init sea exitoso.
 
 ---
 
 ## Debug Logs
 
-Todos los logs usan el prefijo `[TradeManager]` o `[TradeWindow]` o `[ContextMenu]` para filtrar facilmente en la consola de Unity. Los logs cubren:
+Todos los logs usan prefijo `[TradeManager]` / `[TradeWindow]` / `[ContextMenu]`. Cubren:
 - Request enviado/recibido con ObjectIds
 - Cada razon de rechazo (ya en trade, muerto, en combate, distancia, etc.)
 - Sesion creada con ID
 - Respond trade con sessionId y estado
 - Trade opened, countdown started, completed, cancelled
+
+
+
+  Las 3 CRITICAS que hay que fixear:                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                                            
+  1. SpendGold() return value ignorado — En ExecuteTrade() linea 578: attrA.SpendGold(offerA.Gold); — si por race condition el gold bajó entre la validación y la ejecución, SpendGold retorna false pero el trade continúa. El partner recibe gold que     
+  nunca se descontó.
+  2. AddItem() return value ignorado — Si AddItem falla (inventario cambió entre validación y ejecución), los items ya fueron removidos del sender pero nunca llegan al receiver. Items perdidos permanentemente.
+  3. No hay save inmediato post-trade — El auto-save de Nakama corre cada 30s. Si el server crashea en esa ventana, el trade se revierte para ambos jugadores pero los items/gold ya se movieron en memoria. Puede causar dupeo o pérdida según el timing.
+
+  Las MEDIAS son: race condition en inventario durante ejecución (otro RPC modifica slots en el mismo frame), ActiveSessions estático que no se limpia en restart, y sesiones huérfanas sin timeout.

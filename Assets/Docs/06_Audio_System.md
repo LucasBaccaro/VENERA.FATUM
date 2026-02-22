@@ -53,7 +53,7 @@ Assets/_Project/5_Content/Audio/
 |---|---|---|
 | UI_Open (1) | UISoundPlayer.PlayOpen() | `SFX/UI/ui_open.mp3` |
 | UI_Close (2) | UISoundPlayer.PlayClose() | `SFX/UI/ui_close.mp3` |
-| UI_Click (0) | UISoundPlayer.PlayClick() | `SFX/UI/ui_click.mp3` |
+| UI_Click (0) | **UIButtonSoundManager global** (todos los botones auto) + UISoundPlayer.PlayClick() | `SFX/UI/ui_click.mp3` |
 | UI_Error (3) | OnCombatError, UISoundPlayer.PlayError() | `SFX/UI/ui_error.mp3` |
 | UI_Success (4) | UISoundPlayer.PlaySuccess() | `SFX/UI/ui_success.mp3` |
 | Combat_Hit (5) | OnFloatingText "damage" | `SFX/Combat/hit.mp3` |
@@ -61,11 +61,17 @@ Assets/_Project/5_Content/Audio/
 | Combat_Miss (7) | OnFloatingText "evade" | `SFX/Combat/miss.mp3` |
 | Combat_Death (8) | OnLocalPlayerDied | `SFX/Combat/player_death.mp3` |
 | Combat_LevelUp (9) | OnLevelChanged | `SFX/Combat/level_up.mp3` |
-| Vendor_Buy (13) | OnVendorBuyResult (success) | `SFX/Items/vendor_buy.mp3` |
+| Loot_Pickup | LootBagController.TakeItem / TakeAll | `SFX/Items/loot_pickup.mp3` |
+| Loot_ChestOpen_Epic | LootBagController.OnLootOpened (Epic+ en cofre) -> OnEpicChestItem | `SFX/Items/chest_epic.mp3` |
 | Quest_Accept (15) | OnQuestAccepted | `SFX/UI/quest_accept.mp3` |
-| Quest_Complete (16) | OnQuestCompleted | `SFX/UI/quest_complete.mp3` |
+| Quest_Complete (16) | OnQuestCompleted (server event, host-only) | `SFX/UI/quest_complete.mp3` |
+| Quest_ObjectiveComplete | OnQuestObjectiveProgress cuando current >= required | `SFX/UI/quest_objective.mp3` |
+| Quest_TurnIn | OnQuestTurnedIn (TargetRpc al owner) | `SFX/UI/quest_turnin.mp3` |
+| Trade_Incoming | OnTradeRequested | `SFX/UI/trade_incoming.mp3` |
+| Vendor_Buy (13) | OnVendorBuyResult (success) | `SFX/Items/vendor_buy.mp3` |
 | Player_Respawn (24) | OnLocalPlayerRespawned | `SFX/Combat/respawn.mp3` |
 | EnemyData.HitSound | EnemyMob.TakeDamage -> ObserversRpc | Per-enemy clip en cada SO |
+| EnemyData.AggroSounds[] | EnemyMob.ScanForTargets -> RpcPlayAggroSound (random) | Varios clips por SO (varios para variedad) |
 | AbilityData.CastSound | PlayerCombat.RpcCastSuccess -> OnPlaySFX3D | Per-ability clip en cada SO |
 | AbilityData.ImpactSound | ProjectileController.RpcPlayImpactSound -> OnPlaySFX3D | Per-ability clip en cada SO |
 | StatusEffectData.ApplySound | StatusEffectSystem.ApplyEffect -> OnPlaySFX3D | Per-effect clip en cada SO |

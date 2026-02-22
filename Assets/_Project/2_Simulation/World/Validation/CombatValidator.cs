@@ -1,5 +1,7 @@
 using FishNet.Object;
 using UnityEngine;
+using Genesis.Core;
+using Genesis.Simulation;
 
 namespace Genesis.Simulation.World
 {
@@ -51,6 +53,20 @@ namespace Genesis.Simulation.World
                 else
                 {
                     Debug.LogWarning($"[CombatValidator] Attacker {attacker.name} has no PlayerState component!");
+                }
+            }
+
+            // Party friendly fire check
+            if (attacker != null) {
+                int attackerId = attacker.OwnerId;
+                int victimId = victim.OwnerId;
+                if (attackerId >= 0 && victimId >= 0 && attackerId != victimId) {
+                    if (ServiceLocator.Instance.TryGet<PartyManager>(out var partyManager)
+                        && partyManager.IsInSameParty(attackerId, victimId)) {
+                        reason = "Cannot damage party member";
+                        Debug.Log($"<color=red>[CombatValidator] ❌ BLOCKED: {reason}</color>");
+                        return false;
+                    }
                 }
             }
 

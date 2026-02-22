@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Genesis.Core.Networking;
 using Genesis.Data;
+using Genesis.Presentation.Audio;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -18,6 +19,10 @@ namespace Genesis.Presentation.UI {
         [SerializeField] private UIDocument uiDocument;
         [SerializeField] private List<ClassData> availableClasses;
 
+        [Header("Audio")]
+        [SerializeField] private AudioClip _loginMusic;
+        [SerializeField] private AudioClip _enterWorldSFX;
+
         private VisualElement _root;
         private VisualElement _classListScroll;
         private VisualElement _classDetailPanel;
@@ -29,6 +34,10 @@ namespace Genesis.Presentation.UI {
         private TextField _nameInput;
         private Button _connectButton;
         private Label _statusLabel;
+
+        private VisualElement _loadingOverlay;
+        private Label _loadingDotsLabel;
+        private bool _isLoading;
 
         // Stat labels
         private Label _statHealth, _statMana, _statHPRegen, _statMPRegen, _statHPLevel, _statMPLevel;
@@ -82,6 +91,7 @@ namespace Genesis.Presentation.UI {
             if (_root == null) return;
 
             QueryElements();
+            BuildLoadingOverlay();
             BuildClassList();
 
             if (availableClasses != null && availableClasses.Count > 0)
@@ -94,6 +104,9 @@ namespace Genesis.Presentation.UI {
 
             IsActive = true;
             Debug.Log("[LoginController] Login screen initialized.");
+
+            if (_loginMusic != null)
+                AudioManager.Instance?.PlayMusic(_loginMusic, 2f);
         }
 
         private void QueryElements() {
@@ -301,7 +314,60 @@ namespace Genesis.Presentation.UI {
                 _abilityTooltip.style.display = DisplayStyle.None;
         }
 
+        private void BuildLoadingOverlay() {
+            _loadingOverlay = new VisualElement();
+            _loadingOverlay.style.position = Position.Absolute;
+            _loadingOverlay.style.top = 0;
+            _loadingOverlay.style.bottom = 0;
+            _loadingOverlay.style.left = 0;
+            _loadingOverlay.style.right = 0;
+            _loadingOverlay.style.backgroundColor = new Color(0f, 0f, 0f, 0.97f);
+            _loadingOverlay.style.alignItems = Align.Center;
+            _loadingOverlay.style.justifyContent = Justify.Center;
+            _loadingOverlay.style.display = DisplayStyle.None;
+            _loadingOverlay.pickingMode = PickingMode.Position;
+
+            var title = new Label("VENERA FATUM");
+            title.style.fontSize = 48;
+            title.style.color = new Color(220f / 255f, 180f / 255f, 100f / 255f, 1f);
+            title.style.unityFontStyleAndWeight = FontStyle.Bold;
+            title.style.letterSpacing = 6;
+            title.style.marginBottom = 24;
+
+            _loadingDotsLabel = new Label(". . .");
+            _loadingDotsLabel.style.fontSize = 28;
+            _loadingDotsLabel.style.color = new Color(220f / 255f, 180f / 255f, 100f / 255f, 0.8f);
+            _loadingDotsLabel.style.letterSpacing = 8;
+
+            _loadingOverlay.Add(title);
+            _loadingOverlay.Add(_loadingDotsLabel);
+            _root.Add(_loadingOverlay);
+        }
+
+        private void ShowLoadingOverlay() {
+            _isLoading = true;
+            if (_loadingOverlay != null)
+                _loadingOverlay.style.display = DisplayStyle.Flex;
+        }
+
+        private void HideLoadingOverlay() {
+            _isLoading = false;
+            if (_loadingOverlay != null)
+                _loadingOverlay.style.display = DisplayStyle.None;
+        }
+
+        private IEnumerator AnimateLoadingDots() {
+            string[] states = { ".", ". .", ". . ." };
+            int i = 0;
+            while (_isLoading) {
+                if (_loadingDotsLabel != null)
+                    _loadingDotsLabel.text = states[i++ % states.Length];
+                yield return new WaitForSeconds(0.45f);
+            }
+        }
+
         private void OnConnectClicked() {
+            UISoundPlayer.PlayClick();
             string playerName = _nameInput?.value?.Trim() ?? "";
 
             if (playerName.Length < 2) {
@@ -317,16 +383,25 @@ namespace Genesis.Presentation.UI {
             _connectButton?.SetEnabled(false);
             _nameInput?.SetEnabled(false);
 
-            if (_statusLabel != null)
-                _statusLabel.text = "Connecting...";
+            StartCoroutine(ConnectWithLoadingScreen());
+        }
 
+        private IEnumerator ConnectWithLoadingScreen() {
+            // 1. Show overlay and start dot animation
+            ShowLoadingOverlay();
+            StartCoroutine(AnimateLoadingDots());
+
+            // 2. Animate visibly for ~0.5s BEFORE the FishNet stall
+            //    (coroutines freeze during main-thread blocking; at least user sees it running first)
+            yield return new WaitForSeconds(0.5f);
+
+            // 3. Start FishNet (freeze occurs here, but overlay is already visible)
             var bootstrap = Object.FindFirstObjectByType<NetworkBootstrap>();
             if (bootstrap == null) {
-                Debug.LogError("[LoginController] NetworkBootstrap not found in scene!");
-                if (_statusLabel != null)
-                    _statusLabel.text = "Error: NetworkBootstrap not found.";
+                HideLoadingOverlay();
                 ReEnableControls();
-                return;
+                if (_statusLabel != null) _statusLabel.text = "Error: NetworkBootstrap not found.";
+                yield break;
             }
 
 #if UNITY_EDITOR
@@ -335,22 +410,28 @@ namespace Genesis.Presentation.UI {
             if (isClone) {
                 bootstrap.StartClientLocal();
             } else {
-                bootstrap.StartHost();
+                // Server was pre-warmed in NetworkBootstrap.Start() — only connect the client now.
+                bootstrap.StartClientLocal();
             }
 #else
             bootstrap.StartClient();
 #endif
 
-            Debug.Log($"[LoginController] Connecting as '{playerName}', class index {_selectedClassIndex}");
-            StartCoroutine(WaitForPlayerSpawn());
-        }
+            Debug.Log($"[LoginController] Connecting as '{LoginData.PlayerName}', class {LoginData.ClassIndex}");
 
-        private IEnumerator WaitForPlayerSpawn() {
+            // 4. Wait for player spawn
             while (LostArkCamera.Instance == null || LostArkCamera.Instance.target == null)
                 yield return null;
 
+            // 5. Player is in the world — play enter SFX and fade out login music
+            if (_enterWorldSFX != null)
+                AudioManager.Instance?.PlaySFX(_enterWorldSFX);
+            AudioManager.Instance?.StopMusic(2f);
+
             yield return new WaitForSeconds(2f);
 
+            // 6. Hide everything
+            HideLoadingOverlay();
             _root.style.display = DisplayStyle.None;
             IsActive = false;
             Debug.Log("[LoginController] Player spawned, hiding login screen.");

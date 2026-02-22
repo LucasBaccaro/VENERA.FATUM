@@ -894,12 +894,28 @@ namespace Genesis.Simulation {
             }
 
             if (closest != null) {
+                bool wasTargetless = _target == null;
                 _target = closest;
                 _targetNob = closestNob;
                 _aiState = AIState.Aggro;
+
+                // Sonido de agro: solo cuando recien adquiere objetivo (no cuando ya estaba aggro)
+                if (wasTargetless) {
+                    RpcPlayAggroSound(transform.position);
+                }
+
                 return true;
             }
             return false;
+        }
+
+        [ObserversRpc]
+        private void RpcPlayAggroSound(Vector3 position) {
+            if (_data == null || _data.AggroSounds == null || _data.AggroSounds.Length == 0) return;
+            var clip = _data.AggroSounds[Random.Range(0, _data.AggroSounds.Length)];
+            if (clip != null) {
+                EventBus.Trigger("OnPlaySFX3D", clip, position);
+            }
         }
 
         private void FaceTarget(Vector3 targetPos) {
@@ -1004,7 +1020,7 @@ namespace Genesis.Simulation {
 
             Debug.Log($"[EnemyMob] {gameObject.name} killed by {(killer != null ? killer.name : "unknown")}");
 
-            if (_data != null && _data.DeathSound != null)
+            if (_data != null && _data.DeathSounds != null && _data.DeathSounds.Length > 0)
                 RpcPlayEnemyDeathSound();
 
             // Drop loot bag if enemy has loot table
@@ -1086,8 +1102,9 @@ namespace Genesis.Simulation {
 
         [ObserversRpc]
         private void RpcPlayEnemyDeathSound() {
-            if (_data != null && _data.DeathSound != null)
-                EventBus.Trigger("OnPlaySFX3D", _data.DeathSound, transform.position);
+            if (_data == null || _data.DeathSounds == null || _data.DeathSounds.Length == 0) return;
+            var clip = _data.DeathSounds[Random.Range(0, _data.DeathSounds.Length)];
+            if (clip != null) EventBus.Trigger("OnPlaySFX3D", clip, transform.position);
         }
 
         [ObserversRpc]

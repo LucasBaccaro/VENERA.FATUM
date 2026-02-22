@@ -31,6 +31,9 @@ namespace Genesis.Simulation {
         [Header("Network State")]
         private readonly SyncList<ItemSlot> _lootItems = new SyncList<ItemSlot>();
         private readonly SyncVar<string> _ownerName = new SyncVar<string>("");
+        // LootMode architecture (deferred - behaviour is always Free for now)
+        private readonly SyncVar<int> _lootMode = new SyncVar<int>((int)LootMode.Free);
+        public LootMode CurrentLootMode => (LootMode)_lootMode.Value;
 
         private float _spawnTime;
         private bool _isInitialized = false;

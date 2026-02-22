@@ -4,54 +4,61 @@ using System;
 namespace Genesis.Data {
 
     public enum SoundType {
-        // UI
-        UI_Click,
-        UI_Open,
-        UI_Close,
-        UI_Error,
-        UI_Success,
+        // UI  [0-4]
+        UI_Click,            // 0
+        UI_Open,             // 1
+        UI_Close,            // 2
+        UI_Error,            // 3
+        UI_Success,          // 4
 
-        // Combat
-        Combat_Hit,
-        Combat_CriticalHit,
-        Combat_Miss,
-        Combat_Death,
-        Combat_LevelUp,
+        // Combat  [5-9]
+        Combat_Hit,          // 5
+        Combat_CriticalHit,  // 6
+        Combat_Miss,         // 7
+        Combat_Death,        // 8
+        Combat_LevelUp,      // 9
 
-        // Loot
-        Loot_Pickup,
-        Loot_Gold,
-        Loot_Drop,
+        // Loot  [10-12]
+        Loot_Pickup,         // 10
+        Loot_Gold,           // 11
+        Loot_Drop,           // 12
 
-        // Vendor
-        Vendor_Buy,
-        Vendor_Sell,
+        // Vendor  [13-14]
+        Vendor_Buy,          // 13
+        Vendor_Sell,         // 14
 
-        // Quests
-        Quest_Accept,
-        Quest_Complete,
+        // Quests  [15-16]
+        Quest_Accept,        // 15
+        Quest_Complete,      // 16
 
-        // World
-        Portal_Enter,
-        Portal_Exit,
+        // World  [17-18]
+        Portal_Enter,        // 17
+        Portal_Exit,         // 18
 
-        // Chest & Loot
-        Loot_ChestOpen,
-        Loot_BagOpen,
+        // Chest & Loot  [19-20]
+        Loot_ChestOpen,      // 19
+        Loot_BagOpen,        // 20
 
-        // Equipment
-        Equipment_Equip,
-        Equipment_Unequip,
+        // Equipment  [21-22]
+        Equipment_Equip,     // 21
+        Equipment_Unequip,   // 22
 
-        // Consumables
-        Consumable_Potion,
+        // Consumables  [23]
+        Consumable_Potion,   // 23
 
-        // Player
-        Player_Respawn,
+        // Player  [24]
+        Player_Respawn,      // 24
 
-        // Zones
-        Zone_SafeEnter,
-        Zone_UnsafeEnter
+        // Zones  [25-26]
+        Zone_SafeEnter,      // 25
+        Zone_UnsafeEnter,    // 26
+
+        // === NUEVOS — siempre al final para no romper serializacion ===
+        Loot_ChestOpen_Epic,     // 27 — Cofre con item Epic o mejor
+        Quest_ObjectiveComplete, // 28 — Un objetivo individual se completa
+        Quest_TurnIn,            // 29 — Se entrega la mision al NPC
+        Trade_Incoming,          // 30 — Llega una solicitud de trade
+        Loot_ChestOpening,       // 31 — Sonido durante el casteo de apertura del cofre
     }
 
     [Serializable]

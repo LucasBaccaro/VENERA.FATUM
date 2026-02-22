@@ -39,9 +39,21 @@ namespace Genesis.Core.Networking {
             bool isServerMode = System.Array.Exists(args, arg => arg.ToLower() == "-server");
             bool isClientMode = System.Array.Exists(args, arg => arg.ToLower() == "-client");
 
-            // If login is required, skip auto-connect (LoginController will call StartHost/StartClient)
+            // If login is required, skip auto-connect (LoginController will call StartHost/StartClient).
+            // EXCEPTION: in Editor host mode (not a ParrelSync clone), pre-start the SERVER now so
+            // the heavy sync stall happens during scene load, not when the user clicks "ENTER WORLD".
+            // LoginController will then only call StartClient() which is nearly instantaneous.
             if ((waitForLogin || LoginData.LoginRequired) && !isServerMode) {
-                Debug.Log("[NetworkBootstrap] Waiting for login...");
+#if UNITY_EDITOR
+                bool isClone = System.IO.File.Exists(
+                    System.IO.Path.Combine(Application.dataPath.Replace("/Assets", ""), ".clone"));
+                if (!isClone) {
+                    networkManager.TransportManager.Transport.SetClientAddress("127.0.0.1");
+                    Debug.Log("[NetworkBootstrap] Pre-warming server before login...");
+                    StartServer();
+                }
+#endif
+                Debug.Log("[NetworkBootstrap] Waiting for login (client will connect on ENTER WORLD)...");
                 return;
             }
 

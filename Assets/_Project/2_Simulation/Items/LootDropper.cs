@@ -59,53 +59,45 @@ namespace Genesis.Simulation {
         /// </summary>
         [Server]
         private void DropLoot(NetworkObject killer) {
-            if (_lootBagPrefab == null) {
-                Debug.LogError("[LootDropper] LootBag prefab is not assigned!");
-                return;
-            }
-
             List<ItemSlot> allItems = new List<ItemSlot>();
             int protectedCount = 0;
 
-            // Collect items from inventory (filter protected)
+            // Collect droppable items from inventory
             if (_playerInventory != null) {
                 List<ItemSlot> inventoryItems = _playerInventory.GetAllItems();
                 foreach (var item in inventoryItems) {
-                    if (IsItemProtected(item)) {
-                        protectedCount++;
-                        continue; // Skip protected items
-                    }
+                    if (IsItemProtected(item)) { protectedCount++; continue; }
                     allItems.Add(item);
                 }
-                Debug.Log($"[LootDropper] Collected {allItems.Count} items from inventory ({protectedCount} protected, kept)");
             }
 
-            // Collect items from equipment (filter protected)
-            int equipmentBefore = allItems.Count;
+            // Collect droppable items from equipment
             if (_equipmentManager != null) {
                 List<ItemSlot> equipmentItems = _equipmentManager.GetAllEquipment();
                 foreach (var item in equipmentItems) {
-                    if (IsItemProtected(item)) {
-                        protectedCount++;
-                        continue; // Skip protected items
-                    }
+                    if (IsItemProtected(item)) { protectedCount++; continue; }
                     allItems.Add(item);
                 }
-                Debug.Log($"[LootDropper] Collected {allItems.Count - equipmentBefore} items from equipment ({protectedCount - (allItems.Count - equipmentBefore)} protected, kept)");
             }
 
-            Debug.Log($"[LootDropper] Total items to drop: {allItems.Count} (protected: {protectedCount})");
+            Debug.Log($"[LootDropper] Items to drop: {allItems.Count} (protected kept: {protectedCount})");
 
-            // Only spawn loot bag if there are items
+            // ALWAYS clear non-protected items from player first, regardless of loot bag
+            ClearNonProtectedItems();
+
+            // Only spawn loot bag if there are items and the prefab is assigned
             if (allItems.Count == 0) {
                 Debug.Log("[LootDropper] No items to drop, skipping loot bag spawn.");
                 return;
             }
 
+            if (_lootBagPrefab == null) {
+                Debug.LogError("[LootDropper] LootBag prefab is not assigned! Items cleared but no bag spawned.");
+                return;
+            }
+
             // Calculate spawn position
             Vector3 spawnPosition = transform.position + _spawnOffset;
-
-            // Raycast down to find ground
             if (Physics.Raycast(transform.position + Vector3.up, Vector3.down, out RaycastHit hit, 10f)) {
                 spawnPosition = hit.point + Vector3.up * 0.5f;
             }
@@ -114,20 +106,13 @@ namespace Genesis.Simulation {
             GameObject lootBagObj = Instantiate(_lootBagPrefab, spawnPosition, Quaternion.identity);
             base.ServerManager.Spawn(lootBagObj);
 
-            // Initialize loot bag
             LootBag lootBag = lootBagObj.GetComponent<LootBag>();
             if (lootBag != null) {
-                string playerName = gameObject.name;
-                lootBag.Initialize(allItems, playerName);
+                lootBag.Initialize(allItems, gameObject.name);
                 Debug.Log($"[LootDropper] LootBag spawned at {spawnPosition} with {allItems.Count} items");
             } else {
                 Debug.LogError("[LootDropper] LootBag component not found on spawned prefab!");
             }
-
-            // Clear only non-protected items from inventory and equipment
-            ClearNonProtectedItems();
-
-            Debug.Log("[LootDropper] Non-protected items dropped. Protected items retained.");
         }
 
         /// <summary>

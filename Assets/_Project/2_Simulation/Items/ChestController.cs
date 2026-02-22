@@ -239,6 +239,9 @@ namespace Genesis.Simulation {
                 player = FishNet.InstanceFinder.ClientManager.Connection.FirstObject;
             }
 
+            // Sonido de apertura durante el casteo
+            EventBus.Trigger("OnChestOpening");
+
             while (elapsed < duration) {
                 elapsed += Time.deltaTime;
                 float percent = Mathf.Clamp01(elapsed / duration);
@@ -270,20 +273,8 @@ namespace Genesis.Simulation {
             // Clear cast bar
             EventBus.Trigger<CastUpdateData>("OnCastUpdate", CastUpdateData.Empty);
 
-            // Tell server we finished
+            // Tell server we finished — TargetOpenLootUI will handle OnLootOpened
             CmdFinishOpening(player);
-
-            // Wait for server to confirm opening via SyncVar (more reliable than TargetRpc for remote clients)
-            float timeout = 3f;
-            float waitTime = 0f;
-            while (_state.Value != ChestState.Opened && waitTime < timeout) {
-                waitTime += Time.deltaTime;
-                yield return null;
-            }
-
-            if (_state.Value == ChestState.Opened) {
-                EventBus.Trigger("OnLootOpened", (ILootSource)this);
-            }
         }
 
         [TargetRpc]

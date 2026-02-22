@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 using Genesis.Core;
 using Genesis.Data;
+using Genesis.Items;
 using System.Collections;
 using System.Collections.Generic;
 using FishNet.Object;
@@ -71,11 +72,14 @@ namespace Genesis.Presentation.Audio {
             // Progression events
             EventBus.Subscribe<string>("OnQuestAccepted", OnQuestAccepted);
             EventBus.Subscribe<NetworkObject, string>("OnQuestCompleted", OnQuestCompleted);
+            EventBus.Subscribe<string>("OnQuestTurnedIn", OnQuestTurnedIn);
+            EventBus.Subscribe<string, string, int, int>("OnQuestObjectiveProgress", OnQuestObjectiveProgress);
             EventBus.Subscribe<int>("OnLevelChanged", OnLevelUp);
 
-            // Economy events
+            // Economy / Trade events
             EventBus.Subscribe<bool, string>("OnVendorBuyResult", OnVendorBuy);
             EventBus.Subscribe<int>("OnGoldChanged", OnGoldChanged);
+            EventBus.Subscribe<uint, string>("OnTradeRequested", OnTradeRequested);
 
             // Zone music
             EventBus.Subscribe<AudioClip, AudioClip>("OnZoneMusicChanged", OnZoneMusicChanged);
@@ -92,6 +96,7 @@ namespace Genesis.Presentation.Audio {
             EventBus.Subscribe("OnFootstepStop", OnFootstepStop);
 
             // Interaction sounds
+            EventBus.Subscribe("OnChestOpening", OnChestOpening);
             EventBus.Subscribe<ILootSource>("OnLootOpened", OnChestOpened);
             EventBus.Subscribe<bool>("OnEquipmentSound", OnEquipmentSound);
             EventBus.Subscribe("OnConsumableUsed", OnConsumableUsed);
@@ -103,6 +108,9 @@ namespace Genesis.Presentation.Audio {
 
             // Loot drop
             EventBus.Subscribe<Vector3>("OnLootDropped", OnLootDropped);
+
+            // Loot epic
+            EventBus.Subscribe("OnEpicChestItem", OnEpicChestItem);
         }
 
         private void OnDisable() {
@@ -113,10 +121,13 @@ namespace Genesis.Presentation.Audio {
 
             EventBus.Unsubscribe<string>("OnQuestAccepted", OnQuestAccepted);
             EventBus.Unsubscribe<NetworkObject, string>("OnQuestCompleted", OnQuestCompleted);
+            EventBus.Unsubscribe<string>("OnQuestTurnedIn", OnQuestTurnedIn);
+            EventBus.Unsubscribe<string, string, int, int>("OnQuestObjectiveProgress", OnQuestObjectiveProgress);
             EventBus.Unsubscribe<int>("OnLevelChanged", OnLevelUp);
 
             EventBus.Unsubscribe<bool, string>("OnVendorBuyResult", OnVendorBuy);
             EventBus.Unsubscribe<int>("OnGoldChanged", OnGoldChanged);
+            EventBus.Unsubscribe<uint, string>("OnTradeRequested", OnTradeRequested);
 
             EventBus.Unsubscribe<AudioClip, AudioClip>("OnZoneMusicChanged", OnZoneMusicChanged);
             EventBus.Unsubscribe<AudioClip, Vector3>("OnPlaySFX3D", OnPlaySFX3D);
@@ -125,6 +136,7 @@ namespace Genesis.Presentation.Audio {
             EventBus.Unsubscribe<Vector3>("OnFootstep", OnFootstep);
             EventBus.Unsubscribe("OnFootstepStop", OnFootstepStop);
 
+            EventBus.Unsubscribe("OnChestOpening", OnChestOpening);
             EventBus.Unsubscribe<ILootSource>("OnLootOpened", OnChestOpened);
             EventBus.Unsubscribe<bool>("OnEquipmentSound", OnEquipmentSound);
             EventBus.Unsubscribe("OnConsumableUsed", OnConsumableUsed);
@@ -132,6 +144,7 @@ namespace Genesis.Presentation.Audio {
             EventBus.Unsubscribe<bool>("OnPlayerZoneChanged", OnZoneChanged);
             EventBus.Unsubscribe<bool>("OnPortalSound", OnPortalSound);
             EventBus.Unsubscribe<Vector3>("OnLootDropped", OnLootDropped);
+            EventBus.Unsubscribe("OnEpicChestItem", OnEpicChestItem);
         }
 
         // ═══════════════════════════════════════════════════════
@@ -214,6 +227,16 @@ namespace Genesis.Presentation.Audio {
             source.volume = entry.Volume;
             source.pitch = Random.Range(entry.PitchMin, entry.PitchMax);
             source.spatialBlend = entry.Is3D ? 1f : 0f;
+            source.Play();
+        }
+
+        public void PlaySFX(AudioClip clip, float volume = 1f) {
+            if (clip == null) return;
+            AudioSource source = GetPooledSource();
+            source.clip = clip;
+            source.volume = volume;
+            source.pitch = 1f;
+            source.spatialBlend = 0f;
             source.Play();
         }
 
@@ -398,6 +421,16 @@ namespace Genesis.Presentation.Audio {
             PlaySFX(SoundType.Quest_Complete);
         }
 
+        private void OnQuestTurnedIn(string questName) {
+            PlaySFX(SoundType.Quest_TurnIn);
+        }
+
+        private void OnQuestObjectiveProgress(string questName, string objectiveDesc, int current, int required) {
+            if (current >= required) {
+                PlaySFX(SoundType.Quest_ObjectiveComplete);
+            }
+        }
+
         private void OnLevelUp(int newLevel) {
             PlaySFX(SoundType.Combat_LevelUp);
         }
@@ -408,6 +441,10 @@ namespace Genesis.Presentation.Audio {
 
         private void OnGoldChanged(int newGold) {
             // Gold change sound handled via FloatingTextData "gold" type
+        }
+
+        private void OnTradeRequested(uint sessionId, string requesterName) {
+            PlaySFX(SoundType.Trade_Incoming);
         }
 
         private void OnZoneMusicChanged(AudioClip music, AudioClip ambient) {
@@ -442,9 +479,28 @@ namespace Genesis.Presentation.Audio {
         // INTERACTION HANDLERS
         // ═══════════════════════════════════════════════════════
 
+        private void OnChestOpening() {
+            PlaySFX(SoundType.Loot_ChestOpening);
+        }
+
         private void OnChestOpened(ILootSource source) {
-            bool isChest = source is ChestController;
-            PlaySFX(isChest ? SoundType.Loot_ChestOpen : SoundType.Loot_BagOpen);
+            if (!(source is ChestController)) {
+                PlaySFX(SoundType.Loot_BagOpen);
+                return;
+            }
+
+            // Cofre: solo tocar chest_open si NO hay items épicos.
+            // Si hay épicos, OnEpicChestItem (disparado por LootBagController) ya toca chest_epic.
+            bool hasEpic = false;
+            foreach (var item in source.LootItems) {
+                if (!item.IsEmpty && item.Rarity >= ItemRarity.Epic) {
+                    hasEpic = true;
+                    break;
+                }
+            }
+            if (!hasEpic) {
+                PlaySFX(SoundType.Loot_ChestOpen);
+            }
         }
 
         private void OnEquipmentSound(bool isEquip) {
@@ -486,6 +542,10 @@ namespace Genesis.Presentation.Audio {
 
         private void OnLootDropped(Vector3 position) {
             PlaySFX(SoundType.Loot_Drop, position);
+        }
+
+        private void OnEpicChestItem() {
+            PlaySFX(SoundType.Loot_ChestOpen_Epic);
         }
 
         // ═══════════════════════════════════════════════════════

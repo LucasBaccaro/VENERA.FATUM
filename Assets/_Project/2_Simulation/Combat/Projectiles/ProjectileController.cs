@@ -103,6 +103,17 @@ namespace Genesis.Simulation.Combat {
             // No auto-daño (el proyectil no daña a quien lo disparó)
             if (targetNetObj == _owner) return;
 
+            // Party pass-through: projectile passes through party members without impact
+            if (_owner != null && !_ownerIsEnemy) {
+                int ownerId = _owner.OwnerId;
+                int hitId = targetNetObj.OwnerId;
+                if (ownerId >= 0 && hitId >= 0
+                    && ServiceLocator.Instance.TryGet<PartyManager>(out var pm)
+                    && pm.IsInSameParty(ownerId, hitId)) {
+                    return;
+                }
+            }
+
             // ═══ CASO 3: REFLECT (target tiene buff de reflejo activo) ═══
             if (targetNetObj.TryGetComponent(out StatusEffectSystem statusSystem)) {
                 if (statusSystem.HasEffect(EffectType.Reflect)) {

@@ -42,8 +42,23 @@ MonoBehaviour:
   KnockbackForce: 4
   KnockbackDuration: 0.3
   HitSound: {fileID: 8300000, guid: 096bcacfeace953428c68dd1e3270e82, type: 3}
-  DeathSound: {fileID: 8300000, guid: c4be08529d11947a185df471c00e460c, type: 3}
+  DeathSounds:
+  - {fileID: 8300000, guid: 12013d2d0664aef4bade08ca11b5e480, type: 3}
+  - {fileID: 8300000, guid: 4c4f0a439d1ef4240b11303cc5512d35, type: 3}
+  - {fileID: 8300000, guid: 537b9ea78d28231479c2238368296c59, type: 3}
+  - {fileID: 8300000, guid: 59b0fa6722ce679429ad4bcef79ec7a1, type: 3}
+  - {fileID: 8300000, guid: 8767112c00bffbf4b88641f382f3f47a, type: 3}
   AttackSound: {fileID: 8300000, guid: 096bcacfeace953428c68dd1e3270e82, type: 3}
   AttackImpactSound: {fileID: 8300000, guid: 096bcacfeace953428c68dd1e3270e82, type: 3}
+  AggroSounds:
+  - {fileID: 8300000, guid: 53f25f059927a4a4c9e8801d49cd2cb5, type: 3}
+  - {fileID: 8300000, guid: c8d1b1935d1ac7447bf1ac19bc43fa8b, type: 3}
+  - {fileID: 8300000, guid: fada527e9e693e24cbfc67a956d3cc05, type: 3}
+  - {fileID: 8300000, guid: 9c6202b0cd10c19428fc61084019ae48, type: 3}
+  - {fileID: 8300000, guid: 3e728c06194eae84a8d66f790295cb44, type: 3}
+  - {fileID: 8300000, guid: a44bc78c01f78ae4f9c9d68a3d5d8e15, type: 3}
+  - {fileID: 8300000, guid: 0e8b19379dc0aae4dac59ebf1765f331, type: 3}
+  - {fileID: 8300000, guid: 18c86185bac611e4cbb4679adcc979c5, type: 3}
+  - {fileID: 8300000, guid: c77dcb98b57dccc469725630895e2146, type: 3}
   GoldReward: 10
   LootTable: {fileID: 11400000, guid: 3d43f6e1fae4c4c8bb0dc9abf8830991, type: 2}

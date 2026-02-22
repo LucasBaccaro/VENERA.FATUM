@@ -494,18 +494,23 @@ namespace Genesis.Simulation {
 
         [ObserversRpc]
         private void RpcOnDeath() {
-            // Animación de muerte
-            var animator = GetComponent<Animator>();
+            // Animación de muerte (el Animator está en el modelo hijo, no en el root)
+            var animator = GetComponentInChildren<Animator>();
             if (animator != null) {
-                animator.SetTrigger("Die");
+                // Resetear capas superiores (UpperBody) a weight 0 para que no overrideen la muerte
+                for (int i = 1; i < animator.layerCount; i++) {
+                    animator.SetLayerWeight(i, 0f);
+                }
+                int deathHash = Animator.StringToHash("Player_Death");
+                if (animator.HasState(0, deathHash)) {
+                    animator.Play(deathHash, 0, 0f);
+                }
             }
 
             // Notify local player UI
             if (base.IsOwner) {
                 EventBus.Trigger("OnLocalPlayerDied");
             }
-
-            Debug.Log($"[PlayerStats] Cliente: {gameObject.name} murió");
         }
 
         [ObserversRpc]
@@ -516,11 +521,17 @@ namespace Genesis.Simulation {
             transform.position = respawnPos;
             if (cc != null) cc.enabled = true;
 
-            // Reset animator
-            var animator = GetComponent<Animator>();
+            // Reset animator (el Animator está en el modelo hijo, no en el root)
+            var animator = GetComponentInChildren<Animator>();
             if (animator != null) {
                 animator.Rebind();
                 animator.Update(0f);
+            }
+
+            // Forzar resync visual del equipo al estado actual del servidor
+            var equipVisuals = GetComponentInChildren<PlayerEquipmentVisuals>();
+            if (equipVisuals != null) {
+                equipVisuals.RefreshAllEquipment();
             }
 
             // Notify local player UI

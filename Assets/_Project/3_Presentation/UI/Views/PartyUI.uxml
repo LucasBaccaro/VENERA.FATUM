@@ -1,0 +1,69 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="PartyRoot" picking-mode="Ignore"
+                      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+
+        <!-- Party Members Panel (top-left, below player HUD) -->
+        <ui:VisualElement name="PartyPanel"
+                          style="position: absolute; top: 155px; left: 15px;
+                                 display: none; flex-direction: column;
+                                 background-color: rgba(0,0,0,0.55); padding: 8px;
+                                 border-radius: 6px; width: 200px;">
+
+            <ui:VisualElement name="MemberFrame_0"
+                              style="display: none; margin-bottom: 4px;">
+                <ui:Label name="MemberName_0" text=""
+                          style="color: rgb(220,220,220); font-size: 13px;
+                                 -unity-font-style: bold; margin-bottom: 2px;"/>
+                <ui:ProgressBar name="MemberHP_0" value="100" high-value="100"
+                                style="height: 10px;"/>
+            </ui:VisualElement>
+
+            <ui:VisualElement name="MemberFrame_1"
+                              style="display: none; margin-bottom: 4px;">
+                <ui:Label name="MemberName_1" text=""
+                          style="color: rgb(220,220,220); font-size: 13px;
+                                 -unity-font-style: bold; margin-bottom: 2px;"/>
+                <ui:ProgressBar name="MemberHP_1" value="100" high-value="100"
+                                style="height: 10px;"/>
+            </ui:VisualElement>
+
+            <ui:VisualElement name="MemberFrame_2"
+                              style="display: none; margin-bottom: 4px;">
+                <ui:Label name="MemberName_2" text=""
+                          style="color: rgb(220,220,220); font-size: 13px;
+                                 -unity-font-style: bold; margin-bottom: 2px;"/>
+                <ui:ProgressBar name="MemberHP_2" value="100" high-value="100"
+                                style="height: 10px;"/>
+            </ui:VisualElement>
+
+            <ui:VisualElement name="MemberFrame_3"
+                              style="display: none; margin-bottom: 4px;">
+                <ui:Label name="MemberName_3" text=""
+                          style="color: rgb(220,220,220); font-size: 13px;
+                                 -unity-font-style: bold; margin-bottom: 2px;"/>
+                <ui:ProgressBar name="MemberHP_3" value="100" high-value="100"
+                                style="height: 10px;"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- Party Invite Popup (centered) -->
+        <ui:VisualElement name="InvitePopup"
+                          style="position: absolute; top: 40%; left: 50%; translate: -50% -50%;
+                                 display: none; background-color: rgba(18,18,18,0.92);
+                                 padding: 20px 24px; border-radius: 8px; min-width: 290px;
+                                 align-items: center; border-width: 1px;
+                                 border-color: rgba(255,255,255,0.15);">
+            <ui:Label name="InviteMessage" text=""
+                      style="color: rgb(230,230,230); font-size: 16px;
+                             margin-bottom: 14px; -unity-text-align: middle-center;
+                             white-space: normal;"/>
+            <ui:VisualElement style="flex-direction: row; justify-content: center;">
+                <ui:Button name="AcceptButton" text="Aceptar"
+                           style="margin-right: 8px; padding: 6px 18px;"/>
+                <ui:Button name="DeclineButton" text="Rechazar"
+                           style="padding: 6px 18px;"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

@@ -12,7 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 820b503c53c8f4400a76561ffb81b0a6, type: 3}
   m_Name: SoundLibrary
   m_EditorClassIdentifier: Genesis.Data::Genesis.Data.SoundLibrary
-  uiSounds: []
+  uiSounds:
+  - Type: 15
+    Clip: {fileID: 0}
+    Volume: 0
+    PitchMin: 0
+    PitchMax: 0
+    Is3D: 0
   combatSounds:
   - Type: 8
     Clip: {fileID: 8300000, guid: c4be08529d11947a185df471c00e460c, type: 3}

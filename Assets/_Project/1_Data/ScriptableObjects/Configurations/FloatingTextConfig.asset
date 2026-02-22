@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: FloatingTextConfig
   m_EditorClassIdentifier: Genesis.Data::Genesis.Data.FloatingTextConfig
   animationMode: 0
-  damageColor: {r: 1, g: 0, b: 0, a: 1}
+  damageColor: {r: 1, g: 1, b: 1, a: 1}
   healColor: {r: 0, g: 1, b: 0, a: 1}
   shieldColor: {r: 0.5, g: 0.8, b: 1, a: 1}
   criticalColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   manaColor: {r: 0, g: 1, b: 1, a: 1}
+  goldColor: {r: 1, g: 0.84, b: 0, a: 1}
   duration: 1.5
   floatSpeed: 2
   randomOffsetRange: {x: 0.3, y: 0.3}
@@ -75,5 +76,5 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   fontAsset: {fileID: 11400000, guid: dec17fc146ec76c46b3f4f3d51d52cce, type: 2}
-  fontSize: 15
-  criticalScaleMultiplier: 1.5
+  fontSize: 8
+  criticalScaleMultiplier: 2

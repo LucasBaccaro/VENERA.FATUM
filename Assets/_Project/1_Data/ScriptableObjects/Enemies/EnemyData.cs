@@ -57,6 +57,10 @@ namespace Genesis.Data {
         [Header("Audio")]
         public AudioClip HitSound;
         public AudioClip DeathSound;
+        [Tooltip("Sound when the enemy swings/fires (played at attack start).")]
+        public AudioClip AttackSound;
+        [Tooltip("Sound when a melee hit connects (played at damage frame).")]
+        public AudioClip AttackImpactSound;
 
         [Header("Rewards")]
         [Tooltip("Gold dropped on death")]

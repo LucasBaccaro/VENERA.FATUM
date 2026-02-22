@@ -9206,7 +9206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7453131d4205e423497d10cfdc178d48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.EnemySpawner
-  _enemyPrefab: {fileID: 3792371725247606947, guid: 5c7ad08d063d2a4479ceed89bfa270e8, type: 3}
+  _enemyPrefab: {fileID: 3359724325573224909, guid: fa183507cb13c4cfaa518e4bc1dae655, type: 3}
   _enemyData: {fileID: 11400000, guid: 318cc8598c8084fdab9f1206434c5964, type: 2}
   _maxAlive: 5
   _respawnDelay: 15
@@ -27514,7 +27514,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7453131d4205e423497d10cfdc178d48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.EnemySpawner
-  _enemyPrefab: {fileID: 8135937817257979960, guid: 3efc04c5ebbee6f419cc7b008a08d8fb, type: 3}
+  _enemyPrefab: {fileID: 2832003618188000937, guid: 0af2f1be5ca064e55a42b5fd10b37b5f, type: 3}
   _enemyData: {fileID: 11400000, guid: 7090fd7b69c234f4ea2a4fdec5795066, type: 2}
   _maxAlive: 1
   _respawnDelay: 15
@@ -32023,7 +32023,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7453131d4205e423497d10cfdc178d48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.EnemySpawner
-  _enemyPrefab: {fileID: 5887143813374421320, guid: 0490883c87f84c749a888dbcee338919, type: 3}
+  _enemyPrefab: {fileID: 5906278121376584797, guid: e13d327198c8f495a86ba9790799133c, type: 3}
   _enemyData: {fileID: 11400000, guid: d6ca3f5f616ef4ec287fed9dd8e25a1a, type: 2}
   _maxAlive: 1
   _respawnDelay: 20

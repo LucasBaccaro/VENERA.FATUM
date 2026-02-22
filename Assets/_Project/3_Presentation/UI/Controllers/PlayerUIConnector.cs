@@ -79,6 +79,23 @@ namespace Genesis.Presentation.UI {
                 }
             }
 
+            // Conectar Trade UI (si existe)
+            TradeManager tradeManager = GetComponent<TradeManager>();
+            if (tradeManager != null) {
+                TradeWindowController tradeWindow = Object.FindFirstObjectByType<TradeWindowController>();
+                if (tradeWindow != null) {
+                    PlayerInventory inventory = GetComponent<PlayerInventory>();
+                    tradeWindow.SetReferences(tradeManager, inventory);
+                    Debug.Log("[PlayerUIConnector] Trade Window conectado");
+                }
+
+                PlayerContextMenuController contextMenu = Object.FindFirstObjectByType<PlayerContextMenuController>();
+                if (contextMenu != null) {
+                    contextMenu.SetReferences(tradeManager, base.NetworkObject);
+                    Debug.Log("[PlayerUIConnector] Context Menu conectado");
+                }
+            }
+
             // Conectar Minimap (si existe)
             MinimapController minimapController = Object.FindFirstObjectByType<MinimapController>();
             if (minimapController != null) {

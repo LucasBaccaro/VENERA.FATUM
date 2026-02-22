@@ -45,7 +45,13 @@ MonoBehaviour:
     PitchMin: 0.85
     PitchMax: 1.15
     Is3D: 1
-  ambientSounds: []
+  ambientSounds:
+  - Type: 0
+    Clip: {fileID: 8300000, guid: ad20f48d167bf1345a95772936be3034, type: 3}
+    Volume: 0.507
+    PitchMin: 0
+    PitchMax: 0
+    Is3D: 0
   interactionSounds:
   - Type: 19
     Clip: {fileID: 8300000, guid: c0019860b688648f395c2a1c7b195d4b, type: 3}

@@ -1,0 +1,119 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/TradeWindowStyle.uss?fileID=7433441132597879392&amp;guid=7b0f69f85839b4725938476174aedb3a&amp;type=3#TradeWindowStyle"/>
+    <ui:VisualElement name="TradeRoot" picking-mode="Ignore" class="trade-root">
+        <ui:VisualElement name="TradeWindow" class="trade-window">
+            <ui:VisualElement class="trade-title-bar">
+                <ui:Label name="TradeTitle" text="Trade" class="window-title"/>
+                <ui:Button name="CancelButton" text="X" class="close-button"/>
+            </ui:VisualElement>
+
+            <ui:VisualElement class="trade-panels">
+                <!-- Local Player Panel -->
+                <ui:VisualElement name="LocalPanel" class="trade-panel">
+                    <ui:Label name="LocalName" text="You" class="panel-name"/>
+                    <ui:VisualElement name="LocalSlots" class="trade-slots">
+                        <ui:VisualElement name="LocalSlot0" class="item-slot">
+                            <ui:VisualElement class="item-slot-bg"/>
+                            <ui:VisualElement name="LocalIcon0" class="item-icon"/>
+                            <ui:Label name="LocalQty0" class="item-quantity"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement name="LocalSlot1" class="item-slot">
+                            <ui:VisualElement class="item-slot-bg"/>
+                            <ui:VisualElement name="LocalIcon1" class="item-icon"/>
+                            <ui:Label name="LocalQty1" class="item-quantity"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement name="LocalSlot2" class="item-slot">
+                            <ui:VisualElement class="item-slot-bg"/>
+                            <ui:VisualElement name="LocalIcon2" class="item-icon"/>
+                            <ui:Label name="LocalQty2" class="item-quantity"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement name="LocalSlot3" class="item-slot">
+                            <ui:VisualElement class="item-slot-bg"/>
+                            <ui:VisualElement name="LocalIcon3" class="item-icon"/>
+                            <ui:Label name="LocalQty3" class="item-quantity"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement name="LocalSlot4" class="item-slot">
+                            <ui:VisualElement class="item-slot-bg"/>
+                            <ui:VisualElement name="LocalIcon4" class="item-icon"/>
+                            <ui:Label name="LocalQty4" class="item-quantity"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement name="LocalSlot5" class="item-slot">
+                            <ui:VisualElement class="item-slot-bg"/>
+                            <ui:VisualElement name="LocalIcon5" class="item-icon"/>
+                            <ui:Label name="LocalQty5" class="item-quantity"/>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="gold-row">
+                        <ui:Label text="Gold:" class="gold-label"/>
+                        <ui:TextField name="LocalGoldInput" value="0" class="gold-input"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- Divider -->
+                <ui:VisualElement class="trade-divider"/>
+
+                <!-- Partner Panel -->
+                <ui:VisualElement name="PartnerPanel" class="trade-panel">
+                    <ui:Label name="PartnerName" text="Partner" class="panel-name"/>
+                    <ui:VisualElement name="PartnerSlots" class="trade-slots">
+                        <ui:VisualElement name="PartnerSlot0" class="item-slot">
+                            <ui:VisualElement class="item-slot-bg"/>
+                            <ui:VisualElement name="PartnerIcon0" class="item-icon"/>
+                            <ui:Label name="PartnerQty0" class="item-quantity"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement name="PartnerSlot1" class="item-slot">
+                            <ui:VisualElement class="item-slot-bg"/>
+                            <ui:VisualElement name="PartnerIcon1" class="item-icon"/>
+                            <ui:Label name="PartnerQty1" class="item-quantity"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement name="PartnerSlot2" class="item-slot">
+                            <ui:VisualElement class="item-slot-bg"/>
+                            <ui:VisualElement name="PartnerIcon2" class="item-icon"/>
+                            <ui:Label name="PartnerQty2" class="item-quantity"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement name="PartnerSlot3" class="item-slot">
+                            <ui:VisualElement class="item-slot-bg"/>
+                            <ui:VisualElement name="PartnerIcon3" class="item-icon"/>
+                            <ui:Label name="PartnerQty3" class="item-quantity"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement name="PartnerSlot4" class="item-slot">
+                            <ui:VisualElement class="item-slot-bg"/>
+                            <ui:VisualElement name="PartnerIcon4" class="item-icon"/>
+                            <ui:Label name="PartnerQty4" class="item-quantity"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement name="PartnerSlot5" class="item-slot">
+                            <ui:VisualElement class="item-slot-bg"/>
+                            <ui:VisualElement name="PartnerIcon5" class="item-icon"/>
+                            <ui:Label name="PartnerQty5" class="item-quantity"/>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="gold-row">
+                        <ui:Label text="Gold:" class="gold-label"/>
+                        <ui:Label name="PartnerGoldLabel" text="0" class="gold-value"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:Label name="StatusLabel" text="" class="status-label"/>
+
+            <ui:VisualElement class="trade-buttons">
+                <ui:Button name="LockButton" text="Lock" class="trade-button lock-button"/>
+                <ui:Button name="AcceptButton" text="Accept" class="trade-button accept-button"/>
+            </ui:VisualElement>
+
+            <!-- Countdown Overlay -->
+            <ui:VisualElement name="CountdownOverlay" class="countdown-overlay">
+                <ui:Label name="CountdownLabel" text="3" class="countdown-label"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- Trade Request Popup -->
+        <ui:VisualElement name="TradeRequestPopup" class="trade-request-popup">
+            <ui:Label name="RequestLabel" text="Player wants to trade" class="request-label"/>
+            <ui:VisualElement class="request-buttons">
+                <ui:Button name="AcceptRequestButton" text="Accept" class="trade-button accept-request-button"/>
+                <ui:Button name="DeclineRequestButton" text="Decline" class="trade-button decline-button"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

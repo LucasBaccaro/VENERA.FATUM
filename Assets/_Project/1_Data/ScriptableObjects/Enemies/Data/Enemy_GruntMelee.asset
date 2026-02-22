@@ -43,5 +43,7 @@ MonoBehaviour:
   KnockbackDuration: 0.3
   HitSound: {fileID: 0}
   DeathSound: {fileID: 8300000, guid: 51a8458ab7f1e499b919605ba61f34d8, type: 3}
+  AttackSound: {fileID: 0}
+  AttackImpactSound: {fileID: 8300000, guid: 19de9ad9e63359544ababe3620668d19, type: 3}
   GoldReward: 8
   LootTable: {fileID: 11400000, guid: 1762161fb7a6f4d58b491116e4554146, type: 2}

@@ -1134,6 +1134,11 @@ namespace Genesis.Simulation {
                 // UPDATE LAYER WEIGHT
                 if (isStart) {
                     UpdateAnimatorLayerWeight(ability.UseAvatarMask);
+
+                    // SFX: Play cast sound at cast START on all clients
+                    if (ability.CastSound != null) {
+                        EventBus.Trigger("OnPlaySFX3D", ability.CastSound, transform.position);
+                    }
                 } else {
                     // Al terminar, reseteamos el peso a 0 (asumimos que Idle es full body o base layer)
                     UpdateAnimatorLayerWeight(false);
@@ -1175,11 +1180,6 @@ namespace Genesis.Simulation {
             DestroyCastVFX();
 
             AbilityData ability = AbilityDatabase.Instance != null ? AbilityDatabase.Instance.GetAbility(abilityId) : null;
-
-            // SFX: Play cast sound on all clients
-            if (ability != null && ability.CastSound != null) {
-                EventBus.Trigger("OnPlaySFX3D", ability.CastSound, transform.position);
-            }
 
             // Reset state (solo para el owner)
             if (base.IsOwner) {

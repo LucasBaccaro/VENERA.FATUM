@@ -52,7 +52,7 @@ namespace Genesis.Presentation.UI {
         }
 
         private void OnSetupClicked() {
-            EventBus.Trigger("OnToggleAudioSettings");
+            EventBus.Trigger("OnToggleMainMenu");
         }
     }
 }

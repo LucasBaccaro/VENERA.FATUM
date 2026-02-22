@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/AudioSettings.uss" />
+    <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/AudioSettings.uss?fileID=7433441132597879392&amp;guid=81a91a559b0fa4a369daf30a5d24b908&amp;type=3#AudioSettings" />
     <ui:VisualElement name="AudioSettingsWindow" class="settings-window">
         <ui:Label name="SettingsTitle" text="Audio Settings" class="settings-title" />
         <ui:Button name="CloseButton" text="X" class="close-button" />

@@ -33,6 +33,8 @@ GameObject:
   - component: {fileID: 5586823950512368073}
   - component: {fileID: 4975949508799160666}
   - component: {fileID: 2357473902400772969}
+  - component: {fileID: 9097693861308998482}
+  - component: {fileID: 2783915817344820037}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -103,6 +105,9 @@ MonoBehaviour:
   runSpeed: 6
   rotationSpeed: 15
   gravity: -20
+  walkStepInterval: 0.45
+  runStepInterval: 0.3
+  footstepSpeedThreshold: 0.5
 --- !u!114 &5015743577735707121
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -239,6 +244,7 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 5015743577735707121}
   manaRegenPerSecond: 5
   healthRegenPerSecond: 2
+  _respawnDelay: 5
 --- !u!114 &-500167922849418954
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -585,6 +591,39 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 0}
   _interactionRange: 3
   _scanInterval: 0.1
+--- !u!114 &9097693861308998482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3168934939399175360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd05093c1053747cb80c4497fc9299ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.Feedback.PlayerNameBillboard
+  _offset: {x: 0, y: -0.15, z: 0}
+  _fontSize: 3
+  _nameColor: {r: 0.95, g: 0.92, b: 0.78, a: 1}
+  _outlineColor: {r: 0, g: 0, b: 0, a: 0.8}
+  _outlineWidth: 0.25
+  _hideForOwner: 0
+--- !u!114 &2783915817344820037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3168934939399175360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea76f13e476f044a68bf8f985ee177c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.TradeManager
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 5015743577735707121}
+  _networkObjectCache: {fileID: 0}
 --- !u!1 &8233073365634962066
 GameObject:
   m_ObjectHideFlags: 0

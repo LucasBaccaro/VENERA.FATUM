@@ -1,0 +1,71 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/MainMenu.uss?fileID=7433441132597879392&amp;guid=acd19c08ff10d4586b845714175279ed&amp;type=3#MainMenu" />
+    <ui:VisualElement name="MainMenuOverlay" class="menu-overlay">
+        <ui:VisualElement name="MainMenuWindow" class="menu-window">
+            <ui:Label name="MenuTitle" text="Main Menu" class="menu-title" />
+            <ui:Button name="CloseButton" text="X" class="close-button" />
+
+            <!-- Tab Bar -->
+            <ui:VisualElement name="TabBar" class="tab-bar">
+                <ui:Button name="TabAudio" text="Audio" class="tab-button tab-active" />
+                <ui:Button name="TabGraphics" text="Graphics" class="tab-button" />
+            </ui:VisualElement>
+
+            <!-- Tab Content -->
+            <ui:VisualElement name="TabContent" class="tab-content">
+
+                <!-- ═══ AUDIO TAB ═══ -->
+                <ui:VisualElement name="AudioContent" class="tab-panel">
+                    <ui:VisualElement class="slider-row">
+                        <ui:Label text="Master" class="slider-label" />
+                        <ui:Slider name="SliderMaster" low-value="0" high-value="1" value="1" class="volume-slider" />
+                        <ui:Label name="ValueMaster" text="100%" class="slider-value" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="slider-row">
+                        <ui:Label text="Music" class="slider-label" />
+                        <ui:Slider name="SliderMusic" low-value="0" high-value="1" value="1" class="volume-slider" />
+                        <ui:Label name="ValueMusic" text="100%" class="slider-value" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="slider-row">
+                        <ui:Label text="SFX" class="slider-label" />
+                        <ui:Slider name="SliderSFX" low-value="0" high-value="1" value="1" class="volume-slider" />
+                        <ui:Label name="ValueSFX" text="100%" class="slider-value" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="slider-row">
+                        <ui:Label text="Ambient" class="slider-label" />
+                        <ui:Slider name="SliderAmbient" low-value="0" high-value="1" value="1" class="volume-slider" />
+                        <ui:Label name="ValueAmbient" text="100%" class="slider-value" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- ═══ GRAPHICS TAB ═══ -->
+                <ui:VisualElement name="GraphicsContent" class="tab-panel" style="display: none;">
+                    <ui:Label text="Camera" class="section-header" />
+                    <ui:VisualElement class="slider-row">
+                        <ui:Label text="Rotation Speed" class="slider-label slider-label-wide" />
+                        <ui:Slider name="SliderSensitivity" low-value="1" high-value="50" value="20" class="volume-slider" />
+                        <ui:Label name="ValueSensitivity" text="20" class="slider-value" />
+                    </ui:VisualElement>
+
+                    <ui:Label text="Rendering" class="section-header" />
+                    <ui:VisualElement class="dropdown-row">
+                        <ui:Label text="Anti-Aliasing" class="slider-label slider-label-wide" />
+                        <ui:DropdownField name="DropdownAA" class="settings-dropdown" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="toggle-row">
+                        <ui:Label text="Motion Blur" class="slider-label slider-label-wide" />
+                        <ui:Toggle name="ToggleMotionBlur" value="false" class="settings-toggle" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="toggle-row">
+                        <ui:Label text="VSync" class="slider-label slider-label-wide" />
+                        <ui:Toggle name="ToggleVSync" value="true" class="settings-toggle" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+            </ui:VisualElement>
+
+            <ui:VisualElement class="menu-separator" />
+            <ui:Button name="LogoutButton" text="Logout" class="logout-button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

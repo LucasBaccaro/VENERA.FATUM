@@ -1,0 +1,249 @@
+/* ═══════════════════════════════════════════════════════ */
+/*  Main Menu – Dark RPG Theme with Gold Accents          */
+/* ═══════════════════════════════════════════════════════ */
+
+/* Full-screen overlay */
+.menu-overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+    display: none;
+}
+
+/* Main window */
+.menu-window {
+    width: 420px;
+    background-color: rgba(20, 20, 30, 0.96);
+    border-width: 2px;
+    border-color: rgba(180, 160, 120, 0.6);
+    border-radius: 8px;
+    padding: 16px;
+}
+
+/* Title */
+.menu-title {
+    font-size: 20px;
+    color: rgb(220, 200, 160);
+    -unity-text-align: middle-center;
+    margin-bottom: 12px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+}
+
+/* Close button */
+.close-button {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+    color: rgb(200, 180, 140);
+    background-color: rgba(60, 50, 40, 0.8);
+    border-width: 1px;
+    border-color: rgba(180, 160, 120, 0.4);
+    border-radius: 4px;
+    -unity-text-align: middle-center;
+}
+
+.close-button:hover {
+    background-color: rgba(120, 40, 40, 0.8);
+    color: rgb(255, 220, 180);
+}
+
+/* ─── Tab Bar ─── */
+.tab-bar {
+    flex-direction: row;
+    margin-bottom: 16px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(180, 160, 120, 0.25);
+}
+
+.tab-button {
+    flex-grow: 1;
+    height: 32px;
+    font-size: 14px;
+    color: rgb(130, 120, 100);
+    background-color: transparent;
+    border-width: 0;
+    border-bottom-width: 2px;
+    border-bottom-color: transparent;
+    border-radius: 0;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    margin: 0;
+    transition-duration: 0.15s;
+}
+
+.tab-button:hover {
+    color: rgb(200, 180, 140);
+    background-color: rgba(60, 50, 40, 0.3);
+}
+
+.tab-active {
+    color: rgb(220, 200, 160);
+    border-bottom-color: rgb(200, 180, 140);
+}
+
+/* ─── Tab Content ─── */
+.tab-content {
+    min-height: 170px;
+}
+
+.tab-panel {
+    flex-direction: column;
+}
+
+/* ─── Slider Row (Audio + Sensitivity) ─── */
+.slider-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+    height: 30px;
+}
+
+.slider-label {
+    width: 70px;
+    font-size: 13px;
+    color: rgb(200, 190, 170);
+    -unity-text-align: middle-left;
+}
+
+.slider-label-wide {
+    width: 130px;
+}
+
+.volume-slider {
+    flex-grow: 1;
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.volume-slider #unity-tracker {
+    background-color: rgba(80, 70, 60, 0.8);
+    border-radius: 3px;
+    height: 6px;
+}
+
+.volume-slider #unity-dragger {
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    background-color: rgb(200, 180, 140);
+    border-width: 1px;
+    border-color: rgba(120, 100, 70, 0.8);
+}
+
+.volume-slider #unity-dragger:hover {
+    background-color: rgb(240, 220, 170);
+}
+
+.volume-slider #unity-fill {
+    background-color: rgba(180, 160, 120, 0.5);
+    border-radius: 3px;
+}
+
+.slider-value {
+    width: 45px;
+    font-size: 12px;
+    color: rgb(160, 150, 130);
+    -unity-text-align: middle-right;
+}
+
+/* ─── Toggle Row ─── */
+.toggle-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+    height: 30px;
+}
+
+.settings-toggle {
+    margin-left: auto;
+}
+
+.settings-toggle #unity-checkmark {
+    width: 20px;
+    height: 20px;
+    border-width: 1px;
+    border-color: rgba(180, 160, 120, 0.5);
+    border-radius: 3px;
+    background-color: rgba(60, 50, 40, 0.8);
+    -unity-background-image-tint-color: rgb(200, 180, 140);
+}
+
+.settings-toggle:checked #unity-checkmark {
+    background-color: rgba(140, 120, 80, 0.8);
+}
+
+/* ─── Dropdown Row ─── */
+.dropdown-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+    height: 30px;
+}
+
+.settings-dropdown {
+    flex-grow: 1;
+    margin-left: 16px;
+    height: 26px;
+}
+
+.settings-dropdown .unity-base-popup-field__input {
+    background-color: rgba(60, 50, 40, 0.8);
+    border-width: 1px;
+    border-color: rgba(180, 160, 120, 0.4);
+    border-radius: 4px;
+    color: rgb(200, 190, 170);
+    font-size: 13px;
+    padding: 2px 8px;
+}
+
+.settings-dropdown .unity-base-popup-field__arrow {
+    -unity-background-image-tint-color: rgb(200, 180, 140);
+}
+
+/* ─── Section Header ─── */
+.section-header {
+    font-size: 11px;
+    color: rgb(140, 130, 110);
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    margin-top: 4px;
+    text-transform: uppercase;
+}
+
+/* ─── Separator ─── */
+.menu-separator {
+    height: 1px;
+    background-color: rgba(180, 160, 120, 0.25);
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+/* ─── Logout Button ─── */
+.logout-button {
+    height: 36px;
+    font-size: 14px;
+    color: rgb(220, 180, 180);
+    background-color: rgba(100, 30, 30, 0.5);
+    border-width: 1px;
+    border-color: rgba(180, 100, 100, 0.35);
+    border-radius: 4px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    transition-duration: 0.15s;
+}
+
+.logout-button:hover {
+    background-color: rgba(150, 40, 40, 0.7);
+    color: rgb(255, 220, 220);
+    border-color: rgba(200, 120, 120, 0.6);
+}

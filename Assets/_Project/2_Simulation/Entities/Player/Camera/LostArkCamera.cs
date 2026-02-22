@@ -44,6 +44,8 @@ public class LostArkCamera : MonoBehaviour
 
     void Start()
     {
+        yawSpeed = PlayerPrefs.GetFloat("gfx_sensitivity", yawSpeed);
+
         zoomNormalized = 0.5f;
         targetZoomNormalized = 0.5f;
         distance = Mathf.Lerp(minDistance, maxDistance, zoomNormalized);

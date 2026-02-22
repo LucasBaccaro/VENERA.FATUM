@@ -20,6 +20,13 @@ namespace Genesis.Simulation {
         [Header("Loot")]
         [SerializeField] private GameObject _lootBagPrefab;
 
+        [Header("Attack Timing")]
+        [Tooltip("Frame at which Attack1 deals damage (0 = use full clip length)")]
+        [SerializeField] private int _damageFrame1;
+        [Tooltip("Frame at which Attack2 deals damage (0 = same as Attack1)")]
+        [SerializeField] private int _damageFrame2;
+        [SerializeField] private bool _hasSecondAttack;
+
         // Synced state
         private readonly SyncVar<float> _currentHealth = new SyncVar<float>(100f);
         private readonly SyncVar<bool> _isDead = new SyncVar<bool>(false);
@@ -41,8 +48,15 @@ namespace Genesis.Simulation {
         // Telegraph
         private bool _isAnticipating;
         private float _anticipationTimer;
+        private bool _isExecutingAttack;
+        private float _attackExecutionTimer;
         private bool _isRecovering;
         private float _recoveryTimer;
+
+        // Attack alternation
+        private bool _useSecondAttack;
+        private float _damageDelay1;
+        private float _damageDelay2;
 
         // Support
         private float _lastHealTime;
@@ -53,6 +67,11 @@ namespace Genesis.Simulation {
 
         // StatusEffects
         private StatusEffectSystem _statusSystem;
+
+        // Animator
+        private Animator _cachedAnimator;
+        private Vector3 _lastPosition;
+        private static readonly int SpeedHash = Animator.StringToHash("Speed");
 
         // Return leash
         private const float RETURN_THRESHOLD = 1f;
@@ -82,6 +101,9 @@ namespace Genesis.Simulation {
             _lastHealTime = 0f;
             _isAnticipating = false;
             _anticipationTimer = 0f;
+            _isExecutingAttack = false;
+            _attackExecutionTimer = 0f;
+            _useSecondAttack = false;
             _isRecovering = false;
             _recoveryTimer = 0f;
             _isWaitingAtPatrol = false;
@@ -104,6 +126,10 @@ namespace Genesis.Simulation {
                 childCol.enabled = true;
             }
 
+            _cachedAnimator = GetComponentInChildren<Animator>();
+            ComputeDamageDelays();
+            _lastPosition = transform.position;
+
             if (_data != null) {
                 _currentHealth.Value = _data.MaxHealth;
                 gameObject.name = _data.DisplayName;
@@ -120,6 +146,13 @@ namespace Genesis.Simulation {
             if (!base.IsServerInitialized || _isDead.Value) return;
             UpdateAgentSpeed();
             ServerAIUpdate();
+        }
+
+        private void LateUpdate() {
+            if (_cachedAnimator == null) return;
+            float speed = (transform.position - _lastPosition).magnitude / Time.deltaTime;
+            _cachedAnimator.SetFloat(SpeedHash, speed);
+            _lastPosition = transform.position;
         }
 
         private void UpdateAgentSpeed() {
@@ -174,7 +207,17 @@ namespace Genesis.Simulation {
                 _anticipationTimer -= Time.deltaTime;
                 if (_anticipationTimer <= 0f) {
                     _isAnticipating = false;
-                    ExecuteAttack();
+                    BeginAttackExecution();
+                }
+                return true;
+            }
+
+            if (_isExecutingAttack) {
+                FaceTelegraphTarget();
+                _attackExecutionTimer -= Time.deltaTime;
+                if (_attackExecutionTimer <= 0f) {
+                    _isExecutingAttack = false;
+                    ApplyAttackDamage();
                     // Start recovery
                     if (_data != null && _data.RecoveryDuration > 0f) {
                         _isRecovering = true;
@@ -637,18 +680,31 @@ namespace Genesis.Simulation {
                 return;
             }
 
-            // Instant attack (legacy behavior)
-            ExecuteAttack();
+            // No anticipation → go straight to attack execution
+            BeginAttackExecution();
         }
 
-        private void ExecuteAttack() {
+        private void BeginAttackExecution() {
+            _isExecutingAttack = true;
+
+            bool useSecond = _hasSecondAttack && _useSecondAttack;
+            _attackExecutionTimer = useSecond ? _damageDelay2 : _damageDelay1;
+            RpcPlayAttackAnimation(useSecond);
+
+            // Play attack swing sound
+            if (_data != null && _data.AttackSound != null)
+                RpcPlayEnemyAttackSound();
+
+            if (_hasSecondAttack) _useSecondAttack = !_useSecondAttack;
+        }
+
+        private void ApplyAttackDamage() {
             // Support: heal ally
             if (_data != null && _data.Archetype == EnemyArchetype.Support) {
                 if (_healTarget != null && !_healTarget._isDead.Value) {
                     float healAmount = _data.HealAmount;
                     _healTarget.HealFromSupport(healAmount);
                     _lastHealTime = Time.time;
-                    RpcPlayAttackAnimation();
                 }
                 return;
             }
@@ -678,17 +734,42 @@ namespace Genesis.Simulation {
             }
             // Melee attack (only for non-ranged enemies)
             else {
+                // Range check at damage frame — if target moved away, attack whiffs
+                float attackRange = _data != null ? _data.AttackRange : 2f;
+                float distToTarget = Vector3.Distance(transform.position, _target.position);
+                if (distToTarget > attackRange * 2f) return;
+
                 var damageable = _target.GetComponent<IDamageable>();
                 if (damageable != null) {
                     damageable.TakeDamage(damage, base.NetworkObject);
+
+                    // Play melee impact sound
+                    if (_data != null && _data.AttackImpactSound != null)
+                        RpcPlayEnemyAttackImpactSound(_target.position);
                 }
 
                 if (_data != null && _data.Role == EnemyRole.Tank) {
                     ApplyKnockback(_target);
                 }
             }
+        }
 
-            RpcPlayAttackAnimation();
+        private void ComputeDamageDelays() {
+            float frameRate = 30f;
+            float fallbackDuration = 0.5f;
+
+            if (_cachedAnimator != null && _cachedAnimator.runtimeAnimatorController != null) {
+                foreach (var clip in _cachedAnimator.runtimeAnimatorController.animationClips) {
+                    if (clip.name.Contains("Attack")) {
+                        frameRate = clip.frameRate > 0 ? clip.frameRate : 30f;
+                        fallbackDuration = clip.length;
+                        break;
+                    }
+                }
+            }
+
+            _damageDelay1 = _damageFrame1 > 0 ? _damageFrame1 / frameRate : fallbackDuration;
+            _damageDelay2 = _damageFrame2 > 0 ? _damageFrame2 / frameRate : _damageDelay1;
         }
 
         [Server]
@@ -984,17 +1065,17 @@ namespace Genesis.Simulation {
         }
 
         [ObserversRpc]
-        private void RpcPlayAttackAnimation() {
-            var animator = GetComponentInChildren<Animator>();
-            if (animator != null) {
-                animator.SetTrigger("Attack");
+        private void RpcPlayAttackAnimation(bool useSecondAttack = false) {
+            if (_cachedAnimator == null) _cachedAnimator = GetComponentInChildren<Animator>();
+            if (_cachedAnimator != null) {
+                _cachedAnimator.SetTrigger(useSecondAttack ? "Attack2" : "Attack");
             }
         }
 
         [ObserversRpc]
         private void RpcPlayAnticipation() {
-            var animator = GetComponentInChildren<Animator>();
-            if (animator != null) animator.SetTrigger("Anticipation");
+            if (_cachedAnimator == null) _cachedAnimator = GetComponentInChildren<Animator>();
+            if (_cachedAnimator != null) _cachedAnimator.SetTrigger("Anticipation");
         }
 
         [ObserversRpc]
@@ -1007,6 +1088,27 @@ namespace Genesis.Simulation {
         private void RpcPlayEnemyDeathSound() {
             if (_data != null && _data.DeathSound != null)
                 EventBus.Trigger("OnPlaySFX3D", _data.DeathSound, transform.position);
+        }
+
+        [ObserversRpc]
+        private void RpcPlayEnemyAttackSound() {
+            if (_data != null && _data.AttackSound != null)
+                EventBus.Trigger("OnPlaySFX3D", _data.AttackSound, transform.position);
+        }
+
+        [ObserversRpc]
+        private void RpcPlayEnemyAttackImpactSound(Vector3 position) {
+            if (_data != null && _data.AttackImpactSound != null)
+                EventBus.Trigger("OnPlaySFX3D", _data.AttackImpactSound, position);
+        }
+
+        /// <summary>
+        /// Called by ProjectileController on impact to play this enemy's AttackImpactSound.
+        /// </summary>
+        [Server]
+        public void PlayProjectileImpactSound(Vector3 position) {
+            if (_data != null && _data.AttackImpactSound != null)
+                RpcPlayEnemyAttackImpactSound(position);
         }
 
         // ═══════════════════════════════════════════════════════
@@ -1023,9 +1125,9 @@ namespace Genesis.Simulation {
                 var col = GetComponent<Collider>();
                 if (col != null) col.enabled = false;
 
-                var animator = GetComponentInChildren<Animator>();
-                if (animator != null) {
-                    animator.SetTrigger("Die");
+                if (_cachedAnimator == null) _cachedAnimator = GetComponentInChildren<Animator>();
+                if (_cachedAnimator != null) {
+                    _cachedAnimator.SetTrigger("Die");
                 }
             }
         }

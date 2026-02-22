@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/PlayerContextMenu.uss?fileID=7433441132597879392&amp;guid=6eb590fec02d74680b5b67ca138f0ac6&amp;type=3#PlayerContextMenu"/>
+    <ui:VisualElement name="ContextMenuRoot" picking-mode="Ignore" class="context-menu-root">
+        <ui:VisualElement name="ContextMenuPopup" class="context-menu-popup">
+            <ui:Label name="TargetNameLabel" text="Player Name" class="context-menu-title"/>
+            <ui:VisualElement class="context-menu-divider"/>
+            <ui:Button name="TradeButton" text="Trade" class="context-menu-button"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

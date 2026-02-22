@@ -184,9 +184,14 @@ namespace Genesis.Simulation.Combat {
                 Destroy(vfx, 2f);
             }
 
-            // Impact sound (notify all clients with position + abilityId)
+            // Impact sound — ability projectiles use AbilityData, enemy projectiles use EnemyData
             if (_abilityId >= 0) {
                 RpcPlayImpactSound(pos, _abilityId);
+            } else if (_ownerIsEnemy && _owner != null) {
+                var enemyMob = _owner.GetComponent<EnemyMob>();
+                if (enemyMob != null) {
+                    enemyMob.PlayProjectileImpactSound(pos);
+                }
             }
         }
 

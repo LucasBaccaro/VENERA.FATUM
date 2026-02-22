@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3904689120972546096}
   - component: {fileID: 828967477258327174}
   - component: {fileID: 8872913337755448287}
+  - component: {fileID: 5383690439874635691}
   m_Layer: 8
   m_Name: PROP_Mace
   m_TagString: Untagged
@@ -90,3 +91,24 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &5383690439874635691
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3408430615384032098}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.29369974, y: 0.078782044, z: 0.91593504}
+  m_Center: {x: 0.014898233, y: 0, z: 0.35993874}

@@ -4,7 +4,8 @@
     "references": [
         "Genesis.Data",
         "Genesis.Core",
-        "Genesis.Simulation"
+        "Genesis.Simulation",
+        "FishNet.Runtime"
     ],
     "includePlatforms": [
         "Editor"

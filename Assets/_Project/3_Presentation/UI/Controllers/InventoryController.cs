@@ -216,9 +216,19 @@ namespace Genesis.Presentation.UI {
 
         private void OnSlotClicked(MouseDownEvent evt, int index) {
             if (_playerInventory == null) return;
-            
+
             var slotsData = _playerInventory.InventorySlots;
             if (index >= slotsData.Count || slotsData[index].IsEmpty) return;
+
+            // Left click: add to trade if trade window is open
+            if (evt.button == 0) {
+                var tradeWindow = Object.FindFirstObjectByType<TradeWindowController>();
+                if (tradeWindow != null && tradeWindow.IsTradeOpen) {
+                    tradeWindow.OnInventorySlotClicked(index);
+                    evt.StopPropagation();
+                    return;
+                }
+            }
 
             // Right click to use/equip
             if (evt.button == 1) {

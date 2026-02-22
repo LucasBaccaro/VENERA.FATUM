@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using Genesis.Core;
 using Genesis.Data;
 
+
 namespace Genesis.Simulation.World
 {
     public class ChunkLoaderManager : MonoBehaviour
@@ -15,6 +16,10 @@ namespace Genesis.Simulation.World
 
         private WorldDatabase _worldDB;
         private bool _isServer;
+
+        // Tracks the active LOOKS environment prefab instance (city, dungeon, etc.)
+        private GameObject _activeLooksInstance;
+        private ChunkCoordinate _currentPlayerChunk;
 
         void Start()
         {
@@ -27,6 +32,8 @@ namespace Genesis.Simulation.World
         private void OnPlayerChunkChanged(ChunkCoordinate newChunk)
         {
             Debug.Log($"<color=cyan>[ChunkLoader] ═══ PLAYER MOVED TO CHUNK {newChunk} ═══</color>");
+
+            _currentPlayerChunk = newChunk;
 
             HashSet<ChunkCoordinate> requiredChunks = new HashSet<ChunkCoordinate>();
             requiredChunks.Add(newChunk);
@@ -49,7 +56,45 @@ namespace Genesis.Simulation.World
                 LoadChunk(chunk);
             }
 
+            // Swap the LOOKS prefab for the chunk the player is directly in
+            SwapLooksPrefab(newChunk);
+
             Debug.Log($"<color=cyan>[ChunkLoader] ═══ END CHUNK UPDATE ═══</color>");
+        }
+
+        private void SwapLooksPrefab(ChunkCoordinate coord)
+        {
+            ChunkData data = _worldDB.GetChunk(new Vector2Int(coord.X, coord.Y));
+            if (data == null) return;
+
+            // Destroy previous LOOKS instance
+            if (_activeLooksInstance != null)
+            {
+                Destroy(_activeLooksInstance);
+                _activeLooksInstance = null;
+                Debug.Log("[ChunkLoader] Destroyed previous LOOKS instance.");
+            }
+
+            // Instantiate new LOOKS prefab (if defined for this chunk)
+            if (data.LooksPrefab != null)
+            {
+                _activeLooksInstance = Instantiate(data.LooksPrefab);
+                Debug.Log($"[ChunkLoader] Instantiated LOOKS prefab '{data.LooksPrefab.name}' for chunk {coord}.");
+
+                // Apply render settings if the prefab has a LooksSettings component
+                if (_activeLooksInstance.TryGetComponent<LooksSettings>(out var looksSettings))
+                {
+                    looksSettings.Apply();
+                }
+                else
+                {
+                    Debug.LogWarning($"[ChunkLoader] LOOKS prefab '{data.LooksPrefab.name}' has no LooksSettings component. RenderSettings won't change.");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"[ChunkLoader] No LooksPrefab assigned for chunk {coord}. Environment will be empty.");
+            }
         }
 
         private void LoadChunk(ChunkCoordinate coord)

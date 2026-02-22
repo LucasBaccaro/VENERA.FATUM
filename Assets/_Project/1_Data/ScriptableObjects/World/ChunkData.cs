@@ -18,6 +18,10 @@ namespace Genesis.Data
         public bool IsStartingChunk;
         public Vector3[] SpawnPositions;
 
+        [Header("Visuals")]
+        [Tooltip("The environment/lighting prefab to instantiate for this chunk (e.g., LOOKS_City or LOOKS_Dungeon).")]
+        public GameObject LooksPrefab;
+
         [Header("Metadata")]
         public string BiomeType; // Future: weather, ambience
     }

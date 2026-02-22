@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Genesis.Data::Genesis.Data.PortalData
   _portalID: dungeon_entrance_test
   _displayName: Dungeon Portal
-  _destinationPosition: {x: 12844.8, y: 2, z: 28.18}
+  _destinationPosition: {x: 12835.25, y: 1.971, z: 20.776}
   _destinationRotation: {x: 0, y: 180, z: 0}
   _linkedPortal: {fileID: 0}
   _minLevel: 1

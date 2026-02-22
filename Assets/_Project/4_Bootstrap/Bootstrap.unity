@@ -234,11 +234,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1889061011}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &224120738 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4362774461142063742, guid: 926b5fd63c878214e9b4811444b59174, type: 3}
-  m_PrefabInstance: {fileID: 526568877}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &234889430
 GameObject:
   m_ObjectHideFlags: 0
@@ -269,7 +264,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1654514765}
-  - {fileID: 224120738}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &265461133
@@ -741,67 +735,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.XPRewardSystem
   _config: {fileID: 11400000, guid: 563c9039cc1d34eee8464637a9f55160, type: 2}
---- !u!1001 &526568877
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 234889431}
-    m_Modifications:
-    - target: {fileID: 778038601191961253, guid: 926b5fd63c878214e9b4811444b59174, type: 3}
-      propertyPath: m_Name
-      value: LOOKS
-      objectReference: {fileID: 0}
-    - target: {fileID: 778038601191961253, guid: 926b5fd63c878214e9b4811444b59174, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4362774461142063742, guid: 926b5fd63c878214e9b4811444b59174, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 133.27617
-      objectReference: {fileID: 0}
-    - target: {fileID: 4362774461142063742, guid: 926b5fd63c878214e9b4811444b59174, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4362774461142063742, guid: 926b5fd63c878214e9b4811444b59174, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 126.69542
-      objectReference: {fileID: 0}
-    - target: {fileID: 4362774461142063742, guid: 926b5fd63c878214e9b4811444b59174, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4362774461142063742, guid: 926b5fd63c878214e9b4811444b59174, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4362774461142063742, guid: 926b5fd63c878214e9b4811444b59174, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4362774461142063742, guid: 926b5fd63c878214e9b4811444b59174, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4362774461142063742, guid: 926b5fd63c878214e9b4811444b59174, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4362774461142063742, guid: 926b5fd63c878214e9b4811444b59174, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4362774461142063742, guid: 926b5fd63c878214e9b4811444b59174, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 926b5fd63c878214e9b4811444b59174, type: 3}
 --- !u!1 &532214200
 GameObject:
   m_ObjectHideFlags: 0
@@ -1904,6 +1837,22 @@ PrefabInstance:
     - target: {fileID: 2804071342997912818, guid: b69f335e28e4745a58dd5089cd8294f0, type: 3}
       propertyPath: m_Name
       value: CameraRig
+      objectReference: {fileID: 0}
+    - target: {fileID: 7288236233722664233, guid: b69f335e28e4745a58dd5089cd8294f0, type: 3}
+      propertyPath: m_ClearFlags
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7288236233722664233, guid: b69f335e28e4745a58dd5089cd8294f0, type: 3}
+      propertyPath: m_BackGroundColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7288236233722664233, guid: b69f335e28e4745a58dd5089cd8294f0, type: 3}
+      propertyPath: m_BackGroundColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7288236233722664233, guid: b69f335e28e4745a58dd5089cd8294f0, type: 3}
+      propertyPath: m_BackGroundColor.r
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8558517894753772696, guid: b69f335e28e4745a58dd5089cd8294f0, type: 3}
       propertyPath: heightCutOffset

@@ -189,10 +189,21 @@ namespace Genesis.Simulation {
         [TargetRpc]
         public void RpcTeleportTo(NetworkConnection conn, Vector3 position, Vector3 eulerRotation) {
             if (!base.IsOwner) return;
+
+            // Stop existing grounding routine if running
+            if (_groundingCoroutine != null) {
+                StopCoroutine(_groundingCoroutine);
+                _groundingCoroutine = null;
+            }
+
+            // Disable physics, set position, and trigger waiting for ground/terrain
             _cc.enabled = false;
             transform.position = position;
             transform.rotation = Quaternion.Euler(eulerRotation);
-            _cc.enabled = true;
+
+            // Start grounding at the new position (waiting for chunk meshes to load)
+            _groundingCoroutine = StartCoroutine(SpawnGroundingRoutine());
+            Debug.Log($"[Motor] Portal teleport → {position}, waiting for ground detection");
         }
 
         /// <summary>

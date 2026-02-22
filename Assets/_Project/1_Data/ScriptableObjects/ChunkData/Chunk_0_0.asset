@@ -18,4 +18,5 @@ MonoBehaviour:
   IsStartingChunk: 1
   SpawnPositions:
   - {x: 136, y: 5, z: 132}
+  LooksPrefab: {fileID: 778038601191961253, guid: 926b5fd63c878214e9b4811444b59174, type: 3}
   BiomeType: Beach

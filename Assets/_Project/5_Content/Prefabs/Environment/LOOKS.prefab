@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4362774461142063742}
+  - component: {fileID: 2351081818816573015}
   m_Layer: 0
   m_Name: LOOKS
   m_TagString: Untagged
@@ -33,6 +34,31 @@ Transform:
   - {fileID: 8478613872421705642}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2351081818816573015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 778038601191961253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a82a7747ef38f8a47a712b9b9fc0da89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.World.LooksSettings
+  Skybox: {fileID: 2100000, guid: fe6cba19e15031145bee5e1efe689966, type: 2}
+  AmbientMode: 3
+  AmbientColor: {r: 0.41960785, g: 0.47843137, b: 0.627451, a: 1}
+  AmbientEquatorColor: {r: 0.41960785, g: 0.47843137, b: 0.627451, a: 1}
+  AmbientGroundColor: {r: 0.41960785, g: 0.47843137, b: 0.627451, a: 1}
+  AmbientIntensity: 1
+  FogEnabled: 0
+  FogMode: 3
+  FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  FogDensity: 0.01
+  FogStartDistance: 20
+  FogEndDistance: 200
+  ReflectionIntensity: 1
 --- !u!1 &904344705879734297
 GameObject:
   m_ObjectHideFlags: 0

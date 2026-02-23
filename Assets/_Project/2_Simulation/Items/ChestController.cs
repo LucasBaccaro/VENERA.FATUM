@@ -118,9 +118,7 @@ namespace Genesis.Simulation {
             GenerateLoot();
             _state.Value = ChestState.Opened;
             _looterName.Value = player.name;
-            
-            // Open UI immediately after opening
-            TargetOpenLootUI(player.Owner);
+            // UI is opened client-side by OpeningCoroutine after SyncVar propagation
         }
 
         public virtual bool CanInteract(NetworkObject player) {
@@ -273,8 +271,21 @@ namespace Genesis.Simulation {
             // Clear cast bar
             EventBus.Trigger<CastUpdateData>("OnCastUpdate", CastUpdateData.Empty);
 
-            // Tell server we finished — TargetOpenLootUI will handle OnLootOpened
+            // Tell server we finished
             CmdFinishOpening(player);
+
+            // Wait for SyncVar/SyncList to propagate before opening UI
+            // This avoids the race where TargetRpc arrives before SyncList data
+            float timeout = 3f;
+            float waited = 0f;
+            while (_state.Value != ChestState.Opened && waited < timeout) {
+                waited += Time.deltaTime;
+                yield return null;
+            }
+
+            if (_state.Value == ChestState.Opened) {
+                EventBus.Trigger("OnLootOpened", (ILootSource)this);
+            }
         }
 
         [TargetRpc]

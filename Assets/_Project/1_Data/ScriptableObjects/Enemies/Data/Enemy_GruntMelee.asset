@@ -41,6 +41,10 @@ MonoBehaviour:
   HealCooldown: 4
   KnockbackForce: 4
   KnockbackDuration: 0.3
+  LinkRadius: 10
+  CanBeLinked: 1
+  CanSit: 1
+  SitChance: 0.4
   HitSound: {fileID: 0}
   DeathSounds:
   - {fileID: 8300000, guid: 12013d2d0664aef4bade08ca11b5e480, type: 3}

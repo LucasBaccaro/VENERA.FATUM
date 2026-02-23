@@ -136,7 +136,9 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   <PredictedOwner>k__BackingField: {fileID: 0}
-  NetworkBehaviours: []
+  NetworkBehaviours:
+  - {fileID: 8373503888743893631}
+  - {fileID: 3583057870948018106}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -147,7 +149,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: 0
+  _initializedTimestamp: -8584297969134258928
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -163,15 +165,15 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 65535
+  <PrefabId>k__BackingField: 16
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 5601916142638930004
   SceneId: 0
   SerializedTransformProperties:
     Position: {x: 0, y: 0, z: 0}
-    Rotation: {x: 0, y: 0, z: 0, w: 0}
-    Scale: {x: 0, y: 0, z: 0}
-    IsValid: 0
+    Rotation: {x: 0, y: 0, z: 0, w: 1}
+    Scale: {x: 1, y: 1, z: 1}
+    IsValid: 1
 --- !u!114 &8373503888743893631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,11 +186,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dc0023efd33a46b7b6b07939f972389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.EnemyMob
-  _componentIndexCache: 255
+  _componentIndexCache: 0
   _addedNetworkObject: {fileID: 3305119034648509863}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 3305119034648509863}
   _data: {fileID: 11400000, guid: 5a61d810b18b04a89896c4c1c11fbb3a, type: 2}
   _lootBagPrefab: {fileID: 1518507829531864150, guid: 9d1e389be81094476aac15ceb9610e09, type: 3}
+  _damageFrame1: 0
+  _damageFrame2: 0
+  _hasSecondAttack: 0
 --- !u!195 &5894740935649081917
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -223,9 +228,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2836e36774ca1c4bbbee976e17b649c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: FishNet.Runtime::FishNet.Component.Transforming.NetworkTransform
-  _componentIndexCache: 255
-  _addedNetworkObject: {fileID: 0}
-  _networkObjectCache: {fileID: 0}
+  _componentIndexCache: 1
+  _addedNetworkObject: {fileID: 3305119034648509863}
+  _networkObjectCache: {fileID: 3305119034648509863}
   _componentConfiguration: 0
   _synchronizeParent: 0
   _packing:

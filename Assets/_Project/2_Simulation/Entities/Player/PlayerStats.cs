@@ -309,11 +309,11 @@ namespace Genesis.Simulation {
         }
 
         public NetworkObject GetNetworkObject() => base.NetworkObject;
-        public bool IsDead => _isDead;
-        public bool IsInCombat => !_isDead && Time.time - _lastDamageTime <= OOC_DELAY;
+        public bool IsDead => _syncIsDead.Value;
+        public bool IsInCombat => !IsDead && Time.time - _lastDamageTime <= OOC_DELAY;
 
         // IDamageable Legacy Support
-        public bool IsAlive() => !_isDead;
+        public bool IsAlive() => !IsDead;
 
         public float GetCurrentHealth() => _currentHealth.Value;
         public float GetMaxHealth() => _maxHealth.Value;

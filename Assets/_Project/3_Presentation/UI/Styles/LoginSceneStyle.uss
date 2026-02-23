@@ -1,0 +1,542 @@
+/* ═══════════════════════════════════════════════════════════
+   LOGIN SCENE STYLES — Gold/Dark Fantasy Palette
+   Panels: Login, Register, CharacterCreation, Loading
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Shared Full-Screen Background ── */
+.login-scene-root {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    width: 100%; height: 100%;
+    background-color: rgb(8, 8, 14);
+    align-items: center;
+    justify-content: center;
+}
+
+/* ── Shared Panel Base ── */
+.auth-panel {
+    width: 420px;
+    padding: 32px;
+    background-color: rgba(20, 20, 30, 0.95);
+    border-color: rgba(120, 90, 50, 0.8);
+    border-width: 2px;
+    border-radius: 8px;
+    align-items: center;
+}
+
+/* ── Game Title ── */
+.game-title {
+    font-size: 36px;
+    color: rgb(220, 180, 100);
+    -unity-font-style: bold;
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: rgb(0, 0, 0);
+    margin-bottom: 28px;
+    letter-spacing: 4px;
+}
+
+.game-title--small {
+    font-size: 24px;
+    margin-bottom: 20px;
+    letter-spacing: 3px;
+}
+
+/* ── Subtitle / Form header ── */
+.form-subtitle {
+    font-size: 14px;
+    color: rgb(180, 180, 190);
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+
+/* ── Text Input Fields ── */
+.auth-input {
+    width: 100%;
+    height: 42px;
+    font-size: 16px;
+    margin-bottom: 12px;
+    background-color: rgba(10, 10, 15, 0.9);
+    border-color: rgba(100, 100, 120, 0.6);
+    border-width: 1px;
+    border-radius: 4px;
+    color: rgb(240, 240, 240);
+    padding: 4px 10px;
+}
+
+.auth-input > #unity-text-input {
+    background-color: rgba(10, 10, 15, 0.9);
+    border-width: 0;
+    color: rgb(240, 240, 240);
+    padding: 4px 10px;
+    --unity-cursor-color: rgb(220, 180, 100);
+}
+
+.auth-input > #unity-text-input > TextElement {
+    color: rgb(240, 240, 240);
+    font-size: 16px;
+}
+
+.auth-input:focus {
+    border-color: rgba(220, 180, 100, 0.8);
+}
+
+.auth-input:focus > #unity-text-input {
+    border-color: rgba(220, 180, 100, 0.8);
+}
+
+/* ── Primary Button (gold) ── */
+.btn-primary {
+    width: 100%;
+    height: 48px;
+    font-size: 18px;
+    -unity-font-style: bold;
+    background-color: rgba(60, 45, 20, 0.9);
+    border-color: rgba(220, 180, 100, 0.8);
+    border-width: 2px;
+    border-radius: 6px;
+    color: rgb(220, 180, 100);
+    margin-top: 8px;
+    margin-bottom: 8px;
+    transition-duration: 0.15s;
+}
+
+.btn-primary:hover {
+    background-color: rgba(80, 60, 25, 0.95);
+    border-color: rgba(255, 210, 120, 1);
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+}
+
+/* ── Link Button (text-only) ── */
+.btn-link {
+    font-size: 13px;
+    color: rgb(160, 140, 100);
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    margin-top: 8px;
+    transition-duration: 0.15s;
+    -unity-font-style: italic;
+    padding: 4px 8px;
+}
+
+.btn-link:hover {
+    color: rgb(220, 180, 100);
+}
+
+/* ── Status / Error Label ── */
+.status-label {
+    font-size: 13px;
+    color: rgb(255, 80, 80);
+    min-height: 20px;
+    margin-top: 4px;
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.status-label--success {
+    color: rgb(100, 220, 130);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CHARACTER CREATION PANEL
+   ═══════════════════════════════════════════════════════════ */
+
+.charcreation-panel {
+    width: 820px;
+    padding: 28px;
+    background-color: rgba(20, 20, 30, 0.95);
+    border-color: rgba(120, 90, 50, 0.8);
+    border-width: 2px;
+    border-radius: 8px;
+    align-items: center;
+}
+
+/* ── Content Row (class list + detail) ── */
+.cc-content-row {
+    flex-direction: row;
+    width: 100%;
+    min-height: 360px;
+    margin-bottom: 16px;
+}
+
+/* ── Section Title ── */
+.section-title {
+    font-size: 13px;
+    color: rgb(180, 180, 180);
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    -unity-text-align: upper-left;
+}
+
+.section-title--detail {
+    margin-top: 4px;
+}
+
+/* ── Class List Panel (left) ── */
+.cc-class-list-panel {
+    width: 210px;
+    margin-right: 12px;
+    padding: 12px;
+    background-color: rgba(15, 15, 22, 0.8);
+    border-color: rgba(80, 80, 100, 0.4);
+    border-width: 1px;
+    border-radius: 6px;
+}
+
+.cc-class-list-scroll {
+    flex-grow: 1;
+}
+
+/* ── Class List Entry ── */
+.cc-class-entry {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 10px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    border-width: 1px;
+    border-color: rgba(80, 80, 100, 0.3);
+    background-color: rgba(30, 30, 45, 0.6);
+    transition-duration: 0.15s;
+}
+
+.cc-class-entry:hover {
+    background-color: rgba(50, 50, 70, 0.8);
+    border-color: rgba(120, 120, 150, 0.6);
+}
+
+.cc-class-entry--selected {
+    background-color: rgba(60, 45, 20, 0.9);
+    border-color: rgba(220, 180, 100, 0.9);
+}
+
+.cc-class-entry--selected:hover {
+    background-color: rgba(70, 55, 25, 0.95);
+    border-color: rgba(220, 180, 100, 1);
+}
+
+.cc-class-icon {
+    width: 28px;
+    height: 28px;
+    margin-right: 8px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.cc-class-name {
+    font-size: 14px;
+    color: rgb(200, 200, 210);
+    -unity-font-style: bold;
+}
+
+.cc-class-entry--selected .cc-class-name {
+    color: rgb(220, 180, 100);
+}
+
+.cc-class-role {
+    font-size: 11px;
+    color: rgb(140, 140, 155);
+    margin-left: auto;
+    -unity-font-style: italic;
+}
+
+.cc-class-entry--selected .cc-class-role {
+    color: rgb(190, 160, 90);
+}
+
+/* ── Class Detail Panel (right) ── */
+.cc-detail-panel {
+    flex-grow: 1;
+    padding: 16px;
+    background-color: rgba(15, 15, 22, 0.8);
+    border-color: rgba(80, 80, 100, 0.4);
+    border-width: 1px;
+    border-radius: 6px;
+}
+
+/* ── Class Header ── */
+.cc-class-header {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.cc-class-icon-large {
+    width: 56px;
+    height: 56px;
+    margin-right: 12px;
+    -unity-background-scale-mode: scale-to-fit;
+    border-radius: 6px;
+    border-width: 1px;
+    border-color: rgba(120, 90, 50, 0.6);
+    background-color: rgba(30, 30, 45, 0.5);
+}
+
+.cc-class-name-large {
+    font-size: 24px;
+    color: rgb(220, 180, 100);
+    -unity-font-style: bold;
+}
+
+/* ── Class Description ── */
+.cc-class-description {
+    font-size: 13px;
+    color: rgb(180, 180, 190);
+    -unity-font-style: italic;
+    white-space: normal;
+    margin-bottom: 8px;
+}
+
+/* ── Divider ── */
+.divider {
+    height: 1px;
+    width: 100%;
+    background-color: rgba(120, 90, 50, 0.3);
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+/* ── Stats Grid ── */
+.cc-stats-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.cc-stat-row {
+    flex-direction: row;
+    width: 50%;
+    padding: 2px 0;
+    align-items: center;
+}
+
+.cc-stat-label {
+    font-size: 12px;
+    color: rgb(150, 150, 165);
+    width: 55px;
+}
+
+.cc-stat-value {
+    font-size: 13px;
+    color: rgb(230, 230, 240);
+    -unity-font-style: bold;
+}
+
+/* ── Abilities Row ── */
+.cc-abilities-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.cc-ability-slot {
+    width: 48px;
+    height: 48px;
+    margin-right: 6px;
+    margin-bottom: 6px;
+    border-radius: 4px;
+    border-width: 1px;
+    border-color: rgba(80, 80, 100, 0.5);
+    background-color: rgba(25, 25, 40, 0.8);
+    transition-duration: 0.15s;
+    overflow: hidden;
+}
+
+.cc-ability-slot:hover {
+    border-color: rgba(220, 180, 100, 0.8);
+    scale: 1.08;
+}
+
+.cc-ability-icon {
+    width: 100%;
+    height: 100%;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+/* ── Bottom Section ── */
+.cc-bottom-section {
+    width: 100%;
+    align-items: center;
+    margin-top: 4px;
+}
+
+.cc-name-hint {
+    font-size: 14px;
+    color: rgb(180, 180, 180);
+    margin-bottom: 6px;
+    align-self: flex-start;
+}
+
+.cc-name-input {
+    width: 100%;
+    height: 42px;
+    font-size: 18px;
+    margin-bottom: 16px;
+    background-color: rgba(10, 10, 15, 0.9);
+    border-color: rgba(100, 100, 120, 0.6);
+    border-width: 1px;
+    border-radius: 4px;
+    color: rgb(240, 240, 240);
+    padding: 4px 8px;
+}
+
+.cc-name-input > #unity-text-input {
+    background-color: rgba(10, 10, 15, 0.9);
+    border-width: 0;
+    color: rgb(240, 240, 240);
+    padding: 4px 8px;
+    --unity-cursor-color: rgb(220, 180, 100);
+}
+
+.cc-name-input > #unity-text-input > TextElement {
+    color: rgb(240, 240, 240);
+    font-size: 18px;
+}
+
+.cc-name-input:focus {
+    border-color: rgba(220, 180, 100, 0.8);
+}
+
+/* ── Faction Buttons ── */
+.cc-faction-row {
+    flex-direction: row;
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.cc-faction-button {
+    flex-grow: 1;
+    height: 42px;
+    font-size: 16px;
+    -unity-font-style: bold;
+    background-color: rgba(30, 30, 45, 0.8);
+    border-color: rgba(80, 80, 100, 0.5);
+    border-width: 1px;
+    border-radius: 4px;
+    color: rgb(180, 180, 190);
+    margin-right: 8px;
+    transition-duration: 0.15s;
+}
+
+.cc-faction-button:hover {
+    background-color: rgba(50, 50, 70, 0.8);
+    border-color: rgba(120, 120, 150, 0.6);
+}
+
+.cc-faction-button--selected {
+    background-color: rgba(60, 45, 20, 0.9);
+    border-color: rgba(220, 180, 100, 0.9);
+    color: rgb(220, 180, 100);
+}
+
+/* ── Ability Tooltip ── */
+.cc-ability-tooltip {
+    position: absolute;
+    display: none;
+    width: 260px;
+    padding: 12px;
+    background-color: rgba(15, 12, 20, 0.97);
+    border-color: rgba(120, 90, 50, 0.8);
+    border-width: 1.5px;
+    border-radius: 6px;
+}
+
+.tooltip-name {
+    font-size: 15px;
+    color: rgb(220, 180, 100);
+    -unity-font-style: bold;
+    margin-bottom: 2px;
+}
+
+.tooltip-category {
+    font-size: 11px;
+    color: rgb(150, 150, 170);
+    -unity-font-style: italic;
+    margin-bottom: 6px;
+}
+
+.tooltip-divider {
+    height: 1px;
+    width: 100%;
+    background-color: rgba(120, 90, 50, 0.3);
+    margin-bottom: 6px;
+}
+
+.tooltip-description {
+    font-size: 12px;
+    color: rgb(200, 200, 210);
+    white-space: normal;
+    margin-bottom: 8px;
+}
+
+.tooltip-stat {
+    font-size: 12px;
+    color: rgb(180, 180, 195);
+    margin-bottom: 2px;
+}
+
+.tooltip-stat--damage {
+    color: rgb(255, 100, 100);
+}
+
+.tooltip-stat--heal {
+    color: rgb(100, 255, 130);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LOADING PANEL (full-screen overlay)
+   ═══════════════════════════════════════════════════════════ */
+
+.loading-panel {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.97);
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-title {
+    font-size: 48px;
+    color: rgb(220, 180, 100);
+    -unity-font-style: bold;
+    letter-spacing: 6px;
+    margin-bottom: 24px;
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: rgb(0, 0, 0);
+}
+
+.loading-bar-container {
+    width: 400px;
+    height: 6px;
+    background-color: rgba(60, 60, 80, 0.6);
+    border-radius: 3px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.loading-bar-fill {
+    width: 0;
+    height: 100%;
+    background-color: rgb(220, 180, 100);
+    border-radius: 3px;
+    transition-duration: 0.3s;
+}
+
+.loading-dots {
+    font-size: 28px;
+    color: rgba(220, 180, 100, 0.8);
+    letter-spacing: 8px;
+}
+
+.loading-tip {
+    font-size: 13px;
+    color: rgba(180, 180, 190, 0.7);
+    -unity-font-style: italic;
+    margin-top: 32px;
+    max-width: 500px;
+    -unity-text-align: middle-center;
+    white-space: normal;
+}

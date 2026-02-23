@@ -8,6 +8,7 @@ namespace Genesis.Core.Networking {
     /// <summary>
     /// Wrapper para inicializar y configurar FishNet NetworkManager.
     /// Maneja la conexión inicial como cliente o servidor.
+    /// When loaded additively from Login scene, waits for LoginSceneController to call Start methods.
     /// </summary>
     public class NetworkBootstrap : MonoBehaviour {
 
@@ -39,10 +40,8 @@ namespace Genesis.Core.Networking {
             bool isServerMode = System.Array.Exists(args, arg => arg.ToLower() == "-server");
             bool isClientMode = System.Array.Exists(args, arg => arg.ToLower() == "-client");
 
-            // If login is required, skip auto-connect (LoginController will call StartHost/StartClient).
-            // EXCEPTION: in Editor host mode (not a ParrelSync clone), pre-start the SERVER now so
-            // the heavy sync stall happens during scene load, not when the user clicks "ENTER WORLD".
-            // LoginController will then only call StartClient() which is nearly instantaneous.
+            // If login is required (Login scene controls connection), just pre-warm server in editor.
+            // LoginSceneController will call StartClientLocal()/StartClient() after auth.
             if ((waitForLogin || LoginData.LoginRequired) && !isServerMode) {
 #if UNITY_EDITOR
                 bool isClone = System.IO.File.Exists(
@@ -53,7 +52,7 @@ namespace Genesis.Core.Networking {
                     StartServer();
                 }
 #endif
-                Debug.Log("[NetworkBootstrap] Waiting for login (client will connect on ENTER WORLD)...");
+                Debug.Log("[NetworkBootstrap] Waiting for login (client will connect after auth)...");
                 return;
             }
 

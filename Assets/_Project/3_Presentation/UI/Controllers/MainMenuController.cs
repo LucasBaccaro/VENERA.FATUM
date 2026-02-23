@@ -84,7 +84,7 @@ namespace Genesis.Presentation.UI {
         private void Update() {
             if (Keyboard.current == null) return;
             if (!Keyboard.current.escapeKey.wasPressedThisFrame) return;
-            if (LoginController.IsActive) return;
+            if (LoginSceneController.IsActive) return;
 
             ToggleVisibility();
         }
@@ -250,10 +250,10 @@ namespace Genesis.Presentation.UI {
             var bootstrap = Object.FindFirstObjectByType<NetworkBootstrap>();
             bootstrap?.StopConnection();
 
-            LoginData.IsSet = false;
+            LoginData.Clear();
             LoginData.LoginRequired = true;
 
-            SceneManager.LoadScene("Bootstrap");
+            SceneManager.LoadScene("Login");
 #endif
         }
 

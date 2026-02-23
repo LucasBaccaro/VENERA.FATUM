@@ -82,7 +82,8 @@ namespace Genesis.EditorTools {
                 bool changed = false;
                 for (int i = 0; i < existing.Length; i++) {
                     string lower = existing[i].name.ToLower();
-                    bool shouldLoop = lower.Contains("idle") || lower.Contains("walk") || lower.Contains("run") || lower.Contains("sitting");
+                    bool shouldLoop = lower.Contains("idle") || lower.Contains("walk") || lower.Contains("run")
+                        || (lower.Contains("siting") && !lower.Contains("alert") && !lower.Contains("siting_stand"));
                     if (existing[i].loopTime != shouldLoop) {
                         existing[i].loopTime = shouldLoop;
                         existing[i].wrapMode = shouldLoop ? WrapMode.Loop : WrapMode.Default;
@@ -110,7 +111,8 @@ namespace Genesis.EditorTools {
             var loopNames = new HashSet<string>();
             foreach (var clip in defaults) {
                 string lower = clip.name.ToLower();
-                if (lower.Contains("idle") || lower.Contains("walk") || lower.Contains("run") || lower.Contains("sitting")) {
+                if (lower.Contains("idle") || lower.Contains("walk") || lower.Contains("run")
+                    || (lower.Contains("siting") && !lower.Contains("alert") && !lower.Contains("siting_stand"))) {
                     loopNames.Add(clip.name);
                 }
             }
@@ -173,18 +175,24 @@ namespace Genesis.EditorTools {
                 walk = FindClip("Fighter_Combat_Walk"),
                 attack = FindClip("Fighter_Combat_Attack01"),
                 attack2 = FindClip("Fighter_Combat_Attack02"),
-                death = FindClip("Fighter_Death01")
+                death = FindClip("Fighter_Death01"),
+                sitting = FindClip("Fighter_Standby_Siting"),
+                sitAlert = FindClip("Fighter_Standby_Siting_Alert"),
+                sitStand = FindClip("Fighter_Standby_Siting_Stand")
             });
 
-            // ── AC_Bandit_CutThroat (borrows fighter idle/walk/death) ──
+            // ── AC_Bandit_CutThroat (borrows fighter idle/walk/death + sitting) ──
             CreateController("AC_Bandit_CutThroat", allClips, new ControllerConfig {
                 idle = FindClip("Fighter_Standby_Idle"),
                 walk = FindClip("Fighter_Combat_Walk"),
                 attack = FindClip("CutThroat_Combat_Attack01"),
-                death = FindClip("Fighter_Death01")
+                death = FindClip("Fighter_Death01"),
+                sitting = FindClip("Fighter_Standby_Siting"),
+                sitAlert = FindClip("Fighter_Standby_Siting_Alert"),
+                sitStand = FindClip("Fighter_Standby_Siting_Stand")
             });
 
-            // ── AC_Bandit_Crossbow ──
+            // ── AC_Bandit_Crossbow (no sitting anims) ──
             CreateController("AC_Bandit_Crossbow", allClips, new ControllerConfig {
                 idle = FindClip("Crossbow_Combat_Idle"),
                 walk = FindClip("Crossbow_Combat_Walk"),
@@ -203,6 +211,9 @@ namespace Genesis.EditorTools {
             public AnimationClip attack;
             public AnimationClip attack2; // optional second attack
             public AnimationClip death;
+            public AnimationClip sitting;   // looping sit idle
+            public AnimationClip sitAlert;  // alert reaction while sitting
+            public AnimationClip sitStand;  // standing up from sit
         }
 
         private static void CreateController(string controllerName, Dictionary<string, AnimationClip> allClips, ControllerConfig config) {
@@ -238,6 +249,9 @@ namespace Genesis.EditorTools {
             controller.AddParameter("Attack2", AnimatorControllerParameterType.Trigger);
             controller.AddParameter("Anticipation", AnimatorControllerParameterType.Trigger);
             controller.AddParameter("Die", AnimatorControllerParameterType.Trigger);
+            controller.AddParameter("Sitting", AnimatorControllerParameterType.Bool);
+            controller.AddParameter("SitAlert", AnimatorControllerParameterType.Trigger);
+            controller.AddParameter("SitStand", AnimatorControllerParameterType.Trigger);
 
             // Locomotion BlendTree
             var locomotionState = controller.CreateBlendTreeInController("Locomotion", out BlendTree blendTree, 0);
@@ -312,8 +326,60 @@ namespace Genesis.EditorTools {
                 anyToDie.hasExitTime = false;
             }
 
+            // Sitting states (only if sitting clip exists)
+            if (config.sitting != null) {
+                // Sitting idle state (loops via Sitting bool)
+                var sittingState = rootStateMachine.AddState("Sitting");
+                sittingState.motion = config.sitting;
+
+                // Locomotion -> Sitting (when Sitting bool = true)
+                var locoToSit = locomotionState.AddTransition(sittingState);
+                locoToSit.AddCondition(AnimatorConditionMode.If, 0, "Sitting");
+                locoToSit.duration = 0.25f;
+                locoToSit.hasExitTime = false;
+
+                // Sitting -> Locomotion (when Sitting bool = false, fallback)
+                var sitToLoco = sittingState.AddTransition(locomotionState);
+                sitToLoco.AddCondition(AnimatorConditionMode.IfNot, 0, "Sitting");
+                sitToLoco.duration = 0.1f;
+                sitToLoco.hasExitTime = false;
+
+                // SitAlert state (trigger from Sitting)
+                if (config.sitAlert != null) {
+                    var sitAlertState = rootStateMachine.AddState("SitAlert");
+                    sitAlertState.motion = config.sitAlert;
+
+                    var sitToAlert = sittingState.AddTransition(sitAlertState);
+                    sitToAlert.AddCondition(AnimatorConditionMode.If, 0, "SitAlert");
+                    sitToAlert.duration = 0.1f;
+                    sitToAlert.hasExitTime = false;
+
+                    // SitAlert -> Sitting (return to sitting after alert plays)
+                    var alertToSit = sitAlertState.AddTransition(sittingState);
+                    alertToSit.hasExitTime = true;
+                    alertToSit.exitTime = 0.9f;
+                    alertToSit.duration = 0.1f;
+                }
+
+                // SitStand state (trigger -> exit to Locomotion)
+                if (config.sitStand != null) {
+                    var sitStandState = rootStateMachine.AddState("SitStand");
+                    sitStandState.motion = config.sitStand;
+
+                    var anyToSitStand = rootStateMachine.AddAnyStateTransition(sitStandState);
+                    anyToSitStand.AddCondition(AnimatorConditionMode.If, 0, "SitStand");
+                    anyToSitStand.duration = 0.1f;
+                    anyToSitStand.hasExitTime = false;
+
+                    var sitStandToLoco = sitStandState.AddTransition(locomotionState);
+                    sitStandToLoco.hasExitTime = true;
+                    sitStandToLoco.exitTime = 0.9f;
+                    sitStandToLoco.duration = 0.1f;
+                }
+            }
+
             EditorUtility.SetDirty(controller);
-            Debug.Log($"[BanditSetup] Created {controllerName} — idle={config.idle?.name}, walk={config.walk?.name}, attack={config.attack?.name}, attack2={config.attack2?.name}, death={config.death?.name}");
+            Debug.Log($"[BanditSetup] Created {controllerName} — idle={config.idle?.name}, walk={config.walk?.name}, attack={config.attack?.name}, attack2={config.attack2?.name}, death={config.death?.name}, sitting={config.sitting?.name}");
         }
 
         // ═══════════════════════════════════════════════════════
@@ -418,9 +484,12 @@ namespace Genesis.EditorTools {
             // Configure weapons visibility
             var activeSet = new HashSet<string>(activeWeapons);
             var inactiveSet = new HashSet<string>(inactiveWeapons);
+            // Utility meshes from Blender (ground planes, markers) — always disable
+            var utilityMeshes = new HashSet<string> { "Circle", "Cube", "HalfMoon", "Pointer", "Plane" };
             foreach (Transform child in model.transform) {
                 if (activeSet.Contains(child.name)) child.gameObject.SetActive(true);
-                if (inactiveSet.Contains(child.name)) child.gameObject.SetActive(false);
+                if (inactiveSet.Contains(child.name) || utilityMeshes.Contains(child.name))
+                    child.gameObject.SetActive(false);
             }
 
             // Wire EnemyVisualRandomizer references to FBX children

@@ -110,9 +110,9 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 0}
   _data: {fileID: 11400000, guid: 318cc8598c8084fdab9f1206434c5964, type: 2}
   _lootBagPrefab: {fileID: 1518507829531864150, guid: 9d1e389be81094476aac15ceb9610e09, type: 3}
-  _damageFrame1: 20
-  _damageFrame2: 15
-  _hasSecondAttack: 1
+  _damageFrame1: 0
+  _damageFrame2: 0
+  _hasSecondAttack: 0
 --- !u!195 &2935859238226796485
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -222,7 +222,6 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 4634664932156007285}
   _networkObjectCache: {fileID: 0}
-  _hood: {fileID: 5710969880209579148}
   _chestpads: {fileID: 5193051646415990909}
   _handsAcc: {fileID: 992090891624175367}
   _skirt2: {fileID: 5551457188551136929}
@@ -231,6 +230,7 @@ MonoBehaviour:
   _hairstyle1: {fileID: 8582294012080816270}
   _hairstyle2: {fileID: 4510251196242000668}
   _hairstyle3: {fileID: 3326008260640293136}
+  _hood: {fileID: 5710969880209579148}
 --- !u!136 &6472632542595560358
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -302,11 +302,19 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8391222552659086748, guid: 166f79434f6c7b24fbff1590f5e3820d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -8134661658593713091, guid: 166f79434f6c7b24fbff1590f5e3820d, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7029948723529949830, guid: 166f79434f6c7b24fbff1590f5e3820d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3718118493294603951, guid: 166f79434f6c7b24fbff1590f5e3820d, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -325,6 +333,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 166f79434f6c7b24fbff1590f5e3820d, type: 3}
       propertyPath: m_Name
       value: Bandits_Base
+      objectReference: {fileID: 0}
+    - target: {fileID: 5233112405309087440, guid: 166f79434f6c7b24fbff1590f5e3820d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8765855433962043048, guid: 166f79434f6c7b24fbff1590f5e3820d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

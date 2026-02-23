@@ -1,0 +1,124 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/LoginSceneStyle.uss"/>
+    <ui:VisualElement name="LoginSceneRoot" class="login-scene-root">
+
+        <!-- ═══ LOGIN PANEL ═══ -->
+        <ui:VisualElement name="LoginPanel" class="auth-panel">
+            <ui:Label text="VENERA FATUM" class="game-title"/>
+            <ui:Label text="Enter your credentials" class="form-subtitle"/>
+            <ui:TextField name="LoginUsername" label="" max-length="32" class="auth-input"/>
+            <ui:TextField name="LoginPassword" label="" max-length="64" password="true" class="auth-input"/>
+            <ui:Button text="LOGIN" name="BtnLogin" class="btn-primary"/>
+            <ui:Label text="" name="LoginStatus" class="status-label"/>
+            <ui:Button text="Create an account" name="BtnGoRegister" class="btn-link"/>
+        </ui:VisualElement>
+
+        <!-- ═══ REGISTER PANEL ═══ -->
+        <ui:VisualElement name="RegisterPanel" class="auth-panel" style="display: none;">
+            <ui:Label text="VENERA FATUM" class="game-title game-title--small"/>
+            <ui:Label text="Create a new account" class="form-subtitle"/>
+            <ui:TextField name="RegisterUsername" label="" max-length="32" class="auth-input"/>
+            <ui:TextField name="RegisterPassword" label="" max-length="64" password="true" class="auth-input"/>
+            <ui:TextField name="RegisterPasswordConfirm" label="" max-length="64" password="true" class="auth-input"/>
+            <ui:Button text="REGISTER" name="BtnRegister" class="btn-primary"/>
+            <ui:Label text="" name="RegisterStatus" class="status-label"/>
+            <ui:Button text="Already have an account" name="BtnGoLogin" class="btn-link"/>
+        </ui:VisualElement>
+
+        <!-- ═══ CHARACTER CREATION PANEL ═══ -->
+        <ui:VisualElement name="CharCreationPanel" class="charcreation-panel" style="display: none;">
+            <ui:Label text="CREATE YOUR CHARACTER" class="game-title game-title--small"/>
+
+            <ui:VisualElement name="CCContentRow" class="cc-content-row">
+                <!-- Left: Class List -->
+                <ui:VisualElement name="CCClassListPanel" class="cc-class-list-panel">
+                    <ui:Label text="Choose Class" class="section-title"/>
+                    <ui:ScrollView name="CCClassListScroll" class="cc-class-list-scroll"/>
+                </ui:VisualElement>
+
+                <!-- Right: Class Detail -->
+                <ui:VisualElement name="CCDetailPanel" class="cc-detail-panel">
+                    <ui:VisualElement name="CCClassHeader" class="cc-class-header">
+                        <ui:VisualElement name="CCClassIconLarge" class="cc-class-icon-large"/>
+                        <ui:Label text="Class Name" name="CCClassNameLabel" class="cc-class-name-large"/>
+                    </ui:VisualElement>
+                    <ui:Label text="" name="CCClassDescription" class="cc-class-description"/>
+
+                    <ui:VisualElement class="divider"/>
+                    <ui:Label text="Base Stats" class="section-title section-title--detail"/>
+
+                    <ui:VisualElement name="CCStatsGrid" class="cc-stats-grid">
+                        <ui:VisualElement class="cc-stat-row">
+                            <ui:Label text="Health" class="cc-stat-label"/>
+                            <ui:Label text="0" name="CCStatHealth" class="cc-stat-value"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="cc-stat-row">
+                            <ui:Label text="Mana" class="cc-stat-label"/>
+                            <ui:Label text="0" name="CCStatMana" class="cc-stat-value"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="cc-stat-row">
+                            <ui:Label text="HP/s" class="cc-stat-label"/>
+                            <ui:Label text="0" name="CCStatHPRegen" class="cc-stat-value"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="cc-stat-row">
+                            <ui:Label text="MP/s" class="cc-stat-label"/>
+                            <ui:Label text="0" name="CCStatMPRegen" class="cc-stat-value"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="cc-stat-row">
+                            <ui:Label text="HP/Lvl" class="cc-stat-label"/>
+                            <ui:Label text="0" name="CCStatHPLevel" class="cc-stat-value"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="cc-stat-row">
+                            <ui:Label text="MP/Lvl" class="cc-stat-label"/>
+                            <ui:Label text="0" name="CCStatMPLevel" class="cc-stat-value"/>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="divider"/>
+                    <ui:Label text="Starting Abilities" class="section-title section-title--detail"/>
+                    <ui:VisualElement name="CCAbilitiesRow" class="cc-abilities-row"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <!-- Bottom: Name + Faction + Create -->
+            <ui:VisualElement name="CCBottomSection" class="cc-bottom-section">
+                <ui:Label text="Character Name" class="cc-name-hint"/>
+                <ui:TextField name="CCNameInput" max-length="16" class="cc-name-input"/>
+                <ui:Label text="Choose your path" class="cc-name-hint"/>
+                <ui:VisualElement name="CCFactionRow" class="cc-faction-row">
+                    <ui:Button text="CITIZEN" name="CCBtnCitizen" class="cc-faction-button cc-faction-button--selected"/>
+                    <ui:Button text="PK" name="CCBtnPK" class="cc-faction-button"/>
+                </ui:VisualElement>
+                <ui:Button text="CREATE CHARACTER" name="BtnCreateCharacter" class="btn-primary"/>
+                <ui:Label text="" name="CCStatus" class="status-label"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- ═══ LOADING PANEL ═══ -->
+        <ui:VisualElement name="LoadingPanel" class="loading-panel" style="display: none;">
+            <ui:Label text="VENERA FATUM" class="loading-title"/>
+            <ui:VisualElement class="loading-bar-container">
+                <ui:VisualElement name="LoadingBarFill" class="loading-bar-fill"/>
+            </ui:VisualElement>
+            <ui:Label text=". . ." name="LoadingDots" class="loading-dots"/>
+            <ui:Label text="" name="LoadingTip" class="loading-tip"/>
+        </ui:VisualElement>
+
+        <!-- ═══ ABILITY TOOLTIP (floating) ═══ -->
+        <ui:VisualElement name="AbilityTooltip" class="cc-ability-tooltip">
+            <ui:Label name="TooltipName" class="tooltip-name"/>
+            <ui:Label name="TooltipCategory" class="tooltip-category"/>
+            <ui:VisualElement class="tooltip-divider"/>
+            <ui:Label name="TooltipDescription" class="tooltip-description"/>
+            <ui:VisualElement name="TooltipStats" class="tooltip-stats">
+                <ui:Label name="TooltipMana" class="tooltip-stat"/>
+                <ui:Label name="TooltipCooldown" class="tooltip-stat"/>
+                <ui:Label name="TooltipCastTime" class="tooltip-stat"/>
+                <ui:Label name="TooltipRange" class="tooltip-stat"/>
+                <ui:Label name="TooltipDamage" class="tooltip-stat tooltip-stat--damage"/>
+                <ui:Label name="TooltipHeal" class="tooltip-stat tooltip-stat--heal"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

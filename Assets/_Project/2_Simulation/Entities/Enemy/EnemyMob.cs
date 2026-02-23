@@ -32,13 +32,26 @@ namespace Genesis.Simulation {
         private readonly SyncVar<bool> _isDead = new SyncVar<bool>(false);
 
         // AI state (server only)
-        private enum AIState { Idle, Patrol, Aggro, Attack, Kiting, Return }
+        private enum AIState { Idle, Patrol, Aggro, Attack, Kiting, Return, Sitting, StandingUp }
         private AIState _aiState = AIState.Idle;
         private Transform _target;
         private NetworkObject _targetNob;
         private Vector3 _spawnPosition;
         private float _lastAttackTime;
         private NavMeshAgent _agent;
+
+        // Idle behavior
+        private enum IdleBehavior : byte { Standing = 0, Patrol = 1, Sitting = 2 }
+        private IdleBehavior _chosenIdleBehavior;
+        private readonly SyncVar<byte> _idleBehaviorSync = new SyncVar<byte>(0);
+
+        // Standing up from sitting
+        private float _standUpTimer;
+        private const float STAND_UP_TOTAL = 1.8f;
+        private const float STAND_UP_PHASE2_TIME = 1.0f; // when to play SitStand
+
+        // Mob linking
+        private static readonly int EnemyLayerMask = 1 << 6; // "Enemy" layer index 6
 
         // Patrol
         private Vector3 _patrolTarget;
@@ -72,9 +85,12 @@ namespace Genesis.Simulation {
         private Animator _cachedAnimator;
         private Vector3 _lastPosition;
         private static readonly int SpeedHash = Animator.StringToHash("Speed");
+        private static readonly int SittingHash = Animator.StringToHash("Sitting");
+        private static readonly int SitAlertHash = Animator.StringToHash("SitAlert");
+        private static readonly int SitStandHash = Animator.StringToHash("SitStand");
 
         // Return leash
-        private const float RETURN_THRESHOLD = 1f;
+        private const float RETURN_THRESHOLD = 2f;
 
         public string EnemyTag => _data != null ? _data.EnemyTag : "";
         public string DisplayName => _data != null ? _data.DisplayName : gameObject.name;
@@ -108,6 +124,9 @@ namespace Genesis.Simulation {
             _recoveryTimer = 0f;
             _isWaitingAtPatrol = false;
             _patrolWaitTimer = 0f;
+            _chosenIdleBehavior = IdleBehavior.Standing;
+            _idleBehaviorSync.Value = 0;
+            _standUpTimer = 0f;
 
             _agent = GetComponent<NavMeshAgent>();
             if (_agent != null) {
@@ -135,6 +154,15 @@ namespace Genesis.Simulation {
                 gameObject.name = _data.DisplayName;
                 RpcSetDisplayName(_data.DisplayName);
             }
+
+            DetermineIdleBehavior();
+        }
+
+        public override void OnStartClient() {
+            base.OnStartClient();
+            if (_cachedAnimator == null)
+                _cachedAnimator = GetComponentInChildren<Animator>();
+            _lastPosition = transform.position;
         }
 
         [ObserversRpc(BufferLast = true)]
@@ -150,6 +178,11 @@ namespace Genesis.Simulation {
 
         private void LateUpdate() {
             if (_cachedAnimator == null) return;
+            // Skip Speed update while sitting/standing up to prevent locomotion blend interference
+            if (_aiState == AIState.Sitting || _aiState == AIState.StandingUp) {
+                _lastPosition = transform.position;
+                return;
+            }
             float speed = (transform.position - _lastPosition).magnitude / Time.deltaTime;
             _cachedAnimator.SetFloat(SpeedHash, speed);
             _lastPosition = transform.position;
@@ -191,6 +224,12 @@ namespace Genesis.Simulation {
                     break;
                 case AIState.Return:
                     ReturnToSpawn();
+                    break;
+                case AIState.Sitting:
+                    HandleSitting();
+                    break;
+                case AIState.StandingUp:
+                    HandleStandingUp();
                     break;
             }
         }
@@ -262,11 +301,23 @@ namespace Genesis.Simulation {
                 }
             }
 
-            if (_data != null && _data.PatrolRadius > 0f) {
+            // Restore sitting if that was the chosen behavior (safety net after StandingUp -> no target)
+            if (_chosenIdleBehavior == IdleBehavior.Sitting) {
+                _aiState = AIState.Sitting;
+                _idleBehaviorSync.Value = (byte)IdleBehavior.Sitting;
+                if (_agent != null) _agent.ResetPath();
+                RpcSetSitting(true);
+                return;
+            }
+
+            // Respect chosen idle behavior
+            if (_chosenIdleBehavior == IdleBehavior.Patrol && _data != null && _data.PatrolRadius > 0f) {
                 PickNewPatrolTarget();
                 _aiState = AIState.Patrol;
                 return;
             }
+
+            // Standing idles just scan (no auto-entering patrol)
             ScanForTargets();
         }
 
@@ -850,10 +901,18 @@ namespace Genesis.Simulation {
         private void ReturnToSpawn() {
             float dist = Vector3.Distance(transform.position, _spawnPosition);
             if (dist <= RETURN_THRESHOLD) {
-                _aiState = AIState.Idle;
                 // Heal to full on return
                 if (_data != null) _currentHealth.Value = _data.MaxHealth;
                 if (_agent != null) _agent.ResetPath();
+
+                // Restore original idle behavior
+                if (_chosenIdleBehavior == IdleBehavior.Sitting) {
+                    _aiState = AIState.Sitting;
+                    _idleBehaviorSync.Value = (byte)IdleBehavior.Sitting;
+                    RpcSetSitting(true);
+                } else {
+                    _aiState = AIState.Idle;
+                }
                 return;
             }
 
@@ -867,6 +926,139 @@ namespace Genesis.Simulation {
 
             // Check if a player attacks during return
             ScanForTargets();
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // SITTING IDLE
+        // ═══════════════════════════════════════════════════════
+
+        private void DetermineIdleBehavior() {
+            if (_data == null) {
+                _chosenIdleBehavior = IdleBehavior.Standing;
+                return;
+            }
+
+            // Position-based seed for deterministic but varied results per mob
+            int seed = Mathf.RoundToInt(_spawnPosition.x * 73.1f + _spawnPosition.z * 37.7f) + GetInstanceID();
+            var rng = new System.Random(seed);
+            float roll = (float)rng.NextDouble();
+
+            if (_data.CanSit && roll < _data.SitChance) {
+                _chosenIdleBehavior = IdleBehavior.Sitting;
+                _idleBehaviorSync.Value = (byte)IdleBehavior.Sitting;
+                _aiState = AIState.Sitting;
+                if (_agent != null) _agent.ResetPath();
+                RpcSetSitting(true);
+            } else if (_data.PatrolRadius > 0f) {
+                _chosenIdleBehavior = IdleBehavior.Patrol;
+            } else {
+                _chosenIdleBehavior = IdleBehavior.Standing;
+            }
+        }
+
+        private void HandleSitting() {
+            // Scan for targets while sitting
+            float detectionRange = _data != null ? _data.DetectionRange : 8f;
+            Collider[] hits = Physics.OverlapSphere(transform.position, detectionRange);
+
+            Transform closest = null;
+            NetworkObject closestNob = null;
+            float closestDist = float.MaxValue;
+
+            foreach (var hit in hits) {
+                var playerStats = hit.GetComponent<PlayerStats>();
+                if (playerStats != null && playerStats.IsAlive()) {
+                    float dist = Vector3.Distance(transform.position, hit.transform.position);
+                    if (dist < closestDist) {
+                        closestDist = dist;
+                        closest = hit.transform;
+                        closestNob = hit.GetComponent<NetworkObject>();
+                    }
+                }
+            }
+
+            if (closest != null) {
+                _target = closest;
+                _targetNob = closestNob;
+                BeginStandUpFromSitting();
+                AlertNearbyEnemies();
+            }
+        }
+
+        private void BeginStandUpFromSitting() {
+            _aiState = AIState.StandingUp;
+            _standUpTimer = STAND_UP_TOTAL;
+            RpcPlaySitAlert();
+        }
+
+        private void HandleStandingUp() {
+            _standUpTimer -= Time.deltaTime;
+
+            // At 1.0s remaining, play stand animation
+            if (_standUpTimer <= STAND_UP_PHASE2_TIME && _standUpTimer + Time.deltaTime > STAND_UP_PHASE2_TIME) {
+                RpcPlaySitStand();
+            }
+
+            // Done standing up
+            if (_standUpTimer <= 0f) {
+                if (_target != null) {
+                    _idleBehaviorSync.Value = (byte)IdleBehavior.Standing;
+                    RpcSetSitting(false);
+                    _aiState = AIState.Aggro;
+                    RpcPlayAggroSound(transform.position);
+                } else {
+                    // No target — return to sitting
+                    _aiState = AIState.Sitting;
+                    _idleBehaviorSync.Value = (byte)IdleBehavior.Sitting;
+                    RpcSetSitting(true);
+                }
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // MOB LINKING
+        // ═══════════════════════════════════════════════════════
+
+        private void AlertNearbyEnemies() {
+            if (_data == null || _data.LinkRadius <= 0f) {
+                Debug.Log($"[MobLink] {gameObject.name}: skip — LinkRadius={(_data != null ? _data.LinkRadius : -1)}");
+                return;
+            }
+            if (_target == null) return;
+
+            Collider[] hits = Physics.OverlapSphere(transform.position, _data.LinkRadius, EnemyLayerMask);
+            Debug.Log($"[MobLink] {gameObject.name}: AlertNearbyEnemies radius={_data.LinkRadius}, found {hits.Length} colliders on Enemy layer");
+            foreach (var hit in hits) {
+                var ally = hit.GetComponentInParent<EnemyMob>();
+                if (ally == null) { Debug.Log($"[MobLink]   collider {hit.name}: no EnemyMob"); continue; }
+                if (ally == this) continue;
+                Debug.Log($"[MobLink]   alerting {ally.gameObject.name} (state={ally._aiState})");
+                ally.AlertFromAlly(_target, _targetNob);
+            }
+        }
+
+        [Server]
+        public void AlertFromAlly(Transform target, NetworkObject targetNob) {
+            if (_isDead.Value) { Debug.Log($"[MobLink] {gameObject.name}: AlertFromAlly rejected — dead"); return; }
+            if (_target != null) { Debug.Log($"[MobLink] {gameObject.name}: AlertFromAlly rejected — already has target"); return; }
+            if (_data != null && !_data.CanBeLinked) { Debug.Log($"[MobLink] {gameObject.name}: AlertFromAlly rejected — CanBeLinked=false"); return; }
+
+            // Only respond if idle, patrolling, or sitting
+            if (_aiState != AIState.Idle && _aiState != AIState.Patrol && _aiState != AIState.Sitting) {
+                Debug.Log($"[MobLink] {gameObject.name}: AlertFromAlly rejected — state={_aiState}");
+                return;
+            }
+
+            Debug.Log($"[MobLink] {gameObject.name}: AlertFromAlly ACCEPTED — going aggro from {_aiState}");
+            _target = target;
+            _targetNob = targetNob;
+
+            if (_aiState == AIState.Sitting) {
+                BeginStandUpFromSitting();
+            } else {
+                _aiState = AIState.Aggro;
+                RpcPlayAggroSound(transform.position);
+            }
         }
 
         // ═══════════════════════════════════════════════════════
@@ -902,6 +1094,7 @@ namespace Genesis.Simulation {
                 // Sonido de agro: solo cuando recien adquiere objetivo (no cuando ya estaba aggro)
                 if (wasTargetless) {
                     RpcPlayAggroSound(transform.position);
+                    AlertNearbyEnemies();
                 }
 
                 return true;
@@ -948,6 +1141,10 @@ namespace Genesis.Simulation {
             switch (_aiState) {
                 case AIState.Kiting:
                     return 0.5f;
+                case AIState.Return:
+                case AIState.Sitting:
+                case AIState.StandingUp:
+                    return 0.5f;
                 case AIState.Attack:
                     if (_data.Archetype == EnemyArchetype.Support)
                         return _data.AttackRange * 0.5f;
@@ -987,10 +1184,17 @@ namespace Genesis.Simulation {
             }
 
             // Aggro on the attacker
-            if (attacker != null && (_aiState == AIState.Idle || _aiState == AIState.Patrol)) {
+            if (attacker != null && (_aiState == AIState.Idle || _aiState == AIState.Patrol || _aiState == AIState.Sitting)) {
                 _target = attacker.transform;
                 _targetNob = attacker;
-                _aiState = AIState.Aggro;
+
+                if (_aiState == AIState.Sitting) {
+                    BeginStandUpFromSitting();
+                } else {
+                    _aiState = AIState.Aggro;
+                }
+
+                AlertNearbyEnemies();
             }
 
             if (_data != null && _data.HitSound != null)
@@ -1117,6 +1321,30 @@ namespace Genesis.Simulation {
         private void RpcPlayEnemyAttackImpactSound(Vector3 position) {
             if (_data != null && _data.AttackImpactSound != null)
                 EventBus.Trigger("OnPlaySFX3D", _data.AttackImpactSound, position);
+        }
+
+        [ObserversRpc(BufferLast = true)]
+        private void RpcSetSitting(bool sitting) {
+            if (_cachedAnimator == null) _cachedAnimator = GetComponentInChildren<Animator>();
+            if (_cachedAnimator != null) {
+                _cachedAnimator.SetBool(SittingHash, sitting);
+                if (!sitting) _cachedAnimator.SetFloat(SpeedHash, 0f);
+            }
+        }
+
+        [ObserversRpc]
+        private void RpcPlaySitAlert() {
+            if (_cachedAnimator == null) _cachedAnimator = GetComponentInChildren<Animator>();
+            if (_cachedAnimator != null) _cachedAnimator.SetTrigger(SitAlertHash);
+        }
+
+        [ObserversRpc]
+        private void RpcPlaySitStand() {
+            if (_cachedAnimator == null) _cachedAnimator = GetComponentInChildren<Animator>();
+            if (_cachedAnimator != null) {
+                _cachedAnimator.SetBool(SittingHash, false);
+                _cachedAnimator.SetTrigger(SitStandHash);
+            }
         }
 
         /// <summary>

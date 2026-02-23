@@ -59,6 +59,7 @@ MonoBehaviour:
   NetworkBehaviours:
   - {fileID: 927153403380467020}
   - {fileID: 2118035902623634283}
+  - {fileID: -1440488157633749799}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -69,7 +70,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584306547586927138
+  _initializedTimestamp: -8584297969134258928
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -111,6 +112,9 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 8967531241953249168}
   _data: {fileID: 11400000, guid: 318cc8598c8084fdab9f1206434c5964, type: 2}
   _lootBagPrefab: {fileID: 1518507829531864150, guid: 9d1e389be81094476aac15ceb9610e09, type: 3}
+  _damageFrame1: 0
+  _damageFrame2: 0
+  _hasSecondAttack: 0
 --- !u!195 &5246509779917110678
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -191,9 +195,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9b4fdedf70fc4923b1b6a4368fc3ef2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.TargetingSystem
-  _componentIndexCache: 255
+  _componentIndexCache: 2
   _addedNetworkObject: {fileID: 8967531241953249168}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 8967531241953249168}
   maxTargetDistance: 40
   targetLayer:
     serializedVersion: 2

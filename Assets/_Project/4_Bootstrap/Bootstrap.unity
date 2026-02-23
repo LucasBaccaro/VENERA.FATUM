@@ -119,78 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &31986196
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 31986197}
-  - component: {fileID: 31986198}
-  - component: {fileID: 31986199}
-  m_Layer: 0
-  m_Name: LoginUI
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &31986197
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 31986196}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 364127482}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &31986198
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 31986196}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
-  m_PanelSettings: {fileID: 11400000, guid: 85ba5e24a45154443a3044fa702fd310, type: 2}
-  m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: 4c2e0e8f118bc4bca9d7c0e701ddd2be, type: 3}
-  m_SortingOrder: 0
-  m_Position: 0
-  m_WorldSpaceSizeMode: 1
-  m_WorldSpaceWidth: 1920
-  m_WorldSpaceHeight: 1080
-  m_PivotReferenceSize: 0
-  m_Pivot: 0
-  m_WorldSpaceCollider: {fileID: 0}
---- !u!114 &31986199
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 31986196}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b53b9fdc4709449079e5d68e86e55103, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.UI.LoginController
-  uiDocument: {fileID: 31986198}
-  availableClasses: []
-  _loginMusic: {fileID: 8300000, guid: eb8b30425d81f354691eeb46d8d7ca07, type: 3}
-  _enterWorldSFX: {fileID: 8300000, guid: 9d941ba0c9c61c24884acaaad0c41cab, type: 3}
 --- !u!1 &137644100
 GameObject:
   m_ObjectHideFlags: 0
@@ -421,6 +349,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Genesis.Presentation::Genesis.Presentation.UI.NameplateManager
   _uiDocument: {fileID: 283858263}
   _nameplateTemplate: {fileID: 9197481963319205126, guid: 18d09104806c58f47812d4917c26c2a9, type: 3}
+  _headHeight: 2.1
 --- !u!1 &289927435
 GameObject:
   m_ObjectHideFlags: 0
@@ -530,7 +459,6 @@ Transform:
   - {fileID: 265461134}
   - {fileID: 2144613567}
   - {fileID: 1465230152}
-  - {fileID: 31986197}
   - {fileID: 1413132927}
   - {fileID: 1724576067}
   - {fileID: 1326009659}
@@ -1504,7 +1432,7 @@ MonoBehaviour:
   networkManager: {fileID: 1339464178}
   autoStartServer: 1
   autoStartClient: 1
-  waitForLogin: 1
+  waitForLogin: 0
 --- !u!114 &1339464181
 MonoBehaviour:
   m_ObjectHideFlags: 0

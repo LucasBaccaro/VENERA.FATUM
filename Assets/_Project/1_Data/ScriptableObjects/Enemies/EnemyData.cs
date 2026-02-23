@@ -54,6 +54,19 @@ namespace Genesis.Data {
         public float KnockbackForce = 4f;
         public float KnockbackDuration = 0.3f;
 
+        [Header("Group Aggro (Linking)")]
+        [Tooltip("Radius to alert nearby enemies when this mob aggros. 0 = no linking.")]
+        public float LinkRadius = 0f;
+        [Tooltip("Whether this mob responds to link alerts from nearby allies.")]
+        public bool CanBeLinked = true;
+
+        [Header("Idle Behavior")]
+        [Tooltip("Can this mob randomly sit idle instead of standing/patrolling.")]
+        public bool CanSit = false;
+        [Range(0f, 1f)]
+        [Tooltip("Probability of choosing sitting as idle behavior.")]
+        public float SitChance = 0.4f;
+
         [Header("Audio")]
         public AudioClip HitSound;
         [Tooltip("Sonidos de muerte - se elige uno al azar.")]

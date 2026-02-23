@@ -52,7 +52,9 @@ namespace Genesis.Simulation {
 
             // If login data was set, send it to the server
             if (LoginData.IsSet) {
-                CmdSetLoginData(LoginData.PlayerName, LoginData.ClassIndex, LoginData.FactionIndex);
+                CmdSetLoginData(
+                    LoginData.PlayerName, LoginData.ClassIndex, LoginData.FactionIndex,
+                    LoginData.AuthToken, LoginData.RefreshToken, LoginData.IsNewCharacter);
                 LoginData.Clear();
             }
         }
@@ -126,7 +128,8 @@ namespace Genesis.Simulation {
         }
 
         [ServerRpc]
-        private void CmdSetLoginData(string playerName, int classIndex, int factionIndex) {
+        private void CmdSetLoginData(string playerName, int classIndex, int factionIndex,
+            string authToken, string refreshToken, bool isNewCharacter) {
             _playerName.Value = playerName;
             _faction.Value = factionIndex;
             if (classIndex >= 0 && classIndex < availableClasses.Count) {
@@ -135,15 +138,17 @@ namespace Genesis.Simulation {
             _classLocked.Value = true;
 
             // Trigger async persistence load
-            LoadOrCreateCharacterAsync(playerName, classIndex, factionIndex);
+            LoadOrCreateCharacterAsync(playerName, classIndex, factionIndex, authToken, refreshToken, isNewCharacter);
         }
 
         /// <summary>
         /// Async server-side: authenticate with Nakama, load or create character data, hydrate player.
         /// Called after SetClass so base class stats are initialized before hydration overwrites them.
+        /// Supports token-based auth (from Login scene) with fallback to device auth (legacy/testing).
         /// </summary>
         [Server]
-        private async void LoadOrCreateCharacterAsync(string playerName, int classIndex, int factionIndex) {
+        private async void LoadOrCreateCharacterAsync(string playerName, int classIndex, int factionIndex,
+            string authToken = "", string refreshToken = "", bool isNewCharacter = false) {
             Debug.Log($"[PlayerClassManager] ═══ PERSISTENCE FLOW START ═══ player={playerName} class={classIndex} faction={factionIndex} clientId={base.Owner.ClientId}");
 
             try
@@ -161,10 +166,24 @@ namespace Genesis.Simulation {
                     return;
                 }
 
-                // Step 2: Authenticate with Nakama (by character name for per-character persistence)
-                string deviceId = $"genesis_char_{playerName.ToLowerInvariant().Trim()}";
-                Debug.Log($"[PlayerClassManager] Step 2: Authenticating with deviceId={deviceId}");
-                string userId = await nakama.AuthenticateDeviceAsync(base.Owner.ClientId, deviceId);
+                // Step 2: Authenticate with Nakama
+                string userId;
+                bool hasTokens = !string.IsNullOrEmpty(authToken) && !string.IsNullOrEmpty(refreshToken);
+
+                if (hasTokens)
+                {
+                    // Token-based auth: restore session from Login scene tokens
+                    Debug.Log($"[PlayerClassManager] Step 2: Restoring session from auth tokens");
+                    userId = nakama.RestoreSession(base.Owner.ClientId, authToken, refreshToken);
+                }
+                else
+                {
+                    // Fallback: device auth (legacy, for editor testing without Login scene)
+                    string deviceId = $"genesis_char_{playerName.ToLowerInvariant().Trim()}";
+                    Debug.Log($"[PlayerClassManager] Step 2: Authenticating with deviceId={deviceId} (legacy fallback)");
+                    userId = await nakama.AuthenticateDeviceAsync(base.Owner.ClientId, deviceId);
+                }
+
                 if (string.IsNullOrEmpty(userId)) {
                     Debug.LogError("[PlayerClassManager] STEP 2 FAILED: Nakama authentication returned null. Is Docker/Nakama running?");
                     return;

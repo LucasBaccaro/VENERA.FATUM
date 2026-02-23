@@ -110,7 +110,7 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 0}
   _data: {fileID: 11400000, guid: 318cc8598c8084fdab9f1206434c5964, type: 2}
   _lootBagPrefab: {fileID: 1518507829531864150, guid: 9d1e389be81094476aac15ceb9610e09, type: 3}
-  _damageFrame1: 15
+  _damageFrame1: 0
   _damageFrame2: 0
   _hasSecondAttack: 0
 --- !u!195 &5153666975171334959
@@ -222,7 +222,6 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 6010787539940642727}
   _networkObjectCache: {fileID: 0}
-  _hood: {fileID: 2046198074738891134}
   _chestpads: {fileID: 1960634164757624207}
   _handsAcc: {fileID: 6836574181419012853}
   _skirt2: {fileID: 2174748726342423379}
@@ -231,6 +230,7 @@ MonoBehaviour:
   _hairstyle1: {fileID: 2611683683491677564}
   _hairstyle2: {fileID: 7904766254097268462}
   _hairstyle3: {fileID: 9010757771767071970}
+  _hood: {fileID: 2046198074738891134}
 --- !u!136 &379789098318624528
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -302,11 +302,19 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8391222552659086748, guid: 166f79434f6c7b24fbff1590f5e3820d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -8134661658593713091, guid: 166f79434f6c7b24fbff1590f5e3820d, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7029948723529949830, guid: 166f79434f6c7b24fbff1590f5e3820d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3718118493294603951, guid: 166f79434f6c7b24fbff1590f5e3820d, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -319,6 +327,14 @@ PrefabInstance:
       value: Bandits_Base
       objectReference: {fileID: 0}
     - target: {fileID: 1220680026348262603, guid: 166f79434f6c7b24fbff1590f5e3820d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5233112405309087440, guid: 166f79434f6c7b24fbff1590f5e3820d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8765855433962043048, guid: 166f79434f6c7b24fbff1590f5e3820d, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}

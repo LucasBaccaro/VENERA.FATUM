@@ -41,6 +41,10 @@ MonoBehaviour:
   HealCooldown: 2.5
   KnockbackForce: 4
   KnockbackDuration: 0.3
+  LinkRadius: 12
+  CanBeLinked: 1
+  CanSit: 1
+  SitChance: 0.3
   HitSound: {fileID: 0}
   DeathSounds:
   - {fileID: 8300000, guid: 12013d2d0664aef4bade08ca11b5e480, type: 3}
@@ -48,6 +52,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 537b9ea78d28231479c2238368296c59, type: 3}
   - {fileID: 8300000, guid: 59b0fa6722ce679429ad4bcef79ec7a1, type: 3}
   - {fileID: 8300000, guid: 8767112c00bffbf4b88641f382f3f47a, type: 3}
+  AttackSound: {fileID: 0}
+  AttackImpactSound: {fileID: 0}
   AggroSounds:
   - {fileID: 8300000, guid: 53f25f059927a4a4c9e8801d49cd2cb5, type: 3}
   - {fileID: 8300000, guid: c8d1b1935d1ac7447bf1ac19bc43fa8b, type: 3}

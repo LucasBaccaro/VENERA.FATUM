@@ -222,7 +222,6 @@ MonoBehaviour:
   _componentIndexCache: 255
   _addedNetworkObject: {fileID: 8964192847542505205}
   _networkObjectCache: {fileID: 0}
-  _hood: {fileID: 3885797468358326543}
   _chestpads: {fileID: 3656144554570356222}
   _handsAcc: {fileID: 8604353056763294340}
   _skirt2: {fileID: 4010152049657639714}
@@ -231,6 +230,7 @@ MonoBehaviour:
   _hairstyle1: {fileID: 988045348415923469}
   _hairstyle2: {fileID: 4916788940558311071}
   _hairstyle3: {fileID: 6090003628494300307}
+  _hood: {fileID: 3885797468358326543}
 --- !u!136 &1213444593449719722
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -302,7 +302,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8391222552659086748, guid: 166f79434f6c7b24fbff1590f5e3820d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -7029948723529949830, guid: 166f79434f6c7b24fbff1590f5e3820d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3718118493294603951, guid: 166f79434f6c7b24fbff1590f5e3820d, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -323,6 +331,14 @@ PrefabInstance:
       value: Bandits_Base
       objectReference: {fileID: 0}
     - target: {fileID: 1220680026348262603, guid: 166f79434f6c7b24fbff1590f5e3820d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5233112405309087440, guid: 166f79434f6c7b24fbff1590f5e3820d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8765855433962043048, guid: 166f79434f6c7b24fbff1590f5e3820d, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}

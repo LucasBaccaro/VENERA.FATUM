@@ -313,6 +313,7 @@ MonoBehaviour:
   <PredictedOwner>k__BackingField: {fileID: 0}
   NetworkBehaviours:
   - {fileID: 8599075547332012228}
+  - {fileID: 8353972221628275085}
   InitializedParentNetworkBehaviour: {fileID: 0}
   InitializedNestedNetworkObjects: []
   RuntimeParentNetworkBehaviour: {fileID: 0}
@@ -323,7 +324,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _preventDespawnOnDisconnect: 0
   _defaultDespawnType: 0
-  _initializedTimestamp: -8584323984992777628
+  _initializedTimestamp: -8584297969134258928
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
   _predictionType: 0
@@ -339,7 +340,7 @@ MonoBehaviour:
   _spectatorInterpolation: 2
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 14
+  <PrefabId>k__BackingField: 41
   <SpawnableCollectionId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 14895306324554982627
   SceneId: 0
@@ -360,9 +361,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 693d0fa7b7e4545c6b42ca8e5c2f4db4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Genesis.Simulation::Genesis.Simulation.Combat.TargetedProjectile
-  _componentIndexCache: 255
+  _componentIndexCache: 1
   _addedNetworkObject: {fileID: 7421703666423885053}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 7421703666423885053}
   maxLifetime: 3
   arrivalThreshold: 0.2
 --- !u!4 &6618360559491352488 stripped

@@ -173,6 +173,31 @@ namespace Genesis.Core.Persistence
             }
         }
 
+        /// <summary>
+        /// Restore a Nakama session from auth tokens (sent by client after Login scene auth).
+        /// Uses Session.Restore() so the server never sees the user's password.
+        /// </summary>
+        public string RestoreSession(int clientId, string authToken, string refreshToken)
+        {
+            try
+            {
+                var session = Session.Restore(authToken, refreshToken);
+                if (session == null || session.HasExpired(DateTime.UtcNow))
+                {
+                    Debug.LogError($"[NakamaManager] RestoreSession failed for client {clientId}: session expired or invalid");
+                    return null;
+                }
+                _sessions[clientId] = session;
+                Debug.Log($"[NakamaManager] Session restored for client {clientId}: userId={session.UserId}");
+                return session.UserId;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[NakamaManager] RestoreSession exception for client {clientId}: {e.Message}");
+                return null;
+            }
+        }
+
         // ═══════════════════════════════════════════════════════
         // CONNECTION & PLAYER TRACKING
         // ═══════════════════════════════════════════════════════

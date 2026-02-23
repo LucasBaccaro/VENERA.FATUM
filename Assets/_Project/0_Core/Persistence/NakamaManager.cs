@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using FishNet.Object;
 using Nakama;
@@ -36,6 +37,9 @@ namespace Genesis.Core.Persistence
 
         // Map FishNet connection owner ID → Nakama user ID
         private readonly Dictionary<int, string> _connectionToUserId = new Dictionary<int, string>();
+
+        // Per-player save locks: prevents concurrent saves from racing (auto-save vs instant-save)
+        private readonly Dictionary<int, SemaphoreSlim> _saveLocks = new Dictionary<int, SemaphoreSlim>();
 
         private const string COLLECTION = "characters";
         private const string KEY = "main";
@@ -80,7 +84,9 @@ namespace Genesis.Core.Persistence
                 return;
             }
 
-            var tasks = new List<Task>();
+            // Extract all data on main thread first (requires Unity API access),
+            // then write in parallel. Locks ensure no in-flight save races.
+            var saveEntries = new List<(int clientId, string userId, CharacterData data)>();
             foreach (var kvp in _connectedPlayers)
             {
                 int clientId = kvp.Key;
@@ -90,18 +96,32 @@ namespace Genesis.Core.Persistence
                 string userId = GetUserId(clientId);
                 if (string.IsNullOrEmpty(userId)) continue;
 
+                // Wait for any in-flight saves to finish before extracting
+                var sem = GetSaveLock(clientId);
+                await sem.WaitAsync();
                 try
                 {
                     var data = bridge.ExtractPlayerData(playerObj);
                     if (data != null)
                     {
-                        tasks.Add(SaveAsyncForClient(clientId, userId, data));
+                        saveEntries.Add((clientId, userId, data));
                     }
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError($"[NakamaManager] Quit save failed for client {clientId}: {e.Message}");
+                    Debug.LogError($"[NakamaManager] Quit save extract failed for client {clientId}: {e.Message}");
                 }
+                finally
+                {
+                    sem.Release();
+                }
+            }
+
+            // Write all in parallel (network I/O only, no Unity API)
+            var tasks = new List<Task>();
+            foreach (var entry in saveEntries)
+            {
+                tasks.Add(SaveAsyncForClient(entry.clientId, entry.userId, entry.data));
             }
 
             if (tasks.Count > 0)
@@ -232,6 +252,11 @@ namespace Genesis.Core.Persistence
         public void UnregisterPlayer(int clientId)
         {
             _connectedPlayers.Remove(clientId);
+            if (_saveLocks.TryGetValue(clientId, out var sem))
+            {
+                _saveLocks.Remove(clientId);
+                sem.Dispose();
+            }
             Debug.Log($"[NakamaManager] Player unregistered: clientId={clientId} (total: {_connectedPlayers.Count})");
         }
 
@@ -376,6 +401,14 @@ namespace Genesis.Core.Persistence
                     continue;
                 }
 
+                // Skip players with an instant-save in progress (don't block auto-save loop)
+                var sem = GetSaveLock(clientId);
+                if (!await sem.WaitAsync(0))
+                {
+                    Debug.Log($"[NakamaManager] Auto-save SKIPPED for client {clientId}: instant-save in progress");
+                    continue;
+                }
+
                 try
                 {
                     var data = bridge.ExtractPlayerData(playerObj);
@@ -384,6 +417,10 @@ namespace Genesis.Core.Persistence
                 catch (Exception e)
                 {
                     Debug.LogError($"[NakamaManager] Auto-save failed for client {clientId}: {e.Message}");
+                }
+                finally
+                {
+                    sem.Release();
                 }
             }
         }
@@ -406,13 +443,34 @@ namespace Genesis.Core.Persistence
                 return;
             }
 
-            var data = bridge.ExtractPlayerData(playerObj);
-            await SaveAsyncForClient(clientId, userId, data);
+            // Lock per-player: extract fresh data INSIDE the lock so a queued save
+            // always captures the latest state, preventing stale overwrites.
+            var sem = GetSaveLock(clientId);
+            await sem.WaitAsync();
+            try
+            {
+                var data = bridge.ExtractPlayerData(playerObj);
+                await SaveAsyncForClient(clientId, userId, data);
+            }
+            finally
+            {
+                sem.Release();
+            }
         }
 
         // ═══════════════════════════════════════════════════════
         // HELPERS
         // ═══════════════════════════════════════════════════════
+
+        private SemaphoreSlim GetSaveLock(int clientId)
+        {
+            if (!_saveLocks.TryGetValue(clientId, out var sem))
+            {
+                sem = new SemaphoreSlim(1, 1);
+                _saveLocks[clientId] = sem;
+            }
+            return sem;
+        }
 
         private int FindClientIdByUserId(string userId)
         {

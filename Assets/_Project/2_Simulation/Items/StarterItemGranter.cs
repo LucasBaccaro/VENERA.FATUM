@@ -1,5 +1,4 @@
 using FishNet.Object;
-using System.Collections;
 using UnityEngine;
 using Genesis.Items;
 
@@ -24,9 +23,6 @@ namespace Genesis.Simulation {
         [SerializeField] private int[] _starterEquipmentIDs = { 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 };
 
         [Header("Settings")]
-        [Tooltip("Delay before granting items (to ensure components are initialized)")]
-        [SerializeField] private float _grantDelay = 0.5f;
-
         [Tooltip("Default tier for starter equipment")]
         [SerializeField] private ItemTier _starterTier = ItemTier.T0;
 
@@ -42,27 +38,19 @@ namespace Genesis.Simulation {
             _equipmentManager = GetComponent<EquipmentManager>();
         }
 
-        public override void OnStartServer() {
-            base.OnStartServer();
-
-            // Grant items after a short delay
-            StartCoroutine(GrantStarterItemsDelayed());
-        }
-
         /// <summary>
-        /// Grant starter items with delay (server-only)
+        /// Grant starter items to a NEW character only.
+        /// Called explicitly from PlayerClassManager when creating a new character.
         /// </summary>
-        private IEnumerator GrantStarterItemsDelayed() {
-            yield return new WaitForSeconds(_grantDelay);
-
+        [Server]
+        public void GrantStarterItems() {
             if (_playerInventory == null || _equipmentManager == null) {
                 Debug.LogError("[StarterItemGranter] Missing required components!");
-                yield break;
+                return;
             }
 
             Debug.Log($"[StarterItemGranter] Granting starter items to {gameObject.name}");
 
-            // Add potions to inventory (equipment now comes from quest "El Fuerte")
             AddPotion(_healthPotionID, _potionQuantity);
             AddPotion(_manaPotionID, _potionQuantity);
 

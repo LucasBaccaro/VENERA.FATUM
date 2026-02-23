@@ -74,7 +74,7 @@ namespace Genesis.Presentation.Audio {
             EventBus.Subscribe<NetworkObject, string>("OnQuestCompleted", OnQuestCompleted);
             EventBus.Subscribe<string>("OnQuestTurnedIn", OnQuestTurnedIn);
             EventBus.Subscribe<string, string, int, int>("OnQuestObjectiveProgress", OnQuestObjectiveProgress);
-            EventBus.Subscribe<int>("OnLevelChanged", OnLevelUp);
+            EventBus.Subscribe<int>("OnLevelUp", OnLevelUp);
 
             // Economy / Trade events
             EventBus.Subscribe<bool, string>("OnVendorBuyResult", OnVendorBuy);
@@ -123,7 +123,7 @@ namespace Genesis.Presentation.Audio {
             EventBus.Unsubscribe<NetworkObject, string>("OnQuestCompleted", OnQuestCompleted);
             EventBus.Unsubscribe<string>("OnQuestTurnedIn", OnQuestTurnedIn);
             EventBus.Unsubscribe<string, string, int, int>("OnQuestObjectiveProgress", OnQuestObjectiveProgress);
-            EventBus.Unsubscribe<int>("OnLevelChanged", OnLevelUp);
+            EventBus.Unsubscribe<int>("OnLevelUp", OnLevelUp);
 
             EventBus.Unsubscribe<bool, string>("OnVendorBuyResult", OnVendorBuy);
             EventBus.Unsubscribe<int>("OnGoldChanged", OnGoldChanged);

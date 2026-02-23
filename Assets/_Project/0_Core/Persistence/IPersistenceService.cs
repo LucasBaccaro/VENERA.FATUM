@@ -14,5 +14,6 @@ namespace Genesis.Core.Persistence
         void MarkDirty(NetworkObject playerObj);
         void RegisterPlayer(int clientId, NetworkObject playerObj);
         void UnregisterPlayer(int clientId);
+        Task SavePlayerNow(NetworkObject playerObj);
     }
 }

@@ -101,8 +101,6 @@ namespace Genesis.Simulation {
             // Trigger global event for owner-only UI modules (Inventory, Character Panel, etc.)
             if (IsOwner) {
                 EventBus.Trigger("OnEquipmentChanged");
-                bool isEquip = !newSlot.IsEmpty;
-                EventBus.Trigger("OnEquipmentSound", isEquip);
             }
         }
 
@@ -569,6 +567,13 @@ namespace Genesis.Simulation {
                 inventory.AddItem(currentEquipment.ItemID, 1, currentEquipment.Tier, currentEquipment.Rarity);
             }
 
+            RpcPlayEquipSound(true);
+
+            // Instant save after equip (prevents dupe/loss on crash)
+            if (ServiceLocator.Instance.TryGet<IPersistenceService>(out var persistence)) {
+                _ = persistence.SavePlayerNow(base.NetworkObject);
+            }
+
             Debug.Log($"[EquipmentManager] Equipped {equipmentData.ItemName} from inventory slot {inventorySlotIndex}.");
         }
 
@@ -603,10 +608,25 @@ namespace Genesis.Simulation {
             // Add to inventory
             inventory.AddItem(unequippedItem.ItemID, 1, unequippedItem.Tier, unequippedItem.Rarity);
 
+            RpcPlayEquipSound(false);
+
+            // Instant save after unequip (prevents dupe/loss on crash)
+            if (ServiceLocator.Instance.TryGet<IPersistenceService>(out var persistence)) {
+                _ = persistence.SavePlayerNow(base.NetworkObject);
+            }
+
             Debug.Log($"[EquipmentManager] Unequipped item from {slot} slot to inventory.");
         }
 
         #endregion
+
+        [ObserversRpc]
+        private void RpcPlayEquipSound(bool isEquip) {
+            if (base.IsOwner) {
+                EventBus.Trigger("OnEquipmentSound", isEquip);
+            }
+        }
+
         [TargetRpc]
         private void TargetShowError(FishNet.Connection.NetworkConnection conn, string message) {
             EventBus.Trigger("OnCombatError", message);

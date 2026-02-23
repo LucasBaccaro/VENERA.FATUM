@@ -231,7 +231,14 @@ namespace Genesis.Simulation {
                     var newData = bridge.CreateNewPlayerData(playerName, classIndex, transform.position);
                     newData.faction = factionIndex;
                     await persistence.SaveAsync(userId, newData);
-                    Debug.Log($"[PlayerClassManager] Step 5b ✓ New character SAVED: {playerName} at {transform.position}");
+
+                    // Grant starter items only for NEW characters
+                    var starterGranter = GetComponent<StarterItemGranter>();
+                    if (starterGranter != null) {
+                        starterGranter.GrantStarterItems();
+                    }
+
+                    Debug.Log($"[PlayerClassManager] Step 5b ✓ New character SAVED + starter items granted: {playerName} at {transform.position}");
                 }
 
                 // Step 6: Register player for auto-save and quit-save

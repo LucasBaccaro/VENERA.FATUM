@@ -4,6 +4,7 @@ using UnityEngine;
 using Genesis.Items;
 using Genesis.Data;
 using Genesis.Core;
+using Genesis.Core.Persistence;
 
 namespace Genesis.Simulation {
     /// <summary>
@@ -52,6 +53,11 @@ namespace Genesis.Simulation {
             Debug.Log($"[LootDropper] {gameObject.name} died. Dropping loot...");
 
             DropLoot(killer);
+
+            // Instant save after loot drop (inventory/equipment already cleared)
+            if (ServiceLocator.Instance.TryGet<IPersistenceService>(out var persistence)) {
+                _ = persistence.SavePlayerNow(base.NetworkObject);
+            }
         }
 
         /// <summary>
@@ -120,6 +126,10 @@ namespace Genesis.Simulation {
         /// </summary>
         private bool IsItemProtected(ItemSlot itemSlot) {
             if (itemSlot.IsEmpty) return false;
+
+            // T0 Common is starter gear — never drops
+            if (itemSlot.Tier == ItemTier.T0 && itemSlot.Rarity == ItemRarity.Common)
+                return true;
 
             BaseItemData itemData = ItemDatabase.Instance.GetItem(itemSlot.ItemID);
             if (itemData == null) {

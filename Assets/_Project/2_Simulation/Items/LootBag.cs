@@ -7,6 +7,7 @@ using UnityEngine;
 using Genesis.Items;
 using Genesis.Data;
 using Genesis.Core;
+using Genesis.Core.Persistence;
 
 namespace Genesis.Simulation {
     /// <summary>
@@ -216,7 +217,11 @@ namespace Genesis.Simulation {
         /// </summary>
         [ServerRpc(RequireOwnership = false)]
         public void CmdTakeItem(int lootIndex, NetworkObject player) {
-            TakeItem(lootIndex, player);
+            if (TakeItem(lootIndex, player)) {
+                if (ServiceLocator.Instance.TryGet<IPersistenceService>(out var persistence)) {
+                    _ = persistence.SavePlayerNow(player);
+                }
+            }
         }
 
         /// <summary>
@@ -225,6 +230,9 @@ namespace Genesis.Simulation {
         [ServerRpc(RequireOwnership = false)]
         public void CmdTakeAll(NetworkObject player) {
             TakeAll(player);
+            if (ServiceLocator.Instance.TryGet<IPersistenceService>(out var persistence)) {
+                _ = persistence.SavePlayerNow(player);
+            }
         }
         
         /// <summary>

@@ -3,6 +3,7 @@ using FishNet.Object;
 using FishNet.Connection;
 using Genesis.Items;
 using Genesis.Core;
+using Genesis.Core.Persistence;
 
 namespace Genesis.Simulation {
 
@@ -588,6 +589,12 @@ namespace Genesis.Simulation {
 
             TargetTradeCompleted(playerA.Owner);
             TargetTradeCompleted(playerB.Owner);
+
+            // Instant save both players after trade
+            if (ServiceLocator.Instance.TryGet<IPersistenceService>(out var persistence)) {
+                _ = persistence.SavePlayerNow(playerA);
+                _ = persistence.SavePlayerNow(playerB);
+            }
 
             CleanupSession();
             Debug.Log($"[TradeManager] Trade completed successfully!");

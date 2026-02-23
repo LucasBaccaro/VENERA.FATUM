@@ -165,6 +165,12 @@ namespace Genesis.Simulation {
             _completedQuests.Add(questId);
 
             TargetNotifyQuestCompleted(base.Owner, data.QuestName);
+
+            // Instant save after quest completion
+            if (ServiceLocator.Instance.TryGet<IPersistenceService>(out var persistence)) {
+                _ = persistence.SavePlayerNow(base.NetworkObject);
+            }
+
             Debug.Log($"[PlayerQuestManager] {gameObject.name} completed quest: {data.QuestName}");
         }
 

@@ -377,6 +377,19 @@ namespace Genesis.Simulation {
         public void GainGold(int amount) {
             if (amount <= 0) return;
             _gold.Value += amount;
+            RpcShowGoldGain(amount);
+        }
+
+        [ObserversRpc]
+        private void RpcShowGoldGain(int amount) {
+            if (base.IsOwner) {
+                var data = new FloatingTextData(
+                    transform.position + Vector3.up * 2f,
+                    $"+{amount}",
+                    "gold"
+                );
+                EventBus.Trigger("OnShowFloatingText", data);
+            }
         }
 
         [Server]
@@ -423,16 +436,6 @@ namespace Genesis.Simulation {
         private void OnGoldChanged(int oldVal, int newVal, bool asServer) {
             if (base.IsOwner) {
                 EventBus.Trigger("OnGoldChanged", newVal);
-
-                int gained = newVal - oldVal;
-                if (gained > 0) {
-                    var data = new FloatingTextData(
-                        transform.position + Vector3.up * 2f,
-                        $"+{gained}",
-                        "gold"
-                    );
-                    EventBus.Trigger("OnShowFloatingText", data);
-                }
             }
         }
 

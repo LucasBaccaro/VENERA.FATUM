@@ -1,5 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
+using System.Collections.Generic;
+
 
 public class LostArkCamera : MonoBehaviour
 {
@@ -96,11 +99,46 @@ public class LostArkCamera : MonoBehaviour
 
             if (Mathf.Abs(wheel) > 0.1f)
             {
-                float zoomSpeed = 1f / Mathf.Max(0.1f, zoomTransitionDuration);
-                float scrollDirection = wheel > 0 ? -1 : 1;
-                targetZoomNormalized += scrollDirection * zoomSpeed * Time.deltaTime * 60f;
-                targetZoomNormalized = Mathf.Clamp01(targetZoomNormalized);
+                bool isOverUI = false;
+                if (EventSystem.current != null)
+                {
+                    PointerEventData eventData = new PointerEventData(EventSystem.current);
+                    eventData.position = Mouse.current.position.ReadValue();
+                    List<RaycastResult> results = new List<RaycastResult>();
+                    EventSystem.current.RaycastAll(eventData, results);
+                    
+                    foreach (var res in results)
+                    {
+                        // 1. Si está en la capa UI, bloqueamos 100%
+                        if (res.gameObject.layer == LayerMask.NameToLayer("UI"))
+                        {
+                            isOverUI = true; 
+                            break;
+                        }
+
+                        // 2. Si el objeto tiene un PanelRaycaster (UI Toolkit), bloqueamos
+                        // Aunque esté en capa Default, si el EventSystem lo detecta como hit de UI, bloqueamos.
+                        // Usualmente PanelSettings tiene un PanelRaycaster.
+                        if (res.gameObject.name.Contains("PanelSettings") || res.module is UnityEngine.UIElements.PanelRaycaster)
+                        {
+                            isOverUI = true;
+                            break;
+                        }
+
+                        // Ignoramos explícitamente capas de juego como Ground, Default (si no es PanelSettings), etc.
+                        // El resto de hits (como el Ground) no deberían bloquear el zoom.
+                    }
+                }
+
+                if (!isOverUI)
+                {
+                    float zoomSpeed = 1f / Mathf.Max(0.1f, zoomTransitionDuration);
+                    float scrollDirection = wheel > 0 ? -1 : 1;
+                    targetZoomNormalized += scrollDirection * zoomSpeed * Time.deltaTime * 60f;
+                    targetZoomNormalized = Mathf.Clamp01(targetZoomNormalized);
+                }
             }
+
         }
 
         zoomNormalized = Mathf.Lerp(zoomNormalized, targetZoomNormalized, 1f - Mathf.Exp(-zoomSmooth * Time.deltaTime));

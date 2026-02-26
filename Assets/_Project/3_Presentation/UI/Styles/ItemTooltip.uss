@@ -1,22 +1,22 @@
-/* Main Container */
 .tooltip-main {
     position: absolute;
-    width: 280px;
+    width: 210px;
     background-color: rgba(20, 20, 20, 0.95);
     border-width: 2px;
     border-color: #555;
     border-radius: 4px;
-    padding: 12px;
+    padding: 9px;
     color: #ddd;
-    font-size: 14px;
+    font-size: 11px;
     opacity: 0; /* Hidden by default */
     transition-property: opacity;
     transition-duration: 0.15s;
+    -unity-font-definition: resource("Fonts/CrimsonText-Regular");
 }
 
 /* Header */
 .tooltip-title {
-    font-size: 18px;
+    font-size: 14px;
     -unity-font-style: bold;
     color: white;
     margin-bottom: 2px;
@@ -24,14 +24,14 @@
 }
 
 .tooltip-type {
-    font-size: 12px;
+    font-size: 9px;
     color: #aaa;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     -unity-font-style: italic;
 }
 
 .tooltip-required-level {
-    font-size: 11px;
+    font-size: 9px;
     color: rgb(255, 210, 0);
     -unity-font-style: italic;
     margin-top: 2px;
@@ -44,14 +44,14 @@
 }
 
 .tooltip-armor {
-    font-size: 16px;
+    font-size: 12px;
     -unity-font-style: bold;
     color: #e0e0e0;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
 
 .tooltip-primary-stats {
-    font-size: 14px;
+    font-size: 11px;
     color: #ffd700; /* Goldish for primary stats */
 }
 
@@ -67,14 +67,14 @@
 }
 
 .tooltip-substats-list {
-    font-size: 13px;
+    font-size: 10px;
     color: #8da6b5; /* Blue-grey for magic props */
 }
 
 /* Description */
 .tooltip-description {
-    margin-top: 10px;
-    font-size: 12px;
+    margin-top: 8px;
+    font-size: 9px;
     color: #888;
     white-space: normal;
     -unity-font-style: italic;

@@ -372,6 +372,15 @@ namespace Genesis.Simulation {
             return "";
         }
 
+        public ClassData CurrentClassData {
+            get {
+                if (_currentClassIndex.Value >= 0 && _currentClassIndex.Value < availableClasses.Count) {
+                    return availableClasses[_currentClassIndex.Value];
+                }
+                return null;
+            }
+        }
+
         private void OnFactionChanged(int old, int next, bool asServer) {
             Genesis.Core.EventBus.Trigger("OnPlayerFactionChanged", this);
         }

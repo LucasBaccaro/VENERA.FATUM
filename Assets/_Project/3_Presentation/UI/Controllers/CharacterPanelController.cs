@@ -32,6 +32,9 @@ namespace Genesis.Presentation {
         // Derived stat labels
         private Label _physDmgLabel, _magDmgLabel, _critLabel, _spellCritLabel;
         private Label _healPowerLabel, _evasionLabel, _overpowerLabel;
+        private VisualElement _tabContentCharacter, _tabContentStats;
+        private Button _tabCharacterBtn, _tabStatsBtn;
+        private VisualElement _activeIconCharacter, _activeIconStats;
         // Sub-stat labels
         private Label _hasteLabel, _lifeStealLabel, _penetrationLabel, _blockLabel;
         private Label _armorLabel, _magicResLabel;
@@ -88,10 +91,22 @@ namespace Genesis.Presentation {
             var root = _uiDocument.rootVisualElement;
             root.pickingMode = PickingMode.Ignore;
             _characterPanelWindow = root.Q<VisualElement>("CharacterPanelWindow");
+            
+            // Tabs
+            _tabContentCharacter = root.Q<VisualElement>("TabContentCharacter");
+            _tabContentStats = root.Q<VisualElement>("TabContentStats");
+            _tabCharacterBtn = root.Q<Button>("TabCharacter");
+            _tabStatsBtn = root.Q<Button>("TabStats");
+            _activeIconCharacter = root.Q<VisualElement>("ActiveIconCharacter");
+            _activeIconStats = root.Q<VisualElement>("ActiveIconStats");
+
+            _tabCharacterBtn?.RegisterCallback<ClickEvent>(e => SwitchTab(0));
+            _tabStatsBtn?.RegisterCallback<ClickEvent>(e => SwitchTab(1));
+
             _maxHealthLabel = root.Q<Label>("MaxHealthLabel");
             _maxManaLabel = root.Q<Label>("MaxManaLabel");
             _itemStatsList = root.Q<VisualElement>("ItemStatsList");
-
+            
             // Register slots
             _slotElements[EquipmentSlot.Head] = root.Q<VisualElement>("HeadSlot");
             _slotElements[EquipmentSlot.Shoulders] = root.Q<VisualElement>("ShouldersSlot");
@@ -150,7 +165,23 @@ namespace Genesis.Presentation {
 
             // Hide initially
             _characterPanelWindow.style.display = DisplayStyle.None;
+            SwitchTab(0); // Default tab
             _uiInitialized = true;
+        }
+
+        private void SwitchTab(int index) {
+            if (_tabContentCharacter == null || _tabContentStats == null) return;
+
+            bool isChar = index == 0;
+            _tabContentCharacter.style.display = isChar ? DisplayStyle.Flex : DisplayStyle.None;
+            _tabContentStats.style.display = isChar ? DisplayStyle.None : DisplayStyle.Flex;
+
+            if (_activeIconCharacter != null) _activeIconCharacter.style.display = isChar ? DisplayStyle.Flex : DisplayStyle.None;
+            if (_activeIconStats != null) _activeIconStats.style.display = isChar ? DisplayStyle.None : DisplayStyle.Flex;
+
+            if (_uiInitialized) {
+                Audio.UISoundPlayer.PlayClick();
+            }
         }
 
         private bool TryFindPlayerComponents() {

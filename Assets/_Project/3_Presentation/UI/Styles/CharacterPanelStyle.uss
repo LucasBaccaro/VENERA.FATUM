@@ -10,7 +10,7 @@
     -unity-background-scale-mode: stretch-to-fill;
     left: 10px;
     top: 150px;
-    overflow: hidden;
+    -unity-font-definition: resource("Fonts/CrimsonText-Regular");
 }
 
 /* ScrollView for right page stats */
@@ -116,20 +116,21 @@
     color: #5d4037;
     -unity-font-style: bold;
     -unity-text-align: middle-center;
-    margin-bottom: 1px;
-    margin-top: 2px;
+    margin-bottom: 0px;
+    margin-top: 1px;
     border-bottom-width: 1px;
     border-bottom-color: rgba(93, 64, 55, 0.3);
-    padding-bottom: 1px;
+    padding-bottom: 0px;
 }
 
 .stat-row {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0;
+    margin-bottom: -5px;
     padding: 0 8px;
 }
+
 
 .stat-label {
     font-size: 12px;
@@ -231,4 +232,64 @@
     font-size: 11px;
     color: #2e7d32;
     padding-left: 8px;
+}
+
+/* Tab System */
+.char-tabs-container {
+    position: absolute;
+    left: 100%;
+    top: 50px;
+    width: 65px;
+    height: 300px;
+    margin-left: -5px; /* Slight overlap with main panel */
+}
+
+.char-tab-mask {
+    width: 60px;
+    height: 100px;
+    overflow: hidden;
+    margin-bottom: 2px;
+}
+
+.char-tab {
+    width: 60px;
+    height: 100px;
+    border-width: 0;
+    background-color: transparent;
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+    -unity-background-scale-mode: stretch-to-fill;
+    left: 5px; /* Push the tab to the right to be clipped by the mask */
+}
+
+.char-tab:hover {
+    scale: 1.05;
+}
+
+.character-tab-bg {
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/Panels/Character_tab.png');
+}
+
+.stats-tab-bg {
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/Panels/Stats_tab.png');
+}
+
+.char-tab-active-icon {
+    width: 45px;
+    height: 45px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    -unity-background-scale-mode: scale-to-fit;
+    pointer-events: none;
+}
+
+.character-icon-overlay {
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/Panels/Character_Icon.png');
+}
+
+.stats-icon-overlay {
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/Panels/Stat_Icon.png');
 }

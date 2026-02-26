@@ -1,7 +1,8 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <ui:VisualElement name="DialogueRoot" picking-mode="Ignore" style="position: absolute; width: 100%; height: 100%; justify-content: center; align-items: center;">
+    <ui:Template name="QuestPanel" src="project://database/Assets/_Project/3_Presentation/UI/Views/QuestPanel.uxml" />
+    <ui:VisualElement name="DialogueRoot" picking-mode="Ignore" style="position: absolute; width: 100%; height: 100%; -unity-font-definition: resource(&quot;Fonts/CrimsonText-Regular&quot;);">
         <ui:VisualElement name="DialogueOverlay" style="position: absolute; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: none;"/>
-        <ui:VisualElement name="DialogueWindow" style="width: 500px; background-color: rgba(15, 15, 20, 0.95); border-radius: 8px; border-width: 2px; border-color: rgba(200, 180, 120, 0.5); padding: 20px; display: none;">
+        <ui:VisualElement name="DialogueWindow" style="width: 500px; background-color: rgba(15, 15, 20, 0.95); border-radius: 8px; border-width: 2px; border-color: rgba(200, 180, 120, 0.5); padding: 20px; display: none; position: absolute; left: 50%; top: 50%; translate: -50% -50%;">
             <ui:Label name="NpcNameLabel" text="NPC Name" style="font-size: 18px; -unity-font-style: bold; color: rgb(255, 220, 100); margin-bottom: 10px; -unity-text-align: upper-center;"/>
             <ui:VisualElement style="height: 1px; background-color: rgba(255, 255, 255, 0.15); margin-bottom: 12px;"/>
             <ui:Label name="DialogueText" text="Dialogue text goes here..." style="font-size: 14px; color: rgb(220, 220, 220); white-space: normal; margin-bottom: 16px; min-height: 60px;"/>
@@ -15,5 +16,6 @@
                 <ui:Button name="CloseButton" text="Close" style="width: 120px; height: 35px; background-color: rgb(80, 40, 40); color: white; border-radius: 4px; font-size: 14px; -unity-font-style: bold; border-width: 1px; border-color: rgba(200, 100, 100, 0.4);"/>
             </ui:VisualElement>
         </ui:VisualElement>
+        <ui:Instance template="QuestPanel" />
     </ui:VisualElement>
 </ui:UXML>

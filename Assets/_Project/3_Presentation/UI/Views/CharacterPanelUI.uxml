@@ -1,41 +1,41 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/CharacterPanelStyle.uss?fileID=7433441132597879392&amp;guid=12b6a8f6a708649cda18a6349fbad696&amp;type=3#CharacterPanelStyle"/>
-    <ui:VisualElement name="CharacterPanelWindow" class="character-panel-window">
+    <ui:VisualElement name="CharacterPanelWindow" class="character-panel-window" style="height: 499px;">
         <ui:VisualElement name="LeftPage" class="page-container left-page" style="pointer-events: none;">
             <ui:VisualElement name="EquipmentLayout" class="equipment-layout" style="pointer-events: none;">
-                <ui:VisualElement name="HeadSlot" class="char-item-slot" style="pointer-events: auto;">
+                <ui:VisualElement name="HeadSlot" class="char-item-slot" style="pointer-events: auto; width: 62px; height: 62px; top: 1px; left: 93px;">
                     <ui:VisualElement class="char-item-slot-bg"/>
                     <ui:VisualElement class="char-item-icon"/>
                 </ui:VisualElement>
-                <ui:VisualElement name="ShouldersSlot" class="char-item-slot" style="pointer-events: auto;">
+                <ui:VisualElement name="ShouldersSlot" class="char-item-slot" style="pointer-events: auto; width: 62px; height: 62px; top: 82px; left: 16px;">
                     <ui:VisualElement class="char-item-slot-bg"/>
                     <ui:VisualElement class="char-item-icon"/>
                 </ui:VisualElement>
-                <ui:VisualElement name="ChestSlot" class="char-item-slot" style="pointer-events: auto;">
+                <ui:VisualElement name="ChestSlot" class="char-item-slot" style="pointer-events: auto; top: 82px; left: 93px; height: 62px; width: 62px;">
                     <ui:VisualElement class="char-item-slot-bg"/>
                     <ui:VisualElement class="char-item-icon"/>
                 </ui:VisualElement>
-                <ui:VisualElement name="HandsSlot" class="char-item-slot" style="pointer-events: auto;">
+                <ui:VisualElement name="HandsSlot" class="char-item-slot" style="pointer-events: auto; top: 82px; left: 171px; height: 62px; width: 62px;">
                     <ui:VisualElement class="char-item-slot-bg"/>
                     <ui:VisualElement class="char-item-icon"/>
                 </ui:VisualElement>
-                <ui:VisualElement name="LegsSlot" class="char-item-slot" style="pointer-events: auto;">
+                <ui:VisualElement name="LegsSlot" class="char-item-slot" style="pointer-events: auto; width: 62px; height: 62px; top: 163px; left: 16px;">
                     <ui:VisualElement class="char-item-slot-bg"/>
                     <ui:VisualElement class="char-item-icon"/>
                 </ui:VisualElement>
-                <ui:VisualElement name="BeltSlot" class="char-item-slot" style="pointer-events: auto;">
+                <ui:VisualElement name="BeltSlot" class="char-item-slot" style="pointer-events: auto; width: 62px; height: 62px; top: 164px; left: 94px;">
                     <ui:VisualElement class="char-item-slot-bg"/>
                     <ui:VisualElement class="char-item-icon"/>
                 </ui:VisualElement>
-                <ui:VisualElement name="BootsSlot" class="char-item-slot" style="pointer-events: auto;">
+                <ui:VisualElement name="BootsSlot" class="char-item-slot" style="pointer-events: auto; width: 62px; height: 62px; top: 163px; left: 171px;">
                     <ui:VisualElement class="char-item-slot-bg"/>
                     <ui:VisualElement class="char-item-icon"/>
                 </ui:VisualElement>
-                <ui:VisualElement name="MainHandSlot" class="char-item-slot" style="pointer-events: auto;">
+                <ui:VisualElement name="MainHandSlot" class="char-item-slot" style="pointer-events: auto; width: 62px; height: 62px; top: 330px; left: 58px;">
                     <ui:VisualElement class="char-item-slot-bg"/>
                     <ui:VisualElement class="char-item-icon"/>
                 </ui:VisualElement>
-                <ui:VisualElement name="OffHandSlot" class="char-item-slot" style="pointer-events: auto;">
+                <ui:VisualElement name="OffHandSlot" class="char-item-slot" style="pointer-events: auto; width: 62px; height: 62px; top: 330px; left: 135px;">
                     <ui:VisualElement class="char-item-slot-bg"/>
                     <ui:VisualElement class="char-item-icon"/>
                 </ui:VisualElement>
@@ -51,123 +51,139 @@
         </ui:VisualElement>
         <ui:VisualElement name="RightPage" class="page-container right-page">
             <ui:ScrollView name="StatsScrollView" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden" class="stats-scroll-view">
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="Level" class="stat-label"/>
-                    <ui:Label name="LevelLabel" text="1" class="stat-value"/>
+                <ui:VisualElement name="TabContentCharacter" class="tab-content" style="display: flex;">
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="Level" class="stat-label"/>
+                        <ui:Label name="LevelLabel" text="1" class="stat-value"/>
+                    </ui:VisualElement>
+                    <ui:Label text="Base Stats" class="stats-title"/>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="Max Health" class="stat-label"/>
+                        <ui:Label name="MaxHealthLabel" text="100" class="stat-value"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="Max Mana" class="stat-label"/>
+                        <ui:Label name="MaxManaLabel" text="100" class="stat-value"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="attr-title-row">
+                        <ui:Label text="Attributes" class="stats-title" style="flex-grow: 1;"/>
+                        <ui:Label name="UnspentPointsLabel" text="" class="unspent-points-label"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="STR" class="stat-label"/>
+                        <ui:Label name="StrLabel" text="0" class="stat-value"/>
+                        <ui:Button name="StrPlusBtn" text="+" class="char-attr-plus-btn"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="AGI" class="stat-label"/>
+                        <ui:Label name="AgiLabel" text="0" class="stat-value"/>
+                        <ui:Button name="AgiPlusBtn" text="+" class="char-attr-plus-btn"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="INT" class="stat-label"/>
+                        <ui:Label name="IntLabel" text="0" class="stat-value"/>
+                        <ui:Button name="IntPlusBtn" text="+" class="char-attr-plus-btn"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="WIS" class="stat-label"/>
+                        <ui:Label name="WisLabel" text="0" class="stat-value"/>
+                        <ui:Button name="WisPlusBtn" text="+" class="char-attr-plus-btn"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="CON" class="stat-label"/>
+                        <ui:Label name="ConLabel" text="0" class="stat-value"/>
+                        <ui:Button name="ConPlusBtn" text="+" class="char-attr-plus-btn"/>
+                    </ui:VisualElement>
                 </ui:VisualElement>
-                <ui:Label text="Base Stats" class="stats-title"/>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="Max Health" class="stat-label"/>
-                    <ui:Label name="MaxHealthLabel" text="100" class="stat-value"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="Max Mana" class="stat-label"/>
-                    <ui:Label name="MaxManaLabel" text="100" class="stat-value"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="attr-title-row">
-                    <ui:Label text="Attributes" class="stats-title" style="flex-grow: 1;"/>
-                    <ui:Label name="UnspentPointsLabel" text="" class="unspent-points-label"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="STR" class="stat-label"/>
-                    <ui:Label name="StrLabel" text="0" class="stat-value"/>
-                    <ui:Button name="StrPlusBtn" text="+" class="char-attr-plus-btn"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="AGI" class="stat-label"/>
-                    <ui:Label name="AgiLabel" text="0" class="stat-value"/>
-                    <ui:Button name="AgiPlusBtn" text="+" class="char-attr-plus-btn"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="INT" class="stat-label"/>
-                    <ui:Label name="IntLabel" text="0" class="stat-value"/>
-                    <ui:Button name="IntPlusBtn" text="+" class="char-attr-plus-btn"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="WIS" class="stat-label"/>
-                    <ui:Label name="WisLabel" text="0" class="stat-value"/>
-                    <ui:Button name="WisPlusBtn" text="+" class="char-attr-plus-btn"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="CON" class="stat-label"/>
-                    <ui:Label name="ConLabel" text="0" class="stat-value"/>
-                    <ui:Button name="ConPlusBtn" text="+" class="char-attr-plus-btn"/>
-                </ui:VisualElement>
-                <ui:Label text="Combat Stats" class="stats-title"/>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="Phys Dmg" class="stat-label"/>
-                    <ui:Label name="PhysDmgLabel" text="+0.0%" class="stat-value"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="Magic Dmg" class="stat-label"/>
-                    <ui:Label name="MagDmgLabel" text="+0.0%" class="stat-value"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="Crit" class="stat-label"/>
-                    <ui:Label name="CritLabel" text="0.0%" class="stat-value"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="Spell Crit" class="stat-label"/>
-                    <ui:Label name="SpellCritLabel" text="0.0%" class="stat-value"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="Heal Power" class="stat-label"/>
-                    <ui:Label name="HealPowerLabel" text="+0.0%" class="stat-value"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="Evasion" class="stat-label"/>
-                    <ui:Label name="EvasionLabel" text="0.0%" class="stat-value"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="Overpower" class="stat-label"/>
-                    <ui:Label name="OverpowerLabel" text="0.0%" class="stat-value"/>
-                </ui:VisualElement>
-                <ui:Label text="Sub-Stats" class="stats-title"/>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="Haste" class="stat-label"/>
-                    <ui:Label name="HasteLabel" text="+0.0%" class="stat-value"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="Life Steal" class="stat-label"/>
-                    <ui:Label name="LifeStealLabel" text="0.0%" class="stat-value"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="Penetration" class="stat-label"/>
-                    <ui:Label name="PenetrationLabel" text="0.0%" class="stat-value"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="Block" class="stat-label"/>
-                    <ui:Label name="BlockLabel" text="0" class="stat-value"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="Armor" class="stat-label"/>
-                    <ui:Label name="ArmorLabel" text="0" class="stat-value"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="Magic Res" class="stat-label"/>
-                    <ui:Label name="MagicResLabel" text="0" class="stat-value"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="Move Speed" class="stat-label"/>
-                    <ui:Label name="MoveSpeedLabel" text="+0.0%" class="stat-value"/>
-                </ui:VisualElement>
-                <ui:Label text="World Stats" class="stats-title"/>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="Loot Luck" class="stat-label"/>
-                    <ui:Label name="LootLuckLabel" text="+0.0%" class="stat-value"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="Lockpicking" class="stat-label"/>
-                    <ui:Label name="LockpickingLabel" text="0" class="stat-value"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="Perception" class="stat-label"/>
-                    <ui:Label name="PerceptionLabel" text="0" class="stat-value"/>
+                <ui:VisualElement name="TabContentStats" class="tab-content" style="display: none;">
+                    <ui:Label text="Combat Stats" class="stats-title"/>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="Phys Dmg" class="stat-label"/>
+                        <ui:Label name="PhysDmgLabel" text="+0.0%" class="stat-value"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="Magic Dmg" class="stat-label"/>
+                        <ui:Label name="MagDmgLabel" text="+0.0%" class="stat-value"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="Crit" class="stat-label"/>
+                        <ui:Label name="CritLabel" text="0.0%" class="stat-value"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="Spell Crit" class="stat-label"/>
+                        <ui:Label name="SpellCritLabel" text="0.0%" class="stat-value"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="Heal Power" class="stat-label"/>
+                        <ui:Label name="HealPowerLabel" text="+0.0%" class="stat-value"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="Evasion" class="stat-label"/>
+                        <ui:Label name="EvasionLabel" text="0.0%" class="stat-value"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="Overpower" class="stat-label"/>
+                        <ui:Label name="OverpowerLabel" text="0.0%" class="stat-value"/>
+                    </ui:VisualElement>
+                    <ui:Label text="Sub-Stats" class="stats-title"/>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="Haste" class="stat-label"/>
+                        <ui:Label name="HasteLabel" text="+0.0%" class="stat-value"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="Life Steal" class="stat-label"/>
+                        <ui:Label name="LifeStealLabel" text="0.0%" class="stat-value"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="Penetration" class="stat-label"/>
+                        <ui:Label name="PenetrationLabel" text="0.0%" class="stat-value"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="Block" class="stat-label"/>
+                        <ui:Label name="BlockLabel" text="0" class="stat-value"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="Armor" class="stat-label"/>
+                        <ui:Label name="ArmorLabel" text="0" class="stat-value"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="Magic Res" class="stat-label"/>
+                        <ui:Label name="MagicResLabel" text="0" class="stat-value"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="Move Speed" class="stat-label"/>
+                        <ui:Label name="MoveSpeedLabel" text="+0.0%" class="stat-value"/>
+                    </ui:VisualElement>
+                    <ui:Label text="World Stats" class="stats-title"/>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="Loot Luck" class="stat-label"/>
+                        <ui:Label name="LootLuckLabel" text="+0.0%" class="stat-value"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="Lockpicking" class="stat-label"/>
+                        <ui:Label name="LockpickingLabel" text="0" class="stat-value"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="Perception" class="stat-label"/>
+                        <ui:Label name="PerceptionLabel" text="0" class="stat-value"/>
+                    </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:ScrollView name="ItemStatsScroll" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden" class="item-stats-container">
                     <ui:VisualElement name="ItemStatsList"/>
                 </ui:ScrollView>
             </ui:ScrollView>
+        </ui:VisualElement>
+        <ui:VisualElement name="CharTabsContainer" class="char-tabs-container" style="top: 3px; left: 616px; width: 60px; height: 286px;">
+            <ui:VisualElement class="char-tab-mask" style="width: 86px;">
+                <ui:Button name="TabCharacter" class="char-tab character-tab-bg" style="position: absolute; top: 26px; left: -62px; width: 116px; height: 63px;">
+                    <ui:VisualElement name="ActiveIconCharacter" class="char-tab-active-icon character-icon-overlay" style="top: 33px; left: 85px; height: 60px; width: 31px;"/>
+                </ui:Button>
+            </ui:VisualElement>
+            <ui:VisualElement class="char-tab-mask" style="width: 89px; position: absolute; top: 88px; left: -1px;">
+                <ui:Button name="TabStats" text="" class="char-tab stats-tab-bg" style="width: 116px; height: 63px; position: absolute; top: 5px; left: -61px;">
+                    <ui:VisualElement name="ActiveIconStats" class="char-tab-active-icon stats-icon-overlay" style="display: flex; top: 31px; left: 85px; height: 46px; width: 66px;"/>
+                </ui:Button>
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

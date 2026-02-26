@@ -1,12 +1,12 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/MainStyle.uss?fileID=7433441132597879392&amp;guid=cf8f1d6e307ab41bb9434dc2ec321cee&amp;type=3#MainStyle"/>
-    <ui:VisualElement name="HUD" picking-mode="Ignore" style="flex-grow: 1; width: 100%; height: 100%; position: absolute;">
+    <ui:VisualElement name="HUD" picking-mode="Ignore" style="flex-grow: 1; width: 100%; height: 100%; position: absolute; -unity-font-definition: resource(&quot;Fonts/CrimsonText-Regular&quot;);">
         <ui:VisualElement name="PlayerHUD" picking-mode="Ignore" class="player-hud-wrapper" style="width: 100%; height: 100%; align-items: stretch; display: flex;">
             <ui:VisualElement name="HUD_Base" picking-mode="Ignore" class="player-hud-base" style="width: 387px; height: 138px;">
                 <ui:VisualElement name="PortraitContainer" class="portrait-container">
                     <ui:VisualElement name="PortraitIcon" class="portrait-icon" style="background-image: url(&quot;project://database/Assets/_Project/5_Content/Resources/Icons/Abilities/Mago/Bola de Fuego.png&quot;); opacity: 0;"/>
                 </ui:VisualElement>
-                <ui:VisualElement name="LevelContainer" class="level-container" style="bottom: -15px; left: 6px; height: 56px; width: 58px;">
+                <ui:VisualElement name="LevelContainer" picking-mode="Ignore" class="level-container" style="bottom: -15px; left: 6px; height: 56px; width: 58px;">
                     <ui:Label text="1" name="LevelLabel" class="level-label"/>
                 </ui:VisualElement>
                 <ui:Label text="" name="PlayerName" class="player-name-label" style="top: 17px; left: 136px; width: 170px; font-size: 30px;"/>
@@ -38,8 +38,8 @@
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="NotificationContainer" style="position: absolute; top: 25%; left: 0; width: 100%; height: 50px; align-items: center; justify-content: center; display: flex; pointer-events: none;">
-            <ui:Label text="Error Message" name="NotificationLabel" style="font-size: 24px; color: rgb(255, 69, 69); -unity-font-style: bold; -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(0, 0, 0); opacity: 0; transition-property: opacity; transition-duration: 0.3s;"/>
+        <ui:VisualElement name="NotificationContainer" picking-mode="Ignore" style="position: absolute; top: 25%; left: 0; width: 100%; height: 50px; align-items: center; justify-content: center; display: flex; pointer-events: none;">
+            <ui:Label text="Error Message" name="NotificationLabel" picking-mode="Ignore" style="font-size: 24px; color: rgb(255, 69, 69); -unity-font-style: bold; -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(0, 0, 0); opacity: 0; transition-property: opacity; transition-duration: 0.3s;"/>
         </ui:VisualElement>
         <ui:VisualElement name="TargetFrame" class="target-frame-container" picking-mode="Ignore" style="position: absolute; top: 15px; left: 50%; width: 280px; translate: -50% 0; height: 94px; display: flex;">
             <ui:Label text="Target Name" name="TargetName" class="target-name-label"/>

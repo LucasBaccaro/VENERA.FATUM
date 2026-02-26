@@ -1,3 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <ui:VisualElement name="InteractionPromptRoot" picking-mode="Ignore" style="flex-grow: 1; position: absolute; width: 100%; height: 100%;"/>
+    <ui:VisualElement name="InteractionPromptRoot" picking-mode="Ignore" style="flex-grow: 1; position: absolute; width: 100%; height: 100%; -unity-font-definition: resource(&quot;Fonts/CrimsonText-Regular&quot;);">
+        <ui:VisualElement name="InteractionPromptContainer" style="position: absolute; bottom: 180px; left: 70%; translate: -50% 0; background-color: rgba(0, 0, 0, 0); border-radius: 6px; padding: 8px 16px; display: none;">
+            <ui:Label name="InteractionPromptLabel" text="[E] Interact" style="color: white; font-size: 14px; -unity-font-style: bold; -unity-text-align: middle-center;"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
 </ui:UXML>

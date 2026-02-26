@@ -87,6 +87,11 @@
 Label {
     color: white;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    -unity-font-definition: resource("Fonts/CrimsonText-Regular");
+}
+
+Button {
+    -unity-font-definition: resource("Fonts/CrimsonText-Regular");
 }
 
 .target-frame-container {
@@ -447,25 +452,61 @@ Label {
 
 .nameplate-healthbar-root {
     position: absolute;
+    flex-direction: row-reverse; /* Added last draws on top, and appears on left */
     align-items: center;
-    justify-content: center;
     pointer-events: none;
     translate: -50% -100%;
 }
 
+.nameplate-bars-container {
+    flex-direction: column;
+    justify-content: center;
+}
+
 .nameplate-healthbar-bg {
-    width: 80px;
-    height: 6px;
-    background-color: rgba(0, 0, 0, 0.6);
-    border-radius: 3px;
-    overflow: hidden;
+    width: 100px;
+    height: 12px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 2px;
+    overflow: visible; /* Needed for ticks to potentially overlap or be strictly internal */
     border-width: 1px;
-    border-color: rgba(0, 0, 0, 0.4);
+    border-color: rgba(0, 0, 0, 0.5);
+    margin-bottom: 0px; /* Removed gap */
 }
 
 .nameplate-healthbar-fill {
     width: 100%;
     height: 100%;
-    background-color: rgb(76, 175, 80);
-    border-radius: 2px;
+    background-color: rgb(220, 40, 40);
+}
+
+.nameplate-manabar-bg {
+    width: 100px;
+    height: 6px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 1px;
+    overflow: hidden;
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.5);
+}
+
+.nameplate-manabar-fill {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(40, 100, 220);
+}
+
+.nameplate-class-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: -8px; /* Reducido de -16px a -8px para que no pise tanto */
+    -unity-background-scale-mode: scale-to-fit;
+    z-index: 10;
+}
+
+.nameplate-hp-tick {
+    position: absolute;
+    width: 2px;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
 }

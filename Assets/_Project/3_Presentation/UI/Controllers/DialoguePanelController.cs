@@ -23,6 +23,17 @@ namespace Genesis.Presentation.UI {
         private Button _completeButton;
         private Button _closeButton;
 
+        [Header("Quest Window")]
+        private VisualElement _questWindow;
+        private Label _questNpcName;
+        private Label _questTitle;
+        private Label _questDescription;
+        private VisualElement _questRewardsList;
+        private VisualElement _questRewardsSection;
+        private Button _questAcceptButton;
+        private Button _questCompleteButton;
+        private Button _questCloseButton;
+
         private string _currentNpcId;
         private QuestData _pendingQuest;
 
@@ -62,6 +73,23 @@ namespace Genesis.Presentation.UI {
             if (_completeButton != null) _completeButton.clicked += OnCompleteClicked;
             if (_closeButton != null) _closeButton.clicked += OnCloseClicked;
 
+            // Quest Window Initialization
+            _questWindow = root.Q<VisualElement>("QuestWindow");
+            if (_questWindow != null) {
+                _questNpcName = _questWindow.Q<Label>("NpcName");
+                _questTitle = _questWindow.Q<Label>("QuestTitle");
+                _questDescription = _questWindow.Q<Label>("QuestDescription");
+                _questRewardsSection = _questWindow.Q<VisualElement>("RewardsSection");
+                _questRewardsList = _questWindow.Q<VisualElement>("RewardsList");
+                _questAcceptButton = _questWindow.Q<Button>("AcceptButton");
+                _questCompleteButton = _questWindow.Q<Button>("CompleteButton");
+                _questCloseButton = _questWindow.Q<Button>("CloseButton");
+
+                if (_questAcceptButton != null) _questAcceptButton.clicked += OnAcceptClicked;
+                if (_questCompleteButton != null) _questCompleteButton.clicked += OnCompleteClicked;
+                if (_questCloseButton != null) _questCloseButton.clicked += OnCloseClicked;
+            }
+
             Hide();
         }
 
@@ -72,6 +100,7 @@ namespace Genesis.Presentation.UI {
             if (questMgr == null) return;
 
             _npcNameLabel.text = displayName;
+            if (_questNpcName != null) _questNpcName.text = displayName;
 
             // Priority 1: Quest ready to turn in at this NPC
             QuestData turnInQuest = FindTurnInQuest(questMgr, npcId);
@@ -109,49 +138,81 @@ namespace Genesis.Presentation.UI {
 
         private void ShowOffer(QuestData quest) {
             _pendingQuest = quest;
-            _dialogueText.text = quest.DialogueOffer;
-            ShowRewards(quest);
-
-            _acceptButton.style.display = DisplayStyle.Flex;
-            _completeButton.style.display = DisplayStyle.None;
-
-            Show();
+            
+            if (_questWindow != null) {
+                _questTitle.text = quest.QuestName;
+                _questDescription.text = quest.DialogueOffer;
+                ShowRewards(quest, true);
+                _questAcceptButton.style.display = DisplayStyle.Flex;
+                _questCompleteButton.style.display = DisplayStyle.None;
+                Show(true);
+            } else {
+                _dialogueText.text = quest.DialogueOffer;
+                ShowRewards(quest, false);
+                _acceptButton.style.display = DisplayStyle.Flex;
+                _completeButton.style.display = DisplayStyle.None;
+                Show(false);
+            }
         }
 
         private void ShowTurnIn(QuestData quest) {
             _pendingQuest = quest;
-            _dialogueText.text = quest.DialogueComplete;
-            ShowRewards(quest);
 
-            _acceptButton.style.display = DisplayStyle.None;
-            _completeButton.style.display = DisplayStyle.Flex;
-
-            Show();
+            if (_questWindow != null) {
+                _questTitle.text = quest.QuestName;
+                _questDescription.text = quest.DialogueComplete;
+                ShowRewards(quest, true);
+                _questAcceptButton.style.display = DisplayStyle.None;
+                _questCompleteButton.style.display = DisplayStyle.Flex;
+                Show(true);
+            } else {
+                _dialogueText.text = quest.DialogueComplete;
+                ShowRewards(quest, false);
+                _acceptButton.style.display = DisplayStyle.None;
+                _completeButton.style.display = DisplayStyle.Flex;
+                Show(false);
+            }
         }
 
         private void ShowInProgress(QuestData quest) {
             _pendingQuest = null;
-            _dialogueText.text = quest.DialogueInProgress;
-            HideRewards();
-
-            _acceptButton.style.display = DisplayStyle.None;
-            _completeButton.style.display = DisplayStyle.None;
-
-            Show();
+            if (_questWindow != null) {
+                _questTitle.text = quest.QuestName;
+                _questDescription.text = quest.DialogueInProgress;
+                HideRewards();
+                _questAcceptButton.style.display = DisplayStyle.None;
+                _questCompleteButton.style.display = DisplayStyle.None;
+                Show(true);
+            } else {
+                _dialogueText.text = quest.DialogueInProgress;
+                HideRewards();
+                _acceptButton.style.display = DisplayStyle.None;
+                _completeButton.style.display = DisplayStyle.None;
+                Show(false);
+            }
         }
 
         private void ShowLevelLocked(QuestData quest, int playerLevel) {
             _pendingQuest = null;
-            _dialogueText.text = $"I have a mission for you, but you're not ready yet.\n\n" +
+            string text = $"I have a mission for you, but you're not ready yet.\n\n" +
                 $"\"{quest.QuestName}\" requires Level {quest.RequiredLevel}.\n" +
                 $"Your current level: {playerLevel}.\n\n" +
                 $"Come back when you're stronger.";
-            HideRewards();
 
-            _acceptButton.style.display = DisplayStyle.None;
-            _completeButton.style.display = DisplayStyle.None;
-
-            Show();
+            if (_questWindow != null) {
+                _questTitle.text = quest.QuestName;
+                _questDescription.text = text;
+                HideRewards();
+                _questAcceptButton.style.display = DisplayStyle.None;
+                _questCompleteButton.style.display = DisplayStyle.None;
+                Show(true);
+            } else {
+                _dialogueText.text = text;
+                HideRewards();
+                _acceptButton.style.display = DisplayStyle.None;
+                _completeButton.style.display = DisplayStyle.None;
+                Show(false);
+            }
         }
 
         private void ShowIdle(string npcId) {
@@ -159,25 +220,35 @@ namespace Genesis.Presentation.UI {
 
             // Try to find NpcData for idle dialogue
             NpcData npcData = FindNpcData(npcId);
-            _dialogueText.text = npcData != null && !string.IsNullOrEmpty(npcData.IdleDialogue)
+            string text = npcData != null && !string.IsNullOrEmpty(npcData.IdleDialogue)
                 ? npcData.IdleDialogue
                 : "...";
-            HideRewards();
 
-            _acceptButton.style.display = DisplayStyle.None;
-            _completeButton.style.display = DisplayStyle.None;
-
-            Show();
+            if (_questWindow != null) {
+                _questTitle.text = npcData != null ? npcData.DisplayName : "NPC";
+                _questDescription.text = text;
+                HideRewards();
+                _questAcceptButton.style.display = DisplayStyle.None;
+                _questCompleteButton.style.display = DisplayStyle.None;
+                Show(true);
+            } else {
+                _dialogueText.text = text;
+                HideRewards();
+                _acceptButton.style.display = DisplayStyle.None;
+                _completeButton.style.display = DisplayStyle.None;
+                Show(false);
+            }
         }
 
-        private void ShowRewards(QuestData quest) {
-            if (_rewardsList == null || _rewardsContainer == null) return;
+        private void ShowRewards(QuestData quest, bool isQuestWindow) {
+            var list = isQuestWindow ? _questRewardsList : _rewardsList;
+            var container = isQuestWindow ? _questRewardsSection : _rewardsContainer;
 
-            _rewardsList.Clear();
-            
-            // Set rewards list to wrap for grid-like behavior
-            _rewardsList.style.flexDirection = FlexDirection.Row;
-            _rewardsList.style.flexWrap = Wrap.Wrap;
+            if (list == null || container == null) return;
+
+            list.Clear();
+            list.style.flexDirection = FlexDirection.Row;
+            list.style.flexWrap = Wrap.Wrap;
             
             bool hasRewards = false;
 
@@ -264,15 +335,15 @@ namespace Genesis.Presentation.UI {
 
                 rewardEntry.Add(iconContainer);
                 rewardEntry.Add(nameLabel);
-                _rewardsList.Add(rewardEntry);
+                list.Add(rewardEntry);
             }
 
-            _rewardsContainer.style.display = hasRewards ? DisplayStyle.Flex : DisplayStyle.None;
+            container.style.display = hasRewards ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
         private void HideRewards() {
-            if (_rewardsContainer != null)
-                _rewardsContainer.style.display = DisplayStyle.None;
+            if (_rewardsContainer != null) _rewardsContainer.style.display = DisplayStyle.None;
+            if (_questRewardsSection != null) _questRewardsSection.style.display = DisplayStyle.None;
         }
 
         // ═══════════════════════════════════════════════════════
@@ -309,15 +380,24 @@ namespace Genesis.Presentation.UI {
         // SHOW / HIDE
         // ═══════════════════════════════════════════════════════
 
-        private void Show() {
+        private void Show(bool isQuest = false) {
             if (_overlay != null) _overlay.style.display = DisplayStyle.Flex;
-            if (_window != null) _window.style.display = DisplayStyle.Flex;
+            
+            if (isQuest) {
+                if (_questWindow != null) _questWindow.style.display = DisplayStyle.Flex;
+                if (_window != null) _window.style.display = DisplayStyle.None;
+            } else {
+                if (_window != null) _window.style.display = DisplayStyle.Flex;
+                if (_questWindow != null) _questWindow.style.display = DisplayStyle.None;
+            }
+            
             Audio.UISoundPlayer.PlayOpen();
         }
 
         private void Hide() {
             if (_overlay != null) _overlay.style.display = DisplayStyle.None;
             if (_window != null) _window.style.display = DisplayStyle.None;
+            if (_questWindow != null) _questWindow.style.display = DisplayStyle.None;
             _pendingQuest = null;
             Audio.UISoundPlayer.PlayClose();
         }

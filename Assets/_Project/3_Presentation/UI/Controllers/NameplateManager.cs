@@ -31,6 +31,10 @@ namespace Genesis.Presentation.UI {
             // Health bar (positioned above head)
             public VisualElement healthBarRoot;
             public VisualElement healthBarFill;
+            public VisualElement manaBarFill;
+            public VisualElement classIcon;
+            public VisualElement hpTickContainer;
+            public float lastMaxHealth;
         }
 
         private List<NameplateData> _activeNameplates = new List<NameplateData>();
@@ -153,11 +157,24 @@ namespace Genesis.Presentation.UI {
 
             _container.Add(nameplateRoot);
 
-            // --- Health bar (created programmatically, positioned above head) ---
+            // --- Custom Health/Mana bar with Class Icon ---
             var healthBarRoot = new VisualElement();
             healthBarRoot.AddToClassList("nameplate-healthbar-root");
             healthBarRoot.pickingMode = PickingMode.Ignore;
 
+            // 1. Bars Container
+            var barsContainer = new VisualElement();
+            barsContainer.AddToClassList("nameplate-bars-container");
+            barsContainer.pickingMode = PickingMode.Ignore;
+            healthBarRoot.Add(barsContainer);
+
+            // 2. Class Icon (Added last to render on top of bars)
+            var classIcon = new VisualElement();
+            classIcon.AddToClassList("nameplate-class-icon");
+            classIcon.pickingMode = PickingMode.Ignore;
+            healthBarRoot.Add(classIcon);
+
+            // Health Bar
             var healthBarBg = new VisualElement();
             healthBarBg.AddToClassList("nameplate-healthbar-bg");
             healthBarBg.pickingMode = PickingMode.Ignore;
@@ -166,8 +183,28 @@ namespace Genesis.Presentation.UI {
             healthBarFill.AddToClassList("nameplate-healthbar-fill");
             healthBarFill.pickingMode = PickingMode.Ignore;
 
+            var hpTickContainer = new VisualElement();
+            hpTickContainer.style.position = Position.Absolute;
+            hpTickContainer.style.width = Length.Percent(100);
+            hpTickContainer.style.height = Length.Percent(100);
+            hpTickContainer.pickingMode = PickingMode.Ignore;
+
             healthBarBg.Add(healthBarFill);
-            healthBarRoot.Add(healthBarBg);
+            healthBarBg.Add(hpTickContainer);
+            barsContainer.Add(healthBarBg);
+
+            // Mana Bar
+            var manaBarBg = new VisualElement();
+            manaBarBg.AddToClassList("nameplate-manabar-bg");
+            manaBarBg.pickingMode = PickingMode.Ignore;
+
+            var manaBarFill = new VisualElement();
+            manaBarFill.AddToClassList("nameplate-manabar-fill");
+            manaBarFill.pickingMode = PickingMode.Ignore;
+
+            manaBarBg.Add(manaBarFill);
+            barsContainer.Add(manaBarBg);
+
             _container.Add(healthBarRoot);
 
             _activeNameplates.Add(new NameplateData {
@@ -176,7 +213,11 @@ namespace Genesis.Presentation.UI {
                 nameElement = nameplateRoot,
                 label = label,
                 healthBarRoot = healthBarRoot,
-                healthBarFill = healthBarFill
+                healthBarFill = healthBarFill,
+                manaBarFill = manaBarFill,
+                classIcon = classIcon,
+                hpTickContainer = hpTickContainer,
+                lastMaxHealth = -1
             });
         }
 
@@ -184,7 +225,7 @@ namespace Genesis.Presentation.UI {
             Vector3 feetPos = data.player.transform.position;
             Vector3 headPos = feetPos + Vector3.up * _headHeight;
 
-            // Visibility check (use head pos since it's higher)
+            // Visibility check
             Vector3 viewportPos = _mainCamera.WorldToViewportPoint(headPos);
             bool onScreen = viewportPos.z > 0 && viewportPos.x >= 0 && viewportPos.x <= 1 && viewportPos.y >= 0 && viewportPos.y <= 1;
 
@@ -195,11 +236,6 @@ namespace Genesis.Presentation.UI {
                 return;
             }
 
-            // Update name text
-            if (data.label != null && data.label.text != displayName) {
-                data.label.text = displayName;
-            }
-
             data.nameElement.style.display = DisplayStyle.Flex;
             data.healthBarRoot.style.display = DisplayStyle.Flex;
 
@@ -208,35 +244,65 @@ namespace Genesis.Presentation.UI {
             data.nameElement.style.left = feetPanel.x;
             data.nameElement.style.top = feetPanel.y;
 
-            // Position health bar above head
+            // Position health bar above head - shifted more up as requested
             Vector2 headPanel = RuntimePanelUtils.CameraTransformWorldToPanel(_container.panel, headPos, _mainCamera);
             data.healthBarRoot.style.left = headPanel.x;
-            data.healthBarRoot.style.top = headPanel.y;
+            data.healthBarRoot.style.top = headPanel.y - 20f; 
 
-            // Update health bar fill
-            UpdateHealthBar(data);
+            // Update bar fills and icon
+            UpdateOverheadBars(data);
         }
 
-        private void UpdateHealthBar(NameplateData data) {
-            if (data.healthBarFill == null) return;
-
+        private void UpdateOverheadBars(NameplateData data) {
             if (data.stats == null) {
                 data.stats = data.player.GetComponent<PlayerStats>();
                 if (data.stats == null) return;
             }
 
-            float max = data.stats.MaxHealth;
-            float ratio = max > 0f ? Mathf.Clamp01(data.stats.CurrentHealth / max) : 1f;
-            data.healthBarFill.style.width = new Length(ratio * 100f, LengthUnit.Percent);
+            // Health Fill
+            float maxHp = data.stats.MaxHealth;
+            float hpRatio = maxHp > 0f ? Mathf.Clamp01(data.stats.CurrentHealth / maxHp) : 1f;
+            data.healthBarFill.style.width = new Length(hpRatio * 100f, LengthUnit.Percent);
 
-            // Color: green > yellow > red
-            Color barColor;
-            if (ratio > 0.5f) {
-                barColor = Color.Lerp(new Color(1f, 0.85f, 0f), new Color(0.3f, 0.69f, 0.31f), (ratio - 0.5f) * 2f);
-            } else {
-                barColor = Color.Lerp(new Color(0.9f, 0.2f, 0.2f), new Color(1f, 0.85f, 0f), ratio * 2f);
+            // Mana Fill
+            float maxMp = data.stats.MaxMana;
+            float mpRatio = maxMp > 0f ? Mathf.Clamp01(data.stats.CurrentMana / maxMp) : 1f;
+            if (data.manaBarFill != null) {
+                data.manaBarFill.style.width = new Length(mpRatio * 100f, LengthUnit.Percent);
             }
-            data.healthBarFill.style.backgroundColor = barColor;
+
+            // Class Icon
+            if (data.classIcon != null) {
+                var classData = data.player.CurrentClassData;
+                if (classData != null && classData.ClassIcon != null) {
+                    data.classIcon.style.backgroundImage = new StyleBackground(classData.ClassIcon);
+                    data.classIcon.style.display = DisplayStyle.Flex;
+                } else {
+                    data.classIcon.style.display = DisplayStyle.None;
+                }
+            }
+
+            // HP Ticks (every 10 HP)
+            if (Mathf.Abs(data.lastMaxHealth - maxHp) > 0.1f) {
+                data.lastMaxHealth = maxHp;
+                UpdateHPTicks(data, maxHp);
+            }
+        }
+
+        private void UpdateHPTicks(NameplateData data, float maxHp) {
+            if (data.hpTickContainer == null) return;
+            data.hpTickContainer.Clear();
+
+            int tickCount = Mathf.FloorToInt(maxHp / 10f);
+            if (tickCount <= 0 || tickCount > 100) return; // Limit ticks sanity check
+
+            for (int i = 1; i < tickCount; i++) {
+                var tick = new VisualElement();
+                tick.AddToClassList("nameplate-hp-tick");
+                float posPercent = (i * 10f / maxHp) * 100f;
+                tick.style.left = new Length(posPercent, LengthUnit.Percent);
+                data.hpTickContainer.Add(tick);
+            }
         }
     }
 }

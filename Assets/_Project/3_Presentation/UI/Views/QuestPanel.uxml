@@ -1,0 +1,19 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/QuestStyle.uss?fileID=7433441132597879392&amp;guid=0f3c115f68a25404c9a97b52a636209d&amp;type=3#QuestStyle"/>
+    <ui:VisualElement name="QuestWindow" class="quest-window" style="display: flex; width: 389px; -unity-font-definition: resource(&quot;Fonts/CrimsonText-Regular&quot;);">
+        <ui:Label name="NpcName" text="NPC Name" style="color: rgb(245, 214, 151); -unity-text-align: middle-center; font-size: 13px; margin-bottom: -4px; -unity-font-style: normal; position: absolute; top: 4px; left: 82px; width: 197px;"/>
+        <ui:Label name="QuestTitle" text="Mission Name" class="quest-title" style="color: rgb(84, 48, 33); -unity-text-align: middle-left; font-size: 18px; text-shadow: 0 0 1px rgb(0, 0, 0);"/>
+        <ui:ScrollView vertical-scroller-visibility="Hidden" style="flex-grow: 1;">
+            <ui:Label name="QuestDescription" text="Mission details and dialogue go here..." class="quest-description" style="color: rgb(115, 64, 36); -unity-font-style: normal; font-size: 17px;"/>
+            <ui:VisualElement name="RewardsSection" class="rewards-section">
+                <ui:VisualElement name="RewardsList" class="rewards-list"/>
+            </ui:VisualElement>
+            <ui:Label text="Rewards:" class="rewards-title" style="color: rgb(70, 38, 19); -unity-font-definition: resource(&quot;Fonts/CrimsonText-Regular&quot;);"/>
+        </ui:ScrollView>
+        <ui:VisualElement name="QuestButtonContainer" class="quest-button-container" style="-unity-text-align: upper-left; position: absolute; top: 453px; left: 44px; width: 300px;">
+            <ui:Button name="AcceptButton" text="Accept" class="quest-button" style="display: none; color: rgb(84, 38, 23); font-size: 14px; width: 120px; height: 30px;"/>
+            <ui:Button name="CompleteButton" text="Complete" class="quest-button" style="display: none; color: rgb(84, 38, 23); font-size: 14px; width: 120px; height: 30px;"/>
+            <ui:Button name="CloseButton" text="Close" class="quest-button" style="color: rgb(84, 38, 23); width: 120px; height: 30px; font-size: 14px;"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

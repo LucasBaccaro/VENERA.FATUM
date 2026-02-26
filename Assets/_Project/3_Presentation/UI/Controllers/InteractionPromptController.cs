@@ -10,22 +10,56 @@ namespace Genesis.Presentation.UI {
 
         private Label _promptLabel;
         private VisualElement _promptContainer;
+        private GameObject _currentTarget;
+        private Camera _mainCamera;
 
         private void Awake() {
             if (_uiDocument == null)
                 _uiDocument = GetComponent<UIDocument>();
+            _mainCamera = Camera.main;
         }
 
         private void OnEnable() {
             EventBus.Subscribe<string>("OnInteractionPromptChanged", OnPromptChanged);
+            EventBus.Subscribe<GameObject>("OnNearestInteractableChanged", OnTargetChanged);
         }
 
         private void OnDisable() {
             EventBus.Unsubscribe<string>("OnInteractionPromptChanged", OnPromptChanged);
+            EventBus.Unsubscribe<GameObject>("OnNearestInteractableChanged", OnTargetChanged);
         }
 
         private void Start() {
             InitializeUI();
+        }
+
+        private void Update() {
+            if (_currentTarget == null || _promptContainer == null || _promptContainer.style.display == DisplayStyle.None)
+                return;
+
+            UpdatePosition();
+        }
+
+        private void UpdatePosition() {
+            if (_mainCamera == null) _mainCamera = Camera.main;
+            if (_mainCamera == null) return;
+
+            // Use the target's pivot (feet)
+            Vector3 worldPos = _currentTarget.transform.position;
+            
+            // Convert world to panel space
+            Vector2 panelPos = RuntimePanelUtils.CameraTransformWorldToPanel(
+                _promptContainer.panel, 
+                worldPos, 
+                _mainCamera
+            );
+
+            // Update container style to be centered on the feet/pivot
+            _promptContainer.style.left = panelPos.x;
+            _promptContainer.style.top = panelPos.y; 
+            
+            // Reset fixed positioning from UXML
+            _promptContainer.style.bottom = StyleKeyword.Null;
         }
 
         private void InitializeUI() {
@@ -36,37 +70,21 @@ namespace Genesis.Presentation.UI {
             _promptContainer = root.Q<VisualElement>("InteractionPromptContainer");
             _promptLabel = root.Q<Label>("InteractionPromptLabel");
 
-            // Create UI elements if they don't exist in the UXML
-            if (_promptContainer == null) {
-                _promptContainer = new VisualElement();
-                _promptContainer.name = "InteractionPromptContainer";
+            if (_promptContainer != null) {
                 _promptContainer.style.position = Position.Absolute;
-                _promptContainer.style.bottom = 180;
-                _promptContainer.style.left = Length.Percent(50);
+                // Center horizontally (-50%) and start vertically from the point (0%)
+                // If the pivot is at the center of the object, this will put it at its "feet".
                 _promptContainer.style.translate = new Translate(Length.Percent(-50), 0);
-                _promptContainer.style.backgroundColor = new Color(0, 0, 0, 0.7f);
-                _promptContainer.style.borderTopLeftRadius = 6;
-                _promptContainer.style.borderTopRightRadius = 6;
-                _promptContainer.style.borderBottomLeftRadius = 6;
-                _promptContainer.style.borderBottomRightRadius = 6;
-                _promptContainer.style.paddingTop = 8;
-                _promptContainer.style.paddingBottom = 8;
-                _promptContainer.style.paddingLeft = 16;
-                _promptContainer.style.paddingRight = 16;
-                _promptContainer.style.display = DisplayStyle.None;
-
-                _promptLabel = new Label("Press E");
-                _promptLabel.name = "InteractionPromptLabel";
-                _promptLabel.style.color = Color.white;
-                _promptLabel.style.fontSize = 14;
-                _promptLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
-                _promptLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
-
-                _promptContainer.Add(_promptLabel);
-                root.Add(_promptContainer);
             }
 
             _promptContainer.style.display = DisplayStyle.None;
+        }
+
+        private void OnTargetChanged(GameObject target) {
+            _currentTarget = target;
+            if (_currentTarget != null) {
+                UpdatePosition();
+            }
         }
 
         private void OnPromptChanged(string prompt) {
@@ -77,6 +95,7 @@ namespace Genesis.Presentation.UI {
             } else {
                 _promptLabel.text = $"[E] {prompt}";
                 _promptContainer.style.display = DisplayStyle.Flex;
+                UpdatePosition();
             }
         }
     }

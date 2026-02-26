@@ -1,0 +1,81 @@
+/* ═══════════════════════════════════════════════════════
+   QUEST / MISSION PANEL STYLES
+   ═══════════════════════════════════════════════════════ */
+
+.quest-window {
+    position: absolute;
+    left: 20px;
+    top: 165px; /* Just below the Player HUD (HUD_Base is 138px + 20px top + margin) */
+    width: 600px;
+    height: 520px;
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/Panels/UI-GPW-DialogueNoFooter.png');
+    -unity-background-scale-mode: stretch-to-fill;
+    padding: 60px 45px 45px 45px;
+}
+
+.quest-title {
+    font-size: 20px;
+    color: #ffd700;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 2px black;
+}
+
+.quest-description {
+    font-size: 15px;
+    color: #e0e0e0;
+    white-space: normal;
+    margin-bottom: 20px;
+    -unity-text-align: upper-left;
+    flex-grow: 1;
+}
+
+.quest-button-container {
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.quest-button {
+    width: 140px;
+    height: 40px;
+    margin: 0 10px;
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/Panels/UI-Button.png');
+    -unity-background-scale-mode: stretch-to-fill;
+    background-color: transparent;
+    border-width: 0;
+    color: #ffffff;
+    font-size: 16px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    transition-property: scale, -unity-background-image-tint-color;
+    transition-duration: 0.1s, 0.1s;
+}
+
+/* Hover effect: slight scale up */
+.quest-button:hover {
+    scale: 1.05;
+}
+
+/* Click effect: white flash */
+.quest-button:active {
+    -unity-background-image-tint-color: rgba(255, 255, 255, 0.7);
+}
+
+.rewards-section {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.rewards-title {
+    font-size: 14px;
+    color: #b0b0b0;
+    -unity-font-style: bold;
+    margin-bottom: 5px;
+}
+
+.rewards-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+}

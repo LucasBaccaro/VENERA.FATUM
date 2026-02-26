@@ -154,3 +154,7 @@
 .close-button:hover {
     color: white;
 }
+
+.inventory-window, .loot-window {
+    -unity-font-definition: resource("Fonts/CrimsonText-Regular");
+}

@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/AbilityBarStyle.uss?fileID=7433441132597879392&amp;guid=eed2c79cf1c7b47d7af3e2e0237aab00&amp;type=3#AbilityBarStyle"/>
-    <ui:VisualElement name="AbilityBarWrapper" class="ability-bar-wrapper" style="width: 438px; height: 95px;">
+    <ui:VisualElement name="AbilityBarWrapper" class="ability-bar-wrapper" style="width: 438px; height: 95px; -unity-font-definition: resource(&quot;Fonts/CrimsonText-Regular&quot;);">
         <ui:VisualElement name="AbilityBarContainer" class="ability-bar-container">
             <ui:VisualElement name="AbilitySlot1" class="ability-slot">
                 <ui:VisualElement name="AbilitySlotBg1" class="ability-slot-bg"/>

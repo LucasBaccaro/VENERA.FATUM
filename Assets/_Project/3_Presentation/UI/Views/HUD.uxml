@@ -1,47 +1,52 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/_Project/3_Presentation/UI/Styles/MainStyle.uss?fileID=7433441132597879392&amp;guid=cf8f1d6e307ab41bb9434dc2ec321cee&amp;type=3#MainStyle"/>
     <ui:VisualElement name="HUD" picking-mode="Ignore" style="flex-grow: 1; width: 100%; height: 100%; position: absolute; -unity-font-definition: resource(&quot;Fonts/CrimsonText-Regular&quot;);">
-        <ui:VisualElement name="PlayerHUD" picking-mode="Ignore" class="player-hud-wrapper" style="width: 100%; height: 100%; align-items: stretch; display: flex;">
-            <ui:VisualElement name="HUD_Base" picking-mode="Ignore" class="player-hud-base" style="width: 387px; height: 138px;">
-                <ui:VisualElement name="PortraitContainer" class="portrait-container">
-                    <ui:VisualElement name="PortraitIcon" class="portrait-icon" style="background-image: url(&quot;project://database/Assets/_Project/5_Content/Resources/Icons/Abilities/Mago/Bola de Fuego.png&quot;); opacity: 0;"/>
-                </ui:VisualElement>
-                <ui:VisualElement name="LevelContainer" picking-mode="Ignore" class="level-container" style="bottom: -15px; left: 6px; height: 56px; width: 58px;">
-                    <ui:Label text="1" name="LevelLabel" class="level-label"/>
-                </ui:VisualElement>
-                <ui:Label text="" name="PlayerName" class="player-name-label" style="top: 17px; left: 136px; width: 170px; font-size: 30px;"/>
-                <ui:VisualElement name="ClassContainer" class="class-container" style="background-color: rgba(0, 0, 0, 0); top: 13px; right: 12px; height: 49px; width: 51px;">
-                    <ui:VisualElement name="ClassIcon" class="class-icon" style="width: 100%; height: 100%; opacity: 1; display: flex;"/>
-                </ui:VisualElement>
-                <ui:VisualElement name="HealthGroup" class="bar-container-absolute" style="top: 60px; left: 89px; width: 359px; height: 34px;">
-                    <ui:VisualElement name="HealthBar_Mask" class="bar-mask" style="width: 199px; left: 46px; height: 34px; top: 1px;">
-                        <ui:VisualElement name="HealthBar_Fill" class="bar-fill-fixed hp-fill" style="width: 201px; height: 22px; top: 6px; left: -1px;"/>
+        <ui:VisualElement name="PlayerHUD" picking-mode="Ignore" class="player-hud-wrapper" style="width: 80%; height: 80%; align-items: stretch; display: flex;">
+            <ui:VisualElement name="HUD_Base" picking-mode="Ignore" class="player-hud-base" style="width: 270px; height: 79px;">
+                <ui:VisualElement name="BarsStack" style="position: absolute; left: -4px; top: 63px; width: 245px; height: 15px; justify-content: space-around;">
+                    <ui:VisualElement name="NameGroup" class="bar-container-absolute" style="position: absolute; width: 300px; height: 28px; background-image: none; -unity-background-scale-mode: stretch-to-fill; display: flex;">
+                        <ui:Label text="Player Name" name="PlayerName" class="player-name-label" style="top: -59px; left: 88px; height: 8px; width: 162px; font-size: 16px; letter-spacing: 3px; -unity-background-image-tint-color: rgb(255, 255, 255); border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); color: rgb(63, 49, 32); text-shadow: 0 0 0 rgb(0, 0, 0);"/>
                     </ui:VisualElement>
-                    <ui:Label text="100 / 100" name="HealthText_Stylized" class="stylized-bar-text" style="width: 200px; left: 46px; top: 4px; height: 19px;"/>
-                    <ui:VisualElement name="HP_Highlight" class="bar-highlight" style="width: 177px; left: 64px; height: 16px; top: 10px;"/>
-                </ui:VisualElement>
-                <ui:VisualElement name="ManaGroup" class="bar-container-absolute" style="top: 93px; left: 131px; width: 198px; height: 22px;">
-                    <ui:VisualElement name="ManaBar_Mask" class="bar-mask" style="width: 224px;">
-                        <ui:VisualElement name="ManaBar_Fill" class="bar-fill-fixed mp-fill" style="width: 206px; height: 22px; top: 0;"/>
+                    <ui:VisualElement name="HealthGroup" class="bar-container-absolute" style="position: absolute; width: 178px; height: 19px; top: -43px; left: 64px;">
+                        <ui:VisualElement name="HealthBar_Mask" class="bar-mask" style="width: 187px;">
+                            <ui:VisualElement name="HealthBar_Fill" class="bar-fill-fixed hp-fill" style="width: 180px;"/>
+                        </ui:VisualElement>
+                        <ui:Label text="100 / 100" name="HealthText_Stylized" class="stylized-bar-text" style="top: 2px; left: 21px; width: 147px; height: 8px;"/>
+                        <ui:VisualElement name="HP_Highlight" class="bar-highlight" style="opacity: 0.3;"/>
                     </ui:VisualElement>
-                    <ui:VisualElement name="MP_Highlight" class="bar-highlight" style="width: 194px; height: 18px; top: 2px; left: 8px;"/>
-                    <ui:Label text="50 / 50" name="ManaText_Stylized" class="stylized-bar-text" style="top: -3px; left: -4px;"/>
-                </ui:VisualElement>
-                <ui:VisualElement name="ExpGroup" class="bar-container-absolute" style="top: 119px; left: 104px; width: 192px; height: 12px;">
-                    <ui:VisualElement name="ExpBar_Mask" class="bar-mask" style="width: 333px; height: 15px; top: -3px;">
-                        <ui:VisualElement name="ExpBar_Fill" class="bar-fill-fixed exp-fill" style="width: 211px; height: 13px; top: 2px; left: 0; overflow: hidden;"/>
+                    <ui:VisualElement name="ManaGroup" class="bar-container-absolute" style="position: absolute; width: 167px; height: 25px; top: -24px; left: 64px;">
+                        <ui:VisualElement name="ManaBar_Mask" class="bar-mask" style="width: 268px; left: 3px;">
+                            <ui:VisualElement name="ManaBar_Fill" class="bar-fill-fixed mp-fill" style="width: 230px; height: 19px; top: 5px; left: -52px;"/>
+                        </ui:VisualElement>
+                        <ui:Label text="50 / 50" name="ManaText_Stylized" class="stylized-bar-text" style="top: -2px; left: 10px;"/>
+                        <ui:VisualElement name="MP_Highlight" class="bar-highlight" style="width: 172px; height: 16px; top: 6px; left: 5px; opacity: 0.3;"/>
                     </ui:VisualElement>
-                    <ui:VisualElement name="EXP_Highlight" class="exp-highlight" style="top: 0; left: 15px; height: 11px;"/>
+                    <ui:VisualElement name="ExpGroup" class="bar-container-absolute" style="position: relative; width: 119px; height: 22px; opacity: 1; top: 1%;">
+                        <ui:VisualElement name="ExpBar_Fill" class="bar-fill-fixed exp-fill" style="width: 227px; top: 2px; left: 4px; height: 13px;"/>
+                        <ui:VisualElement name="ExpBar_Mask" class="bar-mask"/>
+                        <ui:VisualElement name="EXP_Highlight" class="exp-highlight" style="top: 1px; left: 74px; width: 150px; opacity: 0.3;"/>
+                    </ui:VisualElement>
                 </ui:VisualElement>
-                <ui:VisualElement name="GoldContainer" picking-mode="Ignore" style="position: absolute; bottom: -25px; right: 10px; flex-direction: row; align-items: center;">
-                    <ui:Label text="0" name="GoldLabel" style="color: rgb(255, 215, 0); font-size: 16px; -unity-font-style: bold; -unity-text-outline-width: 0.5px; -unity-text-outline-color: rgb(0, 0, 0);"/>
+                <ui:VisualElement name="PortraitGroup" style="position: absolute; left: 0; top: 0; width: 140px; height: 140px; display: flex;">
+                    <ui:VisualElement name="PortraitContainer" class="portrait-container" style="height: 97px; width: 91px; top: -5px; left: -14px;">
+                        <ui:VisualElement name="PortraitIcon" class="portrait-icon"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="ClassContainer" class="class-container" style="top: -9px; left: 47px; height: 41px; width: 37px;">
+                        <ui:VisualElement name="ClassIcon" class="class-icon" style="width: 100%; height: 100%; opacity: 1; display: flex; position: absolute;"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="LevelContainer" picking-mode="Ignore" class="level-container" style="background-image: resource(&quot;PlayerHUD/UI-PlayerHUD-LVL-Container&quot;); bottom: 34px; left: 11px; height: 40px; width: 40px;">
+                        <ui:Label text="1" name="LevelLabel" class="level-label" style="font-size: 18px; width: 25px; -unity-text-align: upper-center; padding-right: 1px; margin-right: 2px; color: rgb(199, 173, 128); -unity-text-outline-color: rgb(43, 29, 11);"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="GoldContainer" picking-mode="Ignore" style="position: absolute; bottom: 11px; right: -19px; flex-direction: row; align-items: center;">
+                    <ui:Label text="0" name="GoldLabel" style="color: rgb(255, 215, 0); font-size: 16px; -unity-font-style: bold; position: absolute; top: 5px; left: -228px;"/>
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="NotificationContainer" picking-mode="Ignore" style="position: absolute; top: 25%; left: 0; width: 100%; height: 50px; align-items: center; justify-content: center; display: flex; pointer-events: none;">
             <ui:Label text="Error Message" name="NotificationLabel" picking-mode="Ignore" style="font-size: 24px; color: rgb(255, 69, 69); -unity-font-style: bold; -unity-text-outline-width: 1px; -unity-text-outline-color: rgb(0, 0, 0); opacity: 0; transition-property: opacity; transition-duration: 0.3s;"/>
         </ui:VisualElement>
-        <ui:VisualElement name="TargetFrame" class="target-frame-container" picking-mode="Ignore" style="position: absolute; top: 15px; left: 50%; width: 280px; translate: -50% 0; height: 94px; display: flex;">
+        <ui:VisualElement name="TargetFrame" picking-mode="Ignore" class="target-frame-container" style="position: absolute; top: 15px; left: 50%; width: 280px; translate: -50% 0; height: 94px; display: flex;">
             <ui:Label text="Target Name" name="TargetName" class="target-name-label"/>
             <ui:VisualElement name="TargetHeader" class="target-header"/>
             <ui:VisualElement name="TargetBody" class="target-body">
@@ -52,7 +57,7 @@
             </ui:VisualElement>
             <ui:ProgressBar value="100" name="TargetMana" high-value="100" class="target-mana-bar" style="height: 21px;"/>
         </ui:VisualElement>
-        <ui:VisualElement name="CastGroup" class="cast-group" picking-mode="Ignore" style="display: flex; bottom: 156px; left: 50%; width: 450px; height: 50px; translate: -50% 0;">
+        <ui:VisualElement name="CastGroup" picking-mode="Ignore" class="cast-group" style="display: flex; bottom: 156px; left: 50%; width: 450px; height: 50px; translate: -50% 0;">
             <ui:VisualElement name="CastBar_Background" class="cast-bar-bg" style="width: 100%; height: 100%;"/>
             <ui:VisualElement name="CastBar_Fill_Mask" class="cast-bar-mask" style="width: 429px; left: 9px; top: 9px;">
                 <ui:VisualElement name="CastBar_Fill" class="cast-bar-fill" style="width: 425px; left: 3px; top: 1px;"/>
@@ -64,6 +69,6 @@
             <ui:Label text="Spell Name" name="CastAbilityLabel" class="cast-ability-label" style="top: 6px; left: 23px; font-size: 16px;"/>
             <ui:Label text="0.0" name="CastTimerLabel" class="cast-timer-label" style="top: 6px; right: 17px; font-size: 15px;"/>
         </ui:VisualElement>
-        <ui:VisualElement name="NameplateContainer" picking-mode="Ignore" style="position: absolute; width: 100%; height: 100%;" />
+        <ui:VisualElement name="NameplateContainer" picking-mode="Ignore" style="position: absolute; width: 100%; height: 100%;"/>
     </ui:VisualElement>
 </ui:UXML>

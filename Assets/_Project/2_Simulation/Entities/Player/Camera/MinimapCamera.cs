@@ -17,7 +17,7 @@ namespace Genesis.Simulation
         [SerializeField] private float _zoomStep = 5f;
 
         [Header("Render Texture")]
-        [SerializeField] private int _textureSize = 128;
+        [SerializeField] private int _textureSize = 512;
 
         [Header("Performance")]
         [SerializeField] private int _renderInterval = 5;
@@ -96,6 +96,8 @@ namespace Genesis.Simulation
         private void CreateRenderTexture()
         {
             _renderTexture = new RenderTexture(_textureSize, _textureSize, 16);
+            _renderTexture.antiAliasing = 4;
+            _renderTexture.filterMode = FilterMode.Bilinear;
             _renderTexture.name = "MinimapRT";
             _renderTexture.Create();
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.InputSystem;
 using Genesis.Core.Networking;
 using Genesis.Data;
 using Genesis.Presentation.Audio;
@@ -75,6 +76,14 @@ namespace Genesis.Presentation.UI {
 #else
             Debug.LogWarning("[LoginController] No classes assigned! Assign ClassData assets in the Inspector.");
 #endif
+        }
+
+        void Update() {
+            if (Keyboard.current != null && Keyboard.current.enterKey.wasPressedThisFrame) {
+                if (_connectButton != null && _connectButton.enabledSelf) {
+                    OnConnectClicked();
+                }
+            }
         }
 
         void Start() {

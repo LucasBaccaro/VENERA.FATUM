@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 using Genesis.Core;
 using Genesis.Core.Networking;
 using Genesis.Core.Persistence;
@@ -102,6 +103,24 @@ namespace Genesis.Presentation.UI {
 
         void Awake() {
             LoginData.LoginRequired = true;
+        }
+
+        void Update() {
+            if (Keyboard.current != null && Keyboard.current.enterKey.wasPressedThisFrame) {
+                if (_isProcessing) return;
+
+                switch (_currentState) {
+                    case State.Login:
+                        if (_btnLogin != null && _btnLogin.enabledSelf) OnLoginClicked();
+                        break;
+                    case State.Register:
+                        if (_btnRegister != null && _btnRegister.enabledSelf) OnRegisterClicked();
+                        break;
+                    case State.CharacterCreation:
+                        if (_btnCreateCharacter != null && _btnCreateCharacter.enabledSelf) OnCreateCharacterClicked();
+                        break;
+                }
+            }
         }
 
         void Start() {

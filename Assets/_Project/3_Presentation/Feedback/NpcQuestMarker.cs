@@ -15,7 +15,7 @@ namespace Genesis.Presentation.Feedback {
 
         [Header("Marker Settings")]
         [SerializeField] private Vector3 _offset = new Vector3(0, 2.5f, 0);
-        [SerializeField] private float _fontSize = 8f;
+        [SerializeField] private float _fontSize = 12f;
         [SerializeField] private float _bobSpeed = 2f;
         [SerializeField] private float _bobAmount = 0.15f;
 
@@ -43,24 +43,44 @@ namespace Genesis.Presentation.Feedback {
                 enabled = false;
                 return;
             }
-
-            CreateMarker();
         }
 
         private void Start() {
             _npcId = _npcController.NpcID;
+            CreateMarker();
+        }
+
+        private void OnDisable() {
+            if (_textMesh != null) _textMesh.enabled = false;
+        }
+
+        private void OnEnable() {
+            // Refresh will re-enable if needed
+        }
+
+        private void OnDestroy() {
+            if (_markerTransform != null) {
+                Destroy(_markerTransform.gameObject);
+            }
         }
 
         private void CreateMarker() {
-            var markerGO = new GameObject("QuestMarker");
+            var markerGO = new GameObject("QuestMarker_" + _npcId);
             _markerTransform = markerGO.transform;
-            _markerTransform.SetParent(transform, false);
-            _markerTransform.localPosition = _offset;
+            _markerTransform.position = transform.position + _offset;
+
+            // Add dedicated billboard component so it's not "empty" and handles its own rotation
+            var billboard = markerGO.AddComponent<SimpleBillboard>();
+            var cam = (LostArkCamera.Instance != null) ? LostArkCamera.Instance.cam : Camera.main;
+            if (cam != null) billboard.CamTransform = cam.transform;
 
             _textMesh = markerGO.AddComponent<TextMeshPro>();
             _textMesh.alignment = TextAlignmentOptions.Center;
             _textMesh.fontSize = _fontSize;
             _textMesh.fontStyle = FontStyles.Bold;
+            _textMesh.fontWeight = FontWeight.Bold;
+            _textMesh.outlineWidth = 0.35f;
+            _textMesh.outlineColor = Color.black;
             _textMesh.textWrappingMode = TextWrappingModes.NoWrap;
             _textMesh.text = "";
             _textMesh.enabled = false;
@@ -71,7 +91,7 @@ namespace Genesis.Presentation.Feedback {
             }
         }
 
-        private void LateUpdate() {
+        private void Update() {
             // Try to cache local player references
             if (_cachedQuestMgr == null) {
                 TryCacheLocalPlayer();
@@ -84,20 +104,15 @@ namespace Genesis.Presentation.Feedback {
                 Refresh();
             }
 
-            // Billboard + bobbing (only when visible)
-            if (_markerTransform == null || !_textMesh.enabled) return;
-
-            var cam = Camera.main;
-            if (cam != null) {
-                _markerTransform.rotation = cam.transform.rotation;
-            }
-
+            // Bobbing and following the NPC (Position is absolute since it's decoupled)
+            if (_markerTransform == null) return;
+            
             float bob = Mathf.Sin(Time.time * _bobSpeed) * _bobAmount;
-            _markerTransform.localPosition = _offset + new Vector3(0, bob, 0);
+            _markerTransform.position = transform.position + _offset + new Vector3(0, bob, 0);
         }
 
         private void TryCacheLocalPlayer() {
-            var allQm = Object.FindObjectsByType<PlayerQuestManager>(FindObjectsSortMode.None);
+            var allQm = UnityEngine.Object.FindObjectsByType<PlayerQuestManager>(FindObjectsSortMode.None);
             foreach (var mgr in allQm) {
                 if (mgr.IsOwner) {
                     _cachedQuestMgr = mgr;
@@ -146,14 +161,17 @@ namespace Genesis.Presentation.Feedback {
                 case MarkerState.Available:
                     _textMesh.text = "!";
                     _textMesh.color = ColorYellow;
+                    _textMesh.outlineColor = ColorYellow;
                     break;
                 case MarkerState.TurnIn:
                     _textMesh.text = "?";
                     _textMesh.color = ColorGreen;
+                    _textMesh.outlineColor = ColorGreen;
                     break;
                 case MarkerState.InProgress:
                     _textMesh.text = "?";
                     _textMesh.color = ColorGray;
+                    _textMesh.outlineColor = ColorGray;
                     break;
             }
 
@@ -204,6 +222,25 @@ namespace Genesis.Presentation.Feedback {
                     return true;
             }
             return false;
+        }
+    }
+
+    /// <summary>
+    /// Simple component to handle billboarding independently.
+    /// Added to the QuestMarker object so it can be seen in the Inspector.
+    /// </summary>
+    public class SimpleBillboard : MonoBehaviour {
+        public Transform CamTransform;
+
+        private void LateUpdate() {
+            if (CamTransform == null) {
+                var cam = (LostArkCamera.Instance != null) ? LostArkCamera.Instance.cam : Camera.main;
+                if (cam != null) CamTransform = cam.transform;
+            }
+
+            if (CamTransform != null) {
+                transform.rotation = CamTransform.rotation;
+            }
         }
     }
 }

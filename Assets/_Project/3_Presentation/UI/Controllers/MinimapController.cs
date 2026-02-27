@@ -11,8 +11,7 @@ namespace Genesis.Presentation.UI
         private VisualElement _root;
         private VisualElement _minimapTexture;
         private VisualElement _playerIcon;
-        private Button _btnZoomIn;
-        private Button _btnZoomOut;
+        private VisualElement _minimapContainer;
 
         private Transform _playerTransform;
 
@@ -26,8 +25,8 @@ namespace Genesis.Presentation.UI
 
         void OnDestroy()
         {
-            if (_btnZoomIn != null) _btnZoomIn.clicked -= OnZoomIn;
-            if (_btnZoomOut != null) _btnZoomOut.clicked -= OnZoomOut;
+            if (_minimapContainer != null)
+                _minimapContainer.UnregisterCallback<WheelEvent>(OnWheelZoom);
         }
 
         void Update()
@@ -45,14 +44,15 @@ namespace Genesis.Presentation.UI
         {
             _root = _uiDocument.rootVisualElement;
             _root.pickingMode = PickingMode.Ignore;
-
+            
+            _minimapContainer = _root.Q<VisualElement>("MinimapContainer");
             _minimapTexture = _root.Q<VisualElement>("MinimapTexture");
             _playerIcon = _root.Q<VisualElement>("MinimapPlayerIcon");
-            _btnZoomIn = _root.Q<Button>("BtnZoomIn");
-            _btnZoomOut = _root.Q<Button>("BtnZoomOut");
 
-            if (_btnZoomIn != null) _btnZoomIn.clicked += OnZoomIn;
-            if (_btnZoomOut != null) _btnZoomOut.clicked += OnZoomOut;
+            if (_minimapContainer != null)
+            {
+                _minimapContainer.RegisterCallback<WheelEvent>(OnWheelZoom);
+            }
         }
 
         private bool _textureBound;
@@ -76,16 +76,16 @@ namespace Genesis.Presentation.UI
             _playerIcon.style.rotate = new StyleRotate(new Rotate(Angle.Degrees(yaw)));
         }
 
-        private void OnZoomIn()
+        private void OnWheelZoom(WheelEvent evt)
         {
-            if (MinimapCamera.Instance != null)
+            if (MinimapCamera.Instance == null) return;
+            
+            if (evt.delta.y < 0)
                 MinimapCamera.Instance.ZoomIn();
-        }
-
-        private void OnZoomOut()
-        {
-            if (MinimapCamera.Instance != null)
+            else if (evt.delta.y > 0)
                 MinimapCamera.Instance.ZoomOut();
+                
+            evt.StopPropagation();
         }
     }
 }

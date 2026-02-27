@@ -185,8 +185,8 @@ Button {
     position: absolute;
     top: 20px;
     left: 20px;
-    width: 600px;
-    height: 180px;
+    width: 340px;
+    height: 110px;
     pointer-events: none; /* Allow click-through */
 }
 
@@ -194,7 +194,7 @@ Button {
     position: absolute;
     width: 100%;
     height: 100%;
-    background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD/UI-PlayerHUD_Base.png');
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD_v2/UI-PlayerHUD_Base.png');
     -unity-background-scale-mode: stretch-to-fill;
     pointer-events: none; /* Allow click-through */
 }
@@ -203,31 +203,35 @@ Button {
 
 .portrait-container {
     position: absolute;
-    left: 17px;
-    top: 17px;
-    width: 110px;
-    height: 110px;
-    overflow: hidden;
-    border-radius: 55px;
+    left: 0;
+    top: 5px;
+    width: 130px;
+    height: 130px;
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD_v2/UI-PlayerHUD-AvatarContainer.png');
+    -unity-background-scale-mode: scale-to-fit;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
 }
 
 .portrait-icon {
-    width: 100%;
-    height: 100%;
+    width: 78%;
+    height: 78%;
+    border-radius: 60px;
     -unity-background-scale-mode: scale-and-crop;
 }
 
 .level-container {
     position: absolute;
-    left: 0px;
-    bottom: 25px;
-    width: 65px;
-    height: 65px;
-    background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD/UI-PlayerHUD-LVL-Container.png');
+    left: 5px;
+    bottom: 0px;
+    width: 50px;
+    height: 50px;
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD_v2/UI-PlayerHUD-LevelContainer.png');
     -unity-background-scale-mode: scale-to-fit;
     justify-content: center;
     align-items: center;
-    z-index: 10;
+    z-index: 30;
 }
 
 .level-label {
@@ -240,14 +244,15 @@ Button {
 
 .class-container {
     position: absolute;
-    right: 48px;
-    top: 1px;
-    width: 65px;
-    height: 65px;
-    background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD/UI-PlayerHUD-CLASS.png');
+    left: 85px;
+    top: -5px;
+    width: 50px;
+    height: 50px;
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD_v2/UI-PlayerHUD-ClassContainer.png');
     -unity-background-scale-mode: scale-to-fit;
     justify-content: center;
     align-items: center;
+    z-index: 30;
 }
 
 .class-icon {
@@ -258,12 +263,15 @@ Button {
 
 .player-name-label {
     position: absolute;
-    left: 180px;
-    top: 38px;
-    font-size: 24px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    -unity-text-align: middle-center;
+    font-size: 18px;
     -unity-font-style: bold;
-    color: rgb(40, 40, 40);
-    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.4);
+    color: rgb(240, 230, 200);
+    text-shadow: 1px 1px 2px black;
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -292,15 +300,15 @@ Button {
     -unity-background-scale-mode: stretch-to-fill;
 }
 
-.hp-fill { background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD/UI-PlayerHUD-HP_Bar.png'); }
-.mp-fill { background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD/UI-PlayerHUD-Mana_Bar.png'); }
-.exp-fill { background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD/UI-PlayerHUD-Exp_Bar.png'); }
+.hp-fill { background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD_v2/UI-PlayerHUD-HP_Bar.png'); }
+.mp-fill { background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD_v2/UI-PlayerHUD-Mana_Bar.png'); }
+.exp-fill { background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD_v2/UI-PlayerHUD-Exp_Bar-copy.png'); }
 
 .bar-highlight {
     position: absolute;
     width: 100%;
     height: 100%;
-    background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD/UI-PlayerHUD-ManaHP_Highlight.png');
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD_v2/UI-PlayerHUD-ManaHealthHihlight.png');
     -unity-background-scale-mode: stretch-to-fill;
     pointer-events: none;
     z-index: 5;
@@ -310,7 +318,7 @@ Button {
     position: absolute;
     width: 100%;
     height: 100%;
-    background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD/UI-PlayerHUD-EXPHighlight.png');
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/PlayerHUD_v2/UI-PlayerHUD-EXPHighlight.png');
     -unity-background-scale-mode: stretch-to-fill;
     pointer-events: none;
     z-index: 5;

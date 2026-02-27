@@ -5,64 +5,38 @@
 .minimap-container {
     width: 200px;
     height: 200px;
-    border-radius: 100px;
-    overflow: hidden;
+    overflow: visible; /* Let the frame show its full art */
     align-items: center;
     justify-content: center;
 }
 
 .minimap-texture {
     position: absolute;
-    width: 100%;
-    height: 100%;
+    width: 170px;
+    height: 170px;
+    border-radius: 85px; /* Make the texture itself round */
+    overflow: hidden;
+    z-index: 10;
 }
 
 .minimap-frame {
     position: absolute;
     width: 100%;
     height: 100%;
-    border-radius: 100px;
-    border-width: 3px;
-    border-color: rgba(200, 200, 200, 0.6);
+    background-image: url('project://database/Assets/_Project/5_Content/Resources/Panels/UI-Minimap.png');
+    -unity-background-scale-mode: scale-to-fit;
+    z-index: 20; /* Ensure frame is on top of texture */
+    pointer-events: none;
 }
 
 .minimap-player-icon {
     position: absolute;
-    width: 12px;
-    height: 12px;
-    background-color: rgb(80, 200, 255);
-    border-radius: 6px;
-    border-width: 1px;
+    width: 14px;
+    height: 14px;
+    background-color: rgb(0, 255, 255);
+    border-radius: 7px;
+    border-width: 2px;
     border-color: white;
+    z-index: 30; /* On top of everything */
 }
 
-.minimap-controls {
-    flex-direction: row;
-    justify-content: center;
-    margin-top: 4px;
-}
-
-.minimap-zoom-btn {
-    width: 32px;
-    height: 32px;
-    font-size: 18px;
-    -unity-font-style: bold;
-    color: white;
-    background-color: rgba(0, 0, 0, 0.65);
-    border-radius: 4px;
-    border-width: 1px;
-    border-color: rgba(255, 255, 255, 0.2);
-    margin-left: 4px;
-    margin-right: 4px;
-    -unity-text-align: middle-center;
-    padding: 0;
-}
-
-.minimap-zoom-btn:hover {
-    background-color: rgba(60, 60, 60, 0.8);
-    border-color: rgba(255, 255, 255, 0.4);
-}
-
-.minimap-zoom-btn:active {
-    background-color: rgba(100, 100, 100, 0.8);
-}
